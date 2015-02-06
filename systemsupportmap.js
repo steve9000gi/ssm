@@ -1274,7 +1274,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         thisGraph.shapeMouseDown.call(thisGraph, d3.select(this), d);
       })
       .on("mouseup", function(d) {
-        if ((d3.event.ctrlKey) && (d.url)) {
+        if (d3.event.ctrlKey && d.url) {
           window.open(d.url, d.name);
         } else if (d3.event.altKey) {
           var defaultUrl = d.url ? d.url : "";
@@ -1290,15 +1290,14 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             d3.select(this).select("text")
               .style("font-weight", thisGraph.boldFontWeight)
               .style("text-decoration", "underline");
+            // Force shape resize in case bold characters overflow shape boundaries:
+            d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
             thisGraph.updateGraph();
           } 
-        } else if (state.lastKeyDown === consts.N_KEY) {
-//        } else if ((state.lastKeyDown === consts.WINDOWS_KEY)
-//                || (state.lastKeyDown === consts.COMMAND_KEY)) {
+        } else if (d3.event.ctrlKey && d3.event.shiftKey) {
           var defaultNote = d.note ? d.note : "";
           d.note = prompt("Enter note for this node: ", defaultNote);
           state.lastKeyDown = -1;
-          console.log("d.note: " + d.note);
         } else {
           thisGraph.shapeMouseUp.call(thisGraph, d3.select(this), d);
         }
