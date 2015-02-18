@@ -8,7 +8,71 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   // Define graphcreator object
   var Graphmaker = function(svg, nodes, links) {
+    this.initializeMemberVariables();
+    this.prepareToolbox();
+    this.setupNotes();
+    this.defineArrowMarkers();
+
+    this.svgG = svg.append("g").classed("graph", true)
+                        .attr("id", "graphG");
+
+    this.createCirclesOfCare();
+    this.createSystemSupportMap();
+    this.setupDrag();
+ 
+    // Svg nodes and links
+    this.edgeGroups = this.svgG.append("g").selectAll("g");
+    this.shapeGroups = this.svgG.append("g").selectAll("g");
+
+    this.setupEventListeners();
+    this.showSystemSupportMap();
+    this.setupDownload();
+    this.setupUpload();
+  };
+
+
+  Graphmaker.prototype.consts =  {
+    selectedClass: "selected",
+    connectClass: "connect-node",
+    activeEditId: "active-editing",
+    BACKSPACE_KEY: 8,
+    DELETE_KEY: 46,
+    ENTER_KEY: 13,
+    minCircleRadius: 20,
+    minEllipseRx: 25,
+    minEllipseRy: 17,
+    unselectedStyleColor: "#666666",
+    hoverColor: "rgb(200, 238, 241)",
+    colorChoices: ["ff0000",  // red
+                   "ff8800",  // orange
+                   "999900",  // gold
+                   "00bd00",  // green
+                   "00bdbd",  // cyan/aqua
+                   "0000ff",  // dark blue
+                   "8800ff",  // purple
+                   "000000"], // black
+    defaultShapeText: {"circle": "Identity",
+                       "rectangle": "Responsibility",
+                       "diamond": "Need",
+                       "ellipse": "Resource",
+                       "star": "Wish",
+                       "noBorder": "text"},
+    ssRectangleY: 49, // "ss" -> shape selection
+    ssDiamondY: 16,
+    ssEllipseCy: 154,
+    ssNoBorderXformY: 163,
+    esDashedEdgeRectY: 15, // "es" -> edge selection
+    cOfChideText: "Hide Circles of Care",
+    ssmHideText: "Hide system support rings", 
+    defaultFontSize: 12 // Don't forget to set this value in css file
+  };
+
+  /* PROTOTYPE FUNCTIONS */
+
+
+  Graphmaker.prototype.initializeMemberVariables = function() {
     var thisGraph = this;
+    thisGraph.svg = svg;
     thisGraph.idct = 0;
     thisGraph.clr = "#000000";
     thisGraph.edgeStyle = "solid";
@@ -36,276 +100,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       shiftNodeDrag: false,
       selectedText: null
     };
-
-    thisGraph.prepareToolbox();
-
-    // Set up notes, i.e., tool tips:
-    thisGraph.tip = d3.tip()
-                      .attr("class", "d3-tip")
-                      .offset([-10, 0])
-                      .style("font-family", "Arial")
-                      .style("font-weight", "bold")
-                      .html(function (d) {
-                        d3.select(".d3-tip")
-                          .style("display", function() { return d.note ? "block" : "none"; }); 
-                        return  d.note ? d.note : null; 
-                      });
-    d3.select("#mainSVG").call(thisGraph.tip);
-
-    // Define arrow markers for graph links (i.e., edges that persist after mouse up)
-    //var defs = d3.select("svg").append("svg:defs");
-    var defs = d3.select("#mainSVG").append("svg:defs");
-    defs.selectAll("marker")
-    .data(thisGraph.consts.colorChoices)
-    .enter().append("marker")
-      .attr("id", function(d) { return "end-arrow" + d; })
-      .attr("viewBox", "0 -5 10 10")
-      .attr("markerWidth", 3.5)
-      .attr("markerHeight", 3.5)
-      .attr("orient", "auto")
-      .attr("fill", function(d) { return "#" + d; })
-      .attr("stroke", "none")
-    .append("svg:path")
-      .attr("d", "M0,-5L10,0L0,5");
-
-    // Special-purpose markers for leading arrow (just while dragging), for selected, and for hover:
-    var markerData = [{"id": "mark-end-arrow", "fill": "#000000"},
-              {"id": "selected-end-arrow", "fill": thisGraph.consts.selectedColor},
-              {"id": "hover-end-arrow", "fill": thisGraph.consts.hoverColor}];
-    defs.selectAll(".specialMarker")
-    .data(markerData)
-    .enter().append("marker")
-      .classed("specialMarker", true)
-      .attr("id", function(d) { return d.id; })
-      .attr("viewBox", "0 -5 10 10")
-      .attr("markerWidth", 3.5)
-      .attr("markerHeight", 3.5)
-      .attr("orient", "auto")
-    .append("svg:path")
-      .attr("fill", function(d, i) { return markerData[i].fill; })
-      .attr("stroke", "none")
-      .attr("d", "M0,-5L10,0L0,5");
-
-    thisGraph.svg = svg;
-    thisGraph.svgG = svg.append("g").classed(thisGraph.consts.graphClass, true)
-                        .attr("id", "graphG");
-    var svgG = thisGraph.svgG;
-
-    thisGraph.createCirclesOfCare();
-    thisGraph.createSystemSupportMap();
-
-    // Displayed when dragging between nodes
-    thisGraph.dragLine = svgG.append("svg:path")
-      .attr("class", "link dragline hidden")
-      .attr("d", function(d) { return "M0,0L0,0"; })
-      .style("marker-end", "url(#mark-end-arrow)");
-
-    // Svg nodes and links
-    thisGraph.edgeGroups = svgG.append("g").selectAll("g");
-    thisGraph.shapeGroups = svgG.append("g").selectAll("g");
-
-    thisGraph.drag = d3.behavior.drag()
-      .origin(function(d) {
-        return {x: d.x, y: d.y};
-      })
-      .on("drag", function(args) {
-        thisGraph.state.justDragged = true;
-        thisGraph.dragmove.call(thisGraph, args);
-      })
-      .on("dragend", function() {
-        // Todo check if edge-mode is selected
-      });
-
-    // Listen for key events
-    d3.select(window).on("keydown", function() {
-      thisGraph.svgKeyDown.call(thisGraph);
-    })
-    .on("keyup", function() {
-      thisGraph.svgKeyUp.call(thisGraph);
-    });
-    svg.on("mousedown", function(d) { thisGraph.svgMouseDown.call(thisGraph, d); });
-    svg.on("mouseup", function(d){
-      thisGraph.svgMouseUp.call(thisGraph, d);
-    });
-
-    // Listen for dragging
-    var dragSvg = d3.behavior.zoom()
-      .on("zoom", function() {
-        if (d3.event.sourceEvent.shiftKey) {
-          // TODO  the internal d3 state is still changing
-          return false;
-        } else {
-          thisGraph.zoomed.call(thisGraph);
-        }
-        return true;
-      })
-      .on("zoomstart", function() {
-        var ael = d3.select("#" + thisGraph.consts.activeEditId).node();
-        if (ael) {
-          ael.blur();
-        }
-        if (!d3.event.sourceEvent.shiftKey) d3.select("body").style("cursor", "move");
-      })
-      .on("zoomend", function() {
-        d3.select("body").style("cursor", "auto");
-      });
-
-    svg.call(dragSvg).on("dblclick.zoom", null);
-
-    // Listen for resize
-    window.onresize = function() {thisGraph.updateWindow(svg);};
-
-    thisGraph.showSystemSupportMap();
-
-    // Handle download data
-    d3.select("#download-input").on("click", function() {
-      var saveEdges = [];
-      thisGraph.links.forEach(function(val, i) {
-        saveEdges.push({source: val.source.id,
-                        target: val.target.id,
-                        style: val.style,
-                        color: val.color,
-                        thickness: val.thickness,
-                        maxCharsPerLine: val.maxCharsPerLine, 
-                        note: val.note,
-                        name: val.name});
-      });
-      var blob = new Blob([window.JSON.stringify({"nodes": thisGraph.nodes,
-                                                  "links": saveEdges,
-                                                  "systemSupportMapCenter": thisGraph.SSMCenter,
-                                                  "circlesOfCareCenter": thisGraph.CofCC})], 
-                                                 {type: "text/plain;charset=utf-8"});
-      saveAs(blob, "SystemSupportMap.json");
-    });
-
-    // Handle uploaded data
-    d3.select("#upload-input").on("click", function() {
-      document.getElementById("hidden-file-upload").click();
-    });
-    d3.select("#hidden-file-upload").on("change", function() {
-      if (window.File && window.FileReader && window.FileList && window.Blob) {
-        var uploadFile = this.files[0];
-        var filereader = new window.FileReader();
-
-        filereader.onload = function() {
-          try {
-            var txtRes = filereader.result;
-          } catch(err) {
-            window.alert("Error reading file: " + err.message);
-          }
-          // TODO better error handling
-          try {
-            var jsonObj = JSON.parse(txtRes);
-            thisGraph.deleteGraph(true);
-            thisGraph.nodes = jsonObj.nodes;
-            thisGraph.setIdCt(thisGraph.getBiggestNodeID() + 1);
-            var newEdges = jsonObj.links;
-            newEdges.forEach(function(e, i) {
-              newEdges[i] = {source: thisGraph.nodes.filter(function(n) {
-                              return n.id === e.source; })[0],
-                             target: thisGraph.nodes.filter(function(n) {
-                              return n.id === e.target; })[0],
-                             style: (e.style === "dashed" ? "dashed" : "solid"),
-                             color: e.color,
-                             thickness: e.thickness,
-                             maxCharsPerLine: (e.maxCharsPerLine ? e.maxCharsPerLine : 20),
-                             note: e.note,
-                             name: e.name};
-            });
-            thisGraph.links = newEdges;
-
-            //thisGraph.hideSystemSupportMap();
-            thisGraph.SSMCenter = jsonObj.systemSupportMapCenter;
-            if (thisGraph.SSMCenter) {
-              thisGraph.showSystemSupportMap();
-            } else {
-              thisGraph.hideSystemSupportMap();
-            }            
-            thisGraph.hideCirclesOfCare();
-            thisGraph.CofCC = jsonObj.circlesOfCareCenter;
-            if (thisGraph.CofCC) {
-              thisGraph.showCirclesOfCare();
-            }
-            thisGraph.updateGraph();
-          } catch(err) {
-            window.alert("Error parsing uploaded file\nerror message: " + err.message);
-            return;
-          }
-        };
-        filereader.readAsText(uploadFile);
-      } else {
-        alert("Your browser won't let you save this graph -- try upgrading your browser to IE 10+ "
-            + "or Chrome or Firefox.");
-      }
-    });
-  }; // end Graphmaker(...)
-
-
-  Graphmaker.prototype.consts =  {
-    selectedClass: "selected",
-    connectClass: "connect-node",
-    shapeGClass: "shapeG",
-    pathGClass: "pathG",
-    graphClass: "graph",
-    activeEditId: "active-editing",
-    BACKSPACE_KEY: 8,
-    DELETE_KEY: 46,
-    ENTER_KEY: 13,
-    T_KEY: 84,
-    N_KEY: 78,
-    ESCAPE_KEY: 27,
-    WINDOWS_KEY: 91,
-    COMMAND_KEY: 224,
-    minCircleRadius: 20,
-    minDiamondDim: 45,
-    minEllipseRx: 25,
-    minEllipseRy: 17,
-    defaultEdgeText: "",
-    selectedColor: "rgb(229, 172, 247)",
-    unselectedStyleColor: "#666666",
-    hoverColor: "rgb(200, 238, 241)",
-    colorChoices: ["ff0000",  // red
-                   "ff8800",  // orange
-                   "999900",  // gold
-                   "00bd00",  // green
-                   "00bdbd",  // cyan/aqua
-                   "0000ff",  // dark blue
-                   "8800ff",  // purple
-                   "000000"], // black
-    defaultShapeText: {"circle": "Identity",
-                       "rectangle": "Responsibility",
-                       "diamond": "Need",
-                       "ellipse": "Resource",
-                       "star": "Wish",
-                       "noBorder": "text"},
-    ssRectangleY: 49,
-    ssDiamondY: 16,
-    ssEllipseCy: 154,
-    ssNoBorderXformY: 163,
-    esDashedEdgeRectY: 15, // EdgeSelection
-    cOfChideText: "Hide Circles of Care",
-    ssmHideText: "Hide system support rings", 
-    defaultFontSize: 12 // Don't forget to set this value in css file
   };
 
-  /* PROTOTYPE FUNCTIONS */
 
-  // Edge, shape, and color selection, plus "?" help and Options buttons, load, save, and delete.
-  Graphmaker.prototype.prepareToolbox = function() {
-    var thisGraph = this;
-    thisGraph.sssw = thisGraph.consts.minCircleRadius * 4 + 23; // Shape Selection Svg Width
-    thisGraph.sssh = thisGraph.consts.minCircleRadius * 13; // Shape Selection Svg Height
-    thisGraph.ssCircleCy = thisGraph.consts.minCircleRadius * 2 - 16; // ShapeSelectionCircleCy
-    thisGraph.esEdgeX1 = thisGraph.sssw / 5 - 20; 
-    thisGraph.CofCC = null; // CirclesOfCareCenter
-    thisGraph.SSMCenter = null; // System Support Map Center
-
-    // Handle delete graph
-    d3.select("#delete-graph").on("click", function() {
-      thisGraph.deleteGraph(false);
-    });
-
-    // Help/instructions button and info box:
+  // Help/instructions button and info box:
+  Graphmaker.prototype.createHelp = function() {
     d3.select("#toolbox").insert("div", ":first-child")
       .attr("id", "btnDiv")
       .append("input")
@@ -331,15 +130,16 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           + "\u26a1 Control-click on a node with underlined text to open the external url "
               + "associated with that node.\n"
           + "\u26a1 Alt-click on a node to see, attach new (or change existing) url.\n"
-          + "\u26a1 Click on the cloud with the up-arrow to open/upload a file from your "
-          + "machine.\n"
-          + "\u26a1 Click on the square with the down-arrow to save the graph to your "
-              + "computer.\n"
+          + "\u26a1 Control-shift-click on a node to attach or modify note.\n"
+          + "\u26a1 Hover over a node to see its note if there is one attached.\n"
+          + "\u26a1 Click on the cloud with the up-arrow to open/upload a file from your machine.\n"
+          + "\u26a1 Click on the square with the down-arrow to save the graph to your computer.\n"
        );
     });
+  };
 
-    // Options:
-    thisGraph.createOptionsMenu();
+
+  Graphmaker.prototype.createOptionsButton = function() {
     d3.select("#btnDiv").append("input")
       .attr("type", "button")
       .attr("id", "optionsBtn")
@@ -353,8 +153,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           .style("left", position[0] + "px")
           .style("top", position[1] + "px");
       });
-    
-    // Create color palette:
+  };
+
+
+  Graphmaker.prototype.createColorPalette = function() {
+    var thisGraph = this;
     d3.select("#toolbox").insert("div", ":first-child")
       .attr("id", "colorPalette");
     d3.select("#colorPalette").selectAll(".colorBar")
@@ -382,9 +185,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         d3.selectAll(".colorBar").each(function(d) {
           d3.select(this).style("border-color", "#000000");});
         d3.select(this).style("border-color", "#ffffff");
-        var styleType = (thisGraph.shapeSelected === "noBorder") ? "fill" : "stroke";
         d3.select("#" + thisGraph.shapeSelected + "Selection")
-          .style(styleType, thisGraph.clr);
+          .style("stroke", (thisGraph.shapeSelected === "noBorder") ? "none" : thisGraph.clr)
+          .style("fill", (thisGraph.shapeSelected === "noBorder") ? thisGraph.clr
+                                                                  : "rgb(248, 248, 248)");
         var selectedEdgeStyleID = (thisGraph.edgeStyle === "solid")
                                 ? "#solidEdgeSelection" : "#dashedEdgeSelection";
         d3.select(selectedEdgeStyleID).style("stroke", thisGraph.clr)
@@ -392,11 +196,27 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             return "url(#end-arrow" + thisGraph.clr.substr(1) + ")";
         });
       });
+    d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
+  };
 
-    // Set initial color selection to black:
-    d3.select("#clr000000").style("border-color", "#ffffff");
 
-    // Add shape selection:
+  Graphmaker.prototype.selectShape = function(selectedElt, shapeSelection) {
+    d3.selectAll(".shapeSelection").style("stroke", this.consts.unselectedStyleColor)
+      .classed({"sel": false, "unsel": true});
+    d3.select("#noBorderSelection")
+      .style("fill", this.consts.unselectedStyleColor)
+      .style("stroke", "none");
+    selectedElt.style("stroke", this.clr).classed({"sel": true, "unsel": false});
+    if (shapeSelection === "noBorder") {
+      selectedElt.style("fill", this.clr).style("stroke", "none");
+    }
+    console.log("shapeSelection: " + shapeSelection);
+    this.shapeSelected = shapeSelection;
+  }
+
+
+  Graphmaker.prototype.addShapeSelection = function() {
+    var thisGraph = this;
     d3.select("#toolbox").insert("div", ":first-child")
       .attr("id", "shapeSelectionDiv");
     d3.select("#shapeSelectionDiv").append("svg")
@@ -405,102 +225,74 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .attr("height", thisGraph.sssh)
       // Hack: doubling xmlns: so it doesn't disappear once in the DOM
       .attr({"xmlns": "http://www.w3.org/2000/svg",
-          "xmlns:xmlns:xlink": "http://www.w3.org/1999/xlink",
-          version: "1.1"
+             "xmlns:xmlns:xlink": "http://www.w3.org/1999/xlink",
+             version: "1.1"
       });
 
-    var selectShape = function(selectedElt, shapeSelection) {
-      d3.select("#circleSelection").style("stroke", thisGraph.consts.unselectedStyleColor)
-        .classed("sel", false).classed("unsel", true);
-      d3.select("#rectangleSelection").style("stroke", thisGraph.consts.unselectedStyleColor)
-        .classed("sel", false).classed("unsel", true);
-      d3.select("#diamondSelection").style("stroke", thisGraph.consts.unselectedStyleColor)
-        .classed("sel", false).classed("unsel", true);
-      d3.select("#ellipseSelection").style("stroke", thisGraph.consts.unselectedStyleColor)
-        .classed("sel", false).classed("unsel", true)
-      d3.select("#starSelection").style("stroke", thisGraph.consts.unselectedStyleColor)
-        .classed("sel", false).classed("unsel", true)
-      d3.select("#noBorderSelection").style("fill", thisGraph.consts.unselectedStyleColor);
-      var styleType = (shapeSelection === "noBorder") ? "fill" : "stroke";
-      selectedElt.style(styleType, thisGraph.clr)
-    .classed("sel", true).classed("unsel", false);
-      thisGraph.shapeSelected = shapeSelection;
-    }
+    var data = [{"shape": "circle", "id": "circleSelection"},
+                {"shape": "rect", "id": "rectangleSelection"},
+                {"shape": "rect", "id": "diamondSelection"},
+                {"shape": "ellipse", "id": "ellipseSelection"},
+                {"shape": "polygon", "id": "starSelection"},
+                {"shape": "text", "id": "noBorderSelection"}];
 
-    d3.select("#shapeSelectionSvg").append("circle")
-      .attr("id", "circleSelection")
-      .classed("shapeSelection", "true")
+    d3.select("#shapeSelectionSvg").selectAll(".shapeSelection")
+      .data(data)
+      .enter().append(function(d) {
+        return document.createElementNS("http://www.w3.org/2000/svg", d.shape);
+      })
+        .attr("id", function(d) { return d.id; })
+        .classed("shapeSelection", true)
+        .style("stroke", function(d) {
+          return d.shape === "circle" ? thisGraph.clr : thisGraph.consts.unselectedStyleColor;
+        })
+        .style("stroke-width", 2)
+        .classed("sel", function(d) { return d.id === "circleSelection" ? true : false; })
+        .classed("unsel", function(d) { return d.id === "circleSelection" ? false : true; })
+        .on("click", function(d) {
+          thisGraph.selectShape(d3.select(this), d.id.substring(0, d.id.length - 9));
+        });
+      
+    d3.select("#circleSelection")
       .attr("r", thisGraph.consts.minCircleRadius)
       .attr("cx", thisGraph.sssw / 2)
-      .attr("cy", thisGraph.ssCircleCy)
-      .style("stroke", thisGraph.clr)
-      .style("stroke-width", 2)
-      .classed("sel", true).classed("unsel", false) // Circle initially selected
-      .on("click", function(d) { selectShape(d3.select(this), "circle"); });
-
-    d3.select("#shapeSelectionSvg").append("rect")
-      .attr("id", "rectangleSelection")
-      .classed("shapeSelection", "true")
+      .attr("cy", thisGraph.ssCircleCy);
+    d3.select("#rectangleSelection")
       .attr("width", thisGraph.minRectSide)
-      .attr("height", thisGraph.minRectSide -5)
+      .attr("height", thisGraph.minRectSide - 5)
       .attr("x", thisGraph.sssw / 2.0  - thisGraph.minRectSide + 17)
-      .attr("y", thisGraph.consts.ssRectangleY)
-      .style("stroke", thisGraph.consts.unselectedStyleColor)
-      .style("stroke-width", 2)
-      .classed("sel", false).classed("unsel", true)
-      .on("click", function(d) { selectShape(d3.select(this), "rectangle"); });
-
-    d3.select("#shapeSelectionSvg").append("rect")
-      .attr("id", "diamondSelection")
-      .classed("shapeSelection", "true")
+      .attr("y", thisGraph.consts.ssRectangleY);
+    d3.select("#diamondSelection")
       .attr("width", thisGraph.minRectSide)
       .attr("height", thisGraph.minRectSide)
-      .style("stroke", thisGraph.consts.unselectedStyleColor)
-      .style("stroke-width", 2)
       .attr("transform", "rotate(45," + thisGraph.minRectSide * 2 + ","
                                       + thisGraph.consts.ssDiamondY + ")")
       .attr("x", thisGraph.sssw / 2.0 + 53)
-      .attr("y", thisGraph.consts.ssDiamondY + 62)
-      .classed("sel", false).classed("unsel", true)
-      .on("click", function(d) { selectShape(d3.select(this), "diamond"); });
-
-    d3.select("#shapeSelectionSvg").append("ellipse")
-      .attr("id", "ellipseSelection")
-      .classed("shapeSelection", "true")
+      .attr("y", thisGraph.consts.ssDiamondY + 62);
+    d3.select("#ellipseSelection")
       .attr("cx", thisGraph.sssw / 2)
       .attr("cy", thisGraph.consts.ssEllipseCy)
       .attr("rx", thisGraph.consts.minEllipseRx)
-      .attr("ry", thisGraph.consts.minEllipseRy)
-      .style("stroke", thisGraph.consts.unselectedStyleColor)
-      .style("stroke-width", 2)
-      .classed("sel", false).classed("unsel", true)
-      .on("click", function(d) {  selectShape(d3.select(this), "ellipse"); });
-
+      .attr("ry", thisGraph.consts.minEllipseRy);
     var starCtrX = thisGraph.consts.minEllipseRx * 2;
     var starCtrY = thisGraph.consts.ssNoBorderXformY + thisGraph.minRectSide * 0.7 + 18;
-    d3.select("#shapeSelectionSvg").append("polygon")
-      .attr("id", "starSelection")
-      .classed("shapeSelection", "true")
+    d3.select("#starSelection")
       .attr("x", starCtrX)
       .attr("y", starCtrY)
-      .attr("points", thisGraph.calculateStarPoints(starCtrX, starCtrY, 5, 30, 15))
-      .classed("unsel", true).classed("sel", false)
-      .style("stroke", thisGraph.consts.unselectedStyleColor)
-      .style("stroke-width", 2)
-      .on("click", function(d) {  selectShape(d3.select(this), "star"); });
-
-    d3.select("#shapeSelectionSvg").append("text")
-      .attr("id", "noBorderSelection")
-      .classed("shapeSelection", "true")
-      .attr("text-anchor","middle")
+      .attr("points", thisGraph.calculateStarPoints(starCtrX, starCtrY, 5, 30, 15));
+    d3.select("#noBorderSelection")
       .attr("x", thisGraph.consts.minEllipseRx * 2)
       .attr("y", thisGraph.consts.ssNoBorderXformY + thisGraph.minRectSide * 0.7 + 58)
-      .classed("unsel", true).classed("sel", false)
       .style("fill", thisGraph.consts.unselectedStyleColor)
-      .text("no border")
-      .on("click", function(d) {  selectShape(d3.select(this), "noBorder"); });
+      .style("stroke", "none")
+      .attr("text-anchor","middle")
+      .text("no border");
+  };
 
-    // Add edge style selection:
+
+  // User picks: solid or dashed line, line color.
+  Graphmaker.prototype.addEdgeStyleSelection = function() {
+    var thisGraph = this;
     d3.select("#toolbox").insert("div", ":first-child")
       .attr("id", "edgeStyleSelectionDiv");
     d3.select("#edgeStyleSelectionDiv").append("svg")
@@ -541,7 +333,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .append("svg:path")
           .style("stroke-linejoin", "miter")
           .attr("d", "M0,-5L10,0L0,5");
-
     d3.select("#selectedEdgeArrowHead")
       .on("click", function() {
         thisGraph.selectEdgeStyle(thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
@@ -583,19 +374,138 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .attr("cursor", "pointer")
         .attr("stroke", "#000000");
     };
-      
     d3.select("#solidEdgeRect")
       .on("mouseover", function() { onMouseOverEdgeStyle("#solidEdgeSelection"); })
       .on("click", function() {
         thisGraph.selectEdgeStyle(thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
       });
-
     d3.select("#dashedEdgeRect")
       .on("mouseover", function() { onMouseOverEdgeStyle("#dashedEdgeSelection"); })
       .on("click", function() {
         thisGraph.selectEdgeStyle(thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
       });
+  };
+
+
+  // Edge, shape, and color selection, plus "?" help and Options buttons, load, save, and delete.
+  Graphmaker.prototype.prepareToolbox = function() {
+    var thisGraph = this;
+    thisGraph.sssw = thisGraph.consts.minCircleRadius * 4 + 23; // Shape Selection Svg Width
+    thisGraph.sssh = thisGraph.consts.minCircleRadius * 13; // Shape Selection Svg Height
+    thisGraph.ssCircleCy = thisGraph.consts.minCircleRadius * 2 - 16; // ShapeSelectionCircleCy
+    thisGraph.esEdgeX1 = thisGraph.sssw / 5 - 20; 
+    thisGraph.CofCC = null; // CirclesOfCareCenter
+    thisGraph.SSMCenter = null; // System Support Map Center
+
+    // Handle delete graph
+    d3.select("#delete-graph").on("click", function() {
+      thisGraph.deleteGraph(false);
+    });
+
+    thisGraph.createHelp();
+    thisGraph.createOptionsMenu();
+    thisGraph.createOptionsButton();
+    thisGraph.createColorPalette();
+    thisGraph.addShapeSelection();
+    thisGraph.addEdgeStyleSelection();
   }
+
+
+  // "Notes" == tooltips
+  Graphmaker.prototype.setupNotes = function() {
+    this.tip = d3.tip()
+                      .attr("class", "d3-tip")
+                      .offset([-10, 0])
+                      .style("font-family", "Arial")
+                      .style("font-weight", "bold")
+                      .html(function (d) {
+                        d3.select(".d3-tip")
+                          .style("display", function() { return d.note ? "block" : "none"; });
+                        return  d.note ? d.note : null;
+                      });
+    d3.select("#mainSVG").call(this.tip);
+  };
+
+
+  Graphmaker.prototype.defineArrowMarkers = function() {
+    // Arrow markers for graph links (i.e., edges that persist after mouse up)
+    var defs = d3.select("#mainSVG").append("svg:defs");
+    defs.selectAll("marker")
+    .data(this.consts.colorChoices)
+    .enter().append("marker")
+      .attr("id", function(d) { return "end-arrow" + d; })
+      .attr("viewBox", "0 -5 10 10")
+      .attr("markerWidth", 3.5)
+      .attr("markerHeight", 3.5)
+      .attr("orient", "auto")
+      .attr("fill", function(d) { return "#" + d; })
+      .attr("stroke", "none")
+    .append("svg:path")
+      .attr("d", "M0,-5L10,0L0,5");
+
+    // Special-purpose markers for leading arrow (just while dragging), for selected, and for hover:
+    var markerData = [{"id": "mark-end-arrow", "fill": "#000000"},
+              {"id": "selected-end-arrow", "fill": this.consts.selectedColor},
+              {"id": "hover-end-arrow", "fill": this.consts.hoverColor}];
+    defs.selectAll(".specialMarker")
+    .data(markerData)
+    .enter().append("marker")
+      .classed("specialMarker", true)
+      .attr("id", function(d) { return d.id; })
+      .attr("viewBox", "0 -5 10 10")
+      .attr("markerWidth", 3.5)
+      .attr("markerHeight", 3.5)
+      .attr("orient", "auto")
+    .append("svg:path")
+      .attr("fill", function(d, i) { return markerData[i].fill; })
+      .attr("stroke", "none")
+      .attr("d", "M0,-5L10,0L0,5");
+  };
+
+
+  Graphmaker.prototype.setupDrag = function() {
+    var thisGraph = this;
+    thisGraph.dragLine = thisGraph.svgG.append("svg:path") // Displayed when dragging between nodes
+      .attr("class", "link dragline hidden")
+      .attr("d", function(d) { return "M0,0L0,0"; })
+      .style("marker-end", "url(#mark-end-arrow)");
+
+    thisGraph.drag = d3.behavior.drag()
+      .origin(function(d) {
+        return {x: d.x, y: d.y};
+      })
+      .on("drag", function(args) {
+        thisGraph.state.justDragged = true;
+        thisGraph.dragmove.call(thisGraph, args);
+      })
+      .on("dragend", function() {
+        // Todo check if edge-mode is selected
+      });
+
+    // Listen for dragging
+    var dragSvg = d3.behavior.zoom()
+      .on("zoom", function() {
+        if (d3.event.sourceEvent.shiftKey) {
+          // TODO  the internal d3 state is still changing
+          return false;
+        } else {
+          thisGraph.zoomed.call(thisGraph);
+        }
+        return true;
+      })
+      .on("zoomstart", function() {
+        var ael = d3.select("#" + thisGraph.consts.activeEditId).node();
+        if (ael) {
+          ael.blur();
+        }
+        if (!d3.event.sourceEvent.shiftKey) d3.select("body").style("cursor", "move");
+      })
+      .on("zoomend", function() {
+        d3.select("body").style("cursor", "auto");
+      });
+    
+    svg.call(dragSvg).on("dblclick.zoom", null);
+  };
 
 
   // dillieodigital.wordpress.com/2013/01/16/quick-tip-how-to-draw-a-star-with-svg-and-javascript/
@@ -712,6 +622,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var rectHeight = Math.max(textSize.height, thisGraph.minRectSide);
     var maxTextDim = Math.max(textSize.width, textSize.height);
     var innerRadius = Math.max(14, maxTextDim * 0.6);
+    var minDiamondDim = 45;
 
     gEl.select("circle")
        .attr("r", function(d) {
@@ -732,12 +643,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
        });
     gEl.select(".diamond")
        .attr("d", function(d) {
-         var dim = d.dim ? d.dim : Math.max(maxTextDim * 1.6, thisGraph.consts.minDiamondDim);
+         var dim = d.dim ? d.dim : Math.max(maxTextDim * 1.6, minDiamondDim);
          return "M " + dim / 2 + " 0 L " + dim + " " + dim / 2 + " L " + dim / 2 + " " + dim
            + " L 0 " + dim / 2 + " Z";
        })
        .attr("transform", function (d) {
-         var dim = d.dim ? d.dim : Math.max(maxTextDim * 1.6, thisGraph.consts.minDiamondDim);
+         var dim = d.dim ? d.dim : Math.max(maxTextDim * 1.6, minDiamondDim);
          return "translate(-" + dim / 2 + ",-" + dim /2 + ")";
        });
     gEl.select("ellipse")
@@ -1079,7 +990,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                      style: thisGraph.edgeStyle,
                      color: thisGraph.clr, 
                      thickness: thisGraph.edgeThickness,
-                     name: consts.defaultEdgeText + thisGraph.edgeNum++};
+                     name: "" + thisGraph.edgeNum++};
       var filtRes = thisGraph.edgeGroups.filter(function(d) {
         if (d.source === newEdge.target && d.target === newEdge.source) {
           thisGraph.links.splice(thisGraph.links.indexOf(d), 1);
@@ -1256,7 +1167,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     // Add new nodes
     var newShapeGs = thisGraph.shapeGroups.enter().append("g")
 
-    newShapeGs.classed(consts.shapeGClass, true)
+    newShapeGs.classed("shapeG", true)
       .attr("transform", function(d) { 
         return "translate(" + d.x + "," + d.y + ")";
       })
@@ -1351,7 +1262,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
     // Add new paths
     var newPathGs = edgeGroups.enter().append("g");
-    newPathGs.classed(thisGraph.consts.pathGClass, "true")
+    newPathGs.classed("pathG", "true")
       .on("mousedown", function(d) {
         thisGraph.pathMouseDown.call(thisGraph, d3.select(this), d);
       })
@@ -1442,7 +1353,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.zoomed = function() {
     this.state.justScaleTransGraph = true;
-    d3.select("." + this.consts.graphClass)
+    d3.select(".graph")
       .attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
   };
 
@@ -1548,6 +1459,23 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
+  Graphmaker.prototype.setupEventListeners = function() {
+    var thisGraph = this;
+    var svg = thisGraph.svg;
+    d3.select(window).on("keydown", function() {
+      thisGraph.svgKeyDown.call(thisGraph);
+    })
+    .on("keyup", function() {
+      thisGraph.svgKeyUp.call(thisGraph);
+    });
+    svg.on("mousedown", function(d) { thisGraph.svgMouseDown.call(thisGraph, d); });
+    svg.on("mouseup", function(d){
+      thisGraph.svgMouseUp.call(thisGraph, d);
+    });
+    window.onresize = function() {thisGraph.updateWindow(svg);};
+  };
+
+
   // Center circles and text in window
   Graphmaker.prototype.showSystemSupportMap = function() {
     var thisGraph = this;
@@ -1637,6 +1565,95 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .classed({"circleHidden": true, "circleOfCare": false})
     d3.select("#optionsOption1").text("Show Circles of Care")
       .datum({"name": "Show Circles of Care"});
+  };
+
+
+  // Save as JSON file
+  Graphmaker.prototype.setupDownload = function() {
+    var thisGraph = this;
+    d3.select("#download-input").on("click", function() {
+      var saveEdges = [];
+      thisGraph.links.forEach(function(val, i) {
+        saveEdges.push({source: val.source.id,
+                        target: val.target.id,
+                        style: val.style,
+                        color: val.color,
+                        thickness: val.thickness,
+                        maxCharsPerLine: val.maxCharsPerLine, 
+                        note: val.note,
+                        name: val.name});
+      });
+      var blob = new Blob([window.JSON.stringify({"nodes": thisGraph.nodes,
+                                                  "links": saveEdges,
+                                                  "systemSupportMapCenter": thisGraph.SSMCenter,
+                                                  "circlesOfCareCenter": thisGraph.CofCC})], 
+                                                 {type: "text/plain;charset=utf-8"});
+      saveAs(blob, "SystemSupportMap.json");
+    });
+  };
+
+
+  // Open/read JSON file
+  Graphmaker.prototype.setupUpload = function() {
+    var thisGraph = this;
+    d3.select("#upload-input").on("click", function() {
+      document.getElementById("hidden-file-upload").click();
+    });
+    d3.select("#hidden-file-upload").on("change", function() {
+      if (window.File && window.FileReader && window.FileList && window.Blob) {
+        var uploadFile = this.files[0];
+        var filereader = new window.FileReader();
+
+        filereader.onload = function() {
+          try {
+            var txtRes = filereader.result;
+          } catch(err) {
+            window.alert("Error reading file: " + err.message);
+          }
+          // TODO better error handling
+          try {
+            var jsonObj = JSON.parse(txtRes);
+            thisGraph.deleteGraph(true);
+            thisGraph.nodes = jsonObj.nodes;
+            thisGraph.setIdCt(thisGraph.getBiggestNodeID() + 1);
+            var newEdges = jsonObj.links;
+            newEdges.forEach(function(e, i) {
+              newEdges[i] = {source: thisGraph.nodes.filter(function(n) {
+                              return n.id === e.source; })[0],
+                             target: thisGraph.nodes.filter(function(n) {
+                              return n.id === e.target; })[0],
+                             style: (e.style === "dashed" ? "dashed" : "solid"),
+                             color: e.color,
+                             thickness: e.thickness,
+                             maxCharsPerLine: (e.maxCharsPerLine ? e.maxCharsPerLine : 20),
+                             note: e.note,
+                             name: e.name};
+            });
+            thisGraph.links = newEdges;
+
+            thisGraph.SSMCenter = jsonObj.systemSupportMapCenter;
+            if (thisGraph.SSMCenter) {
+              thisGraph.showSystemSupportMap();
+            } else {
+              thisGraph.hideSystemSupportMap();
+            }            
+            thisGraph.hideCirclesOfCare();
+            thisGraph.CofCC = jsonObj.circlesOfCareCenter;
+            if (thisGraph.CofCC) {
+              thisGraph.showCirclesOfCare();
+            }
+            thisGraph.updateGraph();
+          } catch(err) {
+            window.alert("Error parsing uploaded file\nerror message: " + err.message);
+            return;
+          }
+        };
+        filereader.readAsText(uploadFile);
+      } else {
+        alert("Your browser won't let you save this graph -- try upgrading your browser to IE 10+ "
+            + "or Chrome or Firefox.");
+      }
+    });
   };
 
 
@@ -1863,7 +1880,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         });
   };
 
-  // Return dimensions of bounding box for all visible objects (plus a little extra).
+
+  // Return dimensions of bounding box for all visible objects plus a little extra. Ignore toolbox.
   Graphmaker.prototype.getGraphExtent = function(shapes) {
     var minX = Number.MAX_VALUE;
     var maxX = Number.MIN_VALUE;
@@ -1892,7 +1910,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   // Based on http://techslides.com/save-svg-as-an-image
-  Graphmaker.prototype.exportGraphAsImage = function() {  
+  Graphmaker.prototype.exportGraphAsImage = function() {
     var shapes = d3.selectAll(".ssmGroup circle, g.shapeG circle, g.shapeG rect, g.shapeG ellipse, "
       + "g.shapeG path, g.shapeG polygon");
 
