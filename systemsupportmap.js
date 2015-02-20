@@ -43,6 +43,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     minEllipseRy: 17,
     unselectedStyleColor: "#666666",
     hoverColor: "rgb(200, 238, 241)",
+    selectedColor: "rgb(229, 172, 247)",
     colorChoices: ["ff0000",  // red
                    "ff8800",  // orange
                    "999900",  // gold
@@ -83,7 +84,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     thisGraph.maxCharsPerLine = 20; 
     thisGraph.boldFontWeight = 900;
     thisGraph.edgeNum = 0;
-
     thisGraph.nodes = nodes || [];
     thisGraph.links = links || [];
     // shapeNum values are 1-based because users unfamiliar with 0-based arrays will see them:
@@ -210,7 +210,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     if (shapeSelection === "noBorder") {
       selectedElt.style("fill", this.clr).style("stroke", "none");
     }
-    console.log("shapeSelection: " + shapeSelection);
     this.shapeSelected = shapeSelection;
   }
 
@@ -605,7 +604,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   // Select all text in element: taken from http://stackoverflow.com/questions/6139107/
   // programatically-select-text-in-a-contenteditable-html-element 
-  Graphmaker.prototype.selectElementContents = function(el) {
+  Graphmaker.prototype.selectText = function(el) {
     var range = document.createRange();
     range.selectNodeContents(el);
     var sel = window.getSelection();
@@ -705,17 +704,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     }
   };
 
-
-  // Insert svg line breaks: based on http://stackoverflow.com/questions/13241475/
-  // how-do-i-include-newlines-in-labels-in-d3-charts 
-  //
-  // Now also shrinkwraps shapes to hold all the text when desired.
-  //
-  // Now also being called on edge text.
-  //
-  // TODO: refactor.
-  Graphmaker.prototype.insertTextLineBreaks = function (gEl, d) {
-    var thisGraph = this;
+  // First split text into single words, then group them into lines:
+  Graphmaker.prototype.splitTextIntoLines = function(d) {
     var words = (d.name) ? d.name.split(/\s+/g) : [""];
     var nwords = words.length;
 
@@ -729,8 +719,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     } else {
       d.maxCharsPerLine = maxChars;
     }
-
-    if (d.shape === "star") maxChars = 10; // TEMP SAC
 
     while (wordIx < nwords) {
       if (words[wordIx].length >= maxChars) {
@@ -746,56 +734,54 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       }
       currPhrase = "";
     }
+    return phrases;
+  };
 
-    var nPhrases = phrases.length;
-    var el = null;
+
+  Graphmaker.prototype.appendEdgeShadowText = function(gEl, phrases, d, yShift) {
+    var thisGraph = this;
     var tLen = [0]; // Seed the array with a harmless 0 so we don't try to access element at -1
-    var baselineAlignment = "middle";
-    var shape = d.shape;
-    var edgeTextYShift = 3;
+    var el = gEl.append("text")
+                .attr("text-anchor","left")
+                .attr("alignment-baseline", "middle")
+                .attr("text-decoration", function(d) { return d.url ? "underline" : "none"; })
+                .style("font-weight", function(d) {
+                  return d.url ? thisGraph.boldFontWeight: "none";
+                })
+                .style("stroke", "rgb(248, 248, 248)")
+                .style("stroke-width", "3px")
+                .attr("dy",  function(d) { 
+                  return yShift - ((phrases.length - 1) * thisGraph.consts.defaultFontSize / 2);
+                });
+    el.selectAll("tspan")
+      .data(phrases)
+      .enter().append("tspan")
+        .text(function(d) { return d; })
+        .attr("dx", function(d, i) {
+          tLen.push(this.getComputedTextLength());
+          // TODO: fix edge text position when source or target shape is very large (needs to be
+          // centered from shape borders, not just shape centers).
+          return -(tLen[i] + tLen[i + 1]) / 2;
+        })
+        .attr("dy", function(d, i) { return (i > 0) ? thisGraph.consts.defaultFontSize : null; });
+    return tLen;
+  };
 
-    if (d.source) { // ...then it's an edge: add shadow text for legibility:
-      el = gEl.append("text")
-              .attr("text-anchor","left")
-              .attr("alignment-baseline", baselineAlignment)
-              .attr("text-decoration", function(d) {
-                return d.url ? "underline" : "none"; })
-              .style("font-weight", function(d) {
-                return d.url ? thisGraph.boldFontWeight: "none"; })
-              .style("stroke", "rgb(248, 248, 248)")
-              .style("stroke-width", "3px")
-              .attr("dy",  function(d) { 
-                var dyVal = -((nPhrases - 1) * thisGraph.consts.defaultFontSize / 2)
-                          + edgeTextYShift;
-                return dyVal;
-              });
-      el.selectAll("tspan")
-        .data(phrases)
-        .enter().append("tspan")
-          .text(function(d) { return d; })
-          .attr("dx", function(d, i) {
-            tLen.push(this.getComputedTextLength());
-            // TODO: fix edge text position when source or target shape is very large (needs to be
-            // centered from shape borders, not just shape centers).
-            return -(tLen[i] + tLen[i + 1]) / 2;
-          })
-          .attr("dy", function(d, i) { return (i > 0) ? thisGraph.consts.defaultFontSize : null; });
-    }
 
-    el = gEl.append("text")
-            .classed("foregroundText", "true")
+  Graphmaker.prototype.appendText = function(gEl, phrases, d, yShift) {
+    var thisGraph = this;
+    var nPhrases = phrases.length;
+    var el = gEl.append("text")
+            .classed("foregroundText", true)
             .attr("text-anchor","left")
-            .attr("alignment-baseline", baselineAlignment)
+            .attr("alignment-baseline", "middle")
             .attr("text-decoration", function(d) {
               return d.url ? "underline" : "none"; })
             .style("font-weight", function(d) {
               return d.url ? thisGraph.boldFontWeight: "none"; })
             .style("fill", gEl[0][0].__data__.color)
             .attr("dy",  function(d) {
-              var dyVal = -((nPhrases - 1) * thisGraph.consts.defaultFontSize / 2);
-              if (shape && (shape !== "rectangle") && (shape !== "noBorder")) dyVal += 4; 
-              if (d.source) dyVal += edgeTextYShift;
-              return dyVal;
+              return yShift - ((nPhrases - 1) * thisGraph.consts.defaultFontSize / 2);
             });
     el.selectAll("tspan")
       .data(phrases)
@@ -804,7 +790,33 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .attr("dy", function(d, i) { 
           return (i > 0) ? thisGraph.consts.defaultFontSize : null; 
         });
+    return el;
+  };
 
+
+  Graphmaker.prototype.formatEdgeText = function (gEl, d) {
+    var phrases = this.splitTextIntoLines(d);
+    var yShift = 3; // Vertically align text to edge
+    var tLen = this.appendEdgeShadowText(gEl, phrases, d, yShift);
+    var el = this.appendText(gEl, phrases, d, yShift); 
+    el.selectAll("tspan") .attr("dx", function(d, i) { return -(tLen[i] + tLen[i + 1]) / 2; });
+  }; 
+
+
+  // Based on http://stackoverflow.com/questions/13241475/how-do-i-include-newlines-in-labels-in-d3-charts 
+  // Centers text for shapes and edges in lines whose lengths are determined by maxCharsPerLine.
+  // Shrinkwraps shapes to hold all the text if previously determined size not used.
+  Graphmaker.prototype.formatText = function (gEl, d) {
+    var phrases = this.splitTextIntoLines(d);
+    var tLen = null; // Array of lengths of the lines of edge text
+    var yShift = 3; // Align text to edges
+    if (d.shape && (d.shape !== "rectangle") && (d.shape !== "noBorder")) {
+      yShift = 6;
+    }
+    if (d.source) { // ...then it's an edge: add shadow text for legibility:
+      tLen = this.appendEdgeShadowText(gEl, phrases, d, yShift);
+    }
+    var el = this.appendText(gEl, phrases, d, yShift); 
     if (d.source) { // It's an edge
       el.selectAll("tspan")
         .attr("dx", function(d, i) {
@@ -812,10 +824,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         });
     } else { // It's a shape
       el.selectAll("tspan").attr("text-anchor","middle").attr("dx", null).attr("x", 0);
-      thisGraph.setShapeSizeAndPosition(gEl, el, d);
-      thisGraph.storeShapeSize(gEl, d);
+      this.setShapeSizeAndPosition(gEl, el, d);
+      this.storeShapeSize(gEl, d);
     }
-  }; // end insertTextLineBreaks
+  }; 
 
 
   // Remove links associated with a node
@@ -877,6 +889,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         var clr = d.color ? d.color.substr(1) : d.target.color.substr(1);
         return "url(#end-arrow" + clr + ")";
       });
+
     deselectedEdgeGroup.select(".foregroundText")
       .style("fill", thisGraph.state.selectedEdge.color);
     thisGraph.state.selectedEdge = null;
@@ -945,7 +958,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .attr("width", useHW)
       .append("xhtml:p")
         .attr("id", consts.activeEditId)
-        .attr("contentEditable", "true")
+        .attr("contentEditable", true)
         .text(d.name)
       .on("mousedown", function(d) {
         d3.event.stopPropagation();
@@ -959,7 +972,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         // Force shape shrinkwrap:
         d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined; 
         d.maxCharsPerLine = undefined; // User may want different value if editing text
-        thisGraph.insertTextLineBreaks(d3element, d);
+        thisGraph.formatText(d3element, d);
         d3.select(this.parentElement).remove();
         thisGraph.updateGraph(); 
       });
@@ -1006,7 +1019,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           return dval.name === newEdge.name;
         }), newEdge);
         var txtNode = d3txt.node();
-        thisGraph.selectElementContents(txtNode);
+        thisGraph.selectText(txtNode);
         txtNode.focus();
         */
       }
@@ -1017,7 +1030,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         if (d3.event.shiftKey) { // Shift-clicked node: edit text content
           var d3txt = thisGraph.changeElementText(d3node, d);
           var txtNode = d3txt.node();
-          thisGraph.selectElementContents(txtNode);
+          thisGraph.selectText(txtNode);
           txtNode.focus();
         } else { 
           if (state.selectedEdge) {
@@ -1072,7 +1085,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         return dval.id === d.id;
       }), d),
           txtNode = d3txt.node();
-      thisGraph.selectElementContents(txtNode);
+      thisGraph.selectText(txtNode);
       txtNode.focus();
     } else if (state.shiftNodeDrag) { // Dragged from node
       state.shiftNodeDrag = false;
@@ -1150,36 +1163,33 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   }
 
 
-  // Call to propagate changes to graph
-  Graphmaker.prototype.updateGraph = function() {
-    var thisGraph = this,
-        consts = thisGraph.consts,
-        state = thisGraph.state;
-
-    // Update existing nodes
-    thisGraph.shapeGroups = thisGraph.shapeGroups.data(thisGraph.nodes, function(d) {
+  Graphmaker.prototype.updateExistingNodes = function() {
+    this.shapeGroups = this.shapeGroups.data(this.nodes, function(d) {
       return d.id;
     });
-    thisGraph.shapeGroups.attr("transform", function(d) {
+    this.shapeGroups.attr("transform", function(d) {
       return "translate(" + d.x + "," + d.y + ")";
     });
+  };
 
-    // Add new nodes
-    var newShapeGs = thisGraph.shapeGroups.enter().append("g")
 
-    newShapeGs.classed("shapeG", true)
+  Graphmaker.prototype.addNewNodes = function() {
+    var thisGraph = this;
+    var newShapeGroups = thisGraph.shapeGroups.enter().append("g")
+
+    newShapeGroups.classed("shapeG", true)
       .attr("transform", function(d) { 
         return "translate(" + d.x + "," + d.y + ")";
       })
       .on("mouseover", function(d) {
-        if (state.shiftNodeDrag) {
-          d3.select(this).classed(consts.connectClass, true);
+        if (thisGraph.state.shiftNodeDrag) {
+          d3.select(this).classed(thisGraph.consts.connectClass, true);
         };
       })
       .on("mouseenter", thisGraph.tip.show)
       .on("mouseleave", thisGraph.tip.hide)
       .on("mouseout", function(d) {
-        d3.select(this).classed(consts.connectClass, false);
+        d3.select(this).classed(thisGraph.consts.connectClass, false);
       })
       .on("mousedown", function(d) {
         thisGraph.shapeMouseDown.call(thisGraph, d3.select(this), d);
@@ -1208,18 +1218,21 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         } else if (d3.event.ctrlKey && d3.event.shiftKey) {
           var defaultNote = d.note ? d.note : "";
           d.note = prompt("Enter note for this node: ", defaultNote);
-          state.lastKeyDown = -1;
+          thisGraph.state.lastKeyDown = -1;
         } else {
           thisGraph.shapeMouseUp.call(thisGraph, d3.select(this), d);
         }
       })
       .call(thisGraph.drag);
+    return newShapeGroups;
+  };
 
-    //  Create the new shapes but don't add them yet:
+  //  Create the new shapes, but don't add them yet.
+  Graphmaker.prototype.createNewShapes = function()  {
     var shapeElts = [];
-    for (var i = 0; i < thisGraph.nodes.length; i++) {
+    for (var i = 0; i < this.nodes.length; i++) {
       var shape;
-      switch (thisGraph.nodes[i].shape) {
+      switch (this.nodes[i].shape) {
         case "rectangle":
         case "noBorder":
           shape = "rect";
@@ -1231,52 +1244,56 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           shape = "polygon";
           break;
         default: // circle and ellipse
-          shape = thisGraph.nodes[i].shape;
+          shape = this.nodes[i].shape;
           break;
       }
       var shapeElement = document.createElementNS("http://www.w3.org/2000/svg", shape);
       shapeElts.push(shapeElement);
     }
+    return shapeElts;
+  }
 
-    // Add the newly created shapes to the graph, assigning attributes common to all:
-    newShapeGs.append(function(d, i) { return shapeElts[i]; })
-          .attr("class", function(d) { return "shape " + d.shape; })
-              .style("stroke", function(d) { return d.color; })
-              .style("stroke-width", function(d) { return (d.shape === "noBorder") ? 0 : 2; });
-    newShapeGs.each(function(d) {
-      thisGraph.insertTextLineBreaks(d3.select(this), d);
-    });
 
-    // Remove old nodes
-    thisGraph.shapeGroups.exit().remove();
+  // Add the newly created shapes to the graph, assigning attributes common to all.
+  Graphmaker.prototype.addNewShapes = function(newShapeGroups, shapeElts) {
+    var thisGraph = this;
+    newShapeGroups.append(function(d, i) { return shapeElts[i]; })
+                  .attr("class", function(d) { return "shape " + d.shape; })
+                  .style("stroke", function(d) { return d.color; })
+                  .style("stroke-width", function(d) { return (d.shape === "noBorder") ? 0 : 2; });
+    newShapeGroups.each(function(d) {
+                    thisGraph.formatText(d3.select(this), d);
+                  });
+  };
 
-    var edgeGroups = thisGraph.updateExistingPaths();
 
-    var setEdgeColor = function(edgeGroup, d) {
-      d3.select(edgeGroup).selectAll("path")
+  Graphmaker.prototype.setEdgeColor = function(edgeGroup, d) {
+    d3.select(edgeGroup).selectAll("path")
       .style("stroke", function(d) { return d.color; })
       .style("marker-end", function(d) {
         return "url(#end-arrow" + d.color.substr(1) + ")";
       });
-    };
+  };
 
-    // Add new paths
-    var newPathGs = edgeGroups.enter().append("g");
-    newPathGs.classed("pathG", "true")
+
+  Graphmaker.prototype.addNewPaths = function(edgeGroups) {
+    var thisGraph = this;
+    var newPathGroups = edgeGroups.enter().append("g");
+    newPathGroups.classed("pathG", true)
       .on("mousedown", function(d) {
         thisGraph.pathMouseDown.call(thisGraph, d3.select(this), d);
       })
       .on("mouseup", function(d) {
         if (d3.event.shiftKey) {
-          setEdgeColor(this, d);
+          thisGraph.setEdgeColor(this, d);
           d3.select(this).selectAll("path")
             .style("stroke-width", function(d) { return d.thickness; });
           var d3txt = thisGraph.changeElementText(d3.select(this), d);
           var txtNode = d3txt.node();
-          thisGraph.selectElementContents(txtNode);
+          thisGraph.selectText(txtNode);
           txtNode.focus();
         }
-        state.mouseDownLink = null;
+        thisGraph.state.mouseDownLink = null;
       })
       .on("mouseover", function(d) { // Hover color iff not (selected, new edge or inside shape):
         if ((d3.select(this).selectAll("path").style("stroke") !== thisGraph.consts.selectedColor)
@@ -1293,7 +1310,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           d3.select(this).selectAll("path").style("stroke", thisGraph.consts.selectedColor);
           d3.select(this).selectAll("text").style("fill", thisGraph.consts.selectedColor);
         } else { // Not selected: reapply edge color, including edge text:
-          setEdgeColor(this, d);
+          thisGraph.setEdgeColor(this, d);
           d3.select(this).selectAll("text").style("fill", function(d) { return d.color; });
         }
       })
@@ -1308,26 +1325,30 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .style("stroke-dasharray", function (d) {
           return (d.style === "dashed") ? "10, 2" : "none";
         });
-     newPathGs.each(function(d) {
-       thisGraph.insertTextLineBreaks(d3.select(this), d);
+     newPathGroups.each(function(d) {
+       thisGraph.formatText(d3.select(this), d);
      });
-    var pathGs = d3.selectAll(".pathG");
-    pathGs.select("path")
+    var pathGroups = d3.selectAll(".pathG");
+    pathGroups.select("path")
       .attr("d", function(edge) {
         return thisGraph.setPath(edge);
       });
-  
-    // Check to make sure that there aren't already text objects appended (they would be
-    // pathGs[0][i].childNodes[1] and [2], where the 0th element is expected to be the path) before
-    // appending text.
-    //
-    // Note that there are two text elements being appended. The first is background shadow
-    // to ensure that the text is visible where it overlays its edge.
-    for (var i = 0; i < pathGs[0].length; i++) {         // For each pathG...
-      if (pathGs[0][i].childNodes.length < 3) {          // ...if there's no text yet...
+    return pathGroups;
+  };
+
+
+  // Check to make sure that there aren't already text objects appended (they would be
+  // pathGroups[0][i].childNodes[1] and [2], where the 0th element is expected to be the path)
+  // before appending text.
+  //
+  // Note that there are two text elements being appended. The first is background shadow
+  // to ensure that the text is visible where it overlays its edge.
+  Graphmaker.prototype.appendPathText = function(pathGroups) {
+    for (var i = 0; i < pathGroups[0].length; i++) {         // For each pathGroup...
+      if (pathGroups[0][i].childNodes.length < 3) {          // ...if there's no text yet...
         var data = [{"class": "shadowText", "stroke-width": "4px"},
                     {"class": "foregroundText", "stroke-width": "0px"}];
-        d3.select(pathGs[0][i]).selectAll("text")
+        d3.select(pathGroups[0][i]).selectAll("text")
           .data(data)
           .enter().append("text")                        // ...then append it.
             .attr("class", function(d) { return d.class; })
@@ -1345,10 +1366,22 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     d3.selectAll(".pathG").selectAll("text")
       .attr("x", function(d) { return (d.source.x + d.target.x) / 2; }) 
       .attr("y", function(d) { return (d.source.y + d.target.y) / 2; }); 
+  };
 
-    // Remove old links
-    edgeGroups.exit().remove();
-  }; // end updateGraph
+
+  // Call to propagate changes to graph
+  Graphmaker.prototype.updateGraph = function() {
+    this.updateExistingNodes();
+    var newShapeGroups = this.addNewNodes();
+    var shapeElts = this.createNewShapes();
+    this.addNewShapes(newShapeGroups, shapeElts);
+    this.shapeGroups.exit().remove(); // Remove old nodes
+
+    var edgeGroups = this.updateExistingPaths();
+    var newPathGroups = this.addNewPaths(edgeGroups);
+    this.appendPathText(newPathGroups);
+    edgeGroups.exit().remove(); // Remove old links
+  };
 
 
   Graphmaker.prototype.zoomed = function() {
@@ -1737,7 +1770,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   Graphmaker.prototype.createEqShapeSizeSubmenu = function() {
     var thisGraph = this;
     d3.select("#optionsOption2").append("div")
-      .classed("menuHidden", "true").classed("menu", false)
+      .classed("menuHidden", true).classed("menu", false)
       .attr("id", "eqShapeSizeSubmenuDiv")
       .attr("position", "absolute")
       .style("width", "200px")
@@ -1784,7 +1817,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var thisGraph = this;
     var maxCharsPerLine = thisGraph.maxCharsPerLine;
     d3.select("#optionsOption3").append("div")
-      .classed("menuHidden", "true").classed("menu", false)
+      .classed("menuHidden", true).classed("menu", false)
       .attr("id", "textLineLengthSubmenuDiv")
       .attr("position", "absolute")
       .style("width", "120px")
@@ -1835,7 +1868,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   Graphmaker.prototype.createEdgeThicknessSubmenu = function() {
     var thisGraph = this;
     d3.select("#optionsOption4").append("div")
-      .classed("menuHidden", "true").classed("menu", false)
+      .classed("menuHidden", true).classed("menu", false)
       .attr("id", "edgeThicknessSubmenuDiv")
       .attr("position", "absolute")
       .style("width", "90px")
@@ -1875,7 +1908,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             .style("color", thisGraph.consts.unselectedStyleColor)
             .style("text-shadow", "none");
           d3.select(this)
-            .style("color", thisGraph.consts.selectedColor)
+            .style("color", thisGraph.consts.electedColor)
             .style("text-shadow", "1px 1px #000000");
         });
   };
@@ -1987,7 +2020,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                  {"name": "Match shape & graph backgrounds"}
                ];
     var optionsDiv =  d3.select("#graph").insert("div", ":first-child")
-      .classed("menuHidden", "true").classed("menu", false)
+      .classed("menuHidden", true).classed("menu", false)
       .attr("id", "menuDiv")
       .attr("position", "absolute")
       .on("mouseleave", function() {
