@@ -1908,7 +1908,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             .style("color", thisGraph.consts.unselectedStyleColor)
             .style("text-shadow", "none");
           d3.select(this)
-            .style("color", thisGraph.consts.electedColor)
+            .style("color", thisGraph.consts.selectedColor)
             .style("text-shadow", "1px 1px #000000");
         });
   };
