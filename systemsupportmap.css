@@ -26,6 +26,11 @@ body {
   z-index: 5;
 }
 
+#logos {
+  pointer-events: none;
+  z-index: -100;
+}
+
 #helpBtn, #optionsBtn {
   width: 61px; 
   margin: 0 auto;
@@ -87,6 +92,7 @@ body {
 #solidEdgeSelection:hover,
 #dashedEdgeSelection:hover,
 #noBorderSelection:hover {
+/* .shapeSelection:hover { Fill doesn't display */
   opacity: 1;
   cursor: pointer;
   fill: rgb(200, 238, 241);
@@ -116,7 +122,7 @@ body {
   cursor: pointer;
 }
 
-#hidden-file-upload {
+#hidden-file-upload, #hidden-textFile-upload {
   display: none;
 }
 
@@ -127,6 +133,7 @@ body {
 g.shapeG circle, g.shapeG rect, g.shapeG ellipse, g.shapeG path, g.shapeG polygon,
 #shapeSelectionSvg circle, #shapeSelectionSvg rect, #shapeSelectionSvg ellipse,
 #shapeSelectionSvg polygon  {
+/*g.shapeG .shape, #shapeSelectionSvg .shapeSelection {*/
   fill: #F6FBFF;
   stroke: #333;
   stroke-width: 2px;
@@ -136,8 +143,7 @@ g circle, g rect, g ellipse, g polygon, g path {
   fill: rgb(248, 248, 248);
 }
 
-g.shapeG:hover circle, g.shapeG:hover rect, g.shapeG:hover ellipse, g.shapeG:hover path,
-g.shapeG:hover polygon {
+g.shapeG:hover:not(.selected) .shape {
   fill: rgb(200, 238, 241); 
 }
 
@@ -160,7 +166,7 @@ path.link.hidden {
 }
 
 path.link.selected, g.pathG.selected path {
-  stroke: rgb(229, 172, 247);
+  stroke: rgb(229, 172, 247); /* selected color */
 }
 
 .menuHidden {
