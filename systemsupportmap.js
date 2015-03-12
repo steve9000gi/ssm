@@ -738,6 +738,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     }
   };
 
+
   // Split text into single words, then group them into lines. Arg "element" is a shape or an edge.
   Graphmaker.prototype.splitTextIntoLines = function(element) {
     var words = (element.name) ? element.name.split(/\s+/g) : [""];
@@ -1033,6 +1034,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       */
     }
   };
+
 
   Graphmaker.prototype.selectNode = function(d3node, d) {
     if (this.state.selectedEdge) {
@@ -2168,7 +2170,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .attr("display", "block")
       .attr("y", extent.h - 30);
 
-
     // Create canvas:
     d3.select("body").append("canvas")
       .attr("width", extent.w)
@@ -2213,6 +2214,51 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
+  Graphmaker.prototype.optionsMenuListItemMouseUp = function(listItem, d, choices) {
+    // Hide the menu unless there's a submenu open:
+    if ((d.id !== "eqShapeSizeItem") && (d.id !== "setTextLineLenItem")
+                                     && (d.id !== "setLineThicknessItem")) {
+      d3.select("#menuDiv").classed("menu", false).classed("menuHidden", true);
+    }
+
+    if (this.displayAll) {
+      switch (d3.select(listItem).datum().name) {
+      // Beware: d3.select(listItem).text() returns concatenation of all submenu text.
+        case choices[0].name:
+          this.showSystemSupportMap();
+          break;
+        case choices[1].name:
+          this.showCirclesOfCare();
+          break;
+        case this.consts.cOfChideText:
+          this.hideCirclesOfCare();
+          break;
+        case this.consts.ssmHideText:
+          this.hideSystemSupportMap();
+          break;
+        case choices[2].name:
+        case choices[3].name:
+        case choices[4].name:
+          break; // These menu items have submenus with their own event handlers
+        case choices[5].name:
+          this.exportGraphAsImage();
+          break;
+        case choices[6].name:
+          this.loadContextTextFromClient();
+          break;
+        default:
+          alert("\"" + d.name + "\" not implemented.");
+      }
+    } else {
+      if (d3.select(listItem).datum().id === "exportMapAsImageItem") {
+        this.exportGraphAsImage();
+      } else if (d3.select(listItem).datum().id === "loadContextTextItem") {
+         this.loadContextTextFromClient();
+      }
+    }
+  };
+
+
   Graphmaker.prototype.createOptionsMenu = function() {
     var thisGraph = this;
     var choices = null;
@@ -2247,8 +2293,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .attr("id", function(d, i) { return d.id; })
         .text(function(d) { return d.name; })
         .on("mouseover", function(d) {
-          console.log(d.id + " =?= " + "eqShapeSizeItem" + ": " + 
-            (d.id === "eqShapeSizeItem"));
           if (d.id === "eqShapeSizeItem") { 
             d3.select("#eqShapeSizeSubmenuDiv")
               .classed("menu", true).classed("menuHidden", false);
@@ -2271,48 +2315,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
              .classed("menu", false).classed("menuHidden", true);
           }
         })
-        .on("mouseup", function(d) { // Hide the menu unless there's a submenu open:
-          if ((d.id !== "eqShapeSizeItem") && (d.id !== "setTextLineLenItem")
-                                           && (d.id !== "setLineThicknessItem")) {
-            d3.select("#menuDiv").classed("menu", false).classed("menuHidden", true);
-          }
-
-          if (thisGraph.displayAll) {
-            switch (d3.select(this).datum().name) {
-            // Beware: d3.select(this).text() returns concatenation of all submenu text.
-              case choices[0].name:
-                thisGraph.showSystemSupportMap();
-                break;
-              case choices[1].name:
-                thisGraph.showCirclesOfCare();
-                break;
-              case thisGraph.consts.cOfChideText:
-                thisGraph.hideCirclesOfCare();
-                break;
-              case thisGraph.consts.ssmHideText:
-                thisGraph.hideSystemSupportMap();
-                break;
-              case choices[2].name:
-              case choices[3].name:
-              case choices[4].name:
-                break;
-              case choices[5].name:
-                thisGraph.exportGraphAsImage();
-                break;
-              case choices[6].name:
-                thisGraph.loadContextTextFromClient();
-                break;
-              default:
-                alert("\"" + d.name + "\" not implemented.");
-            }
-          } else {
-            if (d3.select(this).datum().id === "exportMapAsImageItem") {
-              thisGraph.exportGraphAsImage();
-            }
-            if (d3.select(this).datum().id === "loadContextTextItem") {
-               thisGraph.loadContextTextFromClient();
-            }
-          }
+        .on("mouseup", function(d) {
+          thisGraph.optionsMenuListItemMouseUp(this, d, choices);
         });
 
     thisGraph.createEqShapeSizeSubmenu();
