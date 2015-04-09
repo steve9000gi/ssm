@@ -12,7 +12,7 @@ body {
   font-size: 12px; /* remember to set defaultFontSize to this value in .js file */
 }
 
-#graph {
+#topGraphDiv {
   position: relative;
 }
 

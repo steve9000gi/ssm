@@ -19,6 +19,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     }
     this.createSystemSupportMap();
     this.setupDrag();
+    this.setupDragHandle();
     this.setupSVGNodesAndLinks();
     this.setupEventListeners();
     this.showSystemSupportMap();
@@ -98,7 +99,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       justScaleTransGraph: false,
       lastKeyDown: -1,
       shiftNodeDrag: false,
-      selectedText: null
+      selectedText: null,
+      clickDragHandle: false
     };
     this.contextText = null;
     this.svgG = svg.append("g") // The group that contains the main SVG element
@@ -151,7 +153,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .attr("value", "Options")
       .on("click", function(d) {
         var rect = d3.select("#optionsMenuDiv").node().getBoundingClientRect();
-        var position = d3.mouse(d3.select("#graph")[0][0]);
+        var position = d3.mouse(d3.select("#topGraphDiv")[0][0]);
         position[1] -= 120;
         d3.select("#optionsMenuDiv")
           .classed("menuHidden", false).classed("menu", true)
@@ -448,9 +450,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     d3.select("#mainSVG").append("text")
       .attr("id", "credits")
       .attr("display", "none")
-      .attr("x", 30)
-      .text("Image generated with System Support Mapper (developed by UNC-CH School of Public "
-          + "Health in collaboration with the Renaissance Computing Center)");
+      .attr("x", 30);
   };
 
 
@@ -551,9 +551,54 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
+  // Handle goes in the lower right-hand corner of a rectangle: drag to resize rectangle.
+  Graphmaker.prototype.setupDragHandle = function() {
+    var thisGraph = this;
+    thisGraph.dragHandle = d3.behavior.drag()
+      .on("dragstart", function(d) {
+        if (!d3.event.sourceEvent.shiftKey) { return; };
+        d.manualResize = true;
+        d.name = "";
+        d3.select(this).style("opacity", 1);
+        if (!d.xOffset) {
+          d.xOffset = d.width / 2;
+          d.yOffset = d.height / 2;
+        }
+        d3.event.sourceEvent.stopPropagation();
+      })
+      .on("drag", function(d) {
+        var x = d3.event.x;
+        var y = d3.event.y;
+        d3.select(this)
+          .attr("transform", function(d) {
+          return "translate(" + x + "," + y + ")";
+        });
+        d3.select("#shape" + d.id)
+          .attr("width", Math.abs(x + d.xOffset))
+          .attr("height", Math.abs(y + d.yOffset));
+      })
+      .on("dragend", function(d) {
+        var rectangle = d3.select("#shape" + d.id);
+        var w = parseFloat(rectangle.attr("width"));
+        var h = parseFloat(rectangle.attr("height"));
+        d3.select(this).style("opacity", 0);
+        d.width = w;
+        d.height = h;
+        var currG = d3.select("#shapeG" + d.id);
+        currG.select("text").text("");
+        // Move the resized rect group in the DOM so all edges and other shapes are on top:
+        var remove = currG.remove();
+        d3.select("#manResizeGG").append(function() {
+          return remove.node();
+        });
+      });
+  };
+
+
   Graphmaker.prototype.setupSVGNodesAndLinks = function() {
-    this.edgeGroups = this.svgG.append("g").selectAll("g");
-    this.shapeGroups = this.svgG.append("g").selectAll("g");
+    this.manResizeGroups = this.svgG.append("g").attr("id", "manResizeGG").selectAll("g");
+    this.edgeGroups = this.svgG.append("g").attr("id", "pathGG").selectAll("g");
+    this.shapeGroups = this.svgG.append("g").attr("id", "shapeGG").selectAll("g");
   };
 
 
@@ -655,24 +700,40 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var maxTextDim = Math.max(textSize.width, textSize.height);
     var innerRadius = Math.max(14, maxTextDim * 0.6);
     var minDiamondDim = 45;
+    var w, h; // for handle translation
 
-    gEl.select("circle")
+    gEl.select(".circle")
        .attr("r", function(d) {
          return d.r ? d.r : Math.max(maxTextDim / 2 + 8, thisGraph.consts.minCircleRadius);
        });
     gEl.select(".rectangle, .noBorder")
        .attr("width", function(d) {
-         return d.width ? d.width : rectWidth + 6;
+         w = d.width ? d.width : rectWidth + 6;
+         return w;
        })
        .attr("height", function(d) { // Assume d.width is undefined when we want shrinkwrap
-         return d.width ? d.height : rectHeight + 4; 
+         h = d.height ? d.height : rectHeight + 4;
+         return h;
        })
        .attr("x", function(d) { // Don't check for d.x: that's always there anyway
-         return d.width ? -d.width / 2 : -rectWidth / 2 - 3;
+          var newX = d.manualResize
+                   ? -d.xOffset
+                   : (d.width ? -d.width / 2 : -rectWidth / 2 - 3);
+         return newX;
        })
        .attr("y", function(d) {
-         return d.width ? -d.height / 2 - 4 : -rectHeight / 2 - 4;
+         var textAdjust = 1;
+          var newY = d.manualResize
+                   ? -d.yOffset
+                   : (d.width ? -d.height / 2 - textAdjust : -rectHeight / 2 - textAdjust);
+         return newY;
        });
+
+    var handle = d3.select("#handle" + d.id);
+    if (handle.node()) {
+      handle.attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")");
+    }
+
     gEl.select(".diamond")
        .attr("d", function(d) {
          var dim = d.dim ? d.dim : Math.max(maxTextDim * 1.6, minDiamondDim);
@@ -839,6 +900,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   // Centers text for shapes and edges in lines whose lengths are determined by maxCharsPerLine.
   // Shrinkwraps shapes to hold all the text if previously determined size not used.
   Graphmaker.prototype.formatText = function (gEl, d) {
+    if (d.manualResize) {
+      d.name = "";
+    }
     var phrases = this.splitTextIntoLines(d);
     var tLen = null; // Array of lengths of the lines of edge text
     var yShift = 3; // Align text to edges
@@ -947,7 +1011,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   Graphmaker.prototype.shapeMouseDown = function(d3node, d) {
     d3.event.stopPropagation();
     this.state.mouseDownNode = d;
-    if (d3.event.shiftKey) {
+    if (d3.event.shiftKey) { 
       this.state.shiftNodeDrag = d3.event.shiftKey;
       this.dragLine.classed("hidden", false) // Reposition dragged directed edge
                         .style("stroke-width", this.edgeThickness)
@@ -969,15 +1033,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var nodeBCR = htmlEl.getBoundingClientRect(),
         curScale = nodeBCR.width / (consts.minCircleRadius * 2),
         placePad  =  5 * curScale,
-        //useHW = curScale > 1 ? nodeBCR.width * 0.71 : consts.minCircleRadius * 2.84;
         useHW = curScale > 1 ? nodeBCR.width * 1.71 : consts.minCircleRadius * 4.84;
 
     // Replace with editable content text:
     var d3txt = thisGraph.svg.selectAll("foreignObject")
       .data([d])
       .enter().append("foreignObject")
-        //.attr("x", nodeBCR.left + placePad)
-        //.attr("y", nodeBCR.top + placePad)
         .attr("x", nodeBCR.left + nodeBCR.width / 2)
         .attr("y", nodeBCR.top + nodeBCR.height / 2)
         .attr("height", 2 * useHW)
@@ -995,9 +1056,14 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       })
       .on("blur", function(d) {
         d.name = this.textContent.trim(); // Remove whitespace fore and aft
-        // Force shape shrinkwrap:
-        d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined; 
-        d.maxCharsPerLine = undefined; // User may want different value if editing text
+        if (d.manualResize) { 
+          thisGraph.state.clickDragHandle = false;
+          d.name = "";
+        } else {
+          // Force shape shrinkwrap:
+          d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined; 
+          d.maxCharsPerLine = undefined; // User may want different value if editing text
+        }
         thisGraph.formatText(d3element, d);
         d3.select(this.parentElement).remove();
         thisGraph.updateGraph(); 
@@ -1072,7 +1138,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       if (state.justDragged) { // Dragged, not clicked
         state.justDragged = false;
       } else { // Clicked, not dragged
-        if (d3.event.shiftKey) { // Shift-clicked node: edit text content
+        if (d3.event.shiftKey // Shift-clicked node: edit text content...
+            && !d.manualResize) { // ...that is, if not manually resizing rect
           var d3txt = this.changeElementText(d3node, d);
           var txtNode = d3txt.node();
           this.selectText(txtNode);
@@ -1204,6 +1271,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.updateExistingNodes = function() {
+    var thisGraph = this;
     this.shapeGroups = this.shapeGroups.data(this.nodes, function(d) { // ???
       return d.id;
     });
@@ -1270,7 +1338,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.createContextMenu = function() {
-    d3.select("#graph").insert("div", ":first-child")
+    d3.select("#topGraphDiv").insert("div", ":first-child")
       .classed("menuHidden", true).classed("menu", false)
       .attr("id", "contextMenuDiv")
       .attr("position", "absolute")
@@ -1336,7 +1404,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .on("mouseup", function(d) { 
           d3.select("#contextMenuDiv").classed("menu", false).classed("menuHidden", true);
           if (selectedElement.node()) {
-            //selectedElement.selectAll("text").text(undefined);
             selectedElement.selectAll("text").remove();
             var data = selectedElement.node().__data__;
             data.name = d;
@@ -1405,9 +1472,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.addNewNodes = function() {
     var thisGraph = this;
-    var newShapeGroups = thisGraph.shapeGroups.enter().append("g")
+    var newShapeGroups = thisGraph.shapeGroups.enter().append("g");
 
     newShapeGroups.classed("shapeG", true)
+      .attr("id", function(d) { return "shapeG" + d.id; })
       .attr("transform", function(d) { 
         return "translate(" + d.x + "," + d.y + ")";
       })
@@ -1422,7 +1490,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         d3.select(this).classed(thisGraph.consts.connectClass, false);
       })
       .on("mousedown", function(d) {
-        thisGraph.shapeMouseDown.call(thisGraph, d3.select(this), d);
+          thisGraph.shapeMouseDown.call(thisGraph, d3.select(this), d);
       })
       .on("mouseup", function(d) {
         if (d3.event.ctrlKey && d.url) {
@@ -1443,8 +1511,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             d3.select(this).select("text")
               .style("font-weight", thisGraph.boldFontWeight)
               .style("text-decoration", "underline");
-            // Force shape resize in case bold characters overflow shape boundaries:
-            d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
+            if (!d.manualResize) {
+              // Force shape resize in case bold characters overflow shape boundaries:
+              d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
+            }
             thisGraph.updateGraph();
           } 
         } else if (d3.event.ctrlKey && d3.event.shiftKey) {
@@ -1487,15 +1557,52 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   }
 
 
+  Graphmaker.prototype.addHandle = function(parentG, rectData) {
+    var thisGraph = this;
+    var tx = rectData.manualResize ? rectData.width - rectData.xOffset : rectData.width / 2;
+    var ty = rectData.manualResize ? rectData.height - rectData.yOffset : rectData.height / 2;
+    d3.select(parentG).append("circle")
+      .attr("id", "handle" + rectData.id)
+      .attr("r", "10")
+      .attr("cx", 0)
+      .attr("cy", 0)
+      .attr("transform", "translate(" + tx + "," + ty + ")")
+      .style("opacity", 0)
+      .style("stroke", "#ff5555")
+      .style("fill", "#5555ff")
+      .on("mouseover", function(d) {
+        if (d3.event.shiftKey) {
+          d3.select(this).style("opacity", 1);
+        }
+      })
+      .on("mousedown", function(d) {
+        if (d3.event.shiftKey) {
+          thisGraph.state.clickDragHandle = true;
+        }
+      })
+      .on("mouseup", function(d) {
+        d3.select(this).style("opacity", 0);
+      })
+      .on("mouseout", function(d) {
+        d3.select(this).style("opacity", 0);
+      })
+      .call(thisGraph.dragHandle);
+  };
+
+
   // Add the newly created shapes to the graph, assigning attributes common to all.
   Graphmaker.prototype.addNewShapes = function(newShapeGroups, shapeElts) {
     var thisGraph = this;
     newShapeGroups.append(function(d, i) { return shapeElts[i]; })
                   .attr("class", function(d) { return "shape " + d.shape; })
+                  .attr("id", function(d) { return "shape" + d.id; })
                   .style("stroke", function(d) { return d.color; })
                   .style("stroke-width", function(d) { return (d.shape === "noBorder") ? 0 : 2; });
     newShapeGroups.each(function(d) {
                     thisGraph.formatText(d3.select(this), d);
+                    if (d.shape === "rectangle") {
+                      thisGraph.addHandle(this, d);
+                    }
                   });
   };
 
@@ -1609,7 +1716,16 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var shapeElts = this.createNewShapes();
     this.addNewShapes(newShapeGroups, shapeElts);
     this.shapeGroups.exit().remove(); // Remove old nodes
-
+    if (this.shapeGroups) {
+      this.shapeGroups.each(function(d) {
+        if (d.manualResize) {
+          var remove = d3.select(this).remove();
+          d3.select("#manResizeGG").append(function() {
+            return remove.node();
+          });
+        }
+      });
+    }
     var edgeGroups = this.updateExistingPaths();
     var newPathGroups = this.addNewPaths(edgeGroups);
     this.appendPathText(newPathGroups);
@@ -1734,7 +1850,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     .on("keyup", function() {
       thisGraph.svgKeyUp.call(thisGraph);
     });
-    svg.on("mousedown", function(d) { thisGraph.svgMouseDown.call(thisGraph, d); });
+    svg.on("mousedown", function(d) {
+      thisGraph.svgMouseDown.call(thisGraph, d);
+    });
     svg.on("mouseup", function(d){
       thisGraph.svgMouseUp.call(thisGraph, d);
     });
@@ -1745,8 +1863,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   // Center circles and text in window
   Graphmaker.prototype.showSystemSupportMap = function() {
     if (!this.SSMCenter) {
-      this.SSMCenter = {"x": d3.select("#graph").node().clientWidth / 2,
-                        "y": d3.select("#graph").node().clientHeight / 2};
+      this.SSMCenter = {"x": d3.select("#topGraphDiv").node().clientWidth / 2,
+                        "y": d3.select("#topGraphDiv").node().clientHeight / 2};
     }
     var ssmCenter = this.SSMCenter;
     d3.select(".ssmGroup")
@@ -1792,8 +1910,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.showCirclesOfCare = function() {
     if (!this.CofCC) {
-      this.CofCC = {"x": d3.select("#graph").node().clientWidth / 2,
-                         "y": d3.select("#graph").node().clientHeight / 2};
+      this.CofCC = {"x": d3.select("#topGraphDiv").node().clientWidth / 2,
+                         "y": d3.select("#topGraphDiv").node().clientHeight / 2};
     }
     d3.selectAll(".circleHidden")
       .classed({"circleHidden": false, "circleOfCare": true})
@@ -1826,7 +1944,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                         thickness: val.thickness,
                         maxCharsPerLine: val.maxCharsPerLine, 
                         note: val.note,
-                        name: val.name});
+                        name: val.name,
+                        manualResize: val.manualResize ? val.manualResize : false
+                      });
       });
       var blob = new Blob([window.JSON.stringify({"nodes": thisGraph.nodes,
                                                   "links": saveEdges,
@@ -1872,7 +1992,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                              thickness: e.thickness,
                              maxCharsPerLine: (e.maxCharsPerLine ? e.maxCharsPerLine : 20),
                              note: e.note,
-                             name: e.name};
+                             name: e.name,
+                             manualResize: e.manualResize};
             });
             thisGraph.links = newEdges;
 
@@ -2148,6 +2269,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     shapes.style("fill", "#F6FBFF");
     d3.selectAll(".circleHidden").attr("display", "none");
     d3.selectAll(".ssmCircle").style("fill", "none");
+    d3.selectAll(".ssmHidden").attr("display", "none");
     d3.select("#mainSVG").style("background-color", this.consts.bgColor);
     var edges = d3.selectAll(".link")
                   .style("marker-end", function(d) {
@@ -2168,7 +2290,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     // Make credits visible:
     d3.select("#credits")
       .attr("display", "block")
-      .attr("y", extent.h - 30);
+      .attr("y", extent.h - 30)
+      .text("Generated " + Date() + " by System Support Mapper (developed by the UNC-CH School of "
+        + "Public Health in collaboration with the Renaissance Computing Center)");
 
     // Create canvas:
     d3.select("body").append("canvas")
@@ -2277,7 +2401,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                  {"name": "Export map as image", "id": "exportMapAsImageItem"},
                  {"name": "Load context text", "id": "loadContextTextItem"}];
     }
-    var optionsDiv =  d3.select("#graph").insert("div", ":first-child")
+    var optionsDiv =  d3.select("#topGraphDiv").insert("div", ":first-child")
       .classed("menuHidden", true).classed("menu", false)
       .attr("id", "optionsMenuDiv")
       .attr("position", "absolute")
@@ -2329,7 +2453,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   // TODO add user settings
   var settings = {
-    appendElSpec: "#graph"
+    appendElSpec: "#topGraphDiv"
   };
 
   window.onbeforeunload = function() {
@@ -2347,7 +2471,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   var links = [];
 
   /** MAIN SVG **/
-  d3.select("#graph").append("div")
+  d3.select("#topGraphDiv").append("div")
     .attr("id", "mainSVGDiv");
 
   var svg = d3.select("#mainSVGDiv").append("svg")
