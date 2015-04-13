@@ -117,7 +117,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .attr("type", "button")
       .attr("id", "helpBtn")
       .attr("value", "?")
-      .on("click", function(d) {
+      .on("click", function() {
         alert("\u26a1 Drag/scroll to translate/zoom.\n"
           + "\u26a1 Click on a shape in the toolbar to select node shape (or for a node with "
               + "none use \"no border\").\n"
@@ -151,8 +151,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .attr("type", "button")
       .attr("id", "optionsBtn")
       .attr("value", "Options")
-      .on("click", function(d) {
-        var rect = d3.select("#optionsMenuDiv").node().getBoundingClientRect();
+      .on("click", function() {
         var position = d3.mouse(d3.select("#topGraphDiv")[0][0]);
         position[1] -= 120;
         d3.select("#optionsMenuDiv")
@@ -173,14 +172,14 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .classed("colorBar", true)
         .attr("id", function(d) { return "clr" + d; })
         .style("background-color", function(d) { return "#" + d; })
-      .on("mouseover", function(d) { // Set border to hoverColor if this colorBar is not selected
+      .on("mouseover", function() { // Set border to hoverColor if this colorBar is not selected
         var currentColorBar = d3.select(this);
         var currentIdFragment = currentColorBar.attr("id").slice(3);
         if (currentIdFragment !== thisGraph.clr.slice(1)) {
           currentColorBar.style("border-color", thisGraph.consts.hoverColor);
         }
       })
-      .on("mouseout", function(d) { // Set border to black if this colorBar is not selected
+      .on("mouseout", function() { // Set border to black if this colorBar is not selected
         var currentColorBar = d3.select(this);
         var currentIdFragment = currentColorBar.attr("id").slice(3);
         if (currentIdFragment !== thisGraph.clr.slice(1)) {
@@ -189,7 +188,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       })
       .on("mouseup", function(d) {
         thisGraph.clr = "#" + d; 
-        d3.selectAll(".colorBar").each(function(d) {
+        d3.selectAll(".colorBar").each(function() {
           d3.select(this).style("border-color", "#000000");});
         d3.select(this).style("border-color", "#ffffff");
         d3.select("#" + thisGraph.shapeSelected + "Selection")
@@ -199,7 +198,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         var selectedEdgeStyleId = (thisGraph.edgeStyle === "solid")
                                 ? "#solidEdgeSelection" : "#dashedEdgeSelection";
         d3.select(selectedEdgeStyleId).style("stroke", thisGraph.clr)
-          .style("marker-end", function(d) {
+          .style("marker-end", function() {
             return "url(#end-arrow" + thisGraph.clr.substr(1) + ")";
         });
       });
@@ -241,8 +240,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           return d.shape === "circle" ? thisGraph.clr : thisGraph.consts.unselectedStyleColor;
         })
         .style("stroke-width", 2)
-        .classed("sel", function(d) { return d.id === "circleSelection" ? true : false; })
-        .classed("unsel", function(d) { return d.id === "circleSelection" ? false : true; })
+        .classed("sel", function(d) { return (d.id === "circleSelection"); })
+        .classed("unsel", function(d) { return (d.id !== "circleSelection"); })
         .on("click", function(d) {
           thisGraph.selectShape(d3.select(this), d.id.substring(0, d.id.length - 9));
         });
@@ -323,7 +322,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.setupEdgeStyleSelectionMarkers = function() {
     var thisGraph = this;
-    var toolDefs = d3.select("#edgeStyleSelectionSvg").selectAll("marker")
+    d3.select("#edgeStyleSelectionSvg").selectAll("marker")
       .data([{"id": "selectedEdgeArrowHead", "color": thisGraph.clr},
              {"id": "unselectedEdgeArrowHead", "color": thisGraph.consts.unselectedStyleColor}])
       .enter().append("marker")
@@ -432,7 +431,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     thisGraph.createColorPalette();
     thisGraph.addShapeSelection();
     thisGraph.addEdgeStyleSelection();
-  }
+  };
 
 
   Graphmaker.prototype.addLogos = function() {
@@ -464,7 +463,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                  .html(function (d) {
                    d3.select(".d3-tip")
                      .style("display", function() { return d.note ? "block" : "none"; });
-                   return  d.note ? d.note : null;
+                   return  d.note || null;
                  });
     d3.select("#mainSVG").call(this.tip);
   };
@@ -510,7 +509,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var thisGraph = this;
     thisGraph.dragLine = thisGraph.svgG.append("svg:path") // Displayed when dragging between nodes
       .attr("class", "link dragline hidden")
-      .attr("d", function(d) { return "M0,0L0,0"; })
+      .attr("d", function() { return "M0,0L0,0"; })
       .style("marker-end", "url(#mark-end-arrow)");
 
     thisGraph.drag = d3.behavior.drag()
@@ -519,20 +518,20 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       })
       .on("drag", function(args) {
         thisGraph.state.justDragged = true;
-        thisGraph.dragmove.call(thisGraph, args);
+        thisGraph.dragmove(args);
       })
       .on("dragend", function() {
         // Todo check if edge-mode is selected
       });
 
     // Listen for dragging
-    var dragSvg = d3.behavior.zoom()
+    thisGraph.zoomSvg = d3.behavior.zoom()
       .on("zoom", function() {
-        if (d3.event.sourceEvent.shiftKey) {
+        if (d3.event.sourceEvent && d3.event.sourceEvent.shiftKey) {
           // TODO  the internal d3 state is still changing
           return false;
         } else {
-          thisGraph.zoomed.call(thisGraph);
+          thisGraph.zoomed();
         }
         return true;
       })
@@ -541,22 +540,24 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         if (ael) {
           ael.blur();
         }
-        if (!d3.event.sourceEvent.shiftKey) d3.select("body").style("cursor", "move");
+        if (!d3.event.sourceEvent || !d3.event.sourceEvent.shiftKey) {
+          d3.select("body").style("cursor", "move");
+        }
       })
       .on("zoomend", function() {
         d3.select("body").style("cursor", "auto");
       });
     
-    svg.call(dragSvg).on("dblclick.zoom", null);
+    svg.call(thisGraph.zoomSvg).on("dblclick.zoom", null);
   };
 
 
-  // Handle goes in the lower right-hand corner of a rectangle: drag to resize rectangle.
+  // Handle goes in the lower right-hand corner of a rectangle: shift-drag to resize rectangle.
   Graphmaker.prototype.setupDragHandle = function() {
     var thisGraph = this;
     thisGraph.dragHandle = d3.behavior.drag()
       .on("dragstart", function(d) {
-        if (!d3.event.sourceEvent.shiftKey) { return; };
+        if (!d3.event.sourceEvent.shiftKey) { return; }
         d.manualResize = true;
         d.name = "";
         d3.select(this).style("opacity", 1);
@@ -570,7 +571,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         var x = d3.event.x;
         var y = d3.event.y;
         d3.select(this)
-          .attr("transform", function(d) {
+          .attr("transform", function() {
           return "translate(" + x + "," + y + ")";
         });
         d3.select("#shape" + d.id)
@@ -579,14 +580,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       })
       .on("dragend", function(d) {
         var rectangle = d3.select("#shape" + d.id);
-        var w = parseFloat(rectangle.attr("width"));
-        var h = parseFloat(rectangle.attr("height"));
+        d.width = parseFloat(rectangle.attr("width"));
+        d.height = parseFloat(rectangle.attr("height"));
         d3.select(this).style("opacity", 0);
-        d.width = w;
-        d.height = h;
         var currG = d3.select("#shapeG" + d.id);
         currG.select("text").text("");
-        // Move the resized rect group in the DOM so all edges and other shapes are on top:
+        // Move the resized rect group to higher in the DOM so edges and other shapes are on top:
         var remove = currG.remove();
         d3.select("#manResizeGG").append(function() {
           return remove.node();
@@ -607,11 +606,13 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var results = "";
     var angle = Math.PI / arms;
     var rotation = Math.PI / (10 / 3.0); // 1st point up (-y) rather than on the +x axis
+    var r, currX, currY;
+    var i;
  
-    for (var i = 0; i < 2 * arms; i++) { 
-      var r = (i % 2) ? innerRadius : outerRadius; // Alternate outer and inner radii
-      var currX = ctrX + Math.cos(i * angle + rotation) * r;
-      var currY = ctrY + Math.sin(i * angle + rotation) * r;
+    for (i = 0; i < 2 * arms; i++) { 
+      r = (i % 2) ? innerRadius : outerRadius; // Alternate outer and inner radii
+      currX = ctrX + Math.cos(i * angle + rotation) * r;
+      currY = ctrY + Math.sin(i * angle + rotation) * r;
       results += (i > 0) ? ", " + currX + "," + currY : currX + "," + currY;
     }
     return results;
@@ -620,24 +621,25 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.setShapeId = function(shapeId) {
     this.shapeId = shapeId;
-  }
+  };
 
 
   Graphmaker.prototype.getBiggestShapeId = function() {
     var currMax = 0;
-    for (var i = 0; i < this.nodes.length; i++) {
+    var i;
+    for (i = 0; i < this.nodes.length; i++) {
       if (this.nodes[i].id > currMax) {
         currMax = this.nodes[i].id;
       }
     }
     return currMax;
-  }
+  };
 
 
   // Solid or dashed edge?
   Graphmaker.prototype.selectEdgeStyle = function(clr, selectedId, deselectedId) {
     d3.select(selectedId)
-      .style("marker-end", function(d) {
+      .style("marker-end", function() {
          return "url(#end-arrow" + clr.substr(1) + ")";
       })
       .style("stroke", this.clr)
@@ -649,7 +651,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .classed("unsel", true)
       .classed("sel", false);
     this.edgeStyle = (selectedId === "#solidEdgeSelection") ? "solid" : "dashed";
-  }
+  };
 
 
   Graphmaker.prototype.dragmove = function(d) {
@@ -704,15 +706,15 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
     gEl.select(".circle")
        .attr("r", function(d) {
-         return d.r ? d.r : Math.max(maxTextDim / 2 + 8, thisGraph.consts.minCircleRadius);
+         return d.r || Math.max(maxTextDim / 2 + 8, thisGraph.consts.minCircleRadius);
        });
     gEl.select(".rectangle, .noBorder")
        .attr("width", function(d) {
-         w = d.width ? d.width : rectWidth + 6;
+         w = d.width || rectWidth + 6;
          return w;
        })
        .attr("height", function(d) { // Assume d.width is undefined when we want shrinkwrap
-         h = d.height ? d.height : rectHeight + 4;
+         h = d.height || rectHeight + 4;
          return h;
        })
        .attr("x", function(d) { // Don't check for d.x: that's always there anyway
@@ -736,20 +738,20 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
     gEl.select(".diamond")
        .attr("d", function(d) {
-         var dim = d.dim ? d.dim : Math.max(maxTextDim * 1.6, minDiamondDim);
+         var dim = d.dim || Math.max(maxTextDim * 1.6, minDiamondDim);
          return "M " + dim / 2 + " 0 L " + dim + " " + dim / 2 + " L " + dim / 2 + " " + dim
            + " L 0 " + dim / 2 + " Z";
        })
        .attr("transform", function (d) {
-         var dim = d.dim ? d.dim : Math.max(maxTextDim * 1.6, minDiamondDim);
+         var dim = d.dim || Math.max(maxTextDim * 1.6, minDiamondDim);
          return "translate(-" + dim / 2 + ",-" + dim /2 + ")";
        });
     gEl.select("ellipse")
        .attr("rx", function(d) {
-         return d.rx ? d.rx : Math.max(textSize.width / 2 + 20, thisGraph.consts.minEllipseRx);
+         return d.rx || Math.max(textSize.width / 2 + 20, thisGraph.consts.minEllipseRx);
        })
        .attr("ry", function(d) {
-         return d.ry ? d.ry : Math.max(textSize.height / 2 + 17, thisGraph.consts.minEllipseRy);
+         return d.ry || Math.max(textSize.height / 2 + 17, thisGraph.consts.minEllipseRy);
        });
     gEl.select("polygon")
        .attr("points", function(d) {
@@ -794,6 +796,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         var innerRadius = this.computeInnerRadius(gEl.select("polygon").attr("points").split(" "));
         d.innerRadius = innerRadius;
         d.boundary = innerRadius * 2;
+        break;
       default: // May be an edge, in which case boundary is not applicable.
         break;
     }
@@ -843,7 +846,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                 })
                 .style("stroke", thisGraph.consts.bgColor)
                 .style("stroke-width", "3px")
-                .attr("dy",  function(d) { 
+                .attr("dy",  function() { 
                   return yShift - ((phrases.length - 1) * thisGraph.consts.defaultFontSize / 2);
                 });
     el.selectAll("tspan")
@@ -873,7 +876,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             .style("font-weight", function(d) {
               return d.url ? thisGraph.boldFontWeight: "none"; })
             .style("fill", gEl[0][0].__data__.color)
-            .attr("dy",  function(d) {
+            .attr("dy",  function() {
               return yShift - ((nPhrases - 1) * thisGraph.consts.defaultFontSize / 2);
             });
     el.selectAll("tspan")
@@ -885,15 +888,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         });
     return el;
   };
-
-
-  Graphmaker.prototype.formatEdgeText = function (gEl, d) {
-    var phrases = this.splitTextIntoLines(d);
-    var yShift = 3; // Vertically align text to edge
-    var tLen = this.appendEdgeShadowText(gEl, phrases, yShift);
-    var el = this.appendText(gEl, phrases, yShift); 
-    el.selectAll("tspan") .attr("dx", function(d, i) { return -(tLen[i] + tLen[i + 1]) / 2; });
-  }; 
 
 
   // Based on http://stackoverflow.com/questions/13241475/how-do-i-include-newlines-in-labels-in-d3-charts 
@@ -1008,7 +1002,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   // Mousedown on node
-  Graphmaker.prototype.shapeMouseDown = function(d3node, d) {
+  Graphmaker.prototype.shapeMouseDown = function(d) {
     d3.event.stopPropagation();
     this.state.mouseDownNode = d;
     if (d3.event.shiftKey) { 
@@ -1032,7 +1026,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     d3element.selectAll("text").remove();
     var nodeBCR = htmlEl.getBoundingClientRect(),
         curScale = nodeBCR.width / (consts.minCircleRadius * 2),
-        placePad  =  5 * curScale,
         useHW = curScale > 1 ? nodeBCR.width * 1.71 : consts.minCircleRadius * 4.84;
 
     // Replace with editable content text:
@@ -1047,10 +1040,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .attr("id", consts.activeEditId)
         .attr("contentEditable", true)
         .text(d.name)
-      .on("mousedown", function(d) {
+      .on("mousedown", function() {
         d3.event.stopPropagation();
       })
-      .on("keydown", function(d) {
+      .on("keydown", function() {
         d3.event.stopPropagation();
         if (d3.event.keyCode === consts.ENTER_KEY && !d3.event.shiftKey) { this.blur(); }
       })
@@ -1209,7 +1202,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         consts = this.consts;
 
     // Make sure repeated key presses don't register for each keydown
-    if (state.lastKeyDown !== -1) return;
+    if (state.lastKeyDown !== -1) { return; }
 
     state.lastKeyDown = d3.event.keyCode;
     var selectedNode = state.selectedNode,
@@ -1252,7 +1245,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     dx *= multiplier;
     dy *= multiplier;
     return {"x": x1 + dx, "y": y1 + dy};
-  }
+  };
  
 
   Graphmaker.prototype.updateExistingPaths = function() {
@@ -1267,11 +1260,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
            return thisGraph.setPath(d);
          });
     return thisGraph.edgeGroups;
-  }
+  };
 
 
   Graphmaker.prototype.updateExistingNodes = function() {
-    var thisGraph = this;
     this.shapeGroups = this.shapeGroups.data(this.nodes, function(d) { // ???
       return d.id;
     });
@@ -1313,10 +1305,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       if (window.File && window.FileReader && window.FileList && window.Blob) {
         var uploadFile = this.files[0];
         var filereader = new window.FileReader();
+        var txtRes;
 
         filereader.onload = function() {
           try {
-            var txtRes = filereader.result;
+            txtRes = filereader.result;
           } catch(err) {
             window.alert("Error reading file: " + err.message);
           }
@@ -1397,9 +1390,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .classed("contextMenuListItem", true)
         .attr("id", function(d, i) { return "contextMenuListItem" + i; })
         .text(function(d) { return d; })
-        .on("mouseover", function(d) {
+        .on("mouseover", function() {
         })
-        .on("mouseout", function(d) {
+        .on("mouseout", function() {
         })
         .on("mouseup", function(d) { 
           d3.select("#contextMenuDiv").classed("menu", false).classed("menuHidden", true);
@@ -1440,20 +1433,22 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     if (document.addEventListener) {
       document.addEventListener("contextmenu", function(e) {
       if (e.which === thisGraph.consts.rightMouseBtn) {
-        var elt = e.target || e.srcElement; // Target for Firefox, srcElement for Chrome
+        var elt = e.target || e.srcElement; // target for Firefox, srcElement for Chrome
         if (elt && (elt.tagName !== "svg")) { // Did we right-click on an object?
-          while (elt.tagName !== "g") { // elt is probably a child of the shapeG we want
+          while (elt && (elt.tagName !== "g")) { // elt is probably a child of the shapeG we want
             elt = elt.parentElement; // Assume there's a group in the hierarchy
           }
-          var eltData = elt.__data__;
-          var shapeGs = d3.selectAll(".shapeG");
-          shapeGs.each(function(d) {
-            if ((d.id === eltData.id) // Select the right-clicked-on shape group...
-              && (!thisGraph.state.selectedNode // ...if no shapeG is selected, or...
-              || (thisGraph.state.selectedNode.id !== d.id))) { // ...if d is not already selected
-              thisGraph.selectNode(d3.select(this), eltData); // expects shapeG as the first arg
-            }
-          });
+          if (elt) {
+            var eltData = elt.__data__;
+            var shapeGs = d3.selectAll(".shapeG");
+            shapeGs.each(function(d) {
+              if ((d.id === eltData.id) // Select the right-clicked-on shape group...
+                && (!thisGraph.state.selectedNode // ...if no shapeG is selected, or...
+                || (thisGraph.state.selectedNode.id !== d.id))) { // ...if d is not already selected
+                thisGraph.selectNode(d3.select(this), eltData); // expects shapeG as the first arg
+              }
+            });
+          }
         }
         if (thisGraph.populateContextMenu()) {
           thisGraph.showContextMenu(e);
@@ -1479,18 +1474,18 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .attr("transform", function(d) { 
         return "translate(" + d.x + "," + d.y + ")";
       })
-      .on("mouseover", function(d) {
+      .on("mouseover", function() {
         if (thisGraph.state.shiftNodeDrag) {
           d3.select(this).classed(thisGraph.consts.connectClass, true);
-        };
+        }
       })
       .on("mouseenter", thisGraph.tip.show)
       .on("mouseleave", thisGraph.tip.hide)
-      .on("mouseout", function(d) {
+      .on("mouseout", function() {
         d3.select(this).classed(thisGraph.consts.connectClass, false);
       })
       .on("mousedown", function(d) {
-          thisGraph.shapeMouseDown.call(thisGraph, d3.select(this), d);
+          thisGraph.shapeMouseDown(d);
       })
       .on("mouseup", function(d) {
         if (d3.event.ctrlKey && d.url) {
@@ -1498,7 +1493,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           window.event.preventDefault();
           window.event.stopPropagation();
         } else if (d3.event.altKey) {
-          var defaultUrl = d.url ? d.url : "";
+          var defaultUrl = d.url || "";
           var newUrl = prompt("Enter url for this node: ", defaultUrl);
           if (newUrl) {
             // TODO: make this errorchecking more robust
@@ -1518,11 +1513,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             thisGraph.updateGraph();
           } 
         } else if (d3.event.ctrlKey && d3.event.shiftKey) {
-          var defaultNote = d.note ? d.note : "";
+          var defaultNote = d.note || "";
           d.note = prompt("Enter note for this node: ", defaultNote);
           thisGraph.state.lastKeyDown = -1;
         } else {
-          thisGraph.shapeMouseUp.call(thisGraph, d3.select(this), d);
+          thisGraph.shapeMouseUp(d3.select(this), d);
         }
       })
       .call(thisGraph.drag);
@@ -1533,8 +1528,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   // Create the new shapes, but don't add them yet.
   Graphmaker.prototype.createNewShapes = function()  {
     var shapeElts = [];
+    var shape;
     for (var i = 0; i < this.nodes.length; i++) {
-      var shape;
       switch (this.nodes[i].shape) {
         case "rectangle":
         case "noBorder":
@@ -1554,7 +1549,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       shapeElts.push(shapeElement);
     }
     return shapeElts;
-  }
+  };
 
 
   Graphmaker.prototype.addHandle = function(parentG, rectData) {
@@ -1570,20 +1565,20 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .style("opacity", 0)
       .style("stroke", "#ff5555")
       .style("fill", "#5555ff")
-      .on("mouseover", function(d) {
+      .on("mouseover", function() {
         if (d3.event.shiftKey) {
           d3.select(this).style("opacity", 1);
         }
       })
-      .on("mousedown", function(d) {
+      .on("mousedown", function() {
         if (d3.event.shiftKey) {
           thisGraph.state.clickDragHandle = true;
         }
       })
-      .on("mouseup", function(d) {
+      .on("mouseup", function() {
         d3.select(this).style("opacity", 0);
       })
-      .on("mouseout", function(d) {
+      .on("mouseout", function() {
         d3.select(this).style("opacity", 0);
       })
       .call(thisGraph.dragHandle);
@@ -1599,10 +1594,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                   .style("stroke", function(d) { return d.color; })
                   .style("stroke-width", function(d) { return (d.shape === "noBorder") ? 0 : 2; });
     newShapeGroups.each(function(d) {
-                    thisGraph.formatText(d3.select(this), d);
-                    if (d.shape === "rectangle") {
-                      thisGraph.addHandle(this, d);
-                    }
+                     thisGraph.formatText(d3.select(this), d);
+                     if (d.shape === "rectangle") {
+                       thisGraph.addHandle(this, d);
+                     }
                   });
   };
 
@@ -1621,7 +1616,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var newPathGroups = edgeGroups.enter().append("g");
     newPathGroups.classed("pathG", true)
       .on("mousedown", function(d) {
-        thisGraph.pathMouseDown.call(thisGraph, d3.select(this), d);
+        thisGraph.pathMouseDown(d3.select(this), d);
       })
       .on("mouseup", function(d) {
         if (d3.event.shiftKey) {
@@ -1635,7 +1630,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         }
         thisGraph.state.mouseDownLink = null;
       })
-      .on("mouseover", function(d) { // Hover color iff not (selected, new edge or inside shape):
+      .on("mouseover", function() { // Hover color iff not (selected, new edge or inside shape):
         if ((d3.select(this).selectAll("path").style("stroke") !== thisGraph.consts.selectedColor)
             && (!thisGraph.state.shiftNodeDrag) && (!thisGraph.state.justDragged)) {
           d3.select(this).selectAll("path").style("stroke", thisGraph.consts.hoverColor)
@@ -1660,8 +1655,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           return "url(#end-arrow" + clr + ")";
         })
         .classed("link", true)
-        .style("stroke", function(d) { return d.color ? d.color : d.target.color; })
-        .style("stroke-width", function(d) { return d.thickness ? d.thickness : 3; })
+        .style("stroke", function(d) { return d.color || d.target.color; })
+        .style("stroke-width", function(d) { return d.thickness || 3; })
         .style("stroke-dasharray", function (d) {
           return (d.style === "dashed") ? "10, 2" : "none";
         });
@@ -1680,10 +1675,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   // Note that there are two text elements being appended. The first is background shadow
   // to ensure that the text is visible where it overlays its edge.
   Graphmaker.prototype.appendPathText = function(pathGroups) {
+    var data = [{"class": "shadowText", "stroke-width": "4px"},
+                {"class": "foregroundText", "stroke-width": "0px"}];
     for (var i = 0; i < pathGroups[0].length; i++) {         // For each pathGroup...
       if (pathGroups[0][i].childNodes.length < 3) {          // ...if there's no text yet...
-        var data = [{"class": "shadowText", "stroke-width": "4px"},
-                    {"class": "foregroundText", "stroke-width": "0px"}];
         d3.select(pathGroups[0][i]).selectAll("text")
           .data(data)
           .enter().append("text")                        // ...then append it.
@@ -1783,16 +1778,22 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var boundary = 16; // Initialize to default number of pixels padding for circle, diamond.
     switch (edge.target.shape) {
       case "circle":
-        if (edge.target.r) boundary += parseFloat(edge.target.r);
-        else boundary = edge.target.boundary; 
+        if (edge.target.r) {
+          boundary += parseFloat(edge.target.r);
+        } else {
+          boundary = edge.target.boundary; 
+        }
         break;
       case ("rectangle"):
       case ("noBorder"):
         boundary = this.computeRectangleBoundary(edge);
         break;
       case "diamond": 
-        if (edge.target.dim) boundary += (parseFloat(edge.target.dim) / 2);
-        else boundary = edge.target.boundary; 
+        if (edge.target.dim) { 
+          boundary += (parseFloat(edge.target.dim) / 2);
+        } else {
+          boundary = edge.target.boundary; 
+        }
         break;
       case "ellipse": 
         boundary = this.computeEllipseBoundary(edge);
@@ -1805,7 +1806,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         break;
     }
     var newP2 = this.changeLineLength(edge.source.x, edge.source.y, edge.target.x, edge.target.y,
-                                     -boundary, (edge.thickness ? edge.thickness : 3)); 
+                                     -boundary, (edge.thickness || 3)); 
     return "M" + edge.source.x + "," + edge.source.y + "L" + newP2.x + "," + newP2.y;
   };
 
@@ -1845,16 +1846,16 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var thisGraph = this;
     var svg = thisGraph.svg;
     d3.select(window).on("keydown", function() {
-      thisGraph.svgKeyDown.call(thisGraph);
+      thisGraph.svgKeyDown();
     })
     .on("keyup", function() {
-      thisGraph.svgKeyUp.call(thisGraph);
+      thisGraph.svgKeyUp();
     });
-    svg.on("mousedown", function(d) {
-      thisGraph.svgMouseDown.call(thisGraph, d);
+    svg.on("mousedown", function() {
+      thisGraph.svgMouseDown();
     });
-    svg.on("mouseup", function(d){
-      thisGraph.svgMouseUp.call(thisGraph, d);
+    svg.on("mouseup", function(){
+      thisGraph.svgMouseUp();
     });
     window.onresize = function() {thisGraph.updateWindow(svg);};
   };
@@ -1874,7 +1875,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .attr("cy", ssmCenter.y);
     d3.selectAll(".ssmLabel")
       .style("font-size", "12px")
-      .attr("x", function(d) {
+      .attr("x", function() {
         return ssmCenter.x - this.getComputedTextLength() / 2; // Why this and not thisGraph?
       })
       .attr("y", function(d, i) {
@@ -1889,7 +1890,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   Graphmaker.prototype.hideSystemSupportMap = function() {
     this.SSMCenter = null;
     d3.select(".ssmGroup")
-      .classed({"ssmHidden": true, "ssmVisible": false})
+      .classed({"ssmHidden": true, "ssmVisible": false});
     d3.select("#sysSptRingsItem").text("Show system support rings")
       .datum({"name": "Show system support rings"});
   };
@@ -1925,7 +1926,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   Graphmaker.prototype.hideCirclesOfCare = function() {
     this.CofCC = null;
     d3.selectAll(".circleOfCare")
-      .classed({"circleHidden": true, "circleOfCare": false})
+      .classed({"circleHidden": true, "circleOfCare": false});
     d3.select("#cOfCItem").text("Show Circles of Care")
       .datum({"name": "Show Circles of Care"});
   };
@@ -1936,7 +1937,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var thisGraph = this;
     d3.select("#download-input").on("click", function() {
       var saveEdges = [];
-      thisGraph.links.forEach(function(val, i) {
+      thisGraph.links.forEach(function(val) {
         saveEdges.push({source: val.source.id,
                         target: val.target.id,
                         style: val.style,
@@ -1945,11 +1946,13 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                         maxCharsPerLine: val.maxCharsPerLine, 
                         note: val.note,
                         name: val.name,
-                        manualResize: val.manualResize ? val.manualResize : false
+                        manualResize: val.manualResize || false
                       });
       });
+      var graphGTransform = d3.select("#graphG").attr("transform");
       var blob = new Blob([window.JSON.stringify({"nodes": thisGraph.nodes,
                                                   "links": saveEdges,
+                                                  "graphGTransform": graphGTransform,
                                                   "systemSupportMapCenter": thisGraph.SSMCenter,
                                                   "circlesOfCareCenter": thisGraph.CofCC})], 
                                                  {type: "text/plain;charset=utf-8"});
@@ -1968,10 +1971,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       if (window.File && window.FileReader && window.FileList && window.Blob) {
         var uploadFile = this.files[0];
         var filereader = new window.FileReader();
+        var txtRes;
 
         filereader.onload = function() {
           try {
-            var txtRes = filereader.result;
+            txtRes = filereader.result;
           } catch(err) {
             window.alert("Error reading file: " + err.message);
           }
@@ -1990,12 +1994,20 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                              style: (e.style === "dashed" ? "dashed" : "solid"),
                              color: e.color,
                              thickness: e.thickness,
-                             maxCharsPerLine: (e.maxCharsPerLine ? e.maxCharsPerLine : 20),
+                             maxCharsPerLine: (e.maxCharsPerLine || 20),
                              note: e.note,
                              name: e.name,
                              manualResize: e.manualResize};
             });
             thisGraph.links = newEdges;
+
+            var graphGTransform = jsonObj.graphGTransform || "translate(0,0) scale(1)";
+            d3.select("#graphG").attr("transform", graphGTransform);
+            //var s0 = graphGTransform.replace( /^\D+/g, '');
+            var xform = d3.transform(d3.select("#graphG").attr("transform"));
+            var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
+            thisGraph.zoomSvg.translate([tx, ty]).scale(scale);
+            thisGraph.zoomSvg.event(thisGraph.svg.transition().duration(500));
 
             thisGraph.SSMCenter = jsonObj.systemSupportMapCenter;
             if (thisGraph.SSMCenter) {
@@ -2033,7 +2045,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var rxMax = 0, ryMax = 0; // ellipse
     var innerRadius = 0;      // star
 
-    selectedShapes.each(function(d, i) { // Get max dimensions for "shape" in the current graph
+    selectedShapes.each(function(d) { // Get max dimensions for "shape" in the current graph
       var thisShapeElt = d3.select(this);
       switch (d.shape) {
         case "circle":
@@ -2092,7 +2104,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         break;
     }
 
-    thisGraph.shapeGroups.each(function(d, i) {
+    thisGraph.shapeGroups.each(function(d) {
       thisGraph.storeShapeSize(d3.select(this), d);
     });
     thisGraph.updateExistingPaths();
@@ -2123,7 +2135,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .classed("eqShapeSizeSubmenuListItem", true)
         .attr("id", function(d, i) { return "eqShapeSizeOption" + i; })
         .text(function(d) { return d.name; })
-        .on("mouseup", function(d) {
+        .on("mouseup", function() {
           d3.select("#eqShapeSizeSubmenuDiv").classed("menu", false).classed("menuHidden", true);
           d3.select("#optionsMenuDiv")
             .classed("menu", false).classed("menuHidden", true);
@@ -2168,14 +2180,14 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .classed("textLineLengthSubmenuListItem", true)
         .attr("id", function(d, i) { return "edgeThicknessOption" + i; })
         .text(function(d) { return d + " characters"; })
-        .style("text-shadow", function(d) {
-          return (parseInt(d3.select(this).datum()) === maxCharsPerLine)
+        .style("text-shadow", function() {
+          return (parseInt(d3.select(this).datum(), 10) === maxCharsPerLine)
             ? "1px 1px #000000" : "none"; })
-        .style("color", function(d) {
-          return (parseInt(d3.select(this).datum()) === maxCharsPerLine)
+        .style("color", function() {
+          return (parseInt(d3.select(this).datum(), 10) === maxCharsPerLine)
             ? thisGraph.consts.selectedColor : thisGraph.consts.unselectedStyleColor;
         })
-        .on("mouseup", function(d) {
+        .on("mouseup", function() {
           thisGraph.maxCharsPerLine = parseInt(d3.select(this).datum());
           d3.select("#textLineLengthSubmenuDiv").classed("menu", false).classed("menuHidden", true);
           d3.select("#menuDiv")
@@ -2211,14 +2223,14 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .classed("edgeThicknessSubmenuListItem", true)
         .attr("id", function(d, i) { return "edgeThicknessOption" + i; })
         .text(function(d) { return d + " pixel" + (d > 1 ? "s" : ""); })
-        .style("text-shadow", function(d) {
+        .style("text-shadow", function() {
           return (parseInt(d3.select(this).datum()) === thisGraph.edgeThickness)
             ? "1px 1px #000000" : "none"; })
-        .style("color", function(d) {
+        .style("color", function() {
           return (parseInt(d3.select(this).datum()) === thisGraph.edgeThickness)
             ? thisGraph.consts.selectedColor : thisGraph.consts.unselectedStyleColor;
         })
-        .on("mouseup", function(d) {
+        .on("mouseup", function() {
           d3.select("#edgeThicknessSubmenuDiv").classed("menu", false).classed("menuHidden", true);
           d3.select("#optionsMenuDiv")
             .classed("menu", false).classed("menuHidden", true);
@@ -2242,8 +2254,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     shapes.each(function(d) {
       if (d3.select(this).style("display") !== "none") { // Don't include hidden objects
         var bbox = this.getBBox();
-        var x = (d.x) ? d.x : parseFloat(d3.select(this).attr("cx")); // ssmCircles: no x, y
-        var y = (d.y) ? d.y : parseFloat(d3.select(this).attr("cy"));
+        var x = d.x || parseFloat(d3.select(this).attr("cx")); // ssmCircles: no x, y
+        var y = d.y || parseFloat(d3.select(this).attr("cy"));
         var thisXMin = x - bbox.width / 2;
         var thisXMax = x + bbox.width / 2;
         var thisYMin = y - bbox.height / 2;
@@ -2272,7 +2284,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     d3.selectAll(".ssmHidden").attr("display", "none");
     d3.select("#mainSVG").style("background-color", this.consts.bgColor);
     var edges = d3.selectAll(".link")
-                  .style("marker-end", function(d) {
+                  .style("marker-end", function() {
                     var marker = d3.select(this).style("marker-end");
                     return marker;
                   });
@@ -2401,7 +2413,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                  {"name": "Export map as image", "id": "exportMapAsImageItem"},
                  {"name": "Load context text", "id": "loadContextTextItem"}];
     }
-    var optionsDiv =  d3.select("#topGraphDiv").insert("div", ":first-child")
+    d3.select("#topGraphDiv").insert("div", ":first-child")
       .classed("menuHidden", true).classed("menu", false)
       .attr("id", "optionsMenuDiv")
       .attr("position", "absolute")
@@ -2450,11 +2462,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   /**** MAIN ****/
-
-  // TODO add user settings
-  var settings = {
-    appendElSpec: "#topGraphDiv"
-  };
 
   window.onbeforeunload = function() {
     return "Make sure to save your graph locally before leaving.";
