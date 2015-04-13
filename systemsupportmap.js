@@ -524,7 +524,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         // Todo check if edge-mode is selected
       });
 
-    // Listen for dragging
     thisGraph.zoomSvg = d3.behavior.zoom()
       .on("zoom", function() {
         if (d3.event.sourceEvent && d3.event.sourceEvent.shiftKey) {
@@ -585,6 +584,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         d3.select(this).style("opacity", 0);
         var currG = d3.select("#shapeG" + d.id);
         currG.select("text").text("");
+
         // Move the resized rect group to higher in the DOM so edges and other shapes are on top:
         var remove = currG.remove();
         d3.select("#manResizeGG").append(function() {
@@ -2002,8 +2002,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             thisGraph.links = newEdges;
 
             var graphGTransform = jsonObj.graphGTransform || "translate(0,0) scale(1)";
+            // Inform zoomSvg that we're programmatically setting transform (so additional zoom and
+            // translate work smoothly from that transform instead of jumping back to default):
             d3.select("#graphG").attr("transform", graphGTransform);
-            //var s0 = graphGTransform.replace( /^\D+/g, '');
             var xform = d3.transform(d3.select("#graphG").attr("transform"));
             var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
             thisGraph.zoomSvg.translate([tx, ty]).scale(scale);
@@ -2188,7 +2189,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             ? thisGraph.consts.selectedColor : thisGraph.consts.unselectedStyleColor;
         })
         .on("mouseup", function() {
-          thisGraph.maxCharsPerLine = parseInt(d3.select(this).datum());
+          thisGraph.maxCharsPerLine = parseInt(d3.select(this).datum(), 10);
           d3.select("#textLineLengthSubmenuDiv").classed("menu", false).classed("menuHidden", true);
           d3.select("#menuDiv")
             .classed("menu", false).classed("menuHidden", true);
@@ -2224,17 +2225,17 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .attr("id", function(d, i) { return "edgeThicknessOption" + i; })
         .text(function(d) { return d + " pixel" + (d > 1 ? "s" : ""); })
         .style("text-shadow", function() {
-          return (parseInt(d3.select(this).datum()) === thisGraph.edgeThickness)
+          return (parseInt(d3.select(this).datum(), 10) === thisGraph.edgeThickness)
             ? "1px 1px #000000" : "none"; })
         .style("color", function() {
-          return (parseInt(d3.select(this).datum()) === thisGraph.edgeThickness)
+          return (parseInt(d3.select(this).datum(), 10) === thisGraph.edgeThickness)
             ? thisGraph.consts.selectedColor : thisGraph.consts.unselectedStyleColor;
         })
         .on("mouseup", function() {
           d3.select("#edgeThicknessSubmenuDiv").classed("menu", false).classed("menuHidden", true);
           d3.select("#optionsMenuDiv")
             .classed("menu", false).classed("menuHidden", true);
-          thisGraph.edgeThickness = parseInt(d3.select(this).datum());
+          thisGraph.edgeThickness = parseInt(d3.select(this).datum(), 10);
           d3.selectAll(".edgeThicknessSubmenuListItem")
             .style("color", thisGraph.consts.unselectedStyleColor)
             .style("text-shadow", "none");
