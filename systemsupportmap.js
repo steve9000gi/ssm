@@ -18,8 +18,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       this.createCirclesOfCare();
     }
     this.createSystemSupportMap();
+    this.setupMMRGroup();
     this.setupDrag();
     this.setupDragHandle();
+    this.setupZoom();
     this.setupSVGNodesAndLinks();
     this.setupEventListeners();
     this.showSystemSupportMap();
@@ -523,7 +525,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .on("dragend", function() {
         // Todo check if edge-mode is selected
       });
+  };
 
+
+  Graphmaker.prototype.setupZoom = function() {
+    var thisGraph = this;
     thisGraph.zoomSvg = d3.behavior.zoom()
       .on("zoom", function() {
         if (d3.event.sourceEvent && d3.event.sourceEvent.shiftKey) {
@@ -594,8 +600,14 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.setupSVGNodesAndLinks = function() {
+  // Manually Resized Rectangles (MMRs) are moved to manResizeGroups so that other shapes and edges 
+  // appear on top of them because manResizeGroups is earlier in the DOM.
+  Graphmaker.prototype.setupMMRGroup = function() {
     this.manResizeGroups = this.svgG.append("g").attr("id", "manResizeGG").selectAll("g");
+  };
+
+
+  Graphmaker.prototype.setupSVGNodesAndLinks = function() {
     this.edgeGroups = this.svgG.append("g").attr("id", "pathGG").selectAll("g");
     this.shapeGroups = this.svgG.append("g").attr("id", "shapeGG").selectAll("g");
   };
@@ -655,10 +667,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.dragmove = function(d) {
-    if (this.state.shiftNodeDrag) {
+    if (this.state.shiftNodeDrag) { // Creating a new edge
       this.dragLine.attr("d", "M" + d.x + "," + d.y + "L" + d3.mouse(this.svgG.node())[0]
                                         + "," + d3.mouse(this.svgG.node())[1]);
-    } else {
+    } else { // Translating a shape
       this.dragLine.style("stroke-width", 0);
       d.x += d3.event.dx;
       d.y +=  d3.event.dy;
@@ -951,6 +963,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     if (this.state.selectedNode) {
       this.removeSelectFromNode();
     }
+    nodeData.domId = d3Node.attr("id");
     this.state.selectedNode = nodeData;
   };
 
@@ -1005,7 +1018,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   Graphmaker.prototype.shapeMouseDown = function(d) {
     d3.event.stopPropagation();
     this.state.mouseDownNode = d;
-    if (d3.event.shiftKey) { 
+    if (d3.event.shiftKey && !d.manualResize) { // No edges from manually resized rectangles 
       this.state.shiftNodeDrag = d3.event.shiftKey;
       this.dragLine.classed("hidden", false) // Reposition dragged directed edge
                         .style("stroke-width", this.edgeThickness)
@@ -1125,9 +1138,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
     this.dragLine.classed("hidden", true).style("stroke-width", 0);
 
-    if (mouseDownNode !== d) { // We're in a different node: create new edge and add to graph
+    if (!mouseDownNode.manualResize // We didn't start on a manually resized rectangle...
+      && mouseDownNode !== d) { // ...& we're in a different node: create new edge and add to graph
       this.createNewEdge(d);
-    } else { // We're in the same node
+    } else { // We're in the same node or the dragged edge started on a manually resized rectangle
       if (state.justDragged) { // Dragged, not clicked
         state.justDragged = false;
       } else { // Clicked, not dragged
@@ -1432,25 +1446,25 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     thisGraph.createContextMenu();
     if (document.addEventListener) {
       document.addEventListener("contextmenu", function(e) {
-      if (e.which === thisGraph.consts.rightMouseBtn) {
-        var elt = e.target || e.srcElement; // target for Firefox, srcElement for Chrome
-        if (elt && (elt.tagName !== "svg")) { // Did we right-click on an object?
-          while (elt && (elt.tagName !== "g")) { // elt is probably a child of the shapeG we want
-            elt = elt.parentElement; // Assume there's a group in the hierarchy
-          }
-          if (elt) {
-            var eltData = elt.__data__;
-            var shapeGs = d3.selectAll(".shapeG");
-            shapeGs.each(function(d) {
-              if ((d.id === eltData.id) // Select the right-clicked-on shape group...
-                && (!thisGraph.state.selectedNode // ...if no shapeG is selected, or...
-                || (thisGraph.state.selectedNode.id !== d.id))) { // ...if d is not already selected
-                thisGraph.selectNode(d3.select(this), eltData); // expects shapeG as the first arg
-              }
-            });
+        if (e.which === thisGraph.consts.rightMouseBtn) {
+          var elt = e.target || e.srcElement; // target for Firefox, srcElement for Chrome
+          if (elt && (elt.tagName !== "svg")) { // Did we right-click on an object?
+            while (elt && (elt.tagName !== "g")) { // elt is probably a child of the shapeG we want
+              elt = elt.parentElement; // Assume there's a group in the hierarchy
+            }
+            if (elt) {
+              var eltData = elt.__data__;
+              var shapeGs = d3.selectAll(".shapeG");
+              shapeGs.each(function(d) {
+                if ((d.id === eltData.id) // Select the right-clicked-on shape group...
+                  && (!thisGraph.state.selectedNode // ...if no shapeG is selected, or...
+                  || (thisGraph.state.selectedNode.id !== d.id))) { // ...if d not already selected
+                  thisGraph.selectNode(d3.select(this), eltData); // Expects shapeG as the first arg
+                }
+              });
           }
         }
-        if (thisGraph.populateContextMenu()) {
+        if (elt && !elt.__data__.manualResize && thisGraph.populateContextMenu()) {
           thisGraph.showContextMenu(e);
         }
         e.preventDefault();
@@ -2054,8 +2068,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           break;
         case "rectangle":
         case "noBorder":
-          wMax = Math.max(wMax, thisShapeElt.attr("width"));
-          hMax = Math.max(hMax, thisShapeElt.attr("height"));
+          if (!d.manualResize) { // Ignore Manually Resized Rectangles 
+            wMax = Math.max(wMax, thisShapeElt.attr("width"));
+            hMax = Math.max(hMax, thisShapeElt.attr("height"));
+          }
           break;
         case "diamond":
           var pathArray = thisShapeElt.attr("d").split(" ");
@@ -2081,7 +2097,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         break;
       case "rectangle":
       case "noBorder":
-        selectedShapes.attr("width", wMax)
+        // Don't include Manually Resized Rectangles in the shape size equalization process:
+        var nonMRRs = selectedShapes.filter(function(element, index, array) {
+          return !element.manualResize;
+        });
+        nonMRRs.attr("width", wMax)
                       .attr("height", hMax)
                       .attr("x", -wMax / 2)
                       .attr("y", -hMax / 2 - 4);
@@ -2351,6 +2371,22 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
+  // Set the currently selected shape to the currently selected color. Generate an error message if
+  // no shape is selected.
+  Graphmaker.prototype.setSelectedObjectColor = function() {
+    var selectedObject = this.state.selectedNode || this.state.selectedEdge;
+    if (!selectedObject) {
+      alert("setSelectedObjectColor: no object selected.");
+      return;
+    }
+    selectedObject.color = this.clr;
+    var selectedElement = d3.select("#" + selectedObject.domId);
+    selectedElement.select(".shape").style("stroke", this.clr);
+    selectedElement.select("text").style("fill", this.clr);
+    this.updateGraph();
+  };
+
+
   Graphmaker.prototype.optionsMenuListItemMouseUp = function(listItem, d, choices) {
     // Hide the menu unless there's a submenu open:
     if ((d.id !== "eqShapeSizeItem") && (d.id !== "setTextLineLenItem")
@@ -2378,9 +2414,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         case choices[4].name:
           break; // These menu items have submenus with their own event handlers
         case choices[5].name:
-          this.exportGraphAsImage();
+          this.setSelectedObjectColor();
           break;
         case choices[6].name:
+          this.exportGraphAsImage();
+          break;
+        case choices[7].name:
           this.loadContextTextFromClient();
           break;
         default:
@@ -2405,6 +2444,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                  {"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
                  {"name": "Set text line length...", "id": "setTextLineLenItem"},
                  {"name": "Set line thickness...", "id": "setLineThicknessItem"},
+                 {"name": "Set selected object color", "id": "setSelectedObjectColorItem"},
                  {"name": "Export map as image", "id": "exportMapAsImageItem"},
                  {"name": "Load text for context menu", "id": "loadContextTextItem"}];
     } else {
