@@ -1,3 +1,19 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
+ * All rights reserved.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, CONTRIBUTORS, AND THE UNIVERSITY OF NORTH
+ * CAROLINA AT CHAPEL HILL "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER, CONTRIBUTORS OR THE UNIVERSITY OF NORTH
+ * CAROLINA AT CHAPEL HILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY * OF SUCH DAMAGE.
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 // Build a graph with nodes of several shapes and colors, and connect them with directed edges.
 // Save a constructed graph locally as a json file, and open and display saved graph files.
 // Author: Steve Chall, RENCI UNC-CH
@@ -11,6 +27,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.initializeMemberVariables();
     this.prepareToolbox();
     this.addLogos();
+    this.addCopyright();
     this.addCredits();
     this.setupNotes();
     this.defineArrowMarkers();
@@ -66,6 +83,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     esDashedEdgeRectY: 15, // "es" -> edge selection
     cOfChideText: "Hide Circles of Care",
     ssmHideText: "Hide system support rings", 
+    turnOffGridText: "Turn off grid",
     defaultFontSize: 12, // Also set in css file because image export doesn't see css
     rightMouseBtn: 3
   };
@@ -92,6 +110,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     // shapeNum values are 1-based because they're used in front-facing text:
     this.shapeNum = {"circle": 1, "rectangle": 1, "diamond": 1, "ellipse": 1, "star": 1,
                           "noBorder": 1};
+    this.gridCellW = 10;
+    this.gridCellH = 10;
+    this.grid = null;
     this.state = {
       selectedNode: null,
       selectedEdge: null,
@@ -102,8 +123,13 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       lastKeyDown: -1,
       shiftNodeDrag: false,
       selectedText: null,
-      clickDragHandle: false
+      clickDragHandle: false,
+      gridVisible: false,
+      circlesOfCareVisible: false,
+      ssmVisible: true
     };
+    this.zoom = 1;
+    this.translate = [0, 0];
     this.contextText = null;
     this.svgG = svg.append("g") // The group that contains the main SVG element
                    .classed("graph", true)
@@ -421,7 +447,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     thisGraph.sssh = thisGraph.consts.minCircleRadius * 13; // Shape Selection Svg Height
     thisGraph.ssCircleCy = thisGraph.consts.minCircleRadius * 2 - 16; // ShapeSelectionCircleCy
     thisGraph.esEdgeX1 = thisGraph.sssw / 5 - 20; 
-    thisGraph.CofCC = null; // CirclesOfCareCenter
+    thisGraph.CofCCenter = null; // CirclesOfCareCenter
     thisGraph.SSMCenter = null; // System Support Map Center
 
     // Handle delete graph
@@ -444,6 +470,21 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .attr("height", 60)
       .attr("x", -52)
       .attr("y", 0);
+  };
+
+
+  Graphmaker.prototype.addCopyright = function() {
+    //d3.select("#mainSVG").append("div")
+    d3.select("#topGraphDiv").append("div")
+      .attr("id", "copyrightDiv")
+//      .attr("display", "inline")
+        .append("text")
+          .attr("id", "copyright")
+          .text("\u00a9 2014-2015 The University of North Carolina at Chapel Hill")
+        //  .attr("position", "absolute")
+      //    .attr("y", 500)
+//      .attr("display", "none")
+       //   .attr("x", 170);
   };
 
 
@@ -522,7 +563,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         thisGraph.state.justDragged = true;
         thisGraph.dragmove(args);
       })
-      .on("dragend", function() {
+      .on("dragend", function(args) {
+        thisGraph.snapToGrid(args);
         // Todo check if edge-mode is selected
       });
   };
@@ -666,6 +708,16 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
+  Graphmaker.prototype.snapToGrid = function(d) {
+    if (this.state.gridVisible) {
+      var leftGridlineDist = d.x % this.gridCellW;
+      var upperGridlineDist = d.y % this.gridCellH;
+      d.x += (leftGridlineDist <= 5) ? -leftGridlineDist : this.gridCellW - leftGridlineDist;
+      d.y += (upperGridlineDist <= 5) ? -upperGridlineDist : this.gridCellH - upperGridlineDist;
+    }
+  };
+
+
   Graphmaker.prototype.dragmove = function(d) {
     if (this.state.shiftNodeDrag) { // Creating a new edge
       this.dragLine.attr("d", "M" + d.x + "," + d.y + "L" + d3.mouse(this.svgG.node())[0]
@@ -674,6 +726,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       this.dragLine.style("stroke-width", 0);
       d.x += d3.event.dx;
       d.y +=  d3.event.dy;
+      this.snapToGrid(d);
       this.updateGraph();
     }
   };
@@ -1085,7 +1138,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                    style: thisGraph.edgeStyle,
                    color: thisGraph.clr, 
                    thickness: thisGraph.edgeThickness,
-                   name: "" + thisGraph.edgeNum++};
+                   name: ""};
+                   //name: "" + thisGraph.edgeNum++};
     var filtRes = thisGraph.edgeGroups.filter(function(d) {
       if (d.source === newEdge.target && d.target === newEdge.source) {
         thisGraph.links.splice(thisGraph.links.indexOf(d), 1);
@@ -1464,7 +1518,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
               });
           }
         }
-        if (elt && !elt.__data__.manualResize && thisGraph.populateContextMenu()) {
+        if (elt && elt.__data__ && !elt.__data__.manualResize && thisGraph.populateContextMenu()) {
           thisGraph.showContextMenu(e);
         }
         e.preventDefault();
@@ -1742,10 +1796,22 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
+  Graphmaker.prototype.fitGridToZoom = function() {
+    var reverseTranslate = this.translate;
+    reverseTranslate[0] /= -this.zoom;
+    reverseTranslate[1] /= -this.zoom;
+    d3.select("#gridGroup")
+      .attr("transform", "translate(" + reverseTranslate + ")");
+  };
+
+
   Graphmaker.prototype.zoomed = function() {
     this.state.justScaleTransGraph = true;
+    this.zoom = d3.event.scale;
+    this.translate = d3.event.translate;
     d3.select(".graph")
-      .attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+      .attr("transform", "translate(" + this.translate + ") scale(" + this.zoom + ")");
+    this.createGrid();
   };
 
 
@@ -1755,6 +1821,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var x = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth;
     var y = window.innerHeight|| docEl.clientHeight|| bodyEl.clientHeight;
     svg.attr("width", x).attr("height", y);
+    this.createGrid();
+    this.updateGraph();
   };
 
 
@@ -1782,9 +1850,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var absCosTheta = dy / hyp; // Absolute value of cosine theta
     var w = edge.target.width / 2;
     var h = edge.target.height / 2;
-    var transitionCos = h / Math.sqrt(w * w + h * h); // cos of angle where intersect switches sides
+    var thresholdCos = h / Math.sqrt(w * w + h * h); // cos of angle where intersect switches sides
     var offset = 22; // Give the arrow a little breathing room
-    return ((absCosTheta > transitionCos) ? h * hyp / dy : w * hyp / dx) + offset;
+    return ((absCosTheta > thresholdCos) ? h * hyp / dy : w * hyp / dx) + offset;
   };
 
 
@@ -1837,6 +1905,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                   "color": "#" + this.consts.colorChoices[7]} ];
     d3.select("#graphG").append("g")
       .classed({"ssmGroup": true, "ssmHidden": true, "ssmVisible": false});
+    this.state.ssmVisible = false;
     d3.select(".ssmGroup").selectAll(".ssmCircle")
       .data(rings)
       .enter().append("circle")
@@ -1884,6 +1953,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var ssmCenter = this.SSMCenter;
     d3.select(".ssmGroup")
       .classed({"ssmHidden": false, "ssmVisible": true});
+    this.state.ssmVisible = true;
     d3.selectAll(".ssmCircle")
       .attr("cx", ssmCenter.x)
       .attr("cy", ssmCenter.y);
@@ -1905,6 +1975,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.SSMCenter = null;
     d3.select(".ssmGroup")
       .classed({"ssmHidden": true, "ssmVisible": false});
+    this.state.ssmVisible = false;
     d3.select("#sysSptRingsItem").text("Show system support rings")
       .datum({"name": "Show system support rings"});
   };
@@ -1912,10 +1983,14 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   // Create three concentric circles.
   Graphmaker.prototype.createCirclesOfCare = function() {
-    d3.select("#graphG").selectAll(".cOfC")
-      .data([75, 300, 500])
+    d3.select("#graphG").append("g")
+      .attr("id", "circlesOfCareGroup")
+      .classed("visible", this.state.circlesOfCareVisible);
+    d3.select("#circlesOfCareGroup").selectAll(".cOfC")
+      //.data([75, 300, 500])
+      .data([75, 200, 350])
       .enter().append("circle")
-        .classed({"cOfC": true, "circleHidden": true, "circleOfCare": false})
+        .classed("cOfC", true)
         .style("fill", "none")
         .attr("r", function(d) { 
           return d; 
@@ -1924,23 +1999,24 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.showCirclesOfCare = function() {
-    if (!this.CofCC) {
-      this.CofCC = {"x": d3.select("#topGraphDiv").node().clientWidth / 2,
+    if (!this.CofCCenter) {
+      this.CofCCenter = {"x": d3.select("#topGraphDiv").node().clientWidth / 2,
                          "y": d3.select("#topGraphDiv").node().clientHeight / 2};
     }
-    d3.selectAll(".circleHidden")
-      .classed({"circleHidden": false, "circleOfCare": true})
-      .attr("cx", this.CofCC.x)
-      .attr("cy", this.CofCC.y);
+    this.state.circlesOfCareVisible = true;
+    d3.select("#circlesOfCareGroup").classed("visible", this.state.circlesOfCareVisible);
+    d3.selectAll(".cOfC")
+      .attr("cx", this.CofCCenter.x)
+      .attr("cy", this.CofCCenter.y);
     d3.select("#cOfCItem").text(this.consts.cOfChideText)
       .datum({"name": this.consts.cOfChideText});
   };
 
 
   Graphmaker.prototype.hideCirclesOfCare = function() {
-    this.CofCC = null;
-    d3.selectAll(".circleOfCare")
-      .classed({"circleHidden": true, "circleOfCare": false});
+    this.CofCCenter = null;
+    this.state.circlesOfCareVisible = false;
+    d3.select("#circlesOfCareGroup").classed("visible", this.state.circlesOfCareVisible);
     d3.select("#cOfCItem").text("Show Circles of Care")
       .datum({"name": "Show Circles of Care"});
   };
@@ -1968,7 +2044,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                                                   "links": saveEdges,
                                                   "graphGTransform": graphGTransform,
                                                   "systemSupportMapCenter": thisGraph.SSMCenter,
-                                                  "circlesOfCareCenter": thisGraph.CofCC})], 
+                                                  "circlesOfCareCenter": thisGraph.CofCCenter})], 
                                                  {type: "text/plain;charset=utf-8"});
       saveAs(blob, "SystemSupportMap.json");
     });
@@ -2031,8 +2107,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
               thisGraph.hideSystemSupportMap();
             }            
             thisGraph.hideCirclesOfCare();
-            thisGraph.CofCC = jsonObj.circlesOfCareCenter;
-            if (thisGraph.CofCC) {
+            thisGraph.CofCCenter = jsonObj.circlesOfCareCenter;
+            if (thisGraph.CofCCenter) {
               thisGraph.showCirclesOfCare();
             }
             thisGraph.updateGraph();
@@ -2296,13 +2372,21 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   // Based on http://techslides.com/save-svg-as-an-image
   Graphmaker.prototype.exportGraphAsImage = function() {
-    var shapes = d3.selectAll(".ssmGroup circle, g.shapeG .shape");
+    var shapes = d3.selectAll(".ssmGroup circle, g.shapeG .shape, .cOfC");
 
     // Set attributes of objects to render correctly without css:
     shapes.style("fill", "#F6FBFF");
-    d3.selectAll(".circleHidden").attr("display", "none");
-    d3.selectAll(".ssmCircle").style("fill", "none");
+    d3.select("#circlesOfCareGroup")
+      .attr("display", this.state.circlesOfCareVisible ? "inline-block" : "none");
+    d3.selectAll(".cOfC")
+      .style("fill", "none")
+      .style("stroke-width", "1px")
+      .style("stroke", "#000000");
+    d3.selectAll(".ssmCircle")
+      .style("fill", "none")
+      .style("display", (this.state.ssmVisible ? "inline-block" : "none"));
     d3.selectAll(".ssmHidden").attr("display", "none");
+    d3.select("#gridGroup").attr("display", "none");
     d3.select("#mainSVG").style("background-color", this.consts.bgColor);
     var edges = d3.selectAll(".link")
                   .style("marker-end", function() {
@@ -2324,8 +2408,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     d3.select("#credits")
       .attr("display", "block")
       .attr("y", extent.h - 30)
-      .text("Generated " + Date() + " by System Support Mapper (developed by the UNC-CH School of "
-        + "Public Health in collaboration with the Renaissance Computing Center)");
+     .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2015 UNC-CH)");
 
     // Create canvas:
     d3.select("body").append("canvas")
@@ -2363,8 +2446,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
            .attr("height", previousH)
            .style("overflow", "hidden");
     shapes.style("fill", undefined);
-    d3.selectAll(".circleHidden").attr("display", undefined);
-    d3.selectAll(".ssmCircle").style("fill", undefined);
+    //d3.selectAll(".ssmCircle, .cOfC").style("fill", undefined);
+    d3.selectAll(".ssmCircle, .cOfC").style("fill", "none");
     d3.select("#credits").attr("display", "none");
     this.updateGraph();
     canvas.remove();
@@ -2386,12 +2469,99 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.updateGraph();
   };
 
+  
+  Graphmaker.prototype.generateGridLineEndPoints = function() {
+    var thisGraph = this;
+    var data = [];
+    var topDiv = d3.select("#topGraphDiv");
+    var bcr = d3.select("#mainSVG").node().getBoundingClientRect();
+    var maxX = bcr.width / this.zoom, maxY = bcr.height / this.zoom;
+    var x1 = 0, y1 = 0, x2 = 0, y2 = maxY, n = 0;
+    var w = thisGraph.zoom > 0.2 ? thisGraph.gridCellW : (thisGraph.zoom > 0.02 ? 40 : 400);
+    var h = thisGraph.zoom > 0.2 ? thisGraph.gridCellH : (thisGraph.zoom > 0.02 ? 40 : 400);
+    while(x1 <= maxX) { 
+      data.push({"x1": x1, "y1": y1, "x2": x2, "y2": y2, "orientation": "Vert", "n": n++});
+      x1 += parseFloat(w);
+      x2 = x1;
+    }
+    x1 = 0, y1 = 0, x2 = maxX, y2 = 0, n = 0;
+    while(y1 <= maxY) {
+      data.push({"x1": x1, "y1": y1, "x2": x2, "y2": y2, "orientation": "Horiz", "n": n++});
+      y1 += parseFloat(h);
+      y2 = y1;
+    }
+    return data;
+  };
+
+
+  Graphmaker.prototype.createGrid = function() {
+    var thisGraph = this;
+    if (thisGraph.grid) {
+      thisGraph.grid.remove();
+      thisGraph.grid = null;
+    }
+    thisGraph.grid = d3.select("#graphG").insert("g", ":first-child")
+      .attr("id", "gridGroup")
+      .classed("visible", thisGraph.state.gridVisible);
+
+    var data = thisGraph.generateGridLineEndPoints();
+    d3.select("#gridGroup").selectAll("line")
+      .data(data)
+      .enter().append("svg:line")
+        .attr("x1", function(d) { return d.x1; })
+        .attr("x2", function(d) { return d.x2; })
+        .attr("y1", function(d) { return d.y1; })
+        .attr("y2", function(d) { return d.y2; })
+        .attr("id", function(d, i) {
+          return "gridline" + d.orientation + d.n;
+        })
+        .style("stroke", "#000000")
+        .style("stroke-width", function(d) { return (d.n % 4) ? "0.1px" : "0.5px"; })
+        .style("stroke-dasharray", ("1, 1"))
+        .style("fill", "none");
+    thisGraph.fitGridToZoom();
+  };
+
+
+  Graphmaker.prototype.enableGrid = function() {
+    d3.select("#gridGroup").classed("visible", true);
+    this.state.gridVisible = true;
+  };
+
+
+  Graphmaker.prototype.showSnapToGridText = function() {
+    d3.select("#snapToGridItem").text("Snap to grid")
+      .datum({"name": "Snap to grid"});
+  };
+
+
+  Graphmaker.prototype.showTurnOffGridText = function() {
+    d3.select("#snapToGridItem").text(this.consts.turnOffGridText)
+      .datum({"name": this.consts.turnOffGridText});
+  };
+
+
+  Graphmaker.prototype.enableSnapToGrid = function() {
+    if (!this.grid) {
+      this.createGrid();
+    }
+    this.enableGrid();
+    this.showTurnOffGridText();
+  };
+
+
+  Graphmaker.prototype.turnOffGrid = function() {
+    d3.select("#gridGroup").classed("visible", false);
+    this.state.gridVisible = false;
+    this.showSnapToGridText();
+  };
+
 
   Graphmaker.prototype.optionsMenuListItemMouseUp = function(listItem, d, choices) {
     // Hide the menu unless there's a submenu open:
     if ((d.id !== "eqShapeSizeItem") && (d.id !== "setTextLineLenItem")
                                      && (d.id !== "setLineThicknessItem")) {
-      d3.select("#menuDiv").classed("menu", false).classed("menuHidden", true);
+      d3.select("#optionsMenuDiv").classed("menu", false).classed("menuHidden", true);
     }
 
     if (this.displayAll) {
@@ -2400,14 +2570,14 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         case choices[0].name:
           this.showSystemSupportMap();
           break;
+        case this.consts.ssmHideText:
+          this.hideSystemSupportMap();
+          break;
         case choices[1].name:
           this.showCirclesOfCare();
           break;
         case this.consts.cOfChideText:
           this.hideCirclesOfCare();
-          break;
-        case this.consts.ssmHideText:
-          this.hideSystemSupportMap();
           break;
         case choices[2].name:
         case choices[3].name:
@@ -2417,9 +2587,18 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           this.setSelectedObjectColor();
           break;
         case choices[6].name:
-          this.exportGraphAsImage();
+          this.enableSnapToGrid();
+          break;
+        case this.consts.turnOffGridText:
+          this.turnOffGrid();
+          break;
+        case this.consts.ssmHideText:
+          this.hideSystemSupportMap();
           break;
         case choices[7].name:
+          this.exportGraphAsImage();
+          break;
+        case choices[8].name:
           this.loadContextTextFromClient();
           break;
         default:
@@ -2445,6 +2624,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                  {"name": "Set text line length...", "id": "setTextLineLenItem"},
                  {"name": "Set line thickness...", "id": "setLineThicknessItem"},
                  {"name": "Set selected object color", "id": "setSelectedObjectColorItem"},
+                 {"name": "Snap to grid", "id": "snapToGridItem"},
                  {"name": "Export map as image", "id": "exportMapAsImageItem"},
                  {"name": "Load text for context menu", "id": "loadContextTextItem"}];
     } else {

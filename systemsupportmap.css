@@ -1,3 +1,19 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
+ * All rights reserved.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, CONTRIBUTORS, AND THE UNIVERSITY OF NORTH
+ * CAROLINA AT CHAPEL HILL "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER, CONTRIBUTORS OR THE UNIVERSITY OF NORTH
+ * CAROLINA AT CHAPEL HILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY * OF SUCH DAMAGE.
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 body {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -9,7 +25,7 @@ body {
   padding: 0;
   overflow:hidden;
   font-family: arial;
-  font-size: 12px; /* remember to set defaultFontSize to this value in .js file */
+  font-size: 12px; /* Remember to set defaultFontSize to this value in .js file */
 }
 
 #topGraphDiv {
@@ -84,6 +100,16 @@ body {
   opacity: 0.4;
 }
 
+#copyrightDiv {
+  bottom: 0;
+  left: 170px;
+  position: absolute;
+  right: 0;
+  text-align: left;
+  margin: 9px;
+  pointer-events: none;
+}
+
 #circleSelection:hover,
 #rectangleSelection:hover,
 #diamondSelection:hover,
@@ -139,6 +165,14 @@ g.shapeG circle, g.shapeG rect, g.shapeG ellipse, g.shapeG path, g.shapeG polygo
   stroke-width: 2px;
 }
 
+#gridGroup.visible {
+  display: inline;
+}
+
+#gridGroup:not(.visible), #circlesOfCareGroup:not(.visible) {
+  display: none;
+}
+
 g circle, g rect, g ellipse, g polygon, g path {
   fill: rgb(248, 248, 248);
 }
@@ -169,10 +203,6 @@ path.link.selected, g.pathG.selected path {
   stroke: rgb(229, 172, 247); /* selected color */
 }
 
-.menuHidden {
-  display: none;
-}
-
 .menu {
   position: absolute;
   display: inline-block;
@@ -199,15 +229,11 @@ path.link.selected, g.pathG.selected path {
   background-color: rgb(200, 238, 241);
 }
 
-.menuHidden li {
+.menuHidden *, .ssmHidden {
   display: none;
 }
 
-.circleHidden, .ssmHidden {
-  display: none;
-}
-
-.circleOfCare, .ssmVisible {
+#circlesOfCareGroup, .ssmVisible {
   display: inline-block;
   stroke: #000000;
   stroke-width: 1px;
