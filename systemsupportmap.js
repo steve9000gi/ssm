@@ -712,8 +712,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     if (this.state.gridVisible) {
       var leftGridlineDist = d.x % this.gridCellW;
       var upperGridlineDist = d.y % this.gridCellH;
-      d.x += (leftGridlineDist <= 5) ? -leftGridlineDist : this.gridCellW - leftGridlineDist;
-      d.y += (upperGridlineDist <= 5) ? -upperGridlineDist : this.gridCellH - upperGridlineDist;
+      d.x += (leftGridlineDist <= this.gridCellW / 2) ? -leftGridlineDist
+                                                      : this.gridCellW - leftGridlineDist;
+      d.y += (upperGridlineDist <= this.gridCellH / 2) ? -upperGridlineDist
+                                                       : this.gridCellH - upperGridlineDist;
     }
   };
 
@@ -2446,7 +2448,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
            .attr("height", previousH)
            .style("overflow", "hidden");
     shapes.style("fill", undefined);
-    //d3.selectAll(".ssmCircle, .cOfC").style("fill", undefined);
     d3.selectAll(".ssmCircle, .cOfC").style("fill", "none");
     d3.select("#credits").attr("display", "none");
     this.updateGraph();
@@ -2477,8 +2478,13 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var bcr = d3.select("#mainSVG").node().getBoundingClientRect();
     var maxX = bcr.width / this.zoom, maxY = bcr.height / this.zoom;
     var x1 = 0, y1 = 0, x2 = 0, y2 = maxY, n = 0;
-    var w = thisGraph.zoom > 0.2 ? thisGraph.gridCellW : (thisGraph.zoom > 0.02 ? 40 : 400);
-    var h = thisGraph.zoom > 0.2 ? thisGraph.gridCellH : (thisGraph.zoom > 0.02 ? 40 : 400);
+    // Create fewer gridlines when zooming out:
+    var w = thisGraph.zoom > 0.2 ? thisGraph.gridCellW
+                                 : (thisGraph.zoom > 0.02 ? thisGraph.gridCellW * 4
+                                                          : thisGraph.gridCellW * 40);
+    var h = thisGraph.zoom > 0.2 ? thisGraph.gridCellH
+                                 : (thisGraph.zoom > 0.02 ? thisGraph.gridCellH * 4
+                                                          : thisGraph.gridCellH * 40);
     while(x1 <= maxX) { 
       data.push({"x1": x1, "y1": y1, "x2": x2, "y2": y2, "orientation": "Vert", "n": n++});
       x1 += parseFloat(w);
