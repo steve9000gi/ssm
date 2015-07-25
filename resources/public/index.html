@@ -25,12 +25,158 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     <div id="topGraphDiv">
       <div id="toolbox">
+        <div id="edgeStyleSelectionDiv">
+        </div>
+
+        <div id="shapeSelectionDiv">
+          <svg id="shapeSelectionSvg" width="103" height="260"
+               xmlns="http://www.w3.org/2000/svg"
+               xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+            <circle id="circleSelection" class="shapeSelection sel"
+                    r="20" cx="51.5" cy="24"
+                    style="stroke: rgb(0, 0, 0); stroke-width: 2px;">
+            </circle>
+            <rect id="rectangleSelection" class="shapeSelection unsel"
+                  width="35.44907701811032" height="30.449077018110323"
+                  x="33.05092298188968" y="49"
+                  style="stroke: rgb(102, 102, 102); stroke-width: 2px;">
+            </rect>
+            <rect id="diamondSelection" class="shapeSelection unsel"
+                  width="35.44907701811032" height="35.44907701811032"
+                  transform="rotate(45,70.89815403622065,16)"
+                  x="104.5" y="78"
+                  style="stroke: rgb(102, 102, 102); stroke-width: 2px;">
+            </rect>
+            <ellipse id="ellipseSelection" class="shapeSelection unsel"
+                     cx="51.5" cy="154" rx="25" ry="17"
+                     style="stroke: rgb(102, 102, 102); stroke-width: 2px;">
+            </ellipse>
+            <polygon id="starSelection" class="shapeSelection unsel"
+                     x="50" y="205.81435391267723"
+                     points="67.6335575687742, 230.08486374392567,
+                             50,220.81435391267723, 32.366442431225806,
+                             230.08486374392567, 35.734152255572695,
+                             210.44960882830145, 21.46830451114539,
+                             196.5438440814288, 41.1832212156129,
+                             193.67909899705302, 49.99999999999999,
+                             175.81435391267723, 58.8167787843871,
+                             193.67909899705302, 78.53169548885461,
+                             196.5438440814288, 64.2658477444273,
+                             210.44960882830145"
+                     style="stroke: rgb(102, 102, 102); stroke-width: 2px;">
+            </polygon>
+            <text id="noBorderSelection" class="shapeSelection unsel"
+                  x="50" y="245.81435391267723"
+                  text-anchor="middle"
+                  style="stroke: none; stroke-width: 2px;
+                         fill: rgb(102, 102, 102);">
+              no border
+            </text>
+          </svg>
+        </div>
+
+        <div id="colorPalette">
+          <div class="colorBar" id="clrff0000"
+               style="background-color: rgb(255, 0, 0);">
+          </div>
+          <div class="colorBar" id="clrff8800"
+               style="background-color: rgb(255, 136, 0);">
+          </div>
+          <div class="colorBar" id="clr999900"
+               style="background-color: rgb(153, 153, 0);">
+          </div>
+          <div class="colorBar" id="clr00bd00"
+               style="border-color: rgb(0, 0, 0);
+                      background-color: rgb(0, 189, 0);">
+          </div>
+          <div class="colorBar" id="clr00bdbd"
+               style="background-color: rgb(0, 189, 189);">
+          </div>
+          <div class="colorBar" id="clr0000ff"
+               style="background-color: rgb(0, 0, 255);">
+          </div>
+          <div class="colorBar" id="clr8800ff"
+               style="background-color: rgb(136, 0, 255);">
+          </div>
+          <div class="colorBar" id="clr000000"
+               style="border-color: rgb(255, 255, 255);
+                      background-color: rgb(0, 0, 0);">
+          </div>
+        </div>
+
+        <div id="btnDiv">
+          <input type="button" id="helpBtn" value="?">
+          <input type="button" id="optionsBtn" value="Options">
+        </div>
+
         <input type="file" id="hidden-file-upload">
         <input type="file" id="hidden-textFile-upload">
-        <input class="iconInput" id="upload-input" type="image" title="open map" src="img/upload-icon.png" alt="open map">
-        <input class="iconInput" type="image" id="download-input" title="save map" src="img/download-icon.png" alt="save map">
-        <input class="iconInput" type="image" id="delete-graph" title="delete map" src="img/trash-icon.png" alt="delete map">
+        <input class="iconInput" id="upload-input" type="image"
+               title="open map" src="img/upload-icon.png" alt="open map">
+        <input class="iconInput" type="image" id="download-input"
+               title="save map" src="img/download-icon.png" alt="save map">
+        <input class="iconInput" type="image" id="delete-graph"
+               title="delete map" src="img/trash-icon.png" alt="delete map">
       </div>
+
+      <div id="mainSVGDiv">
+        <svg id="mainSVG" width="1347" height="795" style="font-family: arial;">
+          <image xmlns:xlink="http://www.w3.org/1999/xlink"
+                 xlink:href="img/mch-tracs.png"
+                 id="logos"
+                 width="546"
+                 height="60"
+                 x="-52"
+                 y="0">
+          </image>
+
+          <g class="ssmGroup ssmVisible">
+            <circle class="ssmCircle" r="110"
+                    style="stroke: rgb(136, 0, 255); fill: none;"
+                    cx="673.5" cy="399">
+            </circle>
+            <circle class="ssmCircle" r="275"
+                    style="stroke: rgb(0, 0, 255); fill: none;"
+                    cx="673.5" cy="399">
+            </circle>
+            <circle class="ssmCircle" r="475"
+                    style="stroke: rgb(0, 189, 189); fill: none;"
+                    cx="673.5" cy="399">
+            </circle>
+            <circle class="ssmCircle" r="675"
+                    style="stroke: rgb(0, 0, 0); fill: none;"
+                    cx="673.5" cy="399">
+            </circle>
+            <text class="ssmLabel" x="640.1484375" y="309"
+                  style="fill: rgb(136, 0, 255); font-size: 12px;">
+              Role/Identity
+            </text>
+            <text class="ssmLabel" x="590.1328125" y="152"
+                  style="fill: rgb(0, 0, 255); font-size: 12px;">
+              Most Important Responsibilities
+            </text>
+            <text class="ssmLabel" x="570.4482421875" y="-50"
+                  style="fill: rgb(0, 189, 189); font-size: 12px;">
+              General Needs for Each Responsibility
+            </text>
+            <text class="ssmLabel" x="618.8056640625" y="-258"
+                  style="fill: rgb(0, 0, 0); font-size: 12px;">
+              Available Resources
+            </text>
+            <text class="ssmLabel" x="649.1630859375" y="-287"
+                  style="fill: rgb(153, 153, 0); font-size: 12px;">
+              Wish List
+            </text>
+          </g>
+        </svg>
+      </div>
+
+      <div id="copyrightDiv">
+        <text id="copyright">
+          &copy; 2014-2015 The University of North Carolina at Chapel Hill
+        </text>
+      </div>
+
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
