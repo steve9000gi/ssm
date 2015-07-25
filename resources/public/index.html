@@ -19,24 +19,25 @@ THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>System Support Mapper</title>
-    <link rel="stylesheet" href="systemsupportmap.css" />
+    <link rel="stylesheet" href="css/systemsupportmap.css" />
   </head>
   <body>
+
     <div id="topGraphDiv">
-    <div id="toolbox">
-      <input type="file" id="hidden-file-upload">
-      <input type="file" id="hidden-textFile-upload">
-      <input class="iconInput" id="upload-input" type="image" title="open map" src="upload-icon.png" alt="open map">
-      <input class="iconInput" type="image" id="download-input" title="save map" src="download-icon.png" alt="save map">
-      <input class="iconInput" type="image" id="delete-graph" title="delete map" src="trash-icon.png" alt="delete map">
-    </div>
+      <div id="toolbox">
+        <input type="file" id="hidden-file-upload">
+        <input type="file" id="hidden-textFile-upload">
+        <input class="iconInput" id="upload-input" type="image" title="open map" src="img/upload-icon.png" alt="open map">
+        <input class="iconInput" type="image" id="download-input" title="save map" src="img/download-icon.png" alt="save map">
+        <input class="iconInput" type="image" id="delete-graph" title="delete map" src="img/trash-icon.png" alt="delete map">
+      </div>
     </div>
 
-    <!--<script src="//d3js.org/d3.v3.js" charset="utf-8"></script>-->
-    <script src="d3.js" charset="utf-8"></script>
-    <script type='text/javascript' src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
     <script src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js"></script>
-    <script src="systemsupportmap.js" charset="utf-8"></script>
+    <!-- <script type="text/javascript" src="js/systemsupportmap.js" charset="utf-8"></script> -->
+    <script type="text/javascript" src="js/compiled/ssm.js"></script>
   </body>
 
 </html>

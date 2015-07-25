@@ -464,7 +464,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.addLogos = function() {
     d3.select("#mainSVG").append("svg:image")
-      .attr("xlink:href", "mch-tracs.png")
+      .attr("xlink:href", "img/mch-tracs.png")
       .attr("id", "logos")
       .attr("width", 546)
       .attr("height", 60)
