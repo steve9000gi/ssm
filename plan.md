@@ -40,7 +40,7 @@ x do basic frame, including logo, copyright, and system support rings
 x do basic, immutable toolbox, without working options/help/buttons
 o reflect toolbox selection state in view
   x edge style
-  o node style
+  x node style
   o color
 o add ability to add a node, with selected shape and color
 o move node

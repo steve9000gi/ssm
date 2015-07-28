@@ -4,6 +4,7 @@
   (:require
     [om.core :as om :include-macros true]
     [ssm.edge-style :as edge-style]
+    [ssm.shape-style :as shape-style]
     [ssm.state :as state]))
 
 (enable-console-print!)
@@ -15,4 +16,8 @@
 (om/root edge-style/edge-style-selector
          state/app-state
          {:target (.getElementById js/document "edgeStyleSelectionDiv")})
+
+(om/root shape-style/shape-style-selector
+         state/app-state
+         {:target (.getElementById js/document "shapeSelectionDiv")})
 
