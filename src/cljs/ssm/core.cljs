@@ -3,6 +3,7 @@
   environmental things and starting Om."
   (:require
     [om.core :as om :include-macros true]
+    [ssm.color-palette :as color-palette]
     [ssm.edge-style :as edge-style]
     [ssm.shape-style :as shape-style]
     [ssm.state :as state]))
@@ -20,4 +21,8 @@
 (om/root shape-style/shape-style-selector
          state/app-state
          {:target (.getElementById js/document "shapeSelectionDiv")})
+
+(om/root color-palette/color-palette
+         state/app-state
+         {:target (.getElementById js/document "colorPalette")})
 

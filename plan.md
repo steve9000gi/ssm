@@ -38,10 +38,10 @@ App state should include:
 Plan of attack:
 x do basic frame, including logo, copyright, and system support rings
 x do basic, immutable toolbox, without working options/help/buttons
-o reflect toolbox selection state in view
+x reflect toolbox selection state in view
   x edge style
   x node style
-  o color
+  x color
 o add ability to add a node, with selected shape and color
 o move node
 o add ability to add a link, with selected style, color, and thickness

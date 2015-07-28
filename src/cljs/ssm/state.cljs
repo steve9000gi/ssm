@@ -17,5 +17,11 @@
      ;; namespace.
      ;; Valid values: `#{:circle :rect :diamond :ellipse :square :none}`
      :shape-style [:circle]
+
+     ;; The color for new nodes and links. Users can select various colors in
+     ;; the toolbox. Controlled by the `ssm.color-palette` namespace.
+     ;; Valid values: `#{"ff0000" "ff8800" "999900" "00bd00"
+     ;;                  "00bdbd" "0000ff" "8800ff" "000000"}`
+     :color ["000000"]
     }))
 
