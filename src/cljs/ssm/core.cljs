@@ -5,6 +5,7 @@
     [om.core :as om :include-macros true]
     [ssm.color-palette :as color-palette]
     [ssm.edge-style :as edge-style]
+    [ssm.node :as node]
     [ssm.shape-style :as shape-style]
     [ssm.state :as state]))
 
@@ -25,4 +26,8 @@
 (om/root color-palette/color-palette
          state/app-state
          {:target (.getElementById js/document "colorPalette")})
+
+(om/root node/nodes
+         state/app-state
+         {:target (.getElementById js/document "graphGG")})
 
