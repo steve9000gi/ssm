@@ -11,8 +11,6 @@
     [sablono.core :as html :refer-macros [html]]
     ))
 
-(defmulti node-component (fn [data owner] (prn 'node-component (get data :shape)) (get data :shape)))
-
 ;; TODO:
 ;; - 'hovered' functionality
 ;; - do url and note need to be rendered somewhere?

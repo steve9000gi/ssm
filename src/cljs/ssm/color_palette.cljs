@@ -42,7 +42,7 @@
     (render [_]
       (let [color-cursor (:color data)]
         (html
-          [:div
+          [:div#colorPalette
            (for [color ["ff0000" "ff8800" "999900" "00bd00"
                         "00bdbd" "0000ff" "8800ff" "000000"]]
              (om/build color-stripe color-cursor {:opts {:color color}}))])))))
