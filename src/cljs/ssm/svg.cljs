@@ -10,6 +10,7 @@
     [ssm.edge-style :as edge-style]
     [ssm.node :as node]
     [ssm.shape-style :as shape-style]
+    [ssm.controls :refer [raise!]]
     ))
 
 (defn- ssm-circle
@@ -33,6 +34,16 @@
     (render [_]
       (html
         [:svg.mainSVG {:width "1347", :height "795"
+                       :onClick (fn [e]
+                                  ;; Note that we have to copy what we need out
+                                  ;; of this event now, before enqueuing on a
+                                  ;; channel, or the data will be lost, because
+                                  ;; these React events are fairly ephemeral.
+                                  (raise! owner [:canvas-click
+                                                 {:shift (.-shiftKey e)
+                                                  :x (.-clientX e)
+                                                  :y (.-clientY e)}])
+                                  (.stopPropagation e))
                        :style {:font-family "arial"}}
          [:image#logos {:x "-52", :y "0"
                         :width "546", :height "60"}]

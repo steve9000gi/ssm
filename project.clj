@@ -17,7 +17,7 @@
   :cljsbuild
   {:builds [{:id "dev"
              :source-paths ["src/cljs"]
-             :figwheel {:on-jsload "ssm.core/on-js-reload"}
+             :figwheel {:on-jsload "ssm.core/init"}
              :compiler {:main ssm.core
                         :asset-path "js/compiled/out"
                         :output-to "resources/public/js/compiled/ssm.js"

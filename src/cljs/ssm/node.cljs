@@ -96,17 +96,12 @@
 
 (defn nodes
   [data owner]
-  (prn 'nodes 'data data 'owner owner)
   (reify
     om/IRender
     (render [_]
       (let [nodes (:nodes data)]
-        (prn 'nodes nodes)
         (html
           [:g#shapeGG
            (for [node nodes]
-             (do (prn 'node node)
-                 (om/build node-component node))
-             )
-           ])))))
+             (om/build node-component node))])))))
 

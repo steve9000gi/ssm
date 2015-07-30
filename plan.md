@@ -42,7 +42,7 @@ x reflect toolbox selection state in view
   x edge style
   x node style
   x color
-o add ability to add a node, with selected shape and color
+x add ability to add a node, with selected shape and color
 o move node
 o add ability to add a link, with selected style, color, and thickness
 
