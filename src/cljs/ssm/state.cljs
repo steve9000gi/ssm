@@ -31,25 +31,27 @@
      ;; below for reference and documentation purposes.
      :nodes [
              #_{
+                ;; The index within the `:nodes` array of this node.
+                :index 0
                 ;; The shape of this node. See `:shape-style` above.
-                :shape
+                :shape :circle
                 ;; The color. See `:color` above.
-                :color
+                :color "999900"
                 ;; The text to display in the node.
-                :text
+                :text "some text"
                 ;; The position, in pixels, counting up from the upper left.
-                :position {:x _, :y _}
+                :position {:x 123, :y 456}
                 ;; Eventually we will want size to be a separate property, not
                 ;; strictly derived from the text, because we need to support
                 ;; equalizing the sizes of all the shapes. But that's for
                 ;; later. (TODO)
                 ; :size
                 ;; Is the cursor hovering over the node? Should be true/false.
-                :hovered
+                :hovered false
                 ;; The URL associated with the node.
-                :url
+                :url nil
                 ;; The note associated with the node.
-                :note
+                :note nil
                 }
              ]
 
@@ -58,6 +60,19 @@
      ;; setting here indicates the index (base 0) into the `:nodes` vector, and
      ;; should be `nil` if there are no nodes, or if none is selected.
      :selected-node nil
+
+     ;; The user may drag a node to move it. Upon the mousedown event for the
+     ;; node, the index of the node gets put here.  Then upon mouseup, this
+     ;; gets set back to `nil`.
+     :moving-node nil
+
+     ;; The following enables us to discern between click events and drag
+     ;; events on the canvas. When the mouse-down event occurs, we save the
+     ;; position here as e.g. `{:x 123, :y 456}`. Then when the mouse-up event
+     ;; occurs, we compare that event's position with the position stored here.
+     ;; If they're the same, it was a click event, which may mean that we
+     ;; create a new node. Otherwise, it was a drag event.
+     :mouse-down-position nil
     }))
 
 (comment
@@ -84,7 +99,8 @@
   ;; Set a black circle as the only node in the state.
   (swap! ssm.state/app-state
          assoc :nodes
-         [{:shape :circle
+         [{:index 0
+           :shape :circle
            :color "000000"
            :text "Identity 1"
            :position {:x 120, :y 120}
@@ -95,42 +111,48 @@
   ;; Set the list of nodes to one of each shape, each with different colors.
   (swap! ssm.state/app-state
          assoc :nodes
-         [{:shape :circle
+         [{:index 0
+           :shape :circle
            :color "000000"
            :text "Identity 1"
            :position {:x 120, :y 120}
            :hovered false
            :url nil
            :note nil}
-          {:shape :rect
+          {:index 1
+           :shape :rect
            :color "8800ff"
            :text "Responsibility 1"
            :position {:x 140, :y 140}
            :hovered false
            :url nil
            :note nil}
-          {:shape :diamond
+          {:index 2
+           :shape :diamond
            :color "0000ff"
            :text "Need 1"
            :position {:x 160, :y 160}
            :hovered false
            :url nil
            :note nil}
-          {:shape :ellipse
+          {:index 3
+           :shape :ellipse
            :color "00bdbd"
            :text "Resource 1"
            :position {:x 180, :y 180}
            :hovered false
            :url nil
            :note nil}
-          {:shape :star
+          {:index 4
+           :shape :star
            :color "00bd00"
            :text "Wish 1"
            :position {:x 200, :y 200}
            :hovered false
            :url nil
            :note nil}
-          {:shape :none
+          {:index 5
+           :shape :none
            :color "999900"
            :text "Text 1"
            :position {:x 220, :y 220}

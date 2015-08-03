@@ -12,10 +12,13 @@
     [cljs.core.async :refer [chan sliding-buffer put! <!]]
     [sablono.core :as html :refer-macros [html]]
     [goog.events :as events]
+    [ssm.controls :refer [raise!]]
+    [ssm.util :refer [raise-mouse-event!]]
     ))
 
 ;; TODO:
-;; - 'hovered' functionality
+;; - get selected node working
+;; - node deletion
 ;; - do url and note need to be rendered somewhere?
 
 (defmulti inner-shape-tree
@@ -78,43 +81,22 @@
                          :dy "6"
                          :style {:fill (str "#" color)}}])
 
-(defn handle-drag-event
-  [cursor owner evt-type e]
-  (when (= evt-type :down)
-    (om/set-state! owner :pressed true))
-  (when (= evt-type :up)
-    (om/set-state! owner :pressed false))
-  (when (and (= evt-type :move)
-             (om/get-state owner :pressed))
-    (om/update! cursor :position {:x (.-clientX e), :y (.-clientY e)})))
-
 (defn node-component
   [data owner]
   (reify
-    om/IInitState
-    (init-state [_]
-      {:mouse-chan (chan (sliding-buffer 10))
-       :pressed false})
-
-    om/IWillMount
-    (will-mount [_]
-      (let [mouse-chan (om/get-state owner :mouse-chan)]
-        (go-loop []
-          (let [[evt-type e] (<! mouse-chan)]
-            (handle-drag-event data owner evt-type e))
-          (recur))))
 
     om/IDidMount
     (did-mount [_]
       (let [node (om/get-node owner)
-            mouse-chan (om/get-state owner :mouse-chan)]
-        (events/listen node "mousemove" #(put! mouse-chan [:move %]))
-        (events/listen node "mousedown" #(put! mouse-chan [:down %]))
-        (events/listen node "mouseup"   #(put! mouse-chan [:up %]))))
+            index (:index @data)
+            raise-fn (fn [evt-type]
+                       #(raise-mouse-event! owner evt-type % {:index index}))]
+        (events/listen node "mousedown" (raise-fn :node-mouse-down))
+        (events/listen node "mouseup"   (raise-fn :node-mouse-up))))
 
     om/IRender
     (render [_]
-      (let [{:keys [shape color text position hovered url note]} data
+      (let [{:keys [index shape color text position hovered url note]} data
             {:keys [x y]} position]
         (html
           [:g.shapeG {:transform (str "translate(" x "," y ")")}

@@ -22,31 +22,66 @@
   (put! (om/get-shared owner :control-chan) val)
   true)
 
+(defn- no-move?
+  [state x y]
+  (let [{first-x :x, first-y :y} (:mouse-down-position state)]
+    (and first-x
+         first-y
+         (= first-x x)
+         (= first-y y))))
+
 (defmethod control-event :default
   [event-name args state]
   (println "Unknown event occurred:" event-name)
   (prn 'args args)
   state)
 
-(defmethod control-event :canvas-click
-  [_ {:keys [shift x y]} state]
-  (if shift
-    (let [new-node {:shape (get-in state [:shape-style 0])
-                    :color (get-in state [:color 0])
-                    :text "default text"
-                    :position {:x x, :y y}
-                    :hovered false
-                    :url nil
-                    :note nil}]
-      (update-in state [:nodes] conj new-node))
+(defmethod control-event :node-mouse-down
+  [_ {:keys [x y shift index]} state]
+  (-> state
+      (assoc :mouse-down-position {:x x, :y y})
+      (assoc :moving-node index)))
+
+(defmethod control-event :node-mouse-up
+  [_ {:keys [shift x y index]} state]
+  (let [maybe-select-node (if (no-move? state x y)
+                            #(assoc % :selected-node index)
+                            identity)]
+    (-> state
+        (assoc :moving-node nil)
+        (assoc :mouse-down-position nil)
+        maybe-select-node)))
+
+(defmethod control-event :canvas-mouse-down
+  [_ {:keys [x y shift]} state]
+  (assoc state :mouse-down-position {:x x, :y y}))
+
+(defmethod control-event :canvas-mouse-move
+  [_ position state]
+  (if-let [index (:moving-node state)]
+    (assoc-in state [:nodes index :position] position)
     state))
 
-(defmethod control-event :drag-node-start
-  [_ args state])
+(defn- add-node
+  [state x y]
+  (let [num-nodes (count (:nodes state))
+        new-node {:index num-nodes
+                  :shape (get-in state [:shape-style 0])
+                  :color (get-in state [:color 0])
+                  :text "default text"
+                  :position {:x x, :y y}
+                  :hovered false
+                  :url nil
+                  :note nil}]
+    (update-in state [:nodes] conj new-node)))
 
-(defmethod control-event :drag-node-move
-  [_ args state])
-
-(defmethod control-event :drag-node-end
-  [_ args state])
+(defmethod control-event :canvas-mouse-up
+  [_ {:keys [shift x y] :as args} state]
+  (let [maybe-add-node (if (and shift (no-move? state x y))
+                         #(add-node % x y)
+                         identity)]
+    (-> state
+        (assoc :moving-node nil)
+        (assoc :mouse-down-position nil)
+        maybe-add-node)))
 

@@ -11,6 +11,7 @@
     [ssm.node :as node]
     [ssm.shape-style :as shape-style]
     [ssm.controls :refer [raise!]]
+    [ssm.util :refer [raise-mouse-event!]]
     ))
 
 (defn- ssm-circle
@@ -33,18 +34,16 @@
     om/IRender
     (render [_]
       (html
+
         [:svg.mainSVG {:width "1347", :height "795"
-                       :onClick (fn [e]
-                                  ;; Note that we have to copy what we need out
-                                  ;; of this event now, before enqueuing on a
-                                  ;; channel, or the data will be lost, because
-                                  ;; these React events are fairly ephemeral.
-                                  (raise! owner [:canvas-click
-                                                 {:shift (.-shiftKey e)
-                                                  :x (.-clientX e)
-                                                  :y (.-clientY e)}])
-                                  (.stopPropagation e))
+                       :onMouseDown
+                       #(raise-mouse-event! owner :canvas-mouse-down %)
+                       :onMouseMove
+                       #(raise-mouse-event! owner :canvas-mouse-move %)
+                       :onMouseUp
+                       #(raise-mouse-event! owner :canvas-mouse-up %)
                        :style {:font-family "arial"}}
+
          [:image#logos {:x "-52", :y "0"
                         :width "546", :height "60"}]
          [:g.graph#graphG nil
@@ -61,6 +60,7 @@
            (ssm-label "649.2" "-287" "999900" "Wish List")]
           [:g#graphGG nil
            (om/build node/nodes data)]]]))
+
     om/IDidMount
     (did-mount [_]
       ;; FIXME: this gets the SVG node but needs to get the image node
