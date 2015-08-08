@@ -30,6 +30,20 @@
          (= first-x x)
          (= first-y y))))
 
+(defn- select-node
+  [state index]
+  (assoc state :selected-node index))
+
+(defn- deselect-node
+  [state]
+  (assoc state :selected-node nil))
+
+(defn- maybe-do
+  "Return either the given state transformer `f` if `guard` is true or the
+  identity function otherwise."
+  [guard f]
+  (if guard f identity))
+
 (defmethod control-event :default
   [event-name args state]
   (println "Unknown event occurred:" event-name)
@@ -44,9 +58,8 @@
 
 (defmethod control-event :node-mouse-up
   [_ {:keys [shift x y index]} state]
-  (let [maybe-select-node (if (no-move? state x y)
-                            #(assoc % :selected-node index)
-                            identity)]
+  (let [maybe-select-node (maybe-do (no-move? state x y)
+                                    #(select-node % index))]
     (-> state
         (assoc :moving-node nil)
         (assoc :mouse-down-position nil)
@@ -77,11 +90,13 @@
 
 (defmethod control-event :canvas-mouse-up
   [_ {:keys [shift x y] :as args} state]
-  (let [maybe-add-node (if (and shift (no-move? state x y))
-                         #(add-node % x y)
-                         identity)]
+  (let [no-move? (no-move? state x y)
+        maybe-add-node (maybe-do (and shift no-move?)
+                                 #(add-node % x y))
+        maybe-deselect-node (maybe-do no-move? deselect-node)]
     (-> state
         (assoc :moving-node nil)
         (assoc :mouse-down-position nil)
-        maybe-add-node)))
+        maybe-add-node
+        maybe-deselect-node)))
 

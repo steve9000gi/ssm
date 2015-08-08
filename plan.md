@@ -44,6 +44,6 @@ x reflect toolbox selection state in view
   x color
 x add ability to add a node, with selected shape and color
 x move node
-o add "selected" class to selected node
+x add "selected" class to selected node
 o add ability to add a link, with selected style, color, and thickness
 

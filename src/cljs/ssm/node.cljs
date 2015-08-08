@@ -82,13 +82,12 @@
                          :style {:fill (str "#" color)}}])
 
 (defn node-component
-  [data owner]
+  [data owner {:keys [index] :as opts}]
   (reify
 
     om/IDidMount
     (did-mount [_]
       (let [node (om/get-node owner)
-            index (:index @data)
             raise-fn (fn [evt-type]
                        #(raise-mouse-event! owner evt-type % {:index index}))]
         (events/listen node "mousedown" (raise-fn :node-mouse-down))
@@ -96,10 +95,13 @@
 
     om/IRender
     (render [_]
-      (let [{:keys [index shape color text position hovered url note]} data
-            {:keys [x y]} position]
+      (let [{:keys [shape color text position hovered url note]}
+              (get-in data [:nodes index])
+            {:keys [x y]} position
+            selected-node (:selected-node data)]
         (html
-          [:g.shapeG {:transform (str "translate(" x "," y ")")}
+          [:g.shapeG {:class (when (= selected-node index) "selected")
+                      :transform (str "translate(" x "," y ")")}
            (inner-shape-tree shape color)
            [:text.foregroundText {:text-anchor "left"
                                   :alignment-baseline "middle"
@@ -115,9 +117,9 @@
   (reify
     om/IRender
     (render [_]
-      (let [nodes (:nodes data)]
-        (html
-          [:g#shapeGG
-           (for [node nodes]
-             (om/build node-component node))])))))
+      (html
+        [:g#shapeGG
+         (for [index (-> data :nodes count range)]
+           (om/build node-component data
+                     {:opts {:index index}}))]))))
 
