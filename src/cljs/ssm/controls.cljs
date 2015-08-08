@@ -100,3 +100,23 @@
         maybe-add-node
         maybe-deselect-node)))
 
+(defn- delete-node
+  [state index-to-delete]
+  {:pre [(< index-to-delete (count (:nodes state)))]}
+  (let [new-nodes (->> (:nodes state)
+                       (filter (fn [{index :index}]
+                                 (not= index index-to-delete)))
+                       (map-indexed (fn [index item]
+                                      (assoc item :index index)))
+                       vec)]
+    (assoc state :nodes new-nodes)))
+
+(defmethod control-event :delete-key-down
+  [_ _ state]
+  (prn 'selected-node (:selected-node state))
+  (if-let [selected-node (:selected-node state)]
+    (-> state
+        (delete-node selected-node)
+        (deselect-node))
+    state))
+

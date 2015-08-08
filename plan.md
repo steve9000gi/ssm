@@ -45,5 +45,11 @@ x reflect toolbox selection state in view
 x add ability to add a node, with selected shape and color
 x move node
 x add "selected" class to selected node
+x delete selected node
 o add ability to add a link, with selected style, color, and thickness
+o maximize SVG canvas to window
+o resize node to text
+o grid and grid toggle
+o other options
+o auth and backend stuff
 

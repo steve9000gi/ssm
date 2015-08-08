@@ -13,8 +13,8 @@
 (enable-console-print!)
 
 (defn ^:export log-app-state
-  "For debugging during development, type '(log-app-state)' into the Figwheel
-  console, then check the browser's console to see the app state."
+  "For debugging during development, type '(ssm.core/log-app-state)' into the
+  Figwheel console, then check the browser's console to see the app state."
   []
   (.log js/console (clj->js @app-state)))
 

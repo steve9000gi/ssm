@@ -63,6 +63,11 @@
 
     om/IDidMount
     (did-mount [_]
+      (.addEventListener js/document "keydown"
+                         (fn [e]
+                           (when (#{8 46} (.-keyCode e))
+                             (raise! owner [:delete-key-down])
+                             (.preventDefault e))))
       ;; FIXME: this gets the SVG node but needs to get the image node
       #_(let [node (om/get-node owner)]
         (.setAttribute node "xmlns:xlink" "http://www.w3.org/1999/xlink")
