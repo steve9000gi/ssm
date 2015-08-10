@@ -10,5 +10,7 @@
 (defn new-system []
   (component/system-map
     :db (->PostgresDB)
-    :httpd (new-http-server)))
+    :httpd (component/using
+             (new-http-server)
+             [:db])))
 
