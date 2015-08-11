@@ -1,0 +1,170 @@
+{
+  "nodes": [
+    {
+      "id": 0,
+      "name": "Identity 1",
+      "x": 367,
+      "y": 272,
+      "color": "#000000",
+      "shape": "circle",
+      "maxCharsPerLine": 20,
+      "r": "32.359375",
+      "boundary": 44.359375
+    },
+    {
+      "id": 1,
+      "name": "Responsibility 1",
+      "x": 580,
+      "y": 270,
+      "color": "#8800ff",
+      "shape": "rectangle",
+      "maxCharsPerLine": 20,
+      "width": "90.0625",
+      "height": "39.44907701811032"
+    },
+    {
+      "id": 2,
+      "name": "Need 1",
+      "x": 355,
+      "y": 454,
+      "color": "#0000ff",
+      "shape": "diamond",
+      "maxCharsPerLine": 20,
+      "dim": 61.95,
+      "boundary": 42.975
+    },
+    {
+      "id": 3,
+      "name": "Resource 1",
+      "x": 749.26806640625,
+      "y": 414.7763366699219,
+      "color": "#00bdbd",
+      "shape": "ellipse",
+      "maxCharsPerLine": 20,
+      "rx": "50.6875",
+      "ry": "24",
+      "domId": "shapeG3"
+    },
+    {
+      "id": 4,
+      "name": "Wish 1",
+      "x": 347,
+      "y": 601,
+      "color": "#00bd00",
+      "shape": "star",
+      "maxCharsPerLine": 20,
+      "innerRadius": 22.0125,
+      "boundary": 44.025
+    },
+    {
+      "id": 5,
+      "name": "text 1",
+      "x": 567.6551513671875,
+      "y": 602.8889770507812,
+      "color": "#ff0000",
+      "shape": "noBorder",
+      "maxCharsPerLine": 20,
+      "width": "41.44907701811032",
+      "height": "39.44907701811032",
+      "domId": "shapeG5"
+    }
+  ],
+  "links": [
+    {
+      "source": 0,
+      "target": 1,
+      "style": "solid",
+      "color": "#ff8800",
+      "thickness": 3,
+      "maxCharsPerLine": 20,
+      "name": "",
+      "manualResize": false
+    },
+    {
+      "source": 2,
+      "target": 3,
+      "style": "dashed",
+      "color": "#ff8800",
+      "thickness": 3,
+      "maxCharsPerLine": 20,
+      "name": "",
+      "manualResize": false
+    },
+    {
+      "source": 4,
+      "target": 5,
+      "style": "dashed",
+      "color": "#ff8800",
+      "thickness": 3,
+      "maxCharsPerLine": 20,
+      "name": "",
+      "manualResize": false
+    },
+    {
+      "source": 0,
+      "target": 3,
+      "style": "dashed",
+      "color": "#ff0000",
+      "thickness": 3,
+      "maxCharsPerLine": 20,
+      "name": "",
+      "manualResize": false
+    },
+    {
+      "source": 2,
+      "target": 5,
+      "style": "dashed",
+      "color": "#ff0000",
+      "thickness": 3,
+      "maxCharsPerLine": 20,
+      "name": "",
+      "manualResize": false
+    },
+    {
+      "source": 4,
+      "target": 1,
+      "style": "dashed",
+      "color": "#ff0000",
+      "thickness": 3,
+      "maxCharsPerLine": 20,
+      "name": "",
+      "manualResize": false
+    },
+    {
+      "source": 2,
+      "target": 1,
+      "style": "solid",
+      "color": "#999900",
+      "thickness": 3,
+      "maxCharsPerLine": 20,
+      "name": "",
+      "manualResize": false
+    },
+    {
+      "source": 4,
+      "target": 3,
+      "style": "solid",
+      "color": "#999900",
+      "thickness": 3,
+      "maxCharsPerLine": 20,
+      "name": "",
+      "manualResize": false
+    },
+    {
+      "source": 0,
+      "target": 5,
+      "style": "solid",
+      "color": "#999900",
+      "thickness": 3,
+      "maxCharsPerLine": 20,
+      "name": "",
+      "manualResize": false
+    }
+  ],
+  "graphGTransform": "translate(-158.6809233199017,-164.2302593322255) scale(1.279872413844309)",
+  "systemSupportMapCenter": {
+    "x": 746.5,
+    "y": 409
+  },
+  "circlesOfCareCenter": null
+}

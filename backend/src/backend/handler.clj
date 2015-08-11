@@ -9,6 +9,7 @@
     [compojure.core :refer [defroutes GET POST]]
     [reloaded.repl :refer [system]]
     [backend.user :as user]
+    [backend.map :as map]
     ))
 
 (defrecord HTTPServer [db port ring-handler-fn]
@@ -37,11 +38,16 @@
   (POST "/register" [email password]
     (user/create email password))
   (GET "/testauth" {:keys [current-user-id]}
-       (if current-user-id
-         (resp/ok {:message "authenticated"})
-         (resp/forbidden {:message "not authenticated"})))
+    (if current-user-id
+      (resp/ok {:message "authenticated"})
+      (resp/forbidden {:message "not authenticated"})))
   (POST "/login" [email password] (user/login email password))
   (GET "/logout" [] (user/logout))
+
+  (POST "/map" {:keys [current-user-id body]}
+    (if current-user-id
+      (map/create current-user-id body)
+      (resp/forbidden {:message "not authenticated"})))
   )
 
 (defn- inspector-middleware
@@ -60,7 +66,7 @@
     (let [user-id (get-in request [:cookies "user_id" :value])
           given-token (get-in request [:cookies "auth_token" :value])]
       (if (user/valid-auth-token user-id given-token)
-        (handler (assoc request :current-user-id user-id))
+        (handler (assoc request :current-user-id (Integer/parseInt user-id)))
         (handler request)))))
 
 (defn app

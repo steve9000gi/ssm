@@ -83,3 +83,12 @@ Now do a bunch of curl commands:
     # Output should be:
     # {"message":"ok"}
 
+    # Saving a map
+    curl -H 'Content-Type: application/json' \
+         -H 'Accept: application/json' \
+         -X POST \
+         -buser_id=1,auth_token=$TOKEN \
+         -d '{"foo": [1,2,3]}' \
+         http://localhost:8080/map
+    # Should get some JSON back
+

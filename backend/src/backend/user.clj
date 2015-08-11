@@ -48,7 +48,6 @@
 
 (defn valid-auth-token
   [user-id given-token]
-  (prn 'valid-auth-token user-id given-token)
   (when (and (string? user-id)
              (uuid? given-token))
     (let [user-id (Integer/parseInt user-id)
