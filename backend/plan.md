@@ -1,7 +1,6 @@
 Here's what's left to do, as of Sun Aug 9 2015:
 
 - backend
-  - add documents to the schema
   - route to test authentication
   - create save route, with a (probably manual) test
   - create index route, with a (probably manual) test
