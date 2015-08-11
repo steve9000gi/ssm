@@ -69,6 +69,14 @@ Now do a bunch of curl commands:
     curl -buser_id=1,auth_token=invalid http://localhost:8080/echo 2>/dev/null | jq . | grep current-user-id
     # Should output nothing
 
+    # Test authentication (alternate route)
+    curl -v -buser_id=1,auth_token=$TOKEN http://localhost:8080/testauth
+    # Should output {"message":"authenticated"}
+
+    # Test non-authentication (alternate route)
+    curl -v -buser_id=9,auth_token=$TOKEN http://localhost:8080/testauth
+    # Should output {"message":"not authenticated"}
+
     # Logout
     curl -v -buser_id=2,auth_token=fa0dc3e3-feba-4336-b48c-68907ed85908 http://localhost:8080/logout
     # Check for Set-Cookie header with value = <empty>

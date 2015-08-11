@@ -36,6 +36,10 @@
 
   (POST "/register" [email password]
     (user/create email password))
+  (GET "/testauth" {:keys [current-user-id]}
+       (if current-user-id
+         (resp/ok {:message "authenticated"})
+         (resp/forbidden {:message "not authenticated"})))
   (POST "/login" [email password] (user/login email password))
   (GET "/logout" [] (user/logout))
   )
