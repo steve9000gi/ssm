@@ -92,3 +92,8 @@ Now do a bunch of curl commands:
          http://localhost:8080/map
     # Should get some JSON back
 
+    # Listing maps
+    curl -buser_id=1,auth_token=$TOKEN \
+         http://localhost:8080/maps
+    # Should get some JSON back
+

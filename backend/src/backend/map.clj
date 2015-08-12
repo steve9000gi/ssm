@@ -1,4 +1,5 @@
 (ns backend.map
+  (:refer-clojure :exclude [list])
   (:require
     [clojure.java.io :as io]
     [clojure.java.jdbc :as jdbc]
@@ -44,4 +45,20 @@
         (.printStackTrace e)
         (resp/internal-server-error {:message (.getMessage e)})))
     (resp/bad-request {:message "invalid map document"})))
+
+(defn list
+  [owner-id]
+  {:pre [(integer? owner-id)
+         (pos? owner-id)]}
+  (prn 'map/list owner-id)
+  (try
+    (let [maps (query (:db system)
+                      [(str "SELECT *"
+                            "  FROM ssm.maps"
+                            "  WHERE owner = ?")
+                       owner-id])]
+      (if-not maps
+        (resp/internal-server-error
+          {:message "false value returned from database"})
+        (resp/ok (mapv result->response maps))))))
 

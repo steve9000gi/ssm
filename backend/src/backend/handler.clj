@@ -48,6 +48,10 @@
     (if current-user-id
       (map/create current-user-id body)
       (resp/forbidden {:message "not authenticated"})))
+  (GET "/maps" {:keys [current-user-id]}
+    (if current-user-id
+      (map/list current-user-id)
+      (resp/forbidden {:message "not authenticated"})))
   )
 
 (defn- inspector-middleware
