@@ -60,7 +60,7 @@
       (if-not maps
         (resp/internal-server-error
           {:message "false value returned from database"})
-        (resp/ok (mapv result->response maps))))))
+        (resp/ok (mapv #(dissoc % :document) maps))))))
 
 (defn fetch
   [owner-id id]
