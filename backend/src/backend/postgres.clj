@@ -51,6 +51,11 @@
   (or (System/getenv key)
       (System/getProperty key)))
 
+(defn config-good?
+  "Does it look like there's enough config to connect to the DB?"
+  []
+  (every? get-config ["DB_HOST" "DB_PORT" "DB_NAME" "DB_USER" "DB_PASS"]))
+
 (defrecord PostgresDB []
   component/Lifecycle
   (start [this]
@@ -61,7 +66,7 @@
                         :port     (get-config "DB_PORT")
                         :dbname   (get-config "DB_NAME")
                         :user     (get-config "DB_USER")
-                        :password (get-config "DB_PASSWORD")
+                        :password (get-config "DB_PASS")
                         :classname "org.postgresql.Driver"
                         :init-part-size 1
                         :max-part-size 4

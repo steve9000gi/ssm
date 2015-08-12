@@ -1,5 +1,4 @@
 (ns backend.system
-  (:gen-class)
   (:require
     [com.stuartsierra.component :as component]
     (backend

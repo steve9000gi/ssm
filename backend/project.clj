@@ -16,9 +16,8 @@
                  [cheshire "5.5.0"]
                  ]
 
-  :profiles {:uberjar {:resource-paths ["swagger-ui"]
-                       :aot :all
-                       :main backend.system}
+  :profiles {:uberjar {:aot :all
+                       :main backend.main}
              :dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]]
                    :source-paths ["dev"]}}
 
