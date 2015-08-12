@@ -1,7 +1,5 @@
 Here's what's left to do, as of Sun Aug 9 2015:
 
-- backend
-  - create fetch route, with a (probably manual) test
 - deployment
   - production uberjar
   - deploy somewheres...

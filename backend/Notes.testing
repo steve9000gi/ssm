@@ -43,7 +43,7 @@ Now do a bunch of curl commands:
 
     # create another user with a + in the email address
     curl -demail="jeff%2B2@altometrics.com" -dpassword="foo" http://localhost:8080/register
-    # {"id":3,"email":"jeff+2@altometrics.com"}
+    # {"id":2,"email":"jeff+2@altometrics.com"}
 
     # login; bad email
     curl -v -demail="none@altometrics.com" -dpassword="foo" http://localhost:8080/login
@@ -96,4 +96,23 @@ Now do a bunch of curl commands:
     curl -buser_id=1,auth_token=$TOKEN \
          http://localhost:8080/maps
     # Should get some JSON back
+
+    # Fetching a map
+    curl -buser_id=1,auth_token=$TOKEN \
+         http://localhost:8080/map/1
+
+    # Trying to fetch a nonexistent map
+    curl -buser_id=1,auth_token=$TOKEN \
+         http://localhost:8080/map/99
+    # {"message":"map ID 99 not found"}
+
+    # Fetching a map not owned by authenticated user
+    export TOKEN2=$(curl -demail="jeff%2B2@altometrics.com" -dpassword="foo" http://localhost:8080/login 2>/dev/null | cut -d: -f2 | cut -d\" -f2)
+    curl -buser_id=2,auth_token=$TOKEN2 \
+         http://localhost:8080/map/1
+    # {"message":"map not owned by authenticated user"}
+
+    # Fetch map: non-numeric id
+    curl -buser_id=1,auth_token=692ec64b-58bb-4a68-8581-1ec5b919b9a3 http://localhost:8080/map/a
+    # {"message":"invalid map ID: \"a\""}
 

@@ -52,6 +52,10 @@
     (if current-user-id
       (map/list current-user-id)
       (resp/forbidden {:message "not authenticated"})))
+  (GET "/map/:id" {:keys [current-user-id] {map-id :id} :params}
+    (if current-user-id
+      (map/fetch current-user-id map-id)
+      (resp/forbidden {:message "not authenticated"})))
   )
 
 (defn- inspector-middleware

@@ -62,3 +62,26 @@
           {:message "false value returned from database"})
         (resp/ok (mapv result->response maps))))))
 
+(defn fetch
+  [owner-id id]
+  {:pre [(integer? owner-id)
+         (pos? owner-id)]}
+  (prn 'map/fetch {:owner-id owner-id, :map-id id})
+  (let [map-id (try
+                 (Integer/parseInt id)
+                 (catch NumberFormatException e nil))]
+    (if (or (nil? map-id)
+            (not (pos? map-id)))
+      (resp/bad-request {:message (str "invalid map ID: " (pr-str id))})
+      (let [map (first
+                  (query (:db system)
+                         [(str "SELECT *"
+                               "  FROM ssm.maps"
+                               "  WHERE id = ?")
+                          map-id]))]
+        (if-not map
+          (resp/not-found {:message (format "map ID %d not found" map-id)})
+          (if (not= owner-id (:owner map))
+            (resp/forbidden {:message "map not owned by authenticated user"})
+            (resp/ok (result->response map))))))))
+
