@@ -51,6 +51,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.consts =  {
+    backendBase: 'http://localhost:8080',
     selectedClass: "selected",
     connectClass: "connect-node",
     activeEditId: "active-editing",
@@ -2055,12 +2056,105 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
+  // Import a JSON document into the editing area
+  Graphmaker.prototype.importMap = function(jsonObj) {
+    var thisGraph = this;
+    // TODO better error handling
+    // try {
+      thisGraph.deleteGraph(true);
+      thisGraph.nodes = jsonObj.nodes;
+      thisGraph.setShapeId(thisGraph.getBiggestShapeId() + 1);
+      var newEdges = jsonObj.links;
+      newEdges.forEach(function(e, i) {
+        newEdges[i] = {source: thisGraph.nodes.filter(function(n) {
+                        return n.id === e.source; })[0],
+                       target: thisGraph.nodes.filter(function(n) {
+                        return n.id === e.target; })[0],
+                       style: (e.style === "dashed" ? "dashed" : "solid"),
+                       color: e.color,
+                       thickness: e.thickness,
+                       maxCharsPerLine: (e.maxCharsPerLine || 20),
+                       note: e.note,
+                       name: e.name,
+                       manualResize: e.manualResize};
+      });
+      thisGraph.links = newEdges;
+
+      var graphGTransform = jsonObj.graphGTransform || "translate(0,0) scale(1)";
+      // Inform zoomSvg that we're programmatically setting transform (so additional zoom and
+      // translate work smoothly from that transform instead of jumping back to default):
+      d3.select("#graphG").attr("transform", graphGTransform);
+      var xform = d3.transform(d3.select("#graphG").attr("transform"));
+      var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
+      thisGraph.zoomSvg.translate([tx, ty]).scale(scale);
+      thisGraph.zoomSvg.event(thisGraph.svg.transition().duration(500));
+
+      thisGraph.SSMCenter = jsonObj.systemSupportMapCenter;
+      if (thisGraph.SSMCenter) {
+        thisGraph.showSystemSupportMap();
+      } else {
+        thisGraph.hideSystemSupportMap();
+      }
+      thisGraph.hideCirclesOfCare();
+      thisGraph.CofCCenter = jsonObj.circlesOfCareCenter;
+      if (thisGraph.CofCCenter) {
+        thisGraph.showCirclesOfCare();
+      }
+      thisGraph.updateGraph();
+    // } catch(err) {
+    //   window.alert("Error parsing uploaded file\nerror message: " + err.message);
+    //   return;
+    // }
+  }
+
+
+  // Fetch a map from the backend given its id
+  Graphmaker.prototype.fetchMap = function(id) {
+    var thisGraph = this;
+    d3.select('#map-index').style('visibility', 'hidden');
+    d3.json(thisGraph.consts.backendBase + '/map/' + id, function(error, data) {
+      if (error) return window.alert('Error talking to backend server.');
+      thisGraph.importMap(data.document);
+    })
+  }
+
+
   // Open/read JSON file
   Graphmaker.prototype.setupUpload = function() {
     var thisGraph = this;
     d3.select("#upload-input").on("click", function() {
-      document.getElementById("hidden-file-upload").click();
+      // document.getElementById("hidden-file-upload").click();
+      d3.select('#map-index').style('visibility', 'visible');
+      d3.json(thisGraph.consts.backendBase + '/maps', function(error, data) {
+        if (error) return window.alert('Error talking to backend server.');
+
+        var table = d3.select('#map-index .content').append('table'),
+            thead = table.append('thead'),
+            tbody = table.append('tbody');
+
+        thead
+          .append('tr')
+          .selectAll('th')
+          .data(['Map ID', 'Created At'])
+          .enter()
+          .append('th')
+          .text(String);
+
+        var rows = tbody
+          .selectAll('tr')
+          .data(data)
+          .enter()
+          .append('tr');
+
+        rows.append('td')
+          .append('a')
+          .attr('href', '#')
+          .on('click', function(d) { thisGraph.fetchMap(d.id) })
+          .text(function(d) { return d.id });
+        rows.append('td').text(function(d) {return d.created_at});
+      })
     });
+
     d3.select("#hidden-file-upload").on("change", function() {
       if (window.File && window.FileReader && window.FileList && window.Blob) {
         var uploadFile = this.files[0];
@@ -2073,53 +2167,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           } catch(err) {
             window.alert("Error reading file: " + err.message);
           }
-          // TODO better error handling
-          try {
-            var jsonObj = JSON.parse(txtRes);
-            thisGraph.deleteGraph(true);
-            thisGraph.nodes = jsonObj.nodes;
-            thisGraph.setShapeId(thisGraph.getBiggestShapeId() + 1);
-            var newEdges = jsonObj.links;
-            newEdges.forEach(function(e, i) {
-              newEdges[i] = {source: thisGraph.nodes.filter(function(n) {
-                              return n.id === e.source; })[0],
-                             target: thisGraph.nodes.filter(function(n) {
-                              return n.id === e.target; })[0],
-                             style: (e.style === "dashed" ? "dashed" : "solid"),
-                             color: e.color,
-                             thickness: e.thickness,
-                             maxCharsPerLine: (e.maxCharsPerLine || 20),
-                             note: e.note,
-                             name: e.name,
-                             manualResize: e.manualResize};
-            });
-            thisGraph.links = newEdges;
-
-            var graphGTransform = jsonObj.graphGTransform || "translate(0,0) scale(1)";
-            // Inform zoomSvg that we're programmatically setting transform (so additional zoom and
-            // translate work smoothly from that transform instead of jumping back to default):
-            d3.select("#graphG").attr("transform", graphGTransform);
-            var xform = d3.transform(d3.select("#graphG").attr("transform"));
-            var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
-            thisGraph.zoomSvg.translate([tx, ty]).scale(scale);
-            thisGraph.zoomSvg.event(thisGraph.svg.transition().duration(500));
-
-            thisGraph.SSMCenter = jsonObj.systemSupportMapCenter;
-            if (thisGraph.SSMCenter) {
-              thisGraph.showSystemSupportMap();
-            } else {
-              thisGraph.hideSystemSupportMap();
-            }
-            thisGraph.hideCirclesOfCare();
-            thisGraph.CofCCenter = jsonObj.circlesOfCareCenter;
-            if (thisGraph.CofCCenter) {
-              thisGraph.showCirclesOfCare();
-            }
-            thisGraph.updateGraph();
-          } catch(err) {
-            window.alert("Error parsing uploaded file\nerror message: " + err.message);
-            return;
-          }
+          return thisGraph.importMap(JSON.parse(txtRes));
         };
         filereader.readAsText(uploadFile);
       } else {

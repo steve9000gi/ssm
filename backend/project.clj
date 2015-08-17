@@ -8,6 +8,7 @@
                  [compojure "1.4.0"]
                  [metosin/ring-http-response "0.6.3"]
                  [ring-middleware-format "0.5.0"]
+                 [ring-cors "0.1.7"]
                  [com.cemerick/friend "0.2.1"
                   :exclusions [org.clojure/core.cache]]
                  [org.postgresql/postgresql "9.4-1201-jdbc4"]

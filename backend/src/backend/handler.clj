@@ -6,6 +6,7 @@
     [ring.middleware.params :refer [wrap-params]]
     [ring.middleware.cookies :refer [wrap-cookies]]
     [ring.middleware.format :refer [wrap-restful-format]]
+    [ring.middleware.cors :as cors]
     [compojure.core :refer [defroutes GET POST]]
     [reloaded.repl :refer [system]]
     [backend.user :as user]
@@ -77,6 +78,12 @@
         (handler (assoc request :current-user-id (Integer/parseInt user-id)))
         (handler request)))))
 
+(defn- wrap-cors
+  [handler]
+  (cors/wrap-cors handler
+                  :access-control-allow-origin [#"http://localhost:8081"]
+                  :access-control-allow-methods [:get :put :post :delete]))
+
 (defn app
   []
   (-> routes
@@ -84,6 +91,7 @@
       wrap-cookies
       (wrap-restful-format :formats [:json-kw])
       wrap-params
+      wrap-cors
       ))
 
 (defn new-http-server

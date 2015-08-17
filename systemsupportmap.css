@@ -269,3 +269,23 @@ path.link.selected, g.pathG.selected path {
   color: #fff;
   border-radius: 2px;
 }
+
+#map-index {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  visibility: hidden; /* to be toggled dynamically */
+}
+
+#map-index .content {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  bottom: 10%;
+  right: 10%;
+  background-color: white;
+}
