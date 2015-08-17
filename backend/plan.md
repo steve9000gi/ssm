@@ -12,11 +12,17 @@ Here's what's left to do, as of Sun Aug 9 2015:
     on the backend's exit code in such a case (a 0 exit code will, I think,
     trigger upstart to respawn the process).
 
+- backend
+  - Also need a put method for updates
+
 - frontend
   - add save/load buttons (maybe replace current functionality?)
   - upon click of either, test authentication
   - if unauth'd, prompt (maybe in modal lightbox) for creds
   - try authenticating, if fail, re-prompt
   - display list of documents to user, with links to load each
-  - new user registration
+  - do new user registration
+  - pull up list of maps when loading
+  - each item in list has a link to open that map
+  - when saving that map, should update rather than create
 
