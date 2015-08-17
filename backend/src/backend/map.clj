@@ -53,9 +53,11 @@
   (prn 'map/list owner-id)
   (try
     (let [maps (query (:db system)
-                      ;; TODO: return num nodes and num links with e.g.
-                      ;; select id, owner, created_at, jsonb_array_length(document #> '{nodes}') num_nodes, jsonb_array_length(document #> '{links}') num_links from ssm.maps;
-                      [(str "SELECT *"
+                      [(str "SELECT id, owner, created_at,"
+                            "       jsonb_array_length(document #> '{nodes}')"
+                            "         AS num_nodes,"
+                            "       jsonb_array_length(document #> '{links}')"
+                            "         AS num_links"
                             "  FROM ssm.maps"
                             "  WHERE owner = ?")
                        owner-id])]

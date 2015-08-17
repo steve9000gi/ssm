@@ -2135,7 +2135,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         thead
           .append('tr')
           .selectAll('th')
-          .data(['Map ID', 'Created At'])
+          .data(['Map ID', 'Created At', 'Num. Nodes', 'Num. Links'])
           .enter()
           .append('th')
           .text(String);
@@ -2151,7 +2151,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           .attr('href', '#')
           .on('click', function(d) { thisGraph.fetchMap(d.id) })
           .text(function(d) { return d.id });
-        rows.append('td').text(function(d) {return d.created_at});
+        rows.append('td').text(function(d) { return d.created_at });
+        rows.append('td').text(function(d) { return d.num_nodes });
+        rows.append('td').text(function(d) { return d.num_links });
       })
     });
 
