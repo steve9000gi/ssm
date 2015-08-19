@@ -22,18 +22,16 @@ Here's what's left to do, as of Sun Aug 9 2015:
   - admin users can load maps owned by others; regular users cannot
 
 - frontend
-  - hide "loading" text when loaded, and redisplay when reloading
-  - remove existing table when reloading
   - ability to close light box
-  - add save/load buttons (maybe replace current functionality?)
   - upon click of either, test authentication
   - if unauth'd, prompt (maybe in modal lightbox) for creds
   - try authenticating, if fail, display error message and re-prompt
   - conditionally display email addresses in map list if returned from backend
   - upon load, update URL
   - do new user registration
-  - pull up list of maps when loading
-  - each item in list has a link to open that map
   - when saving that map, should update rather than create if appropriate
+
+- Needs input/decision from Steve
+  - add save/load buttons (maybe replace current functionality?)
   - stretch goal: name field for each map
 

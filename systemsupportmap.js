@@ -2111,8 +2111,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   // Fetch a map from the backend given its id
   Graphmaker.prototype.fetchMap = function(id) {
     var thisGraph = this;
-    d3.select('#map-index').style('visibility', 'hidden');
     d3.json(thisGraph.consts.backendBase + '/map/' + id, function(error, data) {
+      d3.select('#map-index').style('visibility', 'hidden');
+      d3.select('#map-index table').remove();
       if (error) return window.alert('Error talking to backend server.');
       thisGraph.importMap(data.document);
     })
@@ -2125,7 +2126,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     d3.select("#upload-input").on("click", function() {
       // document.getElementById("hidden-file-upload").click();
       d3.select('#map-index').style('visibility', 'visible');
+      d3.select('#map-index .content')
+        .append('div')
+        .attr('class', 'loading-message')
+        .text('Loading...');
       d3.json(thisGraph.consts.backendBase + '/maps', function(error, data) {
+        d3.select('#map-index .loading-message').remove();
         if (error) return window.alert('Error talking to backend server.');
 
         var table = d3.select('#map-index .content').append('table'),
