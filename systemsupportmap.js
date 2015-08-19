@@ -2057,7 +2057,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   // Import a JSON document into the editing area
-  Graphmaker.prototype.importMap = function(jsonObj) {
+  Graphmaker.prototype.importMap = function(jsonObj, id) {
     var thisGraph = this;
     // TODO better error handling
     try {
@@ -2101,6 +2101,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         thisGraph.showCirclesOfCare();
       }
       thisGraph.updateGraph();
+      if (typeof id === 'number') {
+        window.location.hash = '/map/' + id;
+      }
     } catch(err) {
       window.alert("Error parsing uploaded file\nerror message: " + err.message);
       return;
@@ -2115,7 +2118,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       d3.select('#map-index').style('visibility', 'hidden');
       d3.select('#map-index table').remove();
       if (error) return window.alert('Error talking to backend server.');
-      thisGraph.importMap(data.document);
+      thisGraph.importMap(data.document, id);
     })
   }
 

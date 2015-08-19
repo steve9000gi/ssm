@@ -26,11 +26,15 @@ Here's what's left to do, as of Sun Aug 9 2015:
   - if unauth'd, prompt (maybe in modal lightbox) for creds
   - try authenticating, if fail, display error message and re-prompt
   - conditionally display email addresses in map list if returned from backend
-  - upon load, update URL
   - do new user registration
   - when saving that map, should update rather than create if appropriate
+  - upon page load, check URL and load map if fragment refers to one
+    - should allow an intermediate authenticate step if needed
+    - should strip fragment if authenticated user is not authorized to view
 
 - Needs input/decision from Steve
   - add save/load buttons (maybe replace current functionality?)
   - stretch goal: name field for each map
+  - question: should admin users be able to save a map they don't own?
+    - if not, is an alert popup sufficient for informing them of this error?
 
