@@ -2125,11 +2125,22 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var thisGraph = this;
     d3.select("#upload-input").on("click", function() {
       // document.getElementById("hidden-file-upload").click();
-      d3.select('#map-index').style('visibility', 'visible');
       d3.select('#map-index .content')
         .append('div')
         .attr('class', 'loading-message')
         .text('Loading...');
+      d3.select('#map-index')
+        .style('visibility', 'visible')
+        .on('click', function() {
+          d3.select('#map-index .loading-message').remove();
+          d3.select('#map-index').style('visibility', 'hidden');
+          d3.select('#map-index table').remove();
+        });
+      d3.select('#map-index .content')
+        .on('click', function(evt) {
+          d3.event.stopPropagation();
+        });
+
       d3.json(thisGraph.consts.backendBase + '/maps', function(error, data) {
         d3.select('#map-index .loading-message').remove();
         if (error) return window.alert('Error talking to backend server.');

@@ -22,7 +22,6 @@ Here's what's left to do, as of Sun Aug 9 2015:
   - admin users can load maps owned by others; regular users cannot
 
 - frontend
-  - ability to close light box
   - upon click of either, test authentication
   - if unauth'd, prompt (maybe in modal lightbox) for creds
   - try authenticating, if fail, display error message and re-prompt
