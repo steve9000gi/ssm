@@ -2060,7 +2060,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   Graphmaker.prototype.importMap = function(jsonObj) {
     var thisGraph = this;
     // TODO better error handling
-    // try {
+    try {
       thisGraph.deleteGraph(true);
       thisGraph.nodes = jsonObj.nodes;
       thisGraph.setShapeId(thisGraph.getBiggestShapeId() + 1);
@@ -2101,10 +2101,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         thisGraph.showCirclesOfCare();
       }
       thisGraph.updateGraph();
-    // } catch(err) {
-    //   window.alert("Error parsing uploaded file\nerror message: " + err.message);
-    //   return;
-    // }
+    } catch(err) {
+      window.alert("Error parsing uploaded file\nerror message: " + err.message);
+      return;
+    }
   }
 
 
