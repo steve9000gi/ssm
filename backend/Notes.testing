@@ -92,6 +92,24 @@ Now do a bunch of curl commands:
          http://localhost:8080/map
     # Should get some JSON back
 
+    # Saving a complicated map (from a file)
+    curl -H 'Content-Type: application/json' \
+         -H 'Accept: application/json' \
+         -X POST \
+         -buser_id=1,auth_token=$TOKEN \
+         -T backend/map-document.json \
+         http://localhost:8080/map
+    # Should get some JSON back
+
+    # Updating a complicated map (from a file)
+    curl -H 'Content-Type: application/json' \
+         -H 'Accept: application/json' \
+         -X PUT \
+         -buser_id=1,auth_token=$TOKEN \
+         -T backend/map-document.json \
+         http://localhost:8080/map/1
+    # Should get some JSON back
+
     # Listing maps
     curl -buser_id=1,auth_token=$TOKEN \
          http://localhost:8080/maps

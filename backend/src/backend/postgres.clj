@@ -89,8 +89,8 @@
   (jdbc/insert! db table data))
 
 (defn update!
-  [db table data]
-  (jdbc/update! db table data))
+  [db table set-map where-clause]
+  (jdbc/update! db table set-map where-clause))
 
 (defn exec!
   ([db query] (exec! db query nil))
