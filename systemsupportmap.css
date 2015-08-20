@@ -288,4 +288,5 @@ path.link.selected, g.pathG.selected path {
   bottom: 10%;
   right: 10%;
   background-color: white;
+  overflow: scroll;
 }

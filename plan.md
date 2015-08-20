@@ -9,8 +9,7 @@ Here's what's left to do, as of Sun Aug 9 2015:
 - backend
 
 - frontend
-  - set overflow of lightbox to scroll
-  - upon click of either, test authentication
+  - upon click of either button, test authentication
   - if unauth'd, prompt (maybe in modal lightbox) for creds
   - try authenticating, if fail, display error message and re-prompt
   - conditionally display email addresses in map list if returned from backend
