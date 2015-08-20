@@ -13,7 +13,6 @@ Here's what's left to do, as of Sun Aug 9 2015:
     trigger upstart to respawn the process).
 
 - backend
-  - admin users can load maps owned by others; regular users cannot
 
 - frontend
   - set overflow of lightbox to scroll

@@ -95,7 +95,8 @@
       (let [map (internal-fetch map-id)]
         (if-not map
           (resp/not-found {:message (format "map ID %d not found" map-id)})
-          (if (not= owner-id (:owner map))
+          (if (and (not= owner-id (:owner map))
+                   (not (user/is-admin? owner-id)))
             (resp/forbidden {:message "map not owned by authenticated user"})
             (resp/ok (result->response map))))))))
 
