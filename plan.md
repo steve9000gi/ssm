@@ -13,7 +13,6 @@ Here's what's left to do, as of Sun Aug 9 2015:
     trigger upstart to respawn the process).
 
 - backend
-  - admin users
   - return ALL maps (including owner email) when listing maps as admin
   - add last-modified timestamp to database schema
   - update last-modified timestamp upon creation and update

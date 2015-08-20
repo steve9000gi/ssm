@@ -6,7 +6,8 @@ CREATE TABLE ssm.users (
   id SERIAL PRIMARY KEY,
   email VARCHAR(80) UNIQUE,
   password VARCHAR(80),
-  auth_token UUID UNIQUE DEFAULT gen_random_uuid()
+  auth_token UUID UNIQUE DEFAULT gen_random_uuid(),
+  is_admin BOOLEAN NOT NULL DEFAULT false
 );
 
 CREATE TABLE ssm.maps (
