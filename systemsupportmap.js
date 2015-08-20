@@ -51,7 +51,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.consts =  {
-    backendBase: 'http://localhost:8080',
+    backendBase: 'http://syssci.renci.org:8080',
     selectedClass: "selected",
     connectClass: "connect-node",
     activeEditId: "active-editing",
