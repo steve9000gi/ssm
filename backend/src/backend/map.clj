@@ -6,6 +6,7 @@
     [reloaded.repl :refer [system]]
     [ring.util.http-response :as resp]
     [backend.postgres :refer [insert! update! query]]
+    [backend.user :as user]
     [cheshire.core :refer [generate-string parse-string parse-stream]]
     )
   (:import org.postgresql.util.PGobject))
@@ -61,15 +62,16 @@
          (pos? owner-id)]}
   (prn 'map/list owner-id)
   (try
-    (let [maps (query (:db system)
-                      [(str "SELECT id, owner, created_at,"
-                            "       jsonb_array_length(document #> '{nodes}')"
-                            "         AS num_nodes,"
-                            "       jsonb_array_length(document #> '{links}')"
-                            "         AS num_links"
-                            "  FROM ssm.maps"
-                            "  WHERE owner = ?")
-                       owner-id])]
+    (let [sql (str "SELECT id, owner, created_at,"
+                   "       jsonb_array_length(document #> '{nodes}')"
+                   "         AS num_nodes,"
+                   "       jsonb_array_length(document #> '{links}')"
+                   "         AS num_links"
+                   "  FROM ssm.maps")
+          sql (if (user/is-admin? owner-id)
+                [sql]
+                [(str sql " WHERE owner = ?") owner-id])
+          maps (query (:db system) sql)]
       (if-not maps
         (resp/internal-server-error
           {:message "false value returned from database"})

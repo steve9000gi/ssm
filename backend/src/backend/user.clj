@@ -46,6 +46,21 @@
   [encrypted given]
   (creds/bcrypt-verify given encrypted))
 
+(defn- internal-fetch
+  [user-id]
+  (first
+    (query (:db system)
+           [(str "SELECT *"
+                 "  FROM ssm.users"
+                 "  WHERE id = ?")
+            user-id])))
+
+(defn is-admin?
+  [user-id]
+  {:pre [(integer? user-id)
+         (pos? user-id)]}
+  (-> user-id internal-fetch :is_admin))
+
 (defn valid-auth-token
   [user-id given-token]
   (when (and (string? user-id)
