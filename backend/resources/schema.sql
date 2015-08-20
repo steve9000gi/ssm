@@ -14,6 +14,7 @@ CREATE TABLE ssm.maps (
   id SERIAL PRIMARY KEY,
   owner INTEGER REFERENCES ssm.users(id) NOT NULL,
   document JSONB NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT now()
+  created_at TIMESTAMP NOT NULL DEFAULT now(),
+  modified_at TIMESTAMP NOT NULL DEFAULT now()
 );
 

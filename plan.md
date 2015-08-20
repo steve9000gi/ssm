@@ -13,12 +13,10 @@ Here's what's left to do, as of Sun Aug 9 2015:
     trigger upstart to respawn the process).
 
 - backend
-  - add last-modified timestamp to database schema
-  - update last-modified timestamp upon creation and update
-  - when returning maps, return most-recently-modified first
   - admin users can load maps owned by others; regular users cannot
 
 - frontend
+  - set overflow of lightbox to scroll
   - upon click of either, test authentication
   - if unauth'd, prompt (maybe in modal lightbox) for creds
   - try authenticating, if fail, display error message and re-prompt

@@ -9,7 +9,10 @@
     [backend.user :as user]
     [cheshire.core :refer [generate-string parse-string parse-stream]]
     )
-  (:import org.postgresql.util.PGobject))
+  (:import
+    org.postgresql.util.PGobject
+    java.util.Date
+    java.sql.Timestamp))
 
 (defn- try-parse-document
   [doc]
@@ -62,7 +65,7 @@
          (pos? owner-id)]}
   (prn 'map/list owner-id)
   (try
-    (let [sql (str "SELECT id, owner, created_at,"
+    (let [sql (str "SELECT id, owner, created_at, modified_at,"
                    "       jsonb_array_length(document #> '{nodes}')"
                    "         AS num_nodes,"
                    "       jsonb_array_length(document #> '{links}')"
@@ -71,6 +74,7 @@
           sql (if (user/is-admin? owner-id)
                 [sql]
                 [(str sql " WHERE owner = ?") owner-id])
+          sql (update-in sql [0] #(str % " ORDER BY modified_at DESC"))
           maps (query (:db system) sql)]
       (if-not maps
         (resp/internal-server-error
@@ -110,12 +114,15 @@
         (resp/forbidden {:message "map not owned by authenticated user"})
         (if-let [document (try-parse-document document)]
           (let [[updated] (update! (:db system)
-                                 "ssm.maps"
-                                 {:document (doto (PGobject.)
-                                              (.setType "jsonb")
-                                              (.setValue
-                                                (generate-string document)))}
-                                 ["id = ?" map-id])]
+                                   "ssm.maps"
+                                   {:document (doto (PGobject.)
+                                                (.setType "jsonb")
+                                                (.setValue
+                                                  (generate-string document)))
+                                    :modified_at (-> (Date.)
+                                                     .getTime
+                                                     Timestamp.)}
+                                   ["id = ?" map-id])]
             (if (= 1 updated)
               (resp/ok (result->response (internal-fetch map-id)))
               (resp/bad-request {:message "document did not save"})))
