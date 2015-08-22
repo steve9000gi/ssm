@@ -270,7 +270,7 @@ path.link.selected, g.pathG.selected path {
   border-radius: 2px;
 }
 
-#map-index {
+.lightbox {
   position: fixed;
   top: 0;
   left: 0;
@@ -281,7 +281,7 @@ path.link.selected, g.pathG.selected path {
   visibility: hidden; /* to be toggled dynamically */
 }
 
-#map-index .content {
+.lightbox .content {
   position: absolute;
   top: 10%;
   left: 10%;
