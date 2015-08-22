@@ -2123,58 +2123,69 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   }
 
 
+  Graphmaker.prototype.renderMapsList = function(error, data) {
+    d3.select('#map-index .loading-message').remove();
+    if (error) return window.alert('Error talking to backend server.');
+    var graph = this;
+
+    var table = d3.select('#map-index .content').append('table'),
+        thead = table.append('thead'),
+        tbody = table.append('tbody');
+
+    thead
+      .append('tr')
+      .selectAll('th')
+      .data(['Map ID', 'Created At', 'Num. Nodes', 'Num. Links'])
+      .enter()
+      .append('th')
+      .text(String);
+
+    var rows = tbody
+      .selectAll('tr')
+      .data(data)
+      .enter()
+      .append('tr');
+
+    rows.append('td')
+      .append('a')
+      .attr('href', '#')
+      .on('click', function(d) { graph.fetchMap(d.id) })
+      .text(function(d) { return d.id });
+    rows.append('td').text(function(d) { return d.created_at });
+    rows.append('td').text(function(d) { return d.num_nodes });
+    rows.append('td').text(function(d) { return d.num_links });
+  };
+
+
+  Graphmaker.prototype.listMaps = function() {
+    d3.select('#map-index .content')
+      .append('div')
+      .attr('class', 'loading-message')
+      .text('Loading...');
+    d3.select('#map-index')
+      .style('visibility', 'visible')
+      .on('click', function() {
+        d3.select('#map-index .loading-message').remove();
+        d3.select('#map-index').style('visibility', 'hidden');
+        d3.select('#map-index table').remove();
+      });
+    d3.select('#map-index .content')
+      .on('click', function(evt) {
+        d3.event.stopPropagation();
+      });
+    var graph = this;
+    d3.json(this.consts.backendBase + '/maps',
+            function(error, data) {
+              graph.renderMapsList(error, data)
+            });
+  }
+
+
   // Open/read JSON file
   Graphmaker.prototype.setupUpload = function() {
     var thisGraph = this;
     d3.select("#upload-input").on("click", function() {
-      // document.getElementById("hidden-file-upload").click();
-      d3.select('#map-index .content')
-        .append('div')
-        .attr('class', 'loading-message')
-        .text('Loading...');
-      d3.select('#map-index')
-        .style('visibility', 'visible')
-        .on('click', function() {
-          d3.select('#map-index .loading-message').remove();
-          d3.select('#map-index').style('visibility', 'hidden');
-          d3.select('#map-index table').remove();
-        });
-      d3.select('#map-index .content')
-        .on('click', function(evt) {
-          d3.event.stopPropagation();
-        });
-
-      d3.json(thisGraph.consts.backendBase + '/maps', function(error, data) {
-        d3.select('#map-index .loading-message').remove();
-        if (error) return window.alert('Error talking to backend server.');
-
-        var table = d3.select('#map-index .content').append('table'),
-            thead = table.append('thead'),
-            tbody = table.append('tbody');
-
-        thead
-          .append('tr')
-          .selectAll('th')
-          .data(['Map ID', 'Created At', 'Num. Nodes', 'Num. Links'])
-          .enter()
-          .append('th')
-          .text(String);
-
-        var rows = tbody
-          .selectAll('tr')
-          .data(data)
-          .enter()
-          .append('tr');
-
-        rows.append('td')
-          .append('a')
-          .attr('href', '#')
-          .on('click', function(d) { thisGraph.fetchMap(d.id) })
-          .text(function(d) { return d.id });
-        rows.append('td').text(function(d) { return d.created_at });
-        rows.append('td').text(function(d) { return d.num_nodes });
-        rows.append('td').text(function(d) { return d.num_links });
-      })
+      document.getElementById("hidden-file-upload").click();
     });
 
     d3.select("#hidden-file-upload").on("change", function() {
@@ -2201,9 +2212,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.setupReadMapFromDatabase = function() {
-    d3.select("#read-from-db").on("click", function() {
-      alert("Read map from database");
-    });
+    var graph = this;
+    d3.select("#read-from-db")
+      .on("click",
+          function(){ graph.listMaps(graph) });
   };
 
 
