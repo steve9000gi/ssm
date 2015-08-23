@@ -111,17 +111,19 @@
         (let [user (first
                      (query
                        (:db system)
-                       [(str "SELECT password, auth_token"
+                       [(str "SELECT id, password, auth_token"
                              "  FROM ssm.users"
                              "  WHERE email=?")
                         email]))]
           (if-not user
             (resp/forbidden {:message "invalid email"})
             (if (validate-password (:password user) password)
-              (assoc-in
-                (resp/ok (select-keys user [:auth_token]))
-                [:cookies :auth_token]
-                {:value (:auth_token user), :max-age a-long-time})
+              (assoc (resp/ok (select-keys user [:auth_token]))
+                     :cookies
+                     {:auth_token {:value (:auth_token user)
+                                   :max-age a-long-time}
+                      :user_id {:value (str (:id user))
+                                :max-age a-long-time}})
               (resp/forbidden {:message "wrong password"}))))))))
 
 (defn logout

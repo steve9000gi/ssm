@@ -41,7 +41,7 @@
   (GET "/testauth" {:keys [current-user-id]}
     (if current-user-id
       (resp/ok {:message "authenticated"})
-      (resp/forbidden {:message "not authenticated"})))
+      (resp/ok {:message "not authenticated"})))
   (POST "/login" [email password] (user/login email password))
   (GET "/logout" [] (user/logout))
 
@@ -76,8 +76,7 @@
   `:current-user-id` into the request map if the cookie checks out."
   [handler]
   (fn [request]
-    (handler (assoc request :current-user-id 1))
-    #_(let [user-id (get-in request [:cookies "user_id" :value])
+    (let [user-id (get-in request [:cookies "user_id" :value])
           given-token (get-in request [:cookies "auth_token" :value])]
       (if (user/valid-auth-token user-id given-token)
         (handler (assoc request :current-user-id (Integer/parseInt user-id)))
@@ -87,7 +86,9 @@
   [handler]
   (cors/wrap-cors handler
                   :access-control-allow-origin [#"http://localhost:8081"]
-                  :access-control-allow-methods [:get :put :post :delete]))
+                  :access-control-allow-methods [:get :put :post :delete]
+                  :access-control-allow-headers [:content-type :cookie]
+                  :access-control-allow-credentials true))
 
 (defn app
   []
