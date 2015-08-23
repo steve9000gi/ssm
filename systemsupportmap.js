@@ -2235,6 +2235,15 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             '</label>' +
             '<br />' +
             '<input type="submit" name="Login" />');
+
+    // JST 2015-08-23 - Stop propagation of keydown events, so that the
+    // handlers elsewhere in this code don't prevent default. I needed to do
+    // this to allow users to hit 'backspace' in these fields.
+    form.selectAll('input[type=text]')
+      .on('keydown', function(elt) { d3.event.stopPropagation(); })
+    form.selectAll('input[type=password]')
+      .on('keydown', function(elt) { d3.event.stopPropagation(); })
+
     var link = content
       .append('a')
       .attr('href', '#')
