@@ -59,27 +59,45 @@
         (resp/internal-server-error {:message (.getMessage e)})))
     (resp/bad-request {:message "invalid map document"})))
 
+(defn- list-as-admin-sql
+  []
+  [(str "SELECT m.id, owner, u.email AS owner_email, "
+        "       created_at, modified_at,"
+        "       jsonb_array_length(document #> '{nodes}') AS num_nodes,"
+        "       jsonb_array_length(document #> '{links}') AS num_links"
+        "  FROM ssm.maps m"
+        "  JOIN ssm.users u"
+        "    ON m.owner = u.id"
+        "  ORDER BY modified_at DESC")])
+
+(defn- list-as-user-sql
+  [user-id]
+  [(str "SELECT id, owner, created_at, modified_at,"
+        "       jsonb_array_length(document #> '{nodes}') AS num_nodes,"
+        "       jsonb_array_length(document #> '{links}') AS num_links"
+        "  FROM ssm.maps"
+        "  WHERE owner = ?"
+        "  ORDER BY modified_at DESC")
+   user-id])
+
 (defn list
   [owner-id]
   {:pre [(integer? owner-id)
          (pos? owner-id)]}
   (prn 'map/list owner-id)
   (try
-    (let [sql (str "SELECT id, owner, created_at, modified_at,"
-                   "       jsonb_array_length(document #> '{nodes}')"
-                   "         AS num_nodes,"
-                   "       jsonb_array_length(document #> '{links}')"
-                   "         AS num_links"
-                   "  FROM ssm.maps")
-          sql (if (user/is-admin? owner-id)
-                [sql]
-                [(str sql " WHERE owner = ?") owner-id])
-          sql (update-in sql [0] #(str % " ORDER BY modified_at DESC"))
+    (let [sql (if (user/is-admin? owner-id)
+                (list-as-admin-sql)
+                (list-as-user-sql owner-id))
           maps (query (:db system) sql)]
       (if-not maps
         (resp/internal-server-error
           {:message "false value returned from database"})
-        (resp/ok (mapv #(dissoc % :document) maps))))))
+        (resp/ok (mapv #(dissoc % :document) maps))))
+    (catch Exception e
+      (println "Exception" e)
+      (.printStackTrace e)
+      (resp/internal-server-error {:message (.getMessage e)}))))
 
 (defn fetch
   [owner-id id]

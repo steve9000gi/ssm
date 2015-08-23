@@ -2130,6 +2130,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   Graphmaker.prototype.renderMapsList = function(data) {
     d3.select('#map-index .loading-message').remove();
     var graph = this;
+    var asAdmin = data[0].hasOwnProperty('owner_email');
+    var columns =
+      ['Map ID', 'Created At', 'Modified At', 'Num. Nodes', 'Num. Links'];
+    if (asAdmin) {
+      columns.push('Owner Email');
+    }
 
     var table = d3.select('#map-index .content').append('table'),
         thead = table.append('thead'),
@@ -2138,7 +2144,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     thead
       .append('tr')
       .selectAll('th')
-      .data(['Map ID', 'Created At', 'Num. Nodes', 'Num. Links'])
+      .data(columns)
       .enter()
       .append('th')
       .text(String);
@@ -2155,8 +2161,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .on('click', function(d) { graph.fetchMap(d.id) })
       .text(function(d) { return d.id });
     rows.append('td').text(function(d) { return d.created_at });
+    rows.append('td').text(function(d) { return d.modified_at });
     rows.append('td').text(function(d) { return d.num_nodes });
     rows.append('td').text(function(d) { return d.num_links });
+    if (asAdmin) {
+      rows.append('td').text(function(d) { return d.owner_email });
+    }
   };
 
 
@@ -2208,6 +2218,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.renderLoginForm = function(callback) {
     var content = d3.select('#authentication .content');
+    content.selectAll('*').remove();
     var header = content
       .append('h1')
       .text('You must login first');
