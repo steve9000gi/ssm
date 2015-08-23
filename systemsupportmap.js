@@ -2114,18 +2114,21 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   // Fetch a map from the backend given its id
   Graphmaker.prototype.fetchMap = function(id) {
     var thisGraph = this;
-    d3.json(thisGraph.consts.backendBase + '/map/' + id, function(error, data) {
-      d3.select('#map-index').style('visibility', 'hidden');
-      d3.select('#map-index table').remove();
-      if (error) return window.alert('Error talking to backend server.');
-      thisGraph.importMap(data.document, id);
-    })
+    d3.json(thisGraph.consts.backendBase + '/map/' + id)
+      .on('beforesend', function(request) { request.withCredentials = true })
+      .on('error',
+          function() { window.alert('Error talking to backend server.') })
+      .on('load', function(data) {
+        d3.select('#map-index').style('visibility', 'hidden');
+        d3.select('#map-index table').remove();
+        thisGraph.importMap(data.document, id);
+      })
+      .send('GET');
   }
 
 
-  Graphmaker.prototype.renderMapsList = function(error, data) {
+  Graphmaker.prototype.renderMapsList = function(data) {
     d3.select('#map-index .loading-message').remove();
-    if (error) return window.alert('Error talking to backend server.');
     var graph = this;
 
     var table = d3.select('#map-index .content').append('table'),
@@ -2170,15 +2173,112 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         d3.select('#map-index table').remove();
       });
     d3.select('#map-index .content')
-      .on('click', function(evt) {
+      .on('click', function() {
         d3.event.stopPropagation();
       });
     var graph = this;
-    d3.json(this.consts.backendBase + '/maps',
-            function(error, data) {
-              graph.renderMapsList(error, data)
-            });
+    d3.json(this.consts.backendBase + '/maps')
+      .on('beforesend', function(request) { request.withCredentials = true })
+      .on('error',
+          function(error) { window.alert('Error talking to backend server.') })
+      .on('load', function(result) { graph.renderMapsList(result) })
+      .send('GET');
   }
+
+
+  // Check whether we're authenticated at the backend, and call the callback
+  // with the boolean result (i.e. true = authenticated, false = not).
+  Graphmaker.prototype.checkAuthentication = function(callback) {
+    d3.xhr(this.consts.backendBase + '/testauth')
+      .on('beforesend', function(request) { request.withCredentials = true })
+      .get(function(error, data) {
+        if (error) {
+          callback(false);
+        } else {
+          var message = JSON.parse(data.response).message;
+          if (message === 'authenticated') {
+            callback(true);
+          } else {
+            callback(false);
+          }
+        }
+      })
+  }
+
+
+  Graphmaker.prototype.renderLoginForm = function(callback) {
+    var content = d3.select('#authentication .content');
+    var header = content
+      .append('h1')
+      .text('You must login first');
+    var form = content
+      .append('form')
+      .html('<label>' +
+            '  Email address:' +
+            '  <input type="text" name="email" />' +
+            '</label>' +
+            '<br />' +
+            '<label>' +
+            '  Password:' +
+            '  <input type="password" name="password" />' +
+            '</label>' +
+            '<br />' +
+            '<input type="submit" name="Login" />');
+    var link = content
+      .append('a')
+      .attr('href', '#')
+      .text("Don't have an account? Create one.")
+      .on('click', function() { console.log('TODO: create') });
+    var message = content
+      .append('p')
+      .attr('class', 'message');
+    var graph = this;
+
+    form.on('submit', function() {
+      d3.event.preventDefault();
+      d3.select('#authentication p.message').text('Loading...');
+      var requestData = {
+        email   : d3.event.target[0].value,
+        password: d3.event.target[1].value
+      };
+      d3.xhr(graph.consts.backendBase + '/login')
+        .header('Content-Type', 'application/json')
+        .on('beforesend', function(request) { request.withCredentials = true })
+        .post(JSON.stringify(requestData), function(error, data) {
+          if (error) {
+            d3.select('#authentication p.message').text('Login failed');
+          } else {
+            d3.select('#authentication').style('visibility', 'hidden');
+            d3.select('#authentication .content *').remove();
+            callback();
+          }
+        });
+    });
+  };
+
+
+  // Prompt user for login/registration, then call the given function (with no
+  // arguments).
+  Graphmaker.prototype.afterAuthentication = function(callback) {
+    graph = this;
+    this.checkAuthentication(function(isAuthenticated) {
+      if (isAuthenticated) {
+        callback();
+      } else {
+        d3.select('#authentication')
+          .style('visibility', 'visible')
+          .on('click', function() {
+            d3.select('#authentication').style('visibility', 'hidden');
+            d3.select('#authentication .content *').remove();
+          });
+        d3.select('#authentication .content')
+          .on('click', function() {
+            d3.event.stopPropagation();
+          })
+        graph.renderLoginForm(callback);
+      }
+    });
+  };
 
 
   // Open/read JSON file
@@ -2215,7 +2315,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var graph = this;
     d3.select("#read-from-db")
       .on("click",
-          function(){ graph.listMaps(graph) });
+          function() {
+            graph.afterAuthentication(function() {
+              graph.listMaps(graph)
+            });
+          });
   };
 
 

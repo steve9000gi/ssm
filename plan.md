@@ -9,6 +9,7 @@ Here's what's left to do, as of Sun Aug 9 2015:
 - backend
 
 - frontend
+  - why can't I backspace in the login form???
   - upon click of either button, test authentication
   - if unauth'd, prompt (maybe in modal lightbox) for creds
   - try authenticating, if fail, display error message and re-prompt
