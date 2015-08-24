@@ -57,13 +57,19 @@
 
 (defn- add-session
   [user response]
-  (prn 'user user)
   (assoc response
          :cookies
          {:auth_token {:value (:auth_token user)
                        :max-age a-long-time}
           :user_id {:value (str (:id user))
                     :max-age a-long-time}}))
+
+(defn- remove-session
+  [response]
+  (assoc response
+         :cookies
+         {:auth_token {:value "", :max-age a-long-time}
+          :user_id    {:value "", :max-age a-long-time}}))
 
 (defn is-admin?
   [user-id]
@@ -136,8 +142,4 @@
 (defn logout
   []
   (prn 'user/logout)
-  (assoc-in
-    (resp/ok {:message "ok"})
-    [:cookies :auth_token]
-    {:value "", :max-age a-long-time}))
-
+  (remove-session (resp/ok {:message "ok"})))

@@ -2388,6 +2388,19 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
+  // Log the current user out.
+  Graphmaker.prototype.logoutUser = function() {
+    d3.xhr(graph.consts.backendBase + '/logout')
+      .on('beforesend', function(request) { request.withCredentials = true })
+      .get(function(error, data) {
+        if (error) {
+          console.log('Logout error:', error);
+          alert('Error logging out.');
+        }
+      });
+  }
+
+
   // Open/read JSON file
   Graphmaker.prototype.setupUpload = function() {
     var thisGraph = this;
@@ -2916,6 +2929,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         case choices[8].name:
           this.loadContextTextFromClient();
           break;
+        case choices[9].name:
+          this.logoutUser();
+          break;
         default:
           alert("\"" + d.name + "\" not implemented.");
       }
@@ -2923,7 +2939,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       if (d3.select(listItem).datum().id === "exportMapAsImageItem") {
         this.exportGraphAsImage();
       } else if (d3.select(listItem).datum().id === "loadContextTextItem") {
-         this.loadContextTextFromClient();
+        this.loadContextTextFromClient();
+      } else if (d3.select(listItem).datum().id === "logoutUser") {
+        this.logoutUser();
       }
     }
   };
@@ -2941,13 +2959,15 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                  {"name": "Set selected object color", "id": "setSelectedObjectColorItem"},
                  {"name": "Snap to grid", "id": "snapToGridItem"},
                  {"name": "Export map as image", "id": "exportMapAsImageItem"},
-                 {"name": "Load text for context menu", "id": "loadContextTextItem"}];
+                 {"name": "Load text for context menu", "id": "loadContextTextItem"},
+                 {"name": "Logout", "id": "logoutUser"}];
     } else {
       choices = [{"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
                  {"name": "Set text line length...", "id": "setTextLineLenItem"},
                  {"name": "Set line thickness...", "id": "setLineThicknessItem"},
                  {"name": "Export map as image", "id": "exportMapAsImageItem"},
-                 {"name": "Load context text", "id": "loadContextTextItem"}];
+                 {"name": "Load context text", "id": "loadContextTextItem"},
+                 {"name": "Logout", "id": "logoutUser"}];
     }
     d3.select("#topGraphDiv").insert("div", ":first-child")
       .classed("menuHidden", true).classed("menu", false)
