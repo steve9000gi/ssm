@@ -748,6 +748,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       this.hideCirclesOfCare();
       this.showSystemSupportMap();
       this.updateGraph();
+      location.hash = "";
     }
   };
 
