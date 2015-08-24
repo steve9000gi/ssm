@@ -2120,7 +2120,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           function() { window.alert('Error talking to backend server.') })
       .on('load', function(data) {
         d3.select('#map-index').style('visibility', 'hidden');
-        d3.select('#map-index table').remove();
         thisGraph.importMap(data.document, id);
       })
       .send('GET');
@@ -2128,9 +2127,16 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.renderMapsList = function(data) {
-    d3.select('#map-index .loading-message').remove();
+    d3.selectAll('#map-index .content *').remove();
     var graph = this;
-    var asAdmin = data[0].hasOwnProperty('owner_email');
+    if (!data || data.length === 0) {
+      d3.select('#map-index .content').append('p')
+        .text("You're logged in, but you don't have any maps yet. " +
+              "To get started, create a map and click the 'save' button.");
+      return;
+    }
+
+    var asAdmin = data && data[0] && data[0].hasOwnProperty('owner_email');
     var columns =
       ['Map ID', 'Created At', 'Modified At', 'Num. Nodes', 'Num. Links'];
     if (asAdmin) {
@@ -2216,6 +2222,84 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   }
 
 
+  // Render the registration (i.e. "new user") form and call the callback when
+  // the user is created.
+  Graphmaker.prototype.renderRegistrationForm = function(callback) {
+    var content = d3.select('#authentication .content');
+    content.selectAll('*').remove();
+    var header = content
+      .append('h1')
+      .text('Create a new account');
+    var form = content
+      .append('form')
+      .html('<label>' +
+            '  Email address:' +
+            '  <input type="text" name="email" />' +
+            '</label>' +
+            '<br />' +
+            '<label>' +
+            '  Password:' +
+            '  <input type="password" name="password" />' +
+            '</label>' +
+            '<br />' +
+            '<label>' +
+            '  Confirm password:' +
+            '  <input type="password" name="password" />' +
+            '</label>' +
+            '<br />' +
+            '<input type="submit" name="Login" />');
+
+    // JST 2015-08-23 - Stop propagation of keydown events, so that the
+    // handlers elsewhere in this code don't prevent default. I needed to do
+    // this to allow users to hit 'backspace' in these fields.
+    form.selectAll('input[type=text]')
+      .on('keydown', function(elt) { d3.event.stopPropagation(); })
+    form.selectAll('input[type=password]')
+      .on('keydown', function(elt) { d3.event.stopPropagation(); })
+
+    var graph = this;
+    var link = content
+      .append('a')
+      .attr('href', '#')
+      .text('Already have an account? Login.')
+      .on('click', function() {
+        content.selectAll('*').remove();
+        graph.renderLoginForm(callback);
+      });
+    var message = content
+      .append('p')
+      .attr('class', 'message');
+
+    form.on('submit', function() {
+      d3.event.preventDefault();
+      if (d3.event.target[1].value != d3.event.target[2].value) {
+        d3.select('#authentication p.message')
+          .text("Passwords don't match. Try again.");
+      } else {
+        d3.select('#authentication p.message').text('Loading...');
+        var requestData = {
+          email   : d3.event.target[0].value,
+          password: d3.event.target[1].value
+        };
+        d3.xhr(graph.consts.backendBase + '/register')
+          .header('Content-Type', 'application/json')
+          .on('beforesend',
+              function(request) { request.withCredentials = true })
+          .post(JSON.stringify(requestData), function(error, data) {
+            if (error) {
+              d3.select('#authentication p.message').text('Login failed');
+            } else {
+              d3.select('#authentication').style('visibility', 'hidden');
+              d3.select('#authentication .content *').remove();
+              callback();
+            }
+          });
+      }
+    });
+  };
+
+
+  // Render the login form and call the callback when the user is auth'd.
   Graphmaker.prototype.renderLoginForm = function(callback) {
     var content = d3.select('#authentication .content');
     content.selectAll('*').remove();
@@ -2244,15 +2328,18 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     form.selectAll('input[type=password]')
       .on('keydown', function(elt) { d3.event.stopPropagation(); })
 
+    var graph = this;
     var link = content
       .append('a')
       .attr('href', '#')
       .text("Don't have an account? Create one.")
-      .on('click', function() { console.log('TODO: create') });
+      .on('click', function() {
+        content.selectAll('*').remove();
+        graph.renderRegistrationForm(callback);
+      });
     var message = content
       .append('p')
       .attr('class', 'message');
-    var graph = this;
 
     form.on('submit', function() {
       d3.event.preventDefault();

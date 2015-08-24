@@ -8,9 +8,10 @@ Here's what's left to do, as of Sun Aug 9 2015:
 
 - backend
   - bump version and update prod backend
+  - logout
 
 - frontend
-  - do new user registration
+  - logout
   - when loading a map, add fragment corresponding to that map ID
   - when saving that map, check fragment and update if appropriate
   - upon page load, check URL and load map if fragment refers to one

@@ -55,6 +55,16 @@
                  "  WHERE id = ?")
             user-id])))
 
+(defn- add-session
+  [user response]
+  (prn 'user user)
+  (assoc response
+         :cookies
+         {:auth_token {:value (:auth_token user)
+                       :max-age a-long-time}
+          :user_id {:value (str (:id user))
+                    :max-age a-long-time}}))
+
 (defn is-admin?
   [user-id]
   {:pre [(integer? user-id)
@@ -82,15 +92,17 @@
     (if-not (valid-password? password)
       (resp/bad-request {:message "invalid password"})
       (try
-        (let [new-user (insert!
-                         (:db system)
-                         "ssm.users"
-                         {:email email
-                          :password (creds/hash-bcrypt
-                                      password
-                                      :work-factor password-work-factor)})]
+        (let [new-user (first
+                         (insert!
+                           (:db system)
+                           "ssm.users"
+                           {:email email
+                            :password (creds/hash-bcrypt
+                                       password
+                                       :work-factor password-work-factor)}))]
           (if new-user
-            (resp/ok (-> new-user first (select-keys [:id :email])))
+            (add-session new-user
+                         (resp/ok (select-keys new-user [:id :email])))
             (resp/bad-request {:message "unknown error"
                                :data new-user})))
         (catch PSQLException e
@@ -118,12 +130,7 @@
           (if-not user
             (resp/forbidden {:message "invalid email"})
             (if (validate-password (:password user) password)
-              (assoc (resp/ok (select-keys user [:auth_token]))
-                     :cookies
-                     {:auth_token {:value (:auth_token user)
-                                   :max-age a-long-time}
-                      :user_id {:value (str (:id user))
-                                :max-age a-long-time}})
+              (add-session user (resp/ok (select-keys user [:auth_token])))
               (resp/forbidden {:message "wrong password"}))))))))
 
 (defn logout
