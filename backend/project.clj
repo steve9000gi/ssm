@@ -1,4 +1,4 @@
-(defproject backend "0.2.0"
+(defproject backend "0.3.0"
   :description "Backend persistence layer for SSM tool"
   :url "http://syssci.renci.org/ssm/"
   :dependencies [[org.clojure/clojure "1.7.0"]
