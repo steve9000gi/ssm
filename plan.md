@@ -7,7 +7,6 @@ Here's what's left to do, as of Sun Aug 23 2015:
     trigger upstart to respawn the process).
 
 - backend
-  - bump version and update prod backend
 
 - frontend
   - stretch goal: name field for each map (pending input/UX from Steve)
