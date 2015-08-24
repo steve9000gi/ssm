@@ -2028,30 +2028,37 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
+  // Return the current map as an JS object.
+  Graphmaker.prototype.getMapObject = function() {
+    var saveEdges = [];
+    this.links.forEach(function(val) {
+      saveEdges.push({source: val.source.id,
+                      target: val.target.id,
+                      style: val.style,
+                      color: val.color,
+                      thickness: val.thickness,
+                      maxCharsPerLine: val.maxCharsPerLine,
+                      note: val.note,
+                      name: val.name,
+                      manualResize: val.manualResize || false
+                    });
+    });
+    return {
+      "nodes": this.nodes,
+      "links": saveEdges,
+      "graphGTransform": d3.select("#graphG").attr("transform"),
+      "systemSupportMapCenter": this.SSMCenter,
+      "circlesOfCareCenter": this.CofCCenter
+    };
+  };
+
+
   // Save as JSON file
   Graphmaker.prototype.setupDownload = function() {
     var thisGraph = this;
     d3.select("#download-input").on("click", function() {
-      var saveEdges = [];
-      thisGraph.links.forEach(function(val) {
-        saveEdges.push({source: val.source.id,
-                        target: val.target.id,
-                        style: val.style,
-                        color: val.color,
-                        thickness: val.thickness,
-                        maxCharsPerLine: val.maxCharsPerLine,
-                        note: val.note,
-                        name: val.name,
-                        manualResize: val.manualResize || false
-                      });
-      });
-      var graphGTransform = d3.select("#graphG").attr("transform");
-      var blob = new Blob([window.JSON.stringify({"nodes": thisGraph.nodes,
-                                                  "links": saveEdges,
-                                                  "graphGTransform": graphGTransform,
-                                                  "systemSupportMapCenter": thisGraph.SSMCenter,
-                                                  "circlesOfCareCenter": thisGraph.CofCCenter})],
-                                                 {type: "text/plain;charset=utf-8"});
+      var blob = new Blob([window.JSON.stringify(thisGraph.getMapObject())],
+                          {type: "text/plain;charset=utf-8"});
       saveAs(blob, "SystemSupportMap.json");
     });
   };
@@ -2482,8 +2489,52 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.setupWriteMapToDatabase = function() {
+    var graph = this;
     d3.select("#write-to-db").on("click", function() {
-      alert("Write map to database");
+      graph.afterAuthentication(function() {
+	var m  = location.hash.match(/\/map\/(\d+)/);
+	if (m) {
+	  // update existing map
+	  var id = m[1];
+	  d3.xhr(graph.consts.backendBase + '/map/' + id)
+	    .header('Content-Type', 'application/json')
+	    .on('beforesend', function(request) {
+	      request.withCredentials = true
+	    })
+	    .on('error', function(req) {
+	      var resp = req.response && JSON.parse(req.response);
+	      if (resp
+		  && resp.message == 'map not owned by authenticated user') {
+		alert("Can't save: you have read-only access to this map.");
+	      } else {
+		console.error('Failed to save map. Request was:', req);
+		alert('Failed to save map # ' + id);
+	      }
+	    })
+	    .on('load', function(data) {
+	      console.log('saved map # ' + id);
+	    })
+	    .send('PUT', JSON.stringify(graph.getMapObject()));
+
+	} else {
+	  // create new map
+	  d3.xhr(graph.consts.backendBase + '/map')
+	    .header('Content-Type', 'application/json')
+	    .on('beforesend', function(request) {
+	      request.withCredentials = true;
+	    })
+	    .on('error', function(req) {
+	      console.error('Failed to save new map. Request was:', req);
+	      alert('Failed to save new map ');
+	    })
+	    .on('load', function(request) {
+	      var data = JSON.parse(request.response);
+	      console.log('saved new map # ' + data.id);
+	      location.hash = '/map/' + data.id;
+	    })
+	    .send('POST', JSON.stringify(graph.getMapObject()));
+	}
+      });
     });
   };
 
