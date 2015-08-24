@@ -10,10 +10,8 @@ Here's what's left to do, as of Sun Aug 9 2015:
   - bump version and update prod backend
 
 - frontend
-  - when saving that map, check fragment and update if appropriate
-  - upon page load, check URL and load map if fragment refers to one
-    - should allow an intermediate authenticate step if needed
-    - should strip fragment if authenticated user is not authorized to view
+  - save map without one loaded (i.e. create new)
+  - save map with one loaded (i.e. update existing)
 
 - Needs input/decision from Steve
   - add save/load buttons (maybe replace current functionality?)

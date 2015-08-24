@@ -2112,6 +2112,42 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   }
 
 
+  // Look in the location's 'hash' property (i.e. everything after the '#') for
+  // a map ID. If the hash property is of the form '/map/<id>', where '<id>' is
+  // an integer, try to load the map from the server.
+  Graphmaker.prototype.loadMapFromLocation = function() {
+    var m  = location.hash.match(/\/map\/(\d+)/);
+    if (m) {
+      var id = m[1];
+      var thisGraph = this;
+      d3.json(this.consts.backendBase + '/map/' + id)
+        .on('beforesend', function(request) { request.withCredentials = true })
+        .on('error',
+            function(error) {
+              var resp = JSON.parse(error.response);
+              if (resp.message && resp.message == 'not authenticated') {
+                thisGraph.afterAuthentication(function() {
+                  thisGraph.loadMapFromLocation();
+                });
+              } else if (resp.message
+                  && resp.message == 'map not owned by authenticated user') {
+                alert("You don't have access to map # " + id + '. ' +
+                      'Redirecting to a blank map.');
+                location.hash = '';
+              } else {
+                console.error(error);
+                alert('Error talking to backend server.');
+              }
+            })
+        .on('load', function(data) {
+          thisGraph.importMap(data.document, id);
+          location.hash = '/map/' + id;
+        })
+        .send('GET');
+    }
+  };
+
+
   // Fetch a map from the backend given its id
   Graphmaker.prototype.fetchMap = function(id) {
     var thisGraph = this;
@@ -3047,4 +3083,5 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   var graph = new Graphmaker(svg, nodes, links);
   graph.setShapeId(0);
   graph.updateGraph();
+  graph.loadMapFromLocation();
 })(window.d3, window.saveAs, window.Blob);
