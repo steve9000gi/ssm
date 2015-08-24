@@ -2121,6 +2121,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .on('load', function(data) {
         d3.select('#map-index').style('visibility', 'hidden');
         thisGraph.importMap(data.document, id);
+        location.hash = '/map/' + id;
       })
       .send('GET');
   }
