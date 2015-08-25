@@ -1,0 +1,43 @@
+{
+ "role":
+        ["parent",
+         "primary care provider",
+         "dentist",
+         "psychiatrist",
+         "case worker"],
+ "responsibilities":
+        ["physical safety",
+         "residence",
+         "education",
+         "contingencies for change of guardian",
+         "health",
+         "recreation",
+         ""],
+ "needs":
+        ["special education",
+         "24/7 supervision",
+         "occasional supervision",
+         "primary care MD",
+         "special education teacher",
+         "special education program",
+         "funding for specialized medical care",
+         "basic financial support",
+         "group home"],
+ "resources":
+        ["MD",
+         "lawyer with special needs expertise",
+         "specific group home facility",
+         "Special Olympics"],
+ "wishes":
+        ["Federal legislation supporting additional funding for special needs children",
+         "local health care professional with expertise in my child's particular developmental difficulties",
+         "increased SSI support"],
+"verbs":
+        ["consults",
+         "requires",
+         "depends on",
+         "found at",
+         "provides insufficient access to",
+         ""]
+}
+

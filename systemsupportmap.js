@@ -44,6 +44,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.showSystemSupportMap();
     this.setupDownload();
     this.setupUpload();
+    this.setupReadMapFromDatabase();
+    this.setupWriteMapToDatabase();
     this.setupContextMenu();
   };
 
@@ -2124,6 +2126,20 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         alert("Your browser won't let you read this file -- try upgrading your browser to IE 10+ "
             + "or Chrome or Firefox.");
       }
+    });
+  };
+
+
+  Graphmaker.prototype.setupReadMapFromDatabase = function() {
+    d3.select("#read-from-db").on("click", function() {
+      alert("Read map from database");
+    });
+  };
+
+
+  Graphmaker.prototype.setupWriteMapToDatabase = function() {
+    d3.select("#write-to-db").on("click", function() {
+      alert("Write map to database");
     });
   };
 
