@@ -1,0 +1,41 @@
+The backend is currently (as of 2015-08-25) being hosted on
+syssci.edc.renci.org in the /srv/www/ssm directory.
+
+Say you make some changes to the backend. How do you deploy them?
+
+First, you should probaby merge whatever changes you want to deploy into the
+master branch, if you haven't already.
+
+Then, bump the version number in project.clj and commit the new version number.
+
+Then, create an uberjar:
+
+    lein do clean, uberjar
+
+The newly created uberjar should be ready at
+`target/backend-<VERSION>-standalone.jar`. Copy this file to syssci.
+
+Once it's copied to syssci in the /srv/www/ssm directory, ssh into syssci. The
+rest of these instructions will be from within the ssh session.
+
+Change directory to /srv/www/ssm. Then point the
+`backend-current-standalone.jar` link to the new jar that you just uploaded:
+
+    ln -sf backend-<VERSION>-standalone.jar backend-current-standalone.jar
+
+Finally, restart the `ssm-backend` service:
+
+    sudo initctl stop ssm-backend
+    sudo initctl start ssm-backend
+
+Note that, for whatever reason, the `restart` command to `initctl` doesn't seem
+to actually stop the process, which needs to happen to use the new uberjar.
+
+If all's well, there should now be a new `java` process running. You can
+determine this by saying:
+
+    ps auxwww | grep -v grep | grep java
+
+The `START` column should be ~ the current time, and the `TIME` column should
+be ~ 0.
+
