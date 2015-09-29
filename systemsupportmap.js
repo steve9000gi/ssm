@@ -2350,20 +2350,21 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     content.selectAll('*').remove();
     var header = content
       .append('h1')
-      .text('You must login first');
+      .text('You must log in first:');
     var form = content
       .append('form')
+      .attr("id", "login")
       .html('<label>' +
             '  Email address:' +
-            '  <input type="text" name="email" />' +
             '</label>' +
+            '  <input type="text" name="email" />' +
             '<br />' +
             '<label>' +
             '  Password:' +
-            '  <input type="password" name="password" />' +
             '</label>' +
+            '  <input type="password" name="password" />' +
             '<br />' +
-            '<input type="submit" name="Login" />');
+            '<input type="submit" name="Log in" />');
 
     // JST 2015-08-23 - Stop propagation of keydown events, so that the
     // handlers elsewhere in this code don't prevent default. I needed to do
@@ -2441,6 +2442,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         if (error) {
           console.log('Logout error:', error);
           alert('Error logging out.');
+        } else {
+          alert("You have logged out from SSM.");
         }
       });
   }
@@ -3049,7 +3052,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                  {"name": "Snap to grid", "id": "snapToGridItem"},
                  {"name": "Export map as image", "id": "exportMapAsImageItem"},
                  {"name": "Load text for context menu", "id": "loadContextTextItem"},
-                 {"name": "Logout", "id": "logoutUser"}];
+                 {"name": "Log out", "id": "logoutUser"}];
     } else {
       choices = [{"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
                  {"name": "Set text line length...", "id": "setTextLineLenItem"},

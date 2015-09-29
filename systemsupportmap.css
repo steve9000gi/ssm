@@ -290,3 +290,21 @@ path.link.selected, g.pathG.selected path {
   background-color: white;
   overflow: scroll;
 }
+
+#login label {
+  display: inline-block;
+  float: left;
+  clear: left;
+  width: 70px;
+  text-align: left;
+}
+
+#login label {
+  width: 110px;
+}
+
+#login input[type="text",type="password"] {
+  display: inline-block;
+  float: left;
+}
+
