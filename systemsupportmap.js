@@ -16,7 +16,6 @@
 
 // Build a graph with nodes of several shapes and colors, and connect them with directed edges.
 // Save a constructed graph locally as a json file, and open and display saved graph files.
-// Author: Steve Chall, RENCI UNC-CH
 // Based on Colorado Reed's https://github.com/cjrd/directed-graph-creator.
 
 document.onload = (function(d3, saveAs, Blob, undefined) {
@@ -477,17 +476,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.addCopyright = function() {
-    //d3.select("#mainSVG").append("div")
     d3.select("#topGraphDiv").append("div")
       .attr("id", "copyrightDiv")
-//      .attr("display", "inline")
         .append("text")
           .attr("id", "copyright")
           .text("\u00a9 2014-2015 The University of North Carolina at Chapel Hill")
-        //  .attr("position", "absolute")
-      //    .attr("y", 500)
-//      .attr("display", "none")
-       //   .attr("x", 170);
   };
 
 
@@ -1145,7 +1138,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                    color: thisGraph.clr,
                    thickness: thisGraph.edgeThickness,
                    name: ""};
-                   //name: "" + thisGraph.edgeNum++};
     var filtRes = thisGraph.edgeGroups.filter(function(d) {
       if (d.source === newEdge.target && d.target === newEdge.source) {
         thisGraph.links.splice(thisGraph.links.indexOf(d), 1);
@@ -1993,7 +1985,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .attr("id", "circlesOfCareGroup")
       .classed("visible", this.state.circlesOfCareVisible);
     d3.select("#circlesOfCareGroup").selectAll(".cOfC")
-      //.data([75, 300, 500])
       .data([75, 200, 350])
       .enter().append("circle")
         .classed("cOfC", true)
@@ -2575,7 +2566,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           ryMax = Math.max(ryMax, thisShapeElt.attr("ry"));
           break;
         case "star":
-          var thisInnerRadius = thisGraph.computeInnerRadius(thisShapeElt.attr("points").split(" "));
+          var thisInnerRadius = thisGraph.computeInnerRadius(thisShapeElt.attr("points")
+	      .split(" "));
           innerRadius = Math.max(thisInnerRadius, innerRadius);
           break;
         default:
@@ -3059,7 +3051,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                  {"name": "Set line thickness...", "id": "setLineThicknessItem"},
                  {"name": "Export map as image", "id": "exportMapAsImageItem"},
                  {"name": "Load context text", "id": "loadContextTextItem"},
-                 {"name": "Logout", "id": "logoutUser"}];
+                 {"name": "Log out", "id": "logoutUser"}];
     }
     d3.select("#topGraphDiv").insert("div", ":first-child")
       .classed("menuHidden", true).classed("menu", false)
