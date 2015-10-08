@@ -1,0 +1,38 @@
+* SSM (System Support Mapper)
+** TODO reassociate login form labels with input elements           :bugfix:
+** TODO login broken due to CORS on Safari                          :bugfix:
+** TODO refactoring
+*** TODO edge-style.js
+**** DONE addEdgeStyleSelectionRects
+**** DONE setupEdgeStyleSelectionMarkers
+**** DONE createEdgeStyleSelectionSampleEdges
+**** DONE addEdgeStyleSelection
+**** DONE this.consts.esDashedEdgeRectY
+**** DONE this.selectEdgeStyle()
+**** TODO this.edgeThickness
+**** TODO this.consts.unselectedStyleColor
+**** TODO this.clr
+**** TODO this.sssw
+**** TODO this.esEdgeX1
+** TODO add 'delete' functionality
+** TODO create admin interface
+*** Research team needs to access all maps from all users
+** TODO add ability to name maps
+** TODO restrict registration (central control over who can register for SSM)
+*** invitation-only, only admins create new accounts, no email sending
+** TODO data analysis (might be on Steve?)
+* SAT (State Assessment Tool)
+** DONE help Steve with git (see email)
+CLOSED: [2015-10-01 Thu 21:22]
+** TODO logout in main survey footer goes back to survey.html rather than to index.html :bugfix:
+** DONE missing data in downloaded files for s2.q4.other and s4.q1.other :bugfix:
+CLOSED: [2015-10-03 Sat 11:24]
+** DONE change file extension of downloaded files to CSV            :bugfix:
+CLOSED: [2015-10-03 Sat 11:29]
+** DONE "\n" in textarea results in weird spreadsheets              :bugfix:
+CLOSED: [2015-10-03 Sat 12:09]
+** TODO restrict registration (see SSM)
+** TODO delete surveys (see SSM)
+** TODO name surveys (see SSM)
+** TODO audit safety for slurp/apply functions                     :low:pri:
+*** TODO Uncaught TypeError: Cannot set property 'checked' of undefined, survey.js:461, survey 49 :bugfix:

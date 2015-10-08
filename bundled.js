@@ -1,4 +1,129 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+exports.style = 'solid';
+
+var esDashedEdgeRectY = 15;  // "es" -> edge selection
+
+// Incorporate rects so you don't have to click right on the edge to select it.
+var addSelectionRects = function() {
+  d3.select("#edgeStyleSelectionSvg").selectAll(".edgeStyleRect")
+    .data([{"id": "solidEdgeRect", "y": 0},
+           {"id": "dashedEdgeRect", "y": esDashedEdgeRectY}])
+    .enter().append("rect")
+    .attr("id", function (d) { return d.id; })
+    .classed("edgeStyleRect", true)
+    .style("opacity", 0.2)
+    .attr("x", 0)
+    .attr("y", function(d) { return d.y; })
+    .attr("width", this.sssw)
+    .attr("height", "15px");
+};
+
+var setupSelectionMarkers = function() {
+  var thisGraph = this;
+  d3.select("#edgeStyleSelectionSvg").selectAll("marker")
+    .data([{"id": "selectedEdgeArrowHead", "color": thisGraph.clr},
+           {"id": "unselectedEdgeArrowHead", "color": thisGraph.consts.unselectedStyleColor}])
+    .enter().append("marker")
+      .attr("id", function(d) { return d.id; })
+      .attr("viewBox", "0 -5 10 10")
+      .attr("markerWidth", 3.75)
+      .attr("markerHeight", 3.75)
+      .attr("orient", "auto")
+      .attr("fill", function(d) { return d.color; })
+      .attr("stroke", function(d) { return d.color; })
+      .append("svg:path")
+        .style("stroke-linejoin", "miter")
+        .attr("d", "M0,-5L10,0L0,5");
+  d3.select("#selectedEdgeArrowHead")
+    .on("click", function() {
+      selectEdgeStyle(thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+    });
+  d3.select("#unselectedEdgeArrowHead")
+    .on("click", function() {
+      selectEdgeStyle(thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
+    });
+};
+
+var createEdgeStyleSelectionSampleEdges = function() {
+  var thisGraph = this;
+  d3.select("#edgeStyleSelectionSvg").selectAll(".styleSelectionLine")
+    .data([{"id": "solid", "marker": "#", "stroke": "#000000", "y": "7.5", "other": "dashed",
+            "dasharray": "none"},
+           {"id": "dashed", "marker": "#un", "stroke": thisGraph.unselectedStyleColor,
+            "y": "23.5", "other": "solid", "dasharray": "10, 2"}])
+    .enter().append("line")
+      .classed("styleSelectionLine", true)
+      .attr("id", function(d) { return d.id + "EdgeSelection"; })
+      .style("marker-end", function(d) { return "url(" + d.marker + "#selectedEdgeArrowHead"; })
+      .style("stroke", function(d) { return d.stroke; })
+      .style("stroke-width", thisGraph.edgeThickness)
+      .style("stroke-dasharray", function(d) { return d.dasharray; })
+      .attr("x1", thisGraph.esEdgeX1)
+      .attr("y1", function(d) { return d.y; })
+      .attr("x2", 4 * thisGraph.sssw / 5)
+      .attr("y2", function(d) { return d.y; })
+      .on("click", function(d) {
+        selectEdgeStyle(thisGraph.clr, "#" + d.id + "EdgeSelection",
+                                                 "#" + d.other + "EdgeSelection");
+      });
+
+  // Hack to make sure the edge selection arrowheads show up in Chrome and IE:
+  selectEdgeStyle(thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+
+  var onMouseOverEdgeStyle = function(selectionId) {
+    d3.select(selectionId)
+      .attr("opacity", 1)
+      .attr("cursor", "pointer")
+      .attr("stroke", "#000000");
+  };
+  d3.select("#solidEdgeRect")
+    .on("mouseover", function() { onMouseOverEdgeStyle("#solidEdgeSelection"); })
+    .on("click", function() {
+      selectEdgeStyle(thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+    });
+  d3.select("#dashedEdgeRect")
+    .on("mouseover", function() { onMouseOverEdgeStyle("#dashedEdgeSelection"); })
+    .on("click", function() {
+      selectEdgeStyle(thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
+    });
+};
+
+// Solid or dashed edge?
+var selectEdgeStyle = function(clr, selectedId, deselectedId) {
+  d3.select(selectedId)
+    .style("marker-end", function() {
+      return "url(#end-arrow" + clr.substr(1) + ")";
+    })
+    .style("stroke", this.clr)
+    .classed("sel", true)
+    .classed("unsel", false);
+  d3.select(deselectedId)
+    .style("marker-end", "url(#unselectedEdgeArrowHead)")
+    .style("stroke", this.consts.unselectedStyleColor)
+    .classed("unsel", true)
+    .classed("sel", false);
+  modEdgeStyle.style = (selectedId === "#solidEdgeSelection") ? "solid" : "dashed";
+};
+
+// User selects solid or dashed line and line color.
+exports.addControls = function() {
+  d3.select("#toolbox").insert("div", ":first-child")
+    .attr("id", "edgeStyleSelectionDiv");
+  d3.select("#edgeStyleSelectionDiv").append("svg")
+    .attr("id", "edgeStyleSelectionSvg")
+    .attr("width", "93px")
+    .attr("height", "30px")
+  // Hack: double xmlns namespace so it stays in Chrome inspector's source;
+    .attr({"xmlns": "http://www.w3.org/2000/svg",
+           "xmlns:xmlns:xlink": "http://www.w3.org/1999/xlink",
+           version: "1.1"
+          });
+  addSelectionRects();
+  setupSelectionMarkers();
+  createEdgeStyleSelectionSampleEdges();
+};
+
+},{}],2:[function(require,module,exports){
 // Help/instructions button and info box:
 module.exports = function(d3) {
   d3.select("#toolbox").insert("div", ":first-child")
@@ -35,7 +160,7 @@ module.exports = function(d3) {
   });
 };
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -58,6 +183,9 @@ module.exports = function(d3) {
 
 document.onload = (function(d3, saveAs, Blob, undefined) {
   "use strict";
+
+  var modHelp = require('./help.js'),
+      modEdgeStyle = require('./edge-style.js');
 
   // Define graphcreator object
   var Graphmaker = function(svg, nodes, links) {
@@ -120,7 +248,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     ssDiamondY: 16,
     ssEllipseCy: 154,
     ssNoBorderXformY: 163,
-    esDashedEdgeRectY: 15, // "es" -> edge selection
     cOfChideText: "Hide Circles of Care",
     ssmHideText: "Hide system support rings",
     turnOffGridText: "Turn off grid",
@@ -137,7 +264,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.svg = svg;
     this.shapeId = 0;
     this.clr = "#000000";
-    this.edgeStyle = "solid";
     this.edgeThickness = 3;
     this.minRectSide =
       Math.sqrt(Math.PI * this.consts.minCircleRadius * this.consts.minCircleRadius);
@@ -226,7 +352,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           .style("stroke", (thisGraph.shapeSelected === "noBorder") ? "none" : thisGraph.clr)
           .style("fill", (thisGraph.shapeSelected === "noBorder") ? thisGraph.clr
                                                                   : thisGraph.consts.bgColor);
-        var selectedEdgeStyleId = (thisGraph.edgeStyle === "solid")
+        var selectedEdgeStyleId = (modEdgeStyle.style === "solid")
                                 ? "#solidEdgeSelection" : "#dashedEdgeSelection";
         d3.select(selectedEdgeStyleId).style("stroke", thisGraph.clr)
           .style("marker-end", function() {
@@ -335,114 +461,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // Incorporate rects so you don't have to click right on the edge to select it.
-  Graphmaker.prototype.addEdgeStyleSelectionRects = function() {
-    d3.select("#edgeStyleSelectionSvg").selectAll(".edgeStyleRect")
-      .data([{"id": "solidEdgeRect", "y": 0},
-             {"id": "dashedEdgeRect", "y": this.consts.esDashedEdgeRectY}])
-      .enter().append("rect")
-        .attr("id", function (d) { return d.id; })
-        .classed("edgeStyleRect", true)
-        .style("opacity", 0.2)
-        .attr("x", 0)
-        .attr("y", function(d) { return d.y; })
-        .attr("width", this.sssw)
-        .attr("height", "15px");
-  };
-
-
-  Graphmaker.prototype.setupEdgeStyleSelectionMarkers = function() {
-    var thisGraph = this;
-    d3.select("#edgeStyleSelectionSvg").selectAll("marker")
-      .data([{"id": "selectedEdgeArrowHead", "color": thisGraph.clr},
-             {"id": "unselectedEdgeArrowHead", "color": thisGraph.consts.unselectedStyleColor}])
-      .enter().append("marker")
-        .attr("id", function(d) { return d.id; })
-        .attr("viewBox", "0 -5 10 10")
-        .attr("markerWidth", 3.75)
-        .attr("markerHeight", 3.75)
-        .attr("orient", "auto")
-        .attr("fill", function(d) { return d.color; })
-        .attr("stroke", function(d) { return d.color; })
-        .append("svg:path")
-          .style("stroke-linejoin", "miter")
-          .attr("d", "M0,-5L10,0L0,5");
-    d3.select("#selectedEdgeArrowHead")
-      .on("click", function() {
-        thisGraph.selectEdgeStyle(thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
-      });
-    d3.select("#unselectedEdgeArrowHead")
-      .on("click", function() {
-        thisGraph.selectEdgeStyle(thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
-      });
-  };
-
-
-  Graphmaker.prototype.createEdgeStyleSelectionSampleEdges = function() {
-    var thisGraph = this;
-    d3.select("#edgeStyleSelectionSvg").selectAll(".styleSelectionLine")
-      .data([{"id": "solid", "marker": "#", "stroke": "#000000", "y": "7.5", "other": "dashed",
-              "dasharray": "none"},
-             {"id": "dashed", "marker": "#un", "stroke": thisGraph.unselectedStyleColor,
-              "y": "23.5", "other": "solid", "dasharray": "10, 2"}])
-      .enter().append("line")
-        .classed("styleSelectionLine", true)
-        .attr("id", function(d) { return d.id + "EdgeSelection"; })
-        .style("marker-end", function(d) { return "url(" + d.marker + "#selectedEdgeArrowHead"; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-width", thisGraph.edgeThickness)
-        .style("stroke-dasharray", function(d) { return d.dasharray; })
-        .attr("x1", thisGraph.esEdgeX1)
-        .attr("y1", function(d) { return d.y; })
-        .attr("x2", 4 * thisGraph.sssw / 5)
-        .attr("y2", function(d) { return d.y; })
-        .on("click", function(d) {
-          thisGraph.selectEdgeStyle(thisGraph.clr, "#" + d.id + "EdgeSelection",
-                                                   "#" + d.other + "EdgeSelection");
-        });
-
-    // Hack to make sure the edge selection arrowheads show up in Chrome and IE:
-    thisGraph.selectEdgeStyle(thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
-
-    var onMouseOverEdgeStyle = function(selectionId) {
-      d3.select(selectionId)
-        .attr("opacity", 1)
-        .attr("cursor", "pointer")
-        .attr("stroke", "#000000");
-    };
-    d3.select("#solidEdgeRect")
-      .on("mouseover", function() { onMouseOverEdgeStyle("#solidEdgeSelection"); })
-      .on("click", function() {
-        thisGraph.selectEdgeStyle(thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
-      });
-    d3.select("#dashedEdgeRect")
-      .on("mouseover", function() { onMouseOverEdgeStyle("#dashedEdgeSelection"); })
-      .on("click", function() {
-        thisGraph.selectEdgeStyle(thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
-      });
-  };
-
-
-  // User selects solid or dashed line and line color.
-  Graphmaker.prototype.addEdgeStyleSelection = function() {
-    d3.select("#toolbox").insert("div", ":first-child")
-      .attr("id", "edgeStyleSelectionDiv");
-    d3.select("#edgeStyleSelectionDiv").append("svg")
-      .attr("id", "edgeStyleSelectionSvg")
-      .attr("width", "93px")
-      .attr("height", "30px")
-      // Hack: double xmlns namespace so it stays in Chrome inspector's source;
-      .attr({"xmlns": "http://www.w3.org/2000/svg",
-        "xmlns:xmlns:xlink": "http://www.w3.org/1999/xlink",
-        version: "1.1"
-      });
-
-    this.addEdgeStyleSelectionRects();
-    this.setupEdgeStyleSelectionMarkers();
-    this.createEdgeStyleSelectionSampleEdges();
-  };
-
-
   // Edge, shape, and color selection, plus "?" help and Options buttons, load, save, and delete.
   Graphmaker.prototype.prepareToolbox = function() {
     var thisGraph = this;
@@ -456,12 +474,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     // Handle delete graph
     d3.select("#delete-graph").on("click", function() { thisGraph.deleteGraph(false); });
 
-    require('./help.js')(d3);
+    modHelp(d3);
     thisGraph.createOptionsMenu();
     thisGraph.createOptionsButton();
     thisGraph.createColorPalette();
     thisGraph.addShapeSelection();
-    thisGraph.addEdgeStyleSelection();
+    modEdgeStyle.addControls();
   };
 
 
@@ -684,24 +702,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       }
     }
     return currMax;
-  };
-
-
-  // Solid or dashed edge?
-  Graphmaker.prototype.selectEdgeStyle = function(clr, selectedId, deselectedId) {
-    d3.select(selectedId)
-      .style("marker-end", function() {
-         return "url(#end-arrow" + clr.substr(1) + ")";
-      })
-      .style("stroke", this.clr)
-      .classed("sel", true)
-      .classed("unsel", false);
-    d3.select(deselectedId)
-      .style("marker-end", "url(#unselectedEdgeArrowHead)")
-      .style("stroke", this.consts.unselectedStyleColor)
-      .classed("unsel", true)
-      .classed("sel", false);
-    this.edgeStyle = (selectedId === "#solidEdgeSelection") ? "solid" : "dashed";
   };
 
 
@@ -1135,7 +1135,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var thisGraph = this;
     var newEdge = {source: this.state.mouseDownNode,
                    target: d,
-                   style: thisGraph.edgeStyle,
+                   style: modEdgeStyle.style,
                    color: thisGraph.clr,
                    thickness: thisGraph.edgeThickness,
                    name: ""};
@@ -3133,4 +3133,4 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   graph.loadMapFromLocation();
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./help.js":1}]},{},[2]);
+},{"./edge-style.js":1,"./help.js":2}]},{},[3]);
