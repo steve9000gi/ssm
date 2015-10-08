@@ -124,6 +124,123 @@ exports.addControls = function() {
 };
 
 },{}],2:[function(require,module,exports){
+var gridVisible = false,
+    grid = null,
+    gridCellW = 10,
+    gridCellH = 10;
+
+var generateGridLineEndPoints = function(d3) {
+  var thisGraph = this;
+  var data = [];
+  var topDiv = d3.select("#topGraphDiv");
+  var bcr = d3.select("#mainSVG").node().getBoundingClientRect();
+  var maxX = bcr.width / this.zoom, maxY = bcr.height / this.zoom;
+  var x1 = 0, y1 = 0, x2 = 0, y2 = maxY, n = 0;
+  // Create fewer gridlines when zooming out:
+  var w = thisGraph.zoom > 0.2 ? gridCellW
+                               : (thisGraph.zoom > 0.02 ? gridCellW * 4
+                                                        : gridCellW * 40);
+  var h = thisGraph.zoom > 0.2 ? gridCellH
+                               : (thisGraph.zoom > 0.02 ? gridCellH * 4
+                                                        : gridCellH * 40);
+  while(x1 <= maxX) {
+    data.push({
+      "x1": x1,
+      "y1": y1,
+      "x2": x2,
+      "y2": y2,
+      "orientation": "Vert",
+      "n": n++
+    });
+    x1 += parseFloat(w);
+    x2 = x1;
+  }
+  x1 = 0, y1 = 0, x2 = maxX, y2 = 0, n = 0;
+  while(y1 <= maxY) {
+    data.push({
+      "x1": x1,
+      "y1": y1,
+      "x2": x2,
+      "y2": y2,
+      "orientation": "Horiz",
+      "n": n++
+    });
+    y1 += parseFloat(h);
+    y2 = y1;
+  }
+  return data;
+};
+
+var showSnapToGridText = function(d3) {
+  d3.select("#snapToGridItem").text("Snap to grid")
+    .datum({"name": "Snap to grid"});
+};
+
+var show = function(d3) {
+  d3.select("#gridGroup").classed("visible", true);
+  gridVisible = true;
+};
+
+exports.hide = function(d3) {
+  d3.select("#gridGroup").classed("visible", false);
+  gridVisible = false;
+  showSnapToGridText(d3);
+};
+
+exports.hideText = 'Turn off grid';
+
+var showTurnOffGridText = function(d3) {
+  d3.select("#snapToGridItem").text(exports.hideText)
+    .datum({"name": exports.hideText});
+};
+
+exports.snap = function(d) {
+  if (this.state.gridVisible) {
+    var leftGridlineDist = d.x % gridCellW;
+    var upperGridlineDist = d.y % gridCellH;
+    d.x += (leftGridlineDist <= gridCellW / 2) ? -leftGridlineDist
+      : gridCellW - leftGridlineDist;
+    d.y += (upperGridlineDist <= gridCellH / 2) ? -upperGridlineDist
+      : gridCellH - upperGridlineDist;
+  }
+};
+
+exports.create = function(d3) {
+  var thisGraph = this;
+  if (grid) {
+    grid.remove();
+    grid = null;
+  }
+  grid = d3.select("#graphG").insert("g", ":first-child")
+    .attr("id", "gridGroup")
+    .classed("visible", gridVisible);
+  var data = generateGridLineEndPoints(d3);
+  d3.select("#gridGroup").selectAll("line")
+    .data(data)
+    .enter().append("svg:line")
+    .attr("x1", function(d) { return d.x1; })
+    .attr("x2", function(d) { return d.x2; })
+    .attr("y1", function(d) { return d.y1; })
+    .attr("y2", function(d) { return d.y2; })
+    .attr("id", function(d, i) {
+      return "gridline" + d.orientation + d.n;
+    })
+    .style("stroke", "#000000")
+    .style("stroke-width", function(d) { return (d.n % 4) ? "0.1px" : "0.5px"; })
+    .style("stroke-dasharray", ("1, 1"))
+    .style("fill", "none");
+  thisGraph.fitGridToZoom();
+};
+
+exports.enableSnap = function(d3) {
+  if (!grid) {
+    exports.create(d3);
+  }
+  show(d3);
+  showTurnOffGridText(d3);
+};
+
+},{}],3:[function(require,module,exports){
 // Help/instructions button and info box:
 module.exports = function(d3) {
   d3.select("#toolbox").insert("div", ":first-child")
@@ -160,7 +277,7 @@ module.exports = function(d3) {
   });
 };
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -185,7 +302,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   "use strict";
 
   var modHelp = require('./help.js'),
-      modEdgeStyle = require('./edge-style.js');
+      modEdgeStyle = require('./edge-style.js'),
+      modGrid = require('./grid.js');
 
   // Define graphcreator object
   var Graphmaker = function(svg, nodes, links) {
@@ -250,7 +368,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     ssNoBorderXformY: 163,
     cOfChideText: "Hide Circles of Care",
     ssmHideText: "Hide system support rings",
-    turnOffGridText: "Turn off grid",
     defaultFontSize: 12, // Also set in css file because image export doesn't see css
     rightMouseBtn: 3
   };
@@ -276,9 +393,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     // shapeNum values are 1-based because they're used in front-facing text:
     this.shapeNum = {"circle": 1, "rectangle": 1, "diamond": 1, "ellipse": 1, "star": 1,
                           "noBorder": 1};
-    this.gridCellW = 10;
-    this.gridCellH = 10;
-    this.grid = null;
     this.state = {
       selectedNode: null,
       selectedEdge: null,
@@ -290,7 +404,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       shiftNodeDrag: false,
       selectedText: null,
       clickDragHandle: false,
-      gridVisible: false,
       circlesOfCareVisible: false,
       ssmVisible: true
     };
@@ -579,7 +692,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         thisGraph.dragmove(args);
       })
       .on("dragend", function(args) {
-        thisGraph.snapToGrid(args);
+        modGrid.snap(args);
         // Todo check if edge-mode is selected
       });
   };
@@ -705,18 +818,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.snapToGrid = function(d) {
-    if (this.state.gridVisible) {
-      var leftGridlineDist = d.x % this.gridCellW;
-      var upperGridlineDist = d.y % this.gridCellH;
-      d.x += (leftGridlineDist <= this.gridCellW / 2) ? -leftGridlineDist
-                                                      : this.gridCellW - leftGridlineDist;
-      d.y += (upperGridlineDist <= this.gridCellH / 2) ? -upperGridlineDist
-                                                       : this.gridCellH - upperGridlineDist;
-    }
-  };
-
-
   Graphmaker.prototype.dragmove = function(d) {
     if (this.state.shiftNodeDrag) { // Creating a new edge
       this.dragLine.attr("d", "M" + d.x + "," + d.y + "L" + d3.mouse(this.svgG.node())[0]
@@ -725,7 +826,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       this.dragLine.style("stroke-width", 0);
       d.x += d3.event.dx;
       d.y +=  d3.event.dy;
-      this.snapToGrid(d);
+      modGrid.snap(d);
       this.updateGraph();
     }
   };
@@ -1810,7 +1911,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.translate = d3.event.translate;
     d3.select(".graph")
       .attr("transform", "translate(" + this.translate + ") scale(" + this.zoom + ")");
-    this.createGrid();
+    modGrid.create(d3);
   };
 
 
@@ -1820,7 +1921,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var x = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth;
     var y = window.innerHeight|| docEl.clientHeight|| bodyEl.clientHeight;
     svg.attr("width", x).attr("height", y);
-    this.createGrid();
+    modGrid.create(d3);
     this.updateGraph();
   };
 
@@ -2878,98 +2979,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.generateGridLineEndPoints = function() {
-    var thisGraph = this;
-    var data = [];
-    var topDiv = d3.select("#topGraphDiv");
-    var bcr = d3.select("#mainSVG").node().getBoundingClientRect();
-    var maxX = bcr.width / this.zoom, maxY = bcr.height / this.zoom;
-    var x1 = 0, y1 = 0, x2 = 0, y2 = maxY, n = 0;
-    // Create fewer gridlines when zooming out:
-    var w = thisGraph.zoom > 0.2 ? thisGraph.gridCellW
-                                 : (thisGraph.zoom > 0.02 ? thisGraph.gridCellW * 4
-                                                          : thisGraph.gridCellW * 40);
-    var h = thisGraph.zoom > 0.2 ? thisGraph.gridCellH
-                                 : (thisGraph.zoom > 0.02 ? thisGraph.gridCellH * 4
-                                                          : thisGraph.gridCellH * 40);
-    while(x1 <= maxX) {
-      data.push({"x1": x1, "y1": y1, "x2": x2, "y2": y2, "orientation": "Vert", "n": n++});
-      x1 += parseFloat(w);
-      x2 = x1;
-    }
-    x1 = 0, y1 = 0, x2 = maxX, y2 = 0, n = 0;
-    while(y1 <= maxY) {
-      data.push({"x1": x1, "y1": y1, "x2": x2, "y2": y2, "orientation": "Horiz", "n": n++});
-      y1 += parseFloat(h);
-      y2 = y1;
-    }
-    return data;
-  };
-
-
-  Graphmaker.prototype.createGrid = function() {
-    var thisGraph = this;
-    if (thisGraph.grid) {
-      thisGraph.grid.remove();
-      thisGraph.grid = null;
-    }
-    thisGraph.grid = d3.select("#graphG").insert("g", ":first-child")
-      .attr("id", "gridGroup")
-      .classed("visible", thisGraph.state.gridVisible);
-
-    var data = thisGraph.generateGridLineEndPoints();
-    d3.select("#gridGroup").selectAll("line")
-      .data(data)
-      .enter().append("svg:line")
-        .attr("x1", function(d) { return d.x1; })
-        .attr("x2", function(d) { return d.x2; })
-        .attr("y1", function(d) { return d.y1; })
-        .attr("y2", function(d) { return d.y2; })
-        .attr("id", function(d, i) {
-          return "gridline" + d.orientation + d.n;
-        })
-        .style("stroke", "#000000")
-        .style("stroke-width", function(d) { return (d.n % 4) ? "0.1px" : "0.5px"; })
-        .style("stroke-dasharray", ("1, 1"))
-        .style("fill", "none");
-    thisGraph.fitGridToZoom();
-  };
-
-
-  Graphmaker.prototype.enableGrid = function() {
-    d3.select("#gridGroup").classed("visible", true);
-    this.state.gridVisible = true;
-  };
-
-
-  Graphmaker.prototype.showSnapToGridText = function() {
-    d3.select("#snapToGridItem").text("Snap to grid")
-      .datum({"name": "Snap to grid"});
-  };
-
-
-  Graphmaker.prototype.showTurnOffGridText = function() {
-    d3.select("#snapToGridItem").text(this.consts.turnOffGridText)
-      .datum({"name": this.consts.turnOffGridText});
-  };
-
-
-  Graphmaker.prototype.enableSnapToGrid = function() {
-    if (!this.grid) {
-      this.createGrid();
-    }
-    this.enableGrid();
-    this.showTurnOffGridText();
-  };
-
-
-  Graphmaker.prototype.turnOffGrid = function() {
-    d3.select("#gridGroup").classed("visible", false);
-    this.state.gridVisible = false;
-    this.showSnapToGridText();
-  };
-
-
   Graphmaker.prototype.optionsMenuListItemMouseUp = function(listItem, d, choices) {
     // Hide the menu unless there's a submenu open:
     if ((d.id !== "eqShapeSizeItem") && (d.id !== "setTextLineLenItem")
@@ -3000,10 +3009,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           this.setSelectedObjectColor();
           break;
         case choices[6].name:
-          this.enableSnapToGrid();
+          modGrid.enableSnap(d3);
           break;
-        case this.consts.turnOffGridText:
-          this.turnOffGrid();
+        case modGrid.hideText:
+          modGrid.hide(d3);
           break;
         case this.consts.ssmHideText:
           this.hideSystemSupportMap();
@@ -3133,4 +3142,4 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   graph.loadMapFromLocation();
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./edge-style.js":1,"./help.js":2}]},{},[3]);
+},{"./edge-style.js":1,"./grid.js":2,"./help.js":3}]},{},[4]);

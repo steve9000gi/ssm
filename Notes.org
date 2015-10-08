@@ -14,6 +14,22 @@
 **** TODO this.clr
 **** TODO this.sssw
 **** TODO this.esEdgeX1
+*** TODO grid.js
+**** DONE snapToGrid()
+**** DONE gridVisible
+**** DONE createGrid()
+**** DONE grid
+**** DONE generateGridLineEndPoints
+**** DONE enableGrid()
+**** DONE enableSnapToGrid()
+**** DONE showTurnOffGridText()
+**** DONE turnOffGridText
+**** DONE turnOffGrid()
+**** DONE showSnapToGridText()
+**** DONE gridCellW
+**** DONE gridCellH
+**** TODO zoom
+**** TODO fitGridToZoom
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users
