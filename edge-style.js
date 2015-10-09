@@ -23,7 +23,7 @@ var addSelectionRects = function(d3) {
 var setupSelectionMarkers = function(d3) {
   var thisGraph = this;
   d3.select("#edgeStyleSelectionSvg").selectAll("marker")
-    .data([{"id": "selectedEdgeArrowHead", "color": thisGraph.clr},
+    .data([{"id": "selectedEdgeArrowHead", "color": modSelectedColor.clr},
            {"id": "unselectedEdgeArrowHead", "color": modSelectedColor.unselected}])
     .enter().append("marker")
       .attr("id", function(d) { return d.id; })
@@ -38,11 +38,11 @@ var setupSelectionMarkers = function(d3) {
         .attr("d", "M0,-5L10,0L0,5");
   d3.select("#selectedEdgeArrowHead")
     .on("click", function() {
-      selectEdgeStyle(d3, thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+      selectEdgeStyle(d3, modSelectedColor.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
     });
   d3.select("#unselectedEdgeArrowHead")
     .on("click", function() {
-      selectEdgeStyle(d3, thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
+      selectEdgeStyle(d3, modSelectedColor.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
     });
 };
 
@@ -65,12 +65,13 @@ var createEdgeStyleSelectionSampleEdges = function(d3) {
       .attr("x2", 4 * thisGraph.sssw / 5)
       .attr("y2", function(d) { return d.y; })
       .on("click", function(d) {
-        selectEdgeStyle(d3, thisGraph.clr, "#" + d.id + "EdgeSelection",
-                                                 "#" + d.other + "EdgeSelection");
+        selectEdgeStyle(d3, modSelectedColor.clr,
+                        "#" + d.id + "EdgeSelection",
+                        "#" + d.other + "EdgeSelection");
       });
 
   // Hack to make sure the edge selection arrowheads show up in Chrome and IE:
-  selectEdgeStyle(d3, thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+  selectEdgeStyle(d3, modSelectedColor.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
 
   var onMouseOverEdgeStyle = function(selectionId) {
     d3.select(selectionId)
@@ -81,12 +82,12 @@ var createEdgeStyleSelectionSampleEdges = function(d3) {
   d3.select("#solidEdgeRect")
     .on("mouseover", function() { onMouseOverEdgeStyle("#solidEdgeSelection"); })
     .on("click", function() {
-      selectEdgeStyle(d3, thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+      selectEdgeStyle(d3, modSelectedColor.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
     });
   d3.select("#dashedEdgeRect")
     .on("mouseover", function() { onMouseOverEdgeStyle("#dashedEdgeSelection"); })
     .on("click", function() {
-      selectEdgeStyle(d3, thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
+      selectEdgeStyle(d3, modSelectedColor.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
     });
 };
 
@@ -96,7 +97,7 @@ var selectEdgeStyle = function(d3, clr, selectedId, deselectedId) {
     .style("marker-end", function() {
       return "url(#end-arrow" + clr.substr(1) + ")";
     })
-    .style("stroke", this.clr)
+    .style("stroke", modSelectedColor.clr)
     .classed("sel", true)
     .classed("unsel", false);
   d3.select(deselectedId)

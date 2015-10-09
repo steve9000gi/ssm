@@ -24,7 +24,7 @@ var addSelectionRects = function(d3) {
 var setupSelectionMarkers = function(d3) {
   var thisGraph = this;
   d3.select("#edgeStyleSelectionSvg").selectAll("marker")
-    .data([{"id": "selectedEdgeArrowHead", "color": thisGraph.clr},
+    .data([{"id": "selectedEdgeArrowHead", "color": modSelectedColor.clr},
            {"id": "unselectedEdgeArrowHead", "color": modSelectedColor.unselected}])
     .enter().append("marker")
       .attr("id", function(d) { return d.id; })
@@ -39,11 +39,11 @@ var setupSelectionMarkers = function(d3) {
         .attr("d", "M0,-5L10,0L0,5");
   d3.select("#selectedEdgeArrowHead")
     .on("click", function() {
-      selectEdgeStyle(d3, thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+      selectEdgeStyle(d3, modSelectedColor.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
     });
   d3.select("#unselectedEdgeArrowHead")
     .on("click", function() {
-      selectEdgeStyle(d3, thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
+      selectEdgeStyle(d3, modSelectedColor.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
     });
 };
 
@@ -66,12 +66,13 @@ var createEdgeStyleSelectionSampleEdges = function(d3) {
       .attr("x2", 4 * thisGraph.sssw / 5)
       .attr("y2", function(d) { return d.y; })
       .on("click", function(d) {
-        selectEdgeStyle(d3, thisGraph.clr, "#" + d.id + "EdgeSelection",
-                                                 "#" + d.other + "EdgeSelection");
+        selectEdgeStyle(d3, modSelectedColor.clr,
+                        "#" + d.id + "EdgeSelection",
+                        "#" + d.other + "EdgeSelection");
       });
 
   // Hack to make sure the edge selection arrowheads show up in Chrome and IE:
-  selectEdgeStyle(d3, thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+  selectEdgeStyle(d3, modSelectedColor.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
 
   var onMouseOverEdgeStyle = function(selectionId) {
     d3.select(selectionId)
@@ -82,12 +83,12 @@ var createEdgeStyleSelectionSampleEdges = function(d3) {
   d3.select("#solidEdgeRect")
     .on("mouseover", function() { onMouseOverEdgeStyle("#solidEdgeSelection"); })
     .on("click", function() {
-      selectEdgeStyle(d3, thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+      selectEdgeStyle(d3, modSelectedColor.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
     });
   d3.select("#dashedEdgeRect")
     .on("mouseover", function() { onMouseOverEdgeStyle("#dashedEdgeSelection"); })
     .on("click", function() {
-      selectEdgeStyle(d3, thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
+      selectEdgeStyle(d3, modSelectedColor.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
     });
 };
 
@@ -97,7 +98,7 @@ var selectEdgeStyle = function(d3, clr, selectedId, deselectedId) {
     .style("marker-end", function() {
       return "url(#end-arrow" + clr.substr(1) + ")";
     })
-    .style("stroke", this.clr)
+    .style("stroke", modSelectedColor.clr)
     .classed("sel", true)
     .classed("unsel", false);
   d3.select(deselectedId)
@@ -328,10 +329,66 @@ module.exports = function(d3) {
 };
 
 },{}],5:[function(require,module,exports){
+var modEdgeStyle = require('./edge-style.js');
+
 exports.color = "rgb(229, 172, 247)";
 exports.unselected = "#666666";
+exports.colorChoices = ["ff0000",  // red
+                        "ff8800",  // orange
+                        "999900",  // gold
+                        "00bd00",  // green
+                        "00bdbd",  // cyan/aqua
+                        "0000ff",  // dark blue
+                        "8800ff",  // purple
+                        "000000"], // black
+exports.hoverColor = "rgb(200, 238, 241)";
+exports.bgColor = "rgb(248, 248, 248)";
+exports.clr = '#000000';
 
-},{}],6:[function(require,module,exports){
+exports.createColorPalette = function(d3) {
+  var thisGraph = this;
+  d3.select("#toolbox").insert("div", ":first-child")
+    .attr("id", "colorPalette");
+  d3.select("#colorPalette").selectAll(".colorBar")
+    .data(exports.colorChoices)
+    .enter().append("div")
+      .classed("colorBar", true)
+      .attr("id", function(d) { return "clr" + d; })
+      .style("background-color", function(d) { return "#" + d; })
+    .on("mouseover", function() { // Set border to hoverColor if this colorBar is not selected
+      var currentColorBar = d3.select(this);
+      var currentIdFragment = currentColorBar.attr("id").slice(3);
+      if (currentIdFragment !== exports.clr.slice(1)) {
+        currentColorBar.style("border-color", exports.hoverColor);
+      }
+    })
+    .on("mouseout", function() { // Set border to black if this colorBar is not selected
+      var currentColorBar = d3.select(this);
+      var currentIdFragment = currentColorBar.attr("id").slice(3);
+      if (currentIdFragment !== exports.clr.slice(1)) {
+        currentColorBar.style("border-color", "#000000");
+      }
+    })
+    .on("mouseup", function(d) {
+      exports.clr = "#" + d;
+      d3.selectAll(".colorBar").each(function() {
+        d3.select(this).style("border-color", "#000000");});
+      d3.select(this).style("border-color", "#ffffff");
+      d3.select("#" + thisGraph.shapeSelected + "Selection")
+        .style("stroke", (thisGraph.shapeSelected === "noBorder") ? "none" : exports.clr)
+        .style("fill", (thisGraph.shapeSelected === "noBorder") ? exports.clr
+                                                                : exports.bgColor);
+      var selectedEdgeStyleId = (modEdgeStyle.style === "solid")
+                              ? "#solidEdgeSelection" : "#dashedEdgeSelection";
+      d3.select(selectedEdgeStyleId).style("stroke", exports.clr)
+        .style("marker-end", function() {
+          return "url(#end-arrow" + exports.clr.substr(1) + ")";
+      });
+    });
+  d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
+};
+
+},{"./edge-style.js":1}],6:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -401,16 +458,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     minCircleRadius: 20,
     minEllipseRx: 25,
     minEllipseRy: 17,
-    hoverColor: "rgb(200, 238, 241)",
-    bgColor: "rgb(248, 248, 248)",
-    colorChoices: ["ff0000",  // red
-                   "ff8800",  // orange
-                   "999900",  // gold
-                   "00bd00",  // green
-                   "00bdbd",  // cyan/aqua
-                   "0000ff",  // dark blue
-                   "8800ff",  // purple
-                   "000000"], // black
     defaultShapeText: {"circle":    "Identity",
                        "rectangle": "Responsibility",
                        "diamond":   "Need",
@@ -435,7 +482,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.displayAll = true; // If false turns off some features
     this.svg = svg;
     this.shapeId = 0;
-    this.clr = "#000000";
     this.minRectSide =
       Math.sqrt(Math.PI * this.consts.minCircleRadius * this.consts.minCircleRadius);
     this.shapeSelected = "circle";
@@ -483,59 +529,15 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.createColorPalette = function() {
-    var thisGraph = this;
-    d3.select("#toolbox").insert("div", ":first-child")
-      .attr("id", "colorPalette");
-    d3.select("#colorPalette").selectAll(".colorBar")
-      .data(thisGraph.consts.colorChoices)
-      .enter().append("div")
-        .classed("colorBar", true)
-        .attr("id", function(d) { return "clr" + d; })
-        .style("background-color", function(d) { return "#" + d; })
-      .on("mouseover", function() { // Set border to hoverColor if this colorBar is not selected
-        var currentColorBar = d3.select(this);
-        var currentIdFragment = currentColorBar.attr("id").slice(3);
-        if (currentIdFragment !== thisGraph.clr.slice(1)) {
-          currentColorBar.style("border-color", thisGraph.consts.hoverColor);
-        }
-      })
-      .on("mouseout", function() { // Set border to black if this colorBar is not selected
-        var currentColorBar = d3.select(this);
-        var currentIdFragment = currentColorBar.attr("id").slice(3);
-        if (currentIdFragment !== thisGraph.clr.slice(1)) {
-          currentColorBar.style("border-color", "#000000");
-        }
-      })
-      .on("mouseup", function(d) {
-        thisGraph.clr = "#" + d;
-        d3.selectAll(".colorBar").each(function() {
-          d3.select(this).style("border-color", "#000000");});
-        d3.select(this).style("border-color", "#ffffff");
-        d3.select("#" + thisGraph.shapeSelected + "Selection")
-          .style("stroke", (thisGraph.shapeSelected === "noBorder") ? "none" : thisGraph.clr)
-          .style("fill", (thisGraph.shapeSelected === "noBorder") ? thisGraph.clr
-                                                                  : thisGraph.consts.bgColor);
-        var selectedEdgeStyleId = (modEdgeStyle.style === "solid")
-                                ? "#solidEdgeSelection" : "#dashedEdgeSelection";
-        d3.select(selectedEdgeStyleId).style("stroke", thisGraph.clr)
-          .style("marker-end", function() {
-            return "url(#end-arrow" + thisGraph.clr.substr(1) + ")";
-        });
-      });
-    d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
-  };
-
-
   Graphmaker.prototype.selectShape = function(selectedElt, shapeSelection) {
     d3.selectAll(".shapeSelection").style("stroke", modSelectedColor.unselected)
       .classed({"sel": false, "unsel": true});
     d3.select("#noBorderSelection")
       .style("fill", modSelectedColor.unselected)
       .style("stroke", "none");
-    selectedElt.style("stroke", this.clr).classed({"sel": true, "unsel": false});
+    selectedElt.style("stroke", modSelectedColor.clr).classed({"sel": true, "unsel": false});
     if (shapeSelection === "noBorder") {
-      selectedElt.style("fill", this.clr).style("stroke", "none");
+      selectedElt.style("fill", modSelectedColor.clr).style("stroke", "none");
     }
     this.shapeSelected = shapeSelection;
   };
@@ -558,7 +560,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .attr("id", function(d) { return d.id; })
         .classed("shapeSelection", true)
         .style("stroke", function(d) {
-          return d.shape === "circle" ? thisGraph.clr : modSelectedColor.unselected;
+          return d.shape === "circle" ? modSelectedColor.clr : modSelectedColor.unselected;
         })
         .style("stroke-width", 2)
         .classed("sel", function(d) { return (d.id === "circleSelection"); })
@@ -641,7 +643,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     modHelp(d3);
     thisGraph.createOptionsMenu();
     thisGraph.createOptionsButton();
-    thisGraph.createColorPalette();
+    modSelectedColor.createColorPalette(d3);
     thisGraph.addShapeSelection();
     modEdgeStyle.addControls(d3);
   };
@@ -695,7 +697,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     // Arrow markers for graph links (i.e., edges that persist after mouse up)
     var defs = d3.select("#mainSVG").append("svg:defs");
     defs.selectAll("marker")
-    .data(this.consts.colorChoices)
+    .data(modSelectedColor.colorChoices)
     .enter().append("marker")
       .attr("id", function(d) { return "end-arrow" + d; })
       .attr("viewBox", "0 -5 10 10")
@@ -711,7 +713,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var markerData = [
       {"id": "mark-end-arrow", "fill": "#000000"},
       {"id": "selected-end-arrow", "fill": modSelectedColor.color},
-      {"id": "hover-end-arrow", "fill": this.consts.hoverColor}];
+      {"id": "hover-end-arrow", "fill": modSelectedColor.hoverColor}];
     defs.selectAll(".specialMarker")
     .data(markerData)
     .enter().append("marker")
@@ -1033,7 +1035,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                 .style("font-weight", function(d) {
                   return d.url ? thisGraph.boldFontWeight: "none";
                 })
-                .style("stroke", thisGraph.consts.bgColor)
+                .style("stroke", modSelectedColor.bgColor)
                 .style("stroke-width", "3px")
                 .attr("dy",  function() {
                   return yShift - ((phrases.length - 1) * thisGraph.consts.defaultFontSize / 2);
@@ -1260,7 +1262,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var newEdge = {source: this.state.mouseDownNode,
                    target: d,
                    style: modEdgeStyle.style,
-                   color: thisGraph.clr,
+                   color: modSelectedColor.clr,
                    thickness: modEdgeThickness.thickness,
                    name: ""};
     var filtRes = thisGraph.edgeGroups.filter(function(d) {
@@ -1360,7 +1362,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                    + this.shapeNum[this.shapeSelected]++,
                x: xycoords[0],
                y: xycoords[1],
-               color: this.clr,
+               color: modSelectedColor.clr,
                shape: this.shapeSelected};
       this.nodes.push(d);
       this.shapeId++;
@@ -1824,9 +1826,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .on("mouseover", function() { // Hover color iff not (selected, new edge or inside shape):
         if ((d3.select(this).selectAll("path").style("stroke") !== modSelectedColor.color)
             && (!thisGraph.state.shiftNodeDrag) && (!thisGraph.state.justDragged)) {
-          d3.select(this).selectAll("path").style("stroke", thisGraph.consts.hoverColor)
+          d3.select(this).selectAll("path").style("stroke", modSelectedColor.hoverColor)
             .style("marker-end", "url(#hover-end-arrow)");
-          d3.select(this).selectAll("text").style("fill", thisGraph.consts.hoverColor);
+          d3.select(this).selectAll("text").style("fill", modSelectedColor.hoverColor);
         }
       })
       .on("mouseout", function(d) { // If selected go back to selectedColor.
@@ -1878,7 +1880,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             .text( function(d) { return d.name; })
             .attr("x", function(d) { return (d.source.x + d.target.x) / 2; })
             .attr("y", function(d) { return (d.source.y + d.target.y) / 2; })
-            .style("stroke", this.consts.bgColor)
+            .style("stroke", modSelectedColor.bgColor)
             .style("stroke-width", function(d) { return d.stroke-width; })
             .style("fill", function(d) {
               return d.color;
@@ -2009,13 +2011,13 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   // Create four concentric rings and five labels (one for each rings and one for the outside)
   Graphmaker.prototype.createSystemSupportMap = function() {
     var rings = [{"name": "Role/Identity", "radius": 110,
-                  "color": "#" + this.consts.colorChoices[6]},
+                  "color": "#" + modSelectedColor.colorChoices[6]},
                  {"name": "Most Important Responsibilities", "radius": 275,
-                  "color": "#" + this.consts.colorChoices[5]},
+                  "color": "#" + modSelectedColor.colorChoices[5]},
                  {"name": "General Needs for Each Responsibility", "radius": 475,
-                  "color": "#" + this.consts.colorChoices[4]},
+                  "color": "#" + modSelectedColor.colorChoices[4]},
                  {"name": "Available Resources", "radius": 675,
-                  "color": "#" + this.consts.colorChoices[7]} ];
+                  "color": "#" + modSelectedColor.colorChoices[7]} ];
     d3.select("#graphG").append("g")
       .classed({"ssmGroup": true, "ssmHidden": true, "ssmVisible": false});
     this.state.ssmVisible = false;
@@ -2028,7 +2030,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         })
         .style("fill", "none")
         .attr("r", function(d) { return d.radius; });
-    rings.push({"name": "Wish List", "radius": 750, "color": "#" + this.consts.colorChoices[2]});
+    rings.push({"name": "Wish List", "radius": 750, "color": "#" + modSelectedColor.colorChoices[2]});
     d3.select(".ssmGroup").selectAll(".ssmLabel")
       .data(rings)
       .enter().append("text")
@@ -2867,7 +2869,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .style("display", (this.state.ssmVisible ? "inline-block" : "none"));
     d3.selectAll(".ssmHidden").attr("display", "none");
     d3.select("#gridGroup").attr("display", "none");
-    d3.select("#mainSVG").style("background-color", this.consts.bgColor);
+    d3.select("#mainSVG").style("background-color", modSelectedColor.bgColor);
     var edges = d3.selectAll(".link")
                   .style("marker-end", function() {
                     var marker = d3.select(this).style("marker-end");
@@ -2941,10 +2943,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       alert("setSelectedObjectColor: no object selected.");
       return;
     }
-    selectedObject.color = this.clr;
+    selectedObject.color = modSelectedColor.clr;
     var selectedElement = d3.select("#" + selectedObject.domId);
-    selectedElement.select(".shape").style("stroke", this.clr);
-    selectedElement.select("text").style("fill", this.clr);
+    selectedElement.select(".shape").style("stroke", modSelectedColor.clr);
+    selectedElement.select("text").style("fill", modSelectedColor.clr);
     this.updateGraph();
   };
 
