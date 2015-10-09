@@ -23,6 +23,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   var modHelp = require('./help.js'),
       modEdgeStyle = require('./edge-style.js'),
+      modEdgeThickness = require('./edge-thickness.js'),
       modGrid = require('./grid.js');
 
   // Define graphcreator object
@@ -101,7 +102,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.svg = svg;
     this.shapeId = 0;
     this.clr = "#000000";
-    this.edgeThickness = 3;
     this.minRectSide =
       Math.sqrt(Math.PI * this.consts.minCircleRadius * this.consts.minCircleRadius);
     this.shapeSelected = "circle";
@@ -895,8 +895,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     if (d3.event.shiftKey && !d.manualResize) { // No edges from manually resized rectangles
       this.state.shiftNodeDrag = d3.event.shiftKey;
       this.dragLine.classed("hidden", false) // Reposition dragged directed edge
-                        .style("stroke-width", this.edgeThickness)
-                        .attr("d", "M" + d.x + "," + d.y + "L" + d.x + "," + d.y);
+        .style("stroke-width", modEdgeThickness.thickness)
+        .attr("d", "M" + d.x + "," + d.y + "L" + d.x + "," + d.y);
     }
   };
 
@@ -958,7 +958,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                    target: d,
                    style: modEdgeStyle.style,
                    color: thisGraph.clr,
-                   thickness: thisGraph.edgeThickness,
+                   thickness: modEdgeThickness.thickness,
                    name: ""};
     var filtRes = thisGraph.edgeGroups.filter(function(d) {
       if (d.source === newEdge.target && d.target === newEdge.source) {
@@ -2529,49 +2529,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.createEdgeThicknessSubmenu = function() {
-    var thisGraph = this;
-    d3.select("#setLineThicknessItem").append("div")
-      .classed("menuHidden", true).classed("menu", false)
-      .attr("id", "edgeThicknessSubmenuDiv")
-      .attr("position", "absolute")
-      .style("width", "90px")
-      .on("mouseleave", function() {
-        d3.select("#edgeThicknessSubmenuDiv").classed("menu", false).classed("menuHidden", true);
-      })
-      .on("mouseup", function() {
-        d3.select("#edgeThicknessSubmenuDiv").classed("menu", false).classed("menuHidden", true);
-      });
-    var choices = [1, 2, 3, 4, 5, 6, 7];
-    d3.select("#edgeThicknessSubmenuDiv").append("ul").attr("id", "edgeThicknessSubmenuList");
-    d3.select("#edgeThicknessSubmenuList").selectAll("li.edgeThicknessSubmenuListItem")
-      .data(choices).enter()
-      .append("li")
-        .classed("edgeThicknessSubmenuListItem", true)
-        .attr("id", function(d, i) { return "edgeThicknessOption" + i; })
-        .text(function(d) { return d + " pixel" + (d > 1 ? "s" : ""); })
-        .style("text-shadow", function() {
-          return (parseInt(d3.select(this).datum(), 10) === thisGraph.edgeThickness)
-            ? "1px 1px #000000" : "none"; })
-        .style("color", function() {
-          return (parseInt(d3.select(this).datum(), 10) === thisGraph.edgeThickness)
-            ? thisGraph.consts.selectedColor : thisGraph.consts.unselectedStyleColor;
-        })
-        .on("mouseup", function() {
-          d3.select("#edgeThicknessSubmenuDiv").classed("menu", false).classed("menuHidden", true);
-          d3.select("#optionsMenuDiv")
-            .classed("menu", false).classed("menuHidden", true);
-          thisGraph.edgeThickness = parseInt(d3.select(this).datum(), 10);
-          d3.selectAll(".edgeThicknessSubmenuListItem")
-            .style("color", thisGraph.consts.unselectedStyleColor)
-            .style("text-shadow", "none");
-          d3.select(this)
-            .style("color", thisGraph.consts.selectedColor)
-            .style("text-shadow", "1px 1px #000000");
-        });
-  };
-
-
   // Return dimensions of bounding box for all visible objects plus a little extra. Ignore toolbox.
   Graphmaker.prototype.getGraphExtent = function(shapes) {
     var minX = Number.MAX_VALUE;
@@ -2827,7 +2784,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
     thisGraph.createEqShapeSizeSubmenu();
     thisGraph.createTextLineLengthSubmenu();
-    thisGraph.createEdgeThicknessSubmenu();
+    modEdgeThickness.createSubmenu(d3);
   };
 
 

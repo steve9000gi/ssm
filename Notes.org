@@ -3,33 +3,23 @@
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO refactoring
 *** TODO edge-style.js
-**** DONE addEdgeStyleSelectionRects
-**** DONE setupEdgeStyleSelectionMarkers
-**** DONE createEdgeStyleSelectionSampleEdges
-**** DONE addEdgeStyleSelection
-**** DONE this.consts.esDashedEdgeRectY
-**** DONE this.selectEdgeStyle()
 **** TODO this.edgeThickness
 **** TODO this.consts.unselectedStyleColor
 **** TODO this.clr
 **** TODO this.sssw
 **** TODO this.esEdgeX1
 *** TODO grid.js
-**** DONE snapToGrid()
-**** DONE gridVisible
-**** DONE createGrid()
-**** DONE grid
-**** DONE generateGridLineEndPoints
-**** DONE enableGrid()
-**** DONE enableSnapToGrid()
-**** DONE showTurnOffGridText()
-**** DONE turnOffGridText
-**** DONE turnOffGrid()
-**** DONE showSnapToGridText()
-**** DONE gridCellW
-**** DONE gridCellH
 **** TODO zoom
 **** TODO fitGridToZoom
+*** TODO edge-thickness.js
+**** TODO consts.selectedColor
+**** TODO consts.unselectedStyleColor
+*** low-hanging fruit for refactoring
+**** TODO selected color
+**** TODO selected shape
+**** TODO circles of care
+**** TODO logo(s) and copyright
+**** TODO toolbox
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users
