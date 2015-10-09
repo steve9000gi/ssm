@@ -3,7 +3,6 @@
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO refactoring
 *** TODO edge-style.js
-**** TODO this.edgeThickness
 **** TODO this.consts.unselectedStyleColor
 **** TODO this.clr
 **** TODO this.sssw
@@ -15,6 +14,7 @@
 **** TODO consts.selectedColor
 **** TODO consts.unselectedStyleColor
 *** low-hanging fruit for refactoring
+**** TODO zoom
 **** TODO selected color
 **** TODO selected shape
 **** TODO circles of care

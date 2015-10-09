@@ -312,7 +312,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     thisGraph.createOptionsButton();
     thisGraph.createColorPalette();
     thisGraph.addShapeSelection();
-    modEdgeStyle.addControls();
+    modEdgeStyle.addControls(d3);
   };
 
 

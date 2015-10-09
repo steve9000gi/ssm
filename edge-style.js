@@ -1,9 +1,11 @@
+var modEdgeThickness = require('./edge-thickness.js');
+
 exports.style = 'solid';
 
 var esDashedEdgeRectY = 15;  // "es" -> edge selection
 
 // Incorporate rects so you don't have to click right on the edge to select it.
-var addSelectionRects = function() {
+var addSelectionRects = function(d3) {
   d3.select("#edgeStyleSelectionSvg").selectAll(".edgeStyleRect")
     .data([{"id": "solidEdgeRect", "y": 0},
            {"id": "dashedEdgeRect", "y": esDashedEdgeRectY}])
@@ -17,7 +19,7 @@ var addSelectionRects = function() {
     .attr("height", "15px");
 };
 
-var setupSelectionMarkers = function() {
+var setupSelectionMarkers = function(d3) {
   var thisGraph = this;
   d3.select("#edgeStyleSelectionSvg").selectAll("marker")
     .data([{"id": "selectedEdgeArrowHead", "color": thisGraph.clr},
@@ -35,15 +37,15 @@ var setupSelectionMarkers = function() {
         .attr("d", "M0,-5L10,0L0,5");
   d3.select("#selectedEdgeArrowHead")
     .on("click", function() {
-      selectEdgeStyle(thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+      selectEdgeStyle(d3, thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
     });
   d3.select("#unselectedEdgeArrowHead")
     .on("click", function() {
-      selectEdgeStyle(thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
+      selectEdgeStyle(d3, thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
     });
 };
 
-var createEdgeStyleSelectionSampleEdges = function() {
+var createEdgeStyleSelectionSampleEdges = function(d3) {
   var thisGraph = this;
   d3.select("#edgeStyleSelectionSvg").selectAll(".styleSelectionLine")
     .data([{"id": "solid", "marker": "#", "stroke": "#000000", "y": "7.5", "other": "dashed",
@@ -55,19 +57,19 @@ var createEdgeStyleSelectionSampleEdges = function() {
       .attr("id", function(d) { return d.id + "EdgeSelection"; })
       .style("marker-end", function(d) { return "url(" + d.marker + "#selectedEdgeArrowHead"; })
       .style("stroke", function(d) { return d.stroke; })
-      .style("stroke-width", thisGraph.edgeThickness)
+      .style("stroke-width", modEdgeThickness.thickness)
       .style("stroke-dasharray", function(d) { return d.dasharray; })
       .attr("x1", thisGraph.esEdgeX1)
       .attr("y1", function(d) { return d.y; })
       .attr("x2", 4 * thisGraph.sssw / 5)
       .attr("y2", function(d) { return d.y; })
       .on("click", function(d) {
-        selectEdgeStyle(thisGraph.clr, "#" + d.id + "EdgeSelection",
+        selectEdgeStyle(d3, thisGraph.clr, "#" + d.id + "EdgeSelection",
                                                  "#" + d.other + "EdgeSelection");
       });
 
   // Hack to make sure the edge selection arrowheads show up in Chrome and IE:
-  selectEdgeStyle(thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+  selectEdgeStyle(d3, thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
 
   var onMouseOverEdgeStyle = function(selectionId) {
     d3.select(selectionId)
@@ -78,17 +80,17 @@ var createEdgeStyleSelectionSampleEdges = function() {
   d3.select("#solidEdgeRect")
     .on("mouseover", function() { onMouseOverEdgeStyle("#solidEdgeSelection"); })
     .on("click", function() {
-      selectEdgeStyle(thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
+      selectEdgeStyle(d3, thisGraph.clr, "#solidEdgeSelection", "#dashedEdgeSelection");
     });
   d3.select("#dashedEdgeRect")
     .on("mouseover", function() { onMouseOverEdgeStyle("#dashedEdgeSelection"); })
     .on("click", function() {
-      selectEdgeStyle(thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
+      selectEdgeStyle(d3, thisGraph.clr, "#dashedEdgeSelection", "#solidEdgeSelection");
     });
 };
 
 // Solid or dashed edge?
-var selectEdgeStyle = function(clr, selectedId, deselectedId) {
+var selectEdgeStyle = function(d3, clr, selectedId, deselectedId) {
   d3.select(selectedId)
     .style("marker-end", function() {
       return "url(#end-arrow" + clr.substr(1) + ")";
@@ -101,11 +103,11 @@ var selectEdgeStyle = function(clr, selectedId, deselectedId) {
     .style("stroke", this.consts.unselectedStyleColor)
     .classed("unsel", true)
     .classed("sel", false);
-  modEdgeStyle.style = (selectedId === "#solidEdgeSelection") ? "solid" : "dashed";
+  exports.style = (selectedId === "#solidEdgeSelection") ? "solid" : "dashed";
 };
 
 // User selects solid or dashed line and line color.
-exports.addControls = function() {
+exports.addControls = function(d3) {
   d3.select("#toolbox").insert("div", ":first-child")
     .attr("id", "edgeStyleSelectionDiv");
   d3.select("#edgeStyleSelectionDiv").append("svg")
@@ -117,7 +119,7 @@ exports.addControls = function() {
            "xmlns:xmlns:xlink": "http://www.w3.org/1999/xlink",
            version: "1.1"
           });
-  addSelectionRects();
-  setupSelectionMarkers();
-  createEdgeStyleSelectionSampleEdges();
+  addSelectionRects(d3);
+  setupSelectionMarkers(d3);
+  createEdgeStyleSelectionSampleEdges(d3);
 };
