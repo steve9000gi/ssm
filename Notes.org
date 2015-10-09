@@ -3,20 +3,15 @@
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO refactoring
 *** TODO edge-style.js
-**** TODO this.consts.unselectedStyleColor
 **** TODO this.clr
 **** TODO this.sssw
 **** TODO this.esEdgeX1
 *** TODO grid.js
-**** TODO zoom
+**** TODO zoom - currently in zoom.js, but that would create a circular dependency
 **** TODO fitGridToZoom
-*** TODO edge-thickness.js
-**** TODO consts.selectedColor
-**** TODO consts.unselectedStyleColor
 *** TODO zoom.js
 **** TODO consts.activeEditId
 *** low-hanging fruit for refactoring
-**** TODO selected color
 **** TODO selected shape
 **** TODO circles of care
 **** TODO toolbox

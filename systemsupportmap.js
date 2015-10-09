@@ -25,7 +25,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modEdgeStyle = require('./edge-style.js'),
       modEdgeThickness = require('./edge-thickness.js'),
       modGrid = require('./grid.js'),
-      modZoom = require('./zoom.js');
+      modZoom = require('./zoom.js'),
+      modSelectedColor = require('./selected-color.js');
 
   // Define graphcreator object
   var Graphmaker = function(svg, nodes, links) {
@@ -66,9 +67,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     minCircleRadius: 20,
     minEllipseRx: 25,
     minEllipseRy: 17,
-    unselectedStyleColor: "#666666",
     hoverColor: "rgb(200, 238, 241)",
-    selectedColor: "rgb(229, 172, 247)",
     bgColor: "rgb(248, 248, 248)",
     colorChoices: ["ff0000",  // red
                    "ff8800",  // orange
@@ -195,10 +194,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.selectShape = function(selectedElt, shapeSelection) {
-    d3.selectAll(".shapeSelection").style("stroke", this.consts.unselectedStyleColor)
+    d3.selectAll(".shapeSelection").style("stroke", modSelectedColor.unselected)
       .classed({"sel": false, "unsel": true});
     d3.select("#noBorderSelection")
-      .style("fill", this.consts.unselectedStyleColor)
+      .style("fill", modSelectedColor.unselected)
       .style("stroke", "none");
     selectedElt.style("stroke", this.clr).classed({"sel": true, "unsel": false});
     if (shapeSelection === "noBorder") {
@@ -225,7 +224,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         .attr("id", function(d) { return d.id; })
         .classed("shapeSelection", true)
         .style("stroke", function(d) {
-          return d.shape === "circle" ? thisGraph.clr : thisGraph.consts.unselectedStyleColor;
+          return d.shape === "circle" ? thisGraph.clr : modSelectedColor.unselected;
         })
         .style("stroke-width", 2)
         .classed("sel", function(d) { return (d.id === "circleSelection"); })
@@ -267,7 +266,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     d3.select("#noBorderSelection")
       .attr("x", this.consts.minEllipseRx * 2)
       .attr("y", this.consts.ssNoBorderXformY + this.minRectSide * 0.7 + 58)
-      .style("fill", this.consts.unselectedStyleColor)
+      .style("fill", modSelectedColor.unselected)
       .style("stroke", "none")
       .attr("text-anchor","middle")
       .text("no border");
@@ -330,7 +329,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .attr("id", "copyrightDiv")
         .append("text")
           .attr("id", "copyright")
-          .text("\u00a9 2014-2015 The University of North Carolina at Chapel Hill")
+      .text("\u00a9 2014-2015 The University of North Carolina at Chapel Hill");
   };
 
 
@@ -375,9 +374,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .attr("d", "M0,-5L10,0L0,5");
 
     // Special-purpose markers for leading arrow (just while dragging), for selected, and for hover:
-    var markerData = [{"id": "mark-end-arrow", "fill": "#000000"},
-              {"id": "selected-end-arrow", "fill": this.consts.selectedColor},
-              {"id": "hover-end-arrow", "fill": this.consts.hoverColor}];
+    var markerData = [
+      {"id": "mark-end-arrow", "fill": "#000000"},
+      {"id": "selected-end-arrow", "fill": modSelectedColor.color},
+      {"id": "hover-end-arrow", "fill": this.consts.hoverColor}];
     defs.selectAll(".specialMarker")
     .data(markerData)
     .enter().append("marker")
@@ -790,10 +790,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     if (d3.event.shiftKey) { return; }
     d3Path.classed(this.consts.selectedClass, true);
     d3Path.select("path")
-          .style("stroke", this.consts.selectedColor)
+          .style("stroke", modSelectedColor.color)
           .style("marker-end", "url(#selected-end-arrow)");
     d3Path.select(".foregroundText")
-          .style("fill", this.consts.selectedColor);
+          .style("fill", modSelectedColor.color);
     if (this.state.selectedEdge) {
       this.removeSelectFromEdge();
     }
@@ -1263,7 +1263,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             thisGraph.formatText(selectedElement, data);
             if (data.source) { // It's an edge
               selectedElement.select(".foregroundText")
-                             .style("fill", thisGraph.consts.selectedColor);
+                             .style("fill", modSelectedColor.color);
             }
             thisGraph.updateGraph();
           } else {
@@ -1488,7 +1488,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         thisGraph.state.mouseDownLink = null;
       })
       .on("mouseover", function() { // Hover color iff not (selected, new edge or inside shape):
-        if ((d3.select(this).selectAll("path").style("stroke") !== thisGraph.consts.selectedColor)
+        if ((d3.select(this).selectAll("path").style("stroke") !== modSelectedColor.color)
             && (!thisGraph.state.shiftNodeDrag) && (!thisGraph.state.justDragged)) {
           d3.select(this).selectAll("path").style("stroke", thisGraph.consts.hoverColor)
             .style("marker-end", "url(#hover-end-arrow)");
@@ -1499,8 +1499,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       // Note: "mouseleave", was not getting called in Chrome when the shiftKey is down.
         if (thisGraph.state.selectedEdge && (thisGraph.state.selectedEdge.source === d.source)
           && (thisGraph.state.selectedEdge.target === d.target)) {
-          d3.select(this).selectAll("path").style("stroke", thisGraph.consts.selectedColor);
-          d3.select(this).selectAll("text").style("fill", thisGraph.consts.selectedColor);
+          d3.select(this).selectAll("path").style("stroke", modSelectedColor.color);
+          d3.select(this).selectAll("text").style("fill", modSelectedColor.color);
         } else { // Not selected: reapply edge color, including edge text:
           thisGraph.setEdgeColor(this);
           d3.select(this).selectAll("text").style("fill", function(d) { return d.color; });
@@ -2471,7 +2471,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             ? "1px 1px #000000" : "none"; })
         .style("color", function() {
           return (parseInt(d3.select(this).datum(), 10) === maxCharsPerLine)
-            ? thisGraph.consts.selectedColor : thisGraph.consts.unselectedStyleColor;
+            ? modSelectedColor.color : modSelectedColor.unselected;
         })
         .on("mouseup", function() {
           thisGraph.maxCharsPerLine = parseInt(d3.select(this).datum(), 10);
@@ -2479,10 +2479,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           d3.select("#menuDiv")
             .classed("menu", false).classed("menuHidden", true);
           d3.selectAll(".textLineLengthSubmenuListItem")
-            .style("color", thisGraph.consts.unselectedStyleColor)
+            .style("color", modSelectedColor.unselected)
             .style("text-shadow", "none");
           d3.select(this)
-            .style("color", thisGraph.consts.selectedColor)
+            .style("color", modSelectedColor.color)
             .style("text-shadow", "1px 1px #000000");
         });
   };

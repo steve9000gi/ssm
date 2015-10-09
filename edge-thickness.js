@@ -1,3 +1,5 @@
+var modSelectedColor = require('./selected-color.js');
+
 exports.thickness = 3;
 
 exports.createSubmenu = function(d3) {
@@ -26,7 +28,7 @@ exports.createSubmenu = function(d3) {
           ? "1px 1px #000000" : "none"; })
       .style("color", function() {
         return (parseInt(d3.select(this).datum(), 10) === exports.thickness)
-          ? thisGraph.consts.selectedColor : thisGraph.consts.unselectedStyleColor;
+          ? modSelectedColor.color : modSelectedColor.unselected;
       })
       .on("mouseup", function() {
         d3.select("#edgeThicknessSubmenuDiv").classed("menu", false).classed("menuHidden", true);
@@ -34,10 +36,10 @@ exports.createSubmenu = function(d3) {
           .classed("menu", false).classed("menuHidden", true);
         exports.thickness = parseInt(d3.select(this).datum(), 10);
         d3.selectAll(".edgeThicknessSubmenuListItem")
-          .style("color", thisGraph.consts.unselectedStyleColor)
+          .style("color", modSelectedColor.unselected)
           .style("text-shadow", "none");
         d3.select(this)
-          .style("color", thisGraph.consts.selectedColor)
+          .style("color", modSelectedColor.color)
           .style("text-shadow", "1px 1px #000000");
       });
 };

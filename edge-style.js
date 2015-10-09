@@ -1,4 +1,5 @@
-var modEdgeThickness = require('./edge-thickness.js');
+var modEdgeThickness = require('./edge-thickness.js'),
+    modSelectedColor = require('./selected-color.js');
 
 exports.style = 'solid';
 
@@ -23,7 +24,7 @@ var setupSelectionMarkers = function(d3) {
   var thisGraph = this;
   d3.select("#edgeStyleSelectionSvg").selectAll("marker")
     .data([{"id": "selectedEdgeArrowHead", "color": thisGraph.clr},
-           {"id": "unselectedEdgeArrowHead", "color": thisGraph.consts.unselectedStyleColor}])
+           {"id": "unselectedEdgeArrowHead", "color": modSelectedColor.unselected}])
     .enter().append("marker")
       .attr("id", function(d) { return d.id; })
       .attr("viewBox", "0 -5 10 10")
@@ -50,7 +51,7 @@ var createEdgeStyleSelectionSampleEdges = function(d3) {
   d3.select("#edgeStyleSelectionSvg").selectAll(".styleSelectionLine")
     .data([{"id": "solid", "marker": "#", "stroke": "#000000", "y": "7.5", "other": "dashed",
             "dasharray": "none"},
-           {"id": "dashed", "marker": "#un", "stroke": thisGraph.unselectedStyleColor,
+           {"id": "dashed", "marker": "#un", "stroke": modSelectedColor.unselected,
             "y": "23.5", "other": "solid", "dasharray": "10, 2"}])
     .enter().append("line")
       .classed("styleSelectionLine", true)
@@ -100,7 +101,7 @@ var selectEdgeStyle = function(d3, clr, selectedId, deselectedId) {
     .classed("unsel", false);
   d3.select(deselectedId)
     .style("marker-end", "url(#unselectedEdgeArrowHead)")
-    .style("stroke", this.consts.unselectedStyleColor)
+    .style("stroke", modSelectedColor.unselected)
     .classed("unsel", true)
     .classed("sel", false);
   exports.style = (selectedId === "#solidEdgeSelection") ? "solid" : "dashed";
