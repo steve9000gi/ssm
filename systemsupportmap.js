@@ -26,7 +26,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modEdgeThickness = require('./edge-thickness.js'),
       modGrid = require('./grid.js'),
       modZoom = require('./zoom.js'),
-      modSelectedColor = require('./selected-color.js');
+      modSelectedColor = require('./selected-color.js'),
+      modSelectedShape = require('./selected-shape.js');
 
   // Define graphcreator object
   var Graphmaker = function(svg, nodes, links) {
@@ -64,19 +65,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     BACKSPACE_KEY: 8,
     DELETE_KEY: 46,
     ENTER_KEY: 13,
-    minCircleRadius: 20,
-    minEllipseRx: 25,
-    minEllipseRy: 17,
     defaultShapeText: {"circle":    "Identity",
                        "rectangle": "Responsibility",
                        "diamond":   "Need",
                        "ellipse":   "Resource",
                        "star":      "Wish",
                        "noBorder":  "text"},
-    ssRectangleY: 49, // "ss" -> shape selection
-    ssDiamondY: 16,
-    ssEllipseCy: 154,
-    ssNoBorderXformY: 163,
     cOfChideText: "Hide Circles of Care",
     ssmHideText: "Hide system support rings",
     defaultFontSize: 12, // Also set in css file because image export doesn't see css
@@ -91,9 +85,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.displayAll = true; // If false turns off some features
     this.svg = svg;
     this.shapeId = 0;
-    this.minRectSide =
-      Math.sqrt(Math.PI * this.consts.minCircleRadius * this.consts.minCircleRadius);
-    this.shapeSelected = "circle";
     this.maxCharsPerLine = 20;
     this.boldFontWeight = 900;
     this.edgeNum = 0;
@@ -138,111 +129,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.selectShape = function(selectedElt, shapeSelection) {
-    d3.selectAll(".shapeSelection").style("stroke", modSelectedColor.unselected)
-      .classed({"sel": false, "unsel": true});
-    d3.select("#noBorderSelection")
-      .style("fill", modSelectedColor.unselected)
-      .style("stroke", "none");
-    selectedElt.style("stroke", modSelectedColor.clr).classed({"sel": true, "unsel": false});
-    if (shapeSelection === "noBorder") {
-      selectedElt.style("fill", modSelectedColor.clr).style("stroke", "none");
-    }
-    this.shapeSelected = shapeSelection;
-  };
-
-
-  Graphmaker.prototype.addShapeSelectionShapes = function() {
-    var thisGraph = this;
-    var data = [{"shape": "circle", "id": "circleSelection"},
-                {"shape": "rect", "id": "rectangleSelection"},
-                {"shape": "rect", "id": "diamondSelection"},
-                {"shape": "ellipse", "id": "ellipseSelection"},
-                {"shape": "polygon", "id": "starSelection"},
-                {"shape": "text", "id": "noBorderSelection"}];
-
-    d3.select("#shapeSelectionSvg").selectAll(".shapeSelection")
-      .data(data)
-      .enter().append(function(d) {
-        return document.createElementNS("http://www.w3.org/2000/svg", d.shape);
-      })
-        .attr("id", function(d) { return d.id; })
-        .classed("shapeSelection", true)
-        .style("stroke", function(d) {
-          return d.shape === "circle" ? modSelectedColor.clr : modSelectedColor.unselected;
-        })
-        .style("stroke-width", 2)
-        .classed("sel", function(d) { return (d.id === "circleSelection"); })
-        .classed("unsel", function(d) { return (d.id !== "circleSelection"); })
-        .on("click", function(d) {
-          thisGraph.selectShape(d3.select(this), d.id.substring(0, d.id.length - 9));
-        });
-  };
-
-
-  Graphmaker.prototype.setShapeSelectionShapeSizes = function() {
-    d3.select("#circleSelection")
-      .attr("r", this.consts.minCircleRadius)
-      .attr("cx", this.sssw / 2)
-      .attr("cy", this.ssCircleCy);
-    d3.select("#rectangleSelection")
-      .attr("width", this.minRectSide)
-      .attr("height", this.minRectSide - 5)
-      .attr("x", this.sssw / 2.0  - this.minRectSide + 17)
-      .attr("y", this.consts.ssRectangleY);
-    d3.select("#diamondSelection")
-      .attr("width", this.minRectSide)
-      .attr("height", this.minRectSide)
-      .attr("transform", "rotate(45," + this.minRectSide * 2 + ","
-                                      + this.consts.ssDiamondY + ")")
-      .attr("x", this.sssw / 2.0 + 53)
-      .attr("y", this.consts.ssDiamondY + 62);
-    d3.select("#ellipseSelection")
-      .attr("cx", this.sssw / 2)
-      .attr("cy", this.consts.ssEllipseCy)
-      .attr("rx", this.consts.minEllipseRx)
-      .attr("ry", this.consts.minEllipseRy);
-    var starCtrX = this.consts.minEllipseRx * 2;
-    var starCtrY = this.consts.ssNoBorderXformY + this.minRectSide * 0.7 + 18;
-    d3.select("#starSelection")
-      .attr("x", starCtrX)
-      .attr("y", starCtrY)
-      .attr("points", this.calculateStarPoints(starCtrX, starCtrY, 5, 30, 15));
-    d3.select("#noBorderSelection")
-      .attr("x", this.consts.minEllipseRx * 2)
-      .attr("y", this.consts.ssNoBorderXformY + this.minRectSide * 0.7 + 58)
-      .style("fill", modSelectedColor.unselected)
-      .style("stroke", "none")
-      .attr("text-anchor","middle")
-      .text("no border");
-  };
-
-
-  Graphmaker.prototype.addShapeSelection = function() {
-    d3.select("#toolbox").insert("div", ":first-child")
-      .attr("id", "shapeSelectionDiv");
-    d3.select("#shapeSelectionDiv").append("svg")
-      .attr("id", "shapeSelectionSvg")
-      .attr("width", this.sssw)
-      .attr("height", this.sssh)
-      // Hack: doubling xmlns: so it doesn't disappear once in the DOM
-      .attr({"xmlns": "http://www.w3.org/2000/svg",
-             "xmlns:xmlns:xlink": "http://www.w3.org/1999/xlink",
-             version: "1.1"
-      });
-
-    this.addShapeSelectionShapes();
-    this.setShapeSelectionShapeSizes();
-  };
-
-
   // Edge, shape, and color selection, plus "?" help and Options buttons, load, save, and delete.
   Graphmaker.prototype.prepareToolbox = function() {
     var thisGraph = this;
-    thisGraph.sssw = thisGraph.consts.minCircleRadius * 4 + 23; // Shape Selection Svg Width
-    thisGraph.sssh = thisGraph.consts.minCircleRadius * 13; // Shape Selection Svg Height
-    thisGraph.ssCircleCy = thisGraph.consts.minCircleRadius * 2 - 16; // ShapeSelectionCircleCy
-    thisGraph.esEdgeX1 = thisGraph.sssw / 5 - 20;
     thisGraph.CofCCenter = null; // CirclesOfCareCenter
     thisGraph.SSMCenter = null; // System Support Map Center
 
@@ -253,7 +142,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     thisGraph.createOptionsMenu();
     thisGraph.createOptionsButton();
     modSelectedColor.createColorPalette(d3);
-    thisGraph.addShapeSelection();
+    modSelectedShape.addShapeSelection(d3);
     modEdgeStyle.addControls(d3);
   };
 
@@ -417,24 +306,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // dillieodigital.wordpress.com/2013/01/16/quick-tip-how-to-draw-a-star-with-svg-and-javascript/
-  Graphmaker.prototype.calculateStarPoints = function(ctrX, ctrY, arms, outerRadius, innerRadius) {
-    var results = "";
-    var angle = Math.PI / arms;
-    var rotation = Math.PI / (10 / 3.0); // 1st point up (-y) rather than on the +x axis
-    var r, currX, currY;
-    var i;
-
-    for (i = 0; i < 2 * arms; i++) {
-      r = (i % 2) ? innerRadius : outerRadius; // Alternate outer and inner radii
-      currX = ctrX + Math.cos(i * angle + rotation) * r;
-      currY = ctrY + Math.sin(i * angle + rotation) * r;
-      results += (i > 0) ? ", " + currX + "," + currY : currX + "," + currY;
-    }
-    return results;
-  };
-
-
   Graphmaker.prototype.setShapeId = function(shapeId) {
     this.shapeId = shapeId;
   };
@@ -497,8 +368,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   Graphmaker.prototype.setShapeSizeAndPosition = function(gEl, el, d) {
     var thisGraph = this;
     var textSize = el.node().getBBox();
-    var rectWidth = Math.max(textSize.width, thisGraph.minRectSide);
-    var rectHeight = Math.max(textSize.height, thisGraph.minRectSide);
+    var rectWidth = Math.max(textSize.width, modSelectedShape.minRectSide);
+    var rectHeight = Math.max(textSize.height, modSelectedShape.minRectSide);
     var maxTextDim = Math.max(textSize.width, textSize.height);
     var innerRadius = Math.max(14, maxTextDim * 0.6);
     var minDiamondDim = 45;
@@ -506,7 +377,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
     gEl.select(".circle")
        .attr("r", function(d) {
-         return d.r || Math.max(maxTextDim / 2 + 8, thisGraph.consts.minCircleRadius);
+         return d.r || Math.max(maxTextDim / 2 + 8, modSelectedShape.minCircleRadius);
        });
     gEl.select(".rectangle, .noBorder")
        .attr("width", function(d) {
@@ -548,16 +419,16 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
        });
     gEl.select("ellipse")
        .attr("rx", function(d) {
-         return d.rx || Math.max(textSize.width / 2 + 20, thisGraph.consts.minEllipseRx);
+         return d.rx || Math.max(textSize.width / 2 + 20, modSelectedShape.minEllipseRx);
        })
        .attr("ry", function(d) {
-         return d.ry || Math.max(textSize.height / 2 + 17, thisGraph.consts.minEllipseRy);
+         return d.ry || Math.max(textSize.height / 2 + 17, modSelectedShape.minEllipseRy);
        });
     gEl.select("polygon")
        .attr("points", function(d) {
          return d.innerRadius
-           ? thisGraph.calculateStarPoints(0, 0, 5, d.innerRadius * 2, d.innerRadius)
-           : thisGraph.calculateStarPoints(0, 0, 5, innerRadius * 2, innerRadius);
+           ? modSelectedShape.calculateStarPoints(0, 0, 5, d.innerRadius * 2, d.innerRadius)
+           : modSelectedShape.calculateStarPoints(0, 0, 5, innerRadius * 2, innerRadius);
        })
   };
 
@@ -826,8 +697,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         htmlEl = d3element.node();
     d3element.selectAll("text").remove();
     var nodeBCR = htmlEl.getBoundingClientRect(),
-        curScale = nodeBCR.width / (consts.minCircleRadius * 2),
-        useHW = curScale > 1 ? nodeBCR.width * 1.71 : consts.minCircleRadius * 4.84;
+        curScale = nodeBCR.width / (modSelectedShape.minCircleRadius * 2),
+        useHW = curScale > 1 ? nodeBCR.width * 1.71 : modSelectedShape.minCircleRadius * 4.84;
 
     // Replace with editable content text:
     var d3txt = thisGraph.svg.selectAll("foreignObject")
@@ -967,12 +838,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       var xycoords = d3.mouse(this.svgG.node());
 
       var d = {id: this.shapeId,
-               name: this.consts.defaultShapeText[this.shapeSelected] + " "
-                   + this.shapeNum[this.shapeSelected]++,
+               name: this.consts.defaultShapeText[modSelectedShape.shape] + " "
+                   + this.shapeNum[modSelectedShape.shape]++,
                x: xycoords[0],
                y: xycoords[1],
                color: modSelectedColor.clr,
-               shape: this.shapeSelected};
+               shape: modSelectedColor.shape};
       this.nodes.push(d);
       this.shapeId++;
       this.updateGraph();
@@ -2328,7 +2199,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         break;
       case "star":
         selectedShapes.attr("points",
-          thisGraph.calculateStarPoints(0, 0, 5, innerRadius * 2, innerRadius));
+          modSelectedShape.calculateStarPoints(0, 0, 5, innerRadius * 2, innerRadius));
         break;
       default:
         alert("equalizeSelectedShapeSize(): unknown shape \"" + d.shape + "\"");
@@ -2373,7 +2244,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
           switch (d3.select(this).datum().name) {
             case choices[0].name:
-              thisGraph.equalizeSelectedShapeSize(thisGraph.shapeSelected);
+              thisGraph.equalizeSelectedShapeSize(modSelectedShape.shape);
               break;
             case choices[1].name:
               var shapes = ["circle", "rectangle", "diamond", "ellipse", "star", "noBorder"];

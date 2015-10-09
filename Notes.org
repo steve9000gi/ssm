@@ -2,18 +2,15 @@
 ** TODO reassociate login form labels with input elements           :bugfix:
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO refactoring
-*** TODO edge-style.js
-**** TODO this.sssw
-**** TODO this.esEdgeX1
 *** TODO grid.js
 **** TODO zoom - currently in zoom.js, but that would create a circular dependency
 **** TODO fitGridToZoom
 *** TODO zoom.js
 **** TODO consts.activeEditId
-*** TODO selected-color.js
-**** TODO shapeSelected
+*** TODO selected-shape.js
+**** TODO setShapeSizeAndPosition, maybe? 
+**** TODO equalizeSelectedShapeSize, maybe? 
 *** low-hanging fruit for refactoring
-**** TODO selected shape
 **** TODO circles of care
 **** TODO toolbox
 **** TODO logo(s) and copyright

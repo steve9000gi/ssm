@@ -1,4 +1,5 @@
-var modEdgeStyle = require('./edge-style.js');
+var modEdgeStyle = require('./edge-style.js'),
+    modSelectedShape = require('./selected-shape.js');
 
 exports.color = "rgb(229, 172, 247)";
 exports.unselected = "#666666";
@@ -15,7 +16,6 @@ exports.bgColor = "rgb(248, 248, 248)";
 exports.clr = '#000000';
 
 exports.createColorPalette = function(d3) {
-  var thisGraph = this;
   d3.select("#toolbox").insert("div", ":first-child")
     .attr("id", "colorPalette");
   d3.select("#colorPalette").selectAll(".colorBar")
@@ -43,9 +43,9 @@ exports.createColorPalette = function(d3) {
       d3.selectAll(".colorBar").each(function() {
         d3.select(this).style("border-color", "#000000");});
       d3.select(this).style("border-color", "#ffffff");
-      d3.select("#" + thisGraph.shapeSelected + "Selection")
-        .style("stroke", (thisGraph.shapeSelected === "noBorder") ? "none" : exports.clr)
-        .style("fill", (thisGraph.shapeSelected === "noBorder") ? exports.clr
+      d3.select("#" + modSelectedShape.shape + "Selection")
+        .style("stroke", (modSelectedShape.shape === "noBorder") ? "none" : exports.clr)
+        .style("fill", (modSelectedShape.shape === "noBorder") ? exports.clr
                                                                 : exports.bgColor);
       var selectedEdgeStyleId = (modEdgeStyle.style === "solid")
                               ? "#solidEdgeSelection" : "#dashedEdgeSelection";

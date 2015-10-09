@@ -1,5 +1,6 @@
 var modEdgeThickness = require('./edge-thickness.js'),
-    modSelectedColor = require('./selected-color.js');
+    modSelectedColor = require('./selected-color.js'),
+    modSelectedShape = require('./selected-shape.js');
 
 exports.style = 'solid';
 
@@ -16,12 +17,11 @@ var addSelectionRects = function(d3) {
     .style("opacity", 0.2)
     .attr("x", 0)
     .attr("y", function(d) { return d.y; })
-    .attr("width", this.sssw)
+    .attr("width", modSelectedShape.sssw)
     .attr("height", "15px");
 };
 
 var setupSelectionMarkers = function(d3) {
-  var thisGraph = this;
   d3.select("#edgeStyleSelectionSvg").selectAll("marker")
     .data([{"id": "selectedEdgeArrowHead", "color": modSelectedColor.clr},
            {"id": "unselectedEdgeArrowHead", "color": modSelectedColor.unselected}])
@@ -47,7 +47,6 @@ var setupSelectionMarkers = function(d3) {
 };
 
 var createEdgeStyleSelectionSampleEdges = function(d3) {
-  var thisGraph = this;
   d3.select("#edgeStyleSelectionSvg").selectAll(".styleSelectionLine")
     .data([{"id": "solid", "marker": "#", "stroke": "#000000", "y": "7.5", "other": "dashed",
             "dasharray": "none"},
@@ -60,9 +59,9 @@ var createEdgeStyleSelectionSampleEdges = function(d3) {
       .style("stroke", function(d) { return d.stroke; })
       .style("stroke-width", modEdgeThickness.thickness)
       .style("stroke-dasharray", function(d) { return d.dasharray; })
-      .attr("x1", thisGraph.esEdgeX1)
+      .attr("x1", modSelectedShape.esEdgeX1)
       .attr("y1", function(d) { return d.y; })
-      .attr("x2", 4 * thisGraph.sssw / 5)
+      .attr("x2", 4 * modSelectedShape.sssw / 5)
       .attr("y2", function(d) { return d.y; })
       .on("click", function(d) {
         selectEdgeStyle(d3, modSelectedColor.clr,
