@@ -13,13 +13,14 @@
 *** TODO edge-thickness.js
 **** TODO consts.selectedColor
 **** TODO consts.unselectedStyleColor
+*** TODO zoom.js
+**** TODO consts.activeEditId
 *** low-hanging fruit for refactoring
-**** TODO zoom
 **** TODO selected color
 **** TODO selected shape
 **** TODO circles of care
-**** TODO logo(s) and copyright
 **** TODO toolbox
+**** TODO logo(s) and copyright
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users

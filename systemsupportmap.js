@@ -24,7 +24,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   var modHelp = require('./help.js'),
       modEdgeStyle = require('./edge-style.js'),
       modEdgeThickness = require('./edge-thickness.js'),
-      modGrid = require('./grid.js');
+      modGrid = require('./grid.js'),
+      modZoom = require('./zoom.js');
 
   // Define graphcreator object
   var Graphmaker = function(svg, nodes, links) {
@@ -42,7 +43,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.setupMMRGroup();
     this.setupDrag();
     this.setupDragHandle();
-    this.setupZoom();
+    modZoom.setup(d3, svg);
     this.setupSVGNodesAndLinks();
     this.setupEventListeners();
     this.showSystemSupportMap();
@@ -119,7 +120,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       mouseDownNode: null,
       mouseDownLink: null,
       justDragged: false,
-      justScaleTransGraph: false,
       lastKeyDown: -1,
       shiftNodeDrag: false,
       selectedText: null,
@@ -127,8 +127,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       circlesOfCareVisible: false,
       ssmVisible: true
     };
-    this.zoom = 1;
-    this.translate = [0, 0];
     this.contextText = null;
     this.svgG = svg.append("g") // The group that contains the main SVG element
                    .classed("graph", true)
@@ -415,35 +413,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         modGrid.snap(args);
         // Todo check if edge-mode is selected
       });
-  };
-
-
-  Graphmaker.prototype.setupZoom = function() {
-    var thisGraph = this;
-    thisGraph.zoomSvg = d3.behavior.zoom()
-      .on("zoom", function() {
-        if (d3.event.sourceEvent && d3.event.sourceEvent.shiftKey) {
-          // TODO  the internal d3 state is still changing
-          return false;
-        } else {
-          thisGraph.zoomed();
-        }
-        return true;
-      })
-      .on("zoomstart", function() {
-        var ael = d3.select("#" + thisGraph.consts.activeEditId).node();
-        if (ael) {
-          ael.blur();
-        }
-        if (!d3.event.sourceEvent || !d3.event.sourceEvent.shiftKey) {
-          d3.select("body").style("cursor", "move");
-        }
-      })
-      .on("zoomend", function() {
-        d3.select("body").style("cursor", "auto");
-      });
-
-    svg.call(thisGraph.zoomSvg).on("dblclick.zoom", null);
   };
 
 
@@ -1047,8 +1016,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     // Make sure options menu is closed:
     d3.select("#optionsMenuDiv") .classed("menu", false).classed("menuHidden", true);
 
-    if (state.justScaleTransGraph) { // Dragged not clicked
-      state.justScaleTransGraph = false;
+    if (modZoom.justScaleTransGraph) { // Dragged not clicked
+      modZoom.justScaleTransGraph = false;
     } else if (state.graphMouseDown && d3.event.shiftKey) { // Clicked not dragged from svg
       var xycoords = d3.mouse(this.svgG.node());
 
@@ -1617,21 +1586,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.fitGridToZoom = function() {
-    var reverseTranslate = this.translate;
-    reverseTranslate[0] /= -this.zoom;
-    reverseTranslate[1] /= -this.zoom;
+    var reverseTranslate = modZoom.translate;
+    reverseTranslate[0] /= -modZoom.zoom;
+    reverseTranslate[1] /= -modZoom.zoom;
     d3.select("#gridGroup")
       .attr("transform", "translate(" + reverseTranslate + ")");
-  };
-
-
-  Graphmaker.prototype.zoomed = function() {
-    this.state.justScaleTransGraph = true;
-    this.zoom = d3.event.scale;
-    this.translate = d3.event.translate;
-    d3.select(".graph")
-      .attr("transform", "translate(" + this.translate + ") scale(" + this.zoom + ")");
-    modGrid.create(d3);
   };
 
 
@@ -1907,8 +1866,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       d3.select("#graphG").attr("transform", graphGTransform);
       var xform = d3.transform(d3.select("#graphG").attr("transform"));
       var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
-      thisGraph.zoomSvg.translate([tx, ty]).scale(scale);
-      thisGraph.zoomSvg.event(thisGraph.svg.transition().duration(500));
+      modZoom.zoomSvg.translate([tx, ty]).scale(scale);
+      modZoom.zoomSvg.event(thisGraph.svg.transition().duration(500));
 
       thisGraph.SSMCenter = jsonObj.systemSupportMapCenter;
       if (thisGraph.SSMCenter) {
