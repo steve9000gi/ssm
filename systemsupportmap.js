@@ -22,6 +22,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   "use strict";
 
   var modHelp = require('./help.js'),
+      modContextMenu = require('./context-menu.js'),
       modAuth = require('./auth.js'),
       modDatabase = require('./database.js'),
       modFile = require('./file.js'),
@@ -57,7 +58,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     modFile.setupUpload(d3);
     modDatabase.setupReadMapFromDatabase(d3);
     modDatabase.setupWriteMapToDatabase(d3);
-    this.setupContextMenu();
+    modContextMenu.setup(d3);
   };
 
 
@@ -108,7 +109,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       clickDragHandle: false,
       ssmVisible: true
     };
-    this.contextText = null;
     this.svgG = svg.append("g") // The group that contains the main SVG element
                    .classed("graph", true)
                    .attr("id", "graphG");
@@ -835,198 +835,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.shapeGroups.attr("transform", function(d) {
       return "translate(" + d.x + "," + d.y + ")";
     });
-  };
-
-
-  // Based on http://www.w3schools.com/ajax/tryit.asp?filename=tryajax_first
-  // Read a file from the server into contextText.
-  Graphmaker.prototype.loadContextTextFromServer = function(fileName) {
-    var thisGraph = this;
-    var jsonObj = null;
-    var xmlhttp;
-    if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
-      xmlhttp = new XMLHttpRequest();
-    }
-    else { // code for IE6, IE5
-      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-
-    xmlhttp.onreadystatechange = function() {
-      if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-        thisGraph.contextText = JSON.parse(xmlhttp.responseText);
-      }
-    }
-
-    xmlhttp.open("GET",fileName, true);
-    xmlhttp.send();
-  };
-
-
-  // User uploads new file from client into contextText.
-  Graphmaker.prototype.loadContextTextFromClient = function() {
-    var thisGraph = this;
-    document.getElementById("hidden-textFile-upload").click();
-    d3.select("#hidden-textFile-upload").on("change", function() {
-      if (window.File && window.FileReader && window.FileList && window.Blob) {
-        var uploadFile = this.files[0];
-        var filereader = new window.FileReader();
-        var txtRes;
-
-        filereader.onload = function() {
-          try {
-            txtRes = filereader.result;
-          } catch(err) {
-            window.alert("Error reading file: " + err.message);
-          }
-          // TODO better error handling
-          try {
-            thisGraph.contextText = JSON.parse(txtRes);
-          } catch(err) {
-            window.alert("Error parsing uploaded file\nerror message: " + err.message);
-            return;
-          }
-        };
-        filereader.readAsText(uploadFile);
-      } else {
-        alert("Your browser won't let you read this file -- try upgrading your browser to IE 10+ "
-            + "or Chrome or Firefox.");
-      }
-    });
-  };
-
-
-  Graphmaker.prototype.createContextMenu = function() {
-    d3.select("#topGraphDiv").insert("div", ":first-child")
-      .classed("menuHidden", true).classed("menu", false)
-      .attr("id", "contextMenuDiv")
-      .attr("position", "absolute")
-      .on("mouseleave", function() {
-        d3.select("#contextMenuDiv")
-            .classed("menu", false).classed("menuHidden", true);
-            });
-    this.loadContextTextFromServer("defaultContextText.json");
-  };
-
-
-  // Returns false if no object (shape or edge) is selected. Otherwise populates the right-click
-  // context menu with items appropriate to the object selected, and returns true.
-  Graphmaker.prototype.populateContextMenu = function() {
-    var thisGraph = this;
-    var choices = null;
-    var selectedElement = d3.select(".selected");
-
-    if ((!selectedElement) || (!selectedElement.node())) {
-      alert("You haven't selected an element. Click on a shape or an edge to select it");
-      return false;
-    }
-
-    d3.selectAll("li.contextMenuListItem").remove();
-
-    if (selectedElement.node().__data__.source) { // It's an edge
-      choices = thisGraph.contextText.verbs;
-    } else {
-      switch(selectedElement.node().__data__.shape) {
-        case "circle":
-          choices = thisGraph.contextText.role;
-          break;
-        case "rectangle":
-          choices = thisGraph.contextText.responsibilities;
-          break;
-        case "diamond":
-          choices = thisGraph.contextText.needs;
-          break;
-        case "ellipse":
-          choices = thisGraph.contextText.resources;
-          break;
-        case "star":
-        case "noBorder":
-          choices = thisGraph.contextText.wishes;
-          break;
-        default:
-          alert("populateContextMenu(): unknown shape selected.");
-          break;
-      }
-    }
-
-    d3.select("#contextMenuDiv").append("ul").attr("id", "contextMenuList");
-    d3.select("#contextMenuList").selectAll("li.contextMenuListItem")
-      .data(choices).enter()
-      .append("li")
-        .classed("contextMenuListItem", true)
-        .attr("id", function(d, i) { return "contextMenuListItem" + i; })
-        .text(function(d) { return d; })
-        .on("mouseover", function() {
-        })
-        .on("mouseout", function() {
-        })
-        .on("mouseup", function(d) {
-          d3.select("#contextMenuDiv").classed("menu", false).classed("menuHidden", true);
-          if (selectedElement.node()) {
-            selectedElement.selectAll("text").remove();
-            var data = selectedElement.node().__data__;
-            data.name = d;
-           // Force shape resize in case bold characters overflow shape boundaries:
-            data.r = data.width = data.height = data.dim = data.rx = data.ry = data.innerRadius
-                   = undefined;
-            thisGraph.formatText(selectedElement, data);
-            if (data.source) { // It's an edge
-              selectedElement.select(".foregroundText")
-                             .style("fill", modSelectedColor.color);
-            }
-            thisGraph.updateGraph();
-          } else {
-            alert("contextMenuListItem.on(\"mouseup\"): no element selected.");
-            return false;
-          }
-        });
-    return true;
-  };
-
-
-  Graphmaker.prototype.showContextMenu = function(e) {
-    d3.select("#contextMenuDiv")
-      .classed("menuHidden", false).classed("menu", true)
-      .style("left", e.clientX + "px")
-      .style("top", e.clientY + "px");
-  };
-
-
-  // http://stackoverflow.com/questions/4909167/how-to-add-a-custom-right-click-menu-to-a-webpage
-  Graphmaker.prototype.setupContextMenu = function() {
-    var thisGraph = this;
-    thisGraph.createContextMenu();
-    if (document.addEventListener) {
-      document.addEventListener("contextmenu", function(e) {
-        if (e.which === thisGraph.consts.rightMouseBtn) {
-          var elt = e.target || e.srcElement; // target for Firefox, srcElement for Chrome
-          if (elt && (elt.tagName !== "svg")) { // Did we right-click on an object?
-            while (elt && (elt.tagName !== "g")) { // elt is probably a child of the shapeG we want
-              elt = elt.parentElement; // Assume there's a group in the hierarchy
-            }
-            if (elt) {
-              var eltData = elt.__data__;
-              var shapeGs = d3.selectAll(".shapeG");
-              shapeGs.each(function(d) {
-                if ((d.id === eltData.id) // Select the right-clicked-on shape group...
-                  && (!thisGraph.state.selectedNode // ...if no shapeG is selected, or...
-                  || (thisGraph.state.selectedNode.id !== d.id))) { // ...if d not already selected
-                  thisGraph.selectNode(d3.select(this), eltData); // Expects shapeG as the first arg
-                }
-              });
-          }
-        }
-        if (elt && elt.__data__ && !elt.__data__.manualResize && thisGraph.populateContextMenu()) {
-          thisGraph.showContextMenu(e);
-        }
-        e.preventDefault();
-      }
-    }, false);
-    } else {
-      document.attachEvent("oncontextmenu", function() {
-        alert("setupContextMenu: oncontextmenu");
-        window.event.returnValue = false;
-      });
-    }
   };
 
 
@@ -1782,7 +1590,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           this.exportGraphAsImage();
           break;
         case choices[8].name:
-          this.loadContextTextFromClient();
+          modContextMenu.loadFromClient(d3);
           break;
         case choices[9].name:
           modAuth.logoutUser(d3);
@@ -1794,7 +1602,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       if (d3.select(listItem).datum().id === "exportMapAsImageItem") {
         this.exportGraphAsImage();
       } else if (d3.select(listItem).datum().id === "loadContextTextItem") {
-        this.loadContextTextFromClient();
+        modContextMenu.loadFromClient(d3);
       } else if (d3.select(listItem).datum().id === "logoutUser") {
         modAuth.logoutUser(d3);
       }

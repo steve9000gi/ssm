@@ -23,13 +23,18 @@
 **** TODO new Blob
 **** TODO saveAs()
 **** TODO importMap()
+*** TODO context-menu.js
+**** TODO formatText()
+**** TODO updateGraph()
+**** TODO new ActiveXObject
+**** TODO consts.rightMouseBtn
+**** TODO state.selectedNode
+**** TODO selectNode()
 *** possible modules
 **** TODO system support rings
 **** TODO [tool]tips
 **** TODO options menu
-**** TODO right-click menu
 **** TODO save as image
-**** TODO save/load - files
 **** TODO toolbox
 **** TODO logo, copyright, and credits
 **** TODO event listeners
