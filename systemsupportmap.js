@@ -22,6 +22,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   "use strict";
 
   var modHelp = require('./help.js'),
+      modCirclesOfCare = require('./circles-of-care.js'),
       modEdgeStyle = require('./edge-style.js'),
       modEdgeThickness = require('./edge-thickness.js'),
       modGrid = require('./grid.js'),
@@ -39,7 +40,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.setupNotes();
     this.defineArrowMarkers();
     if (this.displayAll) {
-      this.createCirclesOfCare();
+      modCirclesOfCare.create(d3);
     }
     this.createSystemSupportMap();
     this.setupMMRGroup();
@@ -71,7 +72,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                        "ellipse":   "Resource",
                        "star":      "Wish",
                        "noBorder":  "text"},
-    cOfChideText: "Hide Circles of Care",
     ssmHideText: "Hide system support rings",
     defaultFontSize: 12, // Also set in css file because image export doesn't see css
     rightMouseBtn: 3
@@ -103,7 +103,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       shiftNodeDrag: false,
       selectedText: null,
       clickDragHandle: false,
-      circlesOfCareVisible: false,
       ssmVisible: true
     };
     this.contextText = null;
@@ -132,7 +131,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   // Edge, shape, and color selection, plus "?" help and Options buttons, load, save, and delete.
   Graphmaker.prototype.prepareToolbox = function() {
     var thisGraph = this;
-    thisGraph.CofCCenter = null; // CirclesOfCareCenter
+    modCirclesOfCare.center = null; // CirclesOfCareCenter
     thisGraph.SSMCenter = null; // System Support Map Center
 
     // Handle delete graph
@@ -345,7 +344,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     if(doDelete) {
       this.nodes = [];
       this.links = [];
-      this.hideCirclesOfCare();
+      modCirclesOfCare.hide(d3);
       this.showSystemSupportMap();
       this.updateGraph();
       location.hash = "";
@@ -1466,46 +1465,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // Create three concentric circles.
-  Graphmaker.prototype.createCirclesOfCare = function() {
-    d3.select("#graphG").append("g")
-      .attr("id", "circlesOfCareGroup")
-      .classed("visible", this.state.circlesOfCareVisible);
-    d3.select("#circlesOfCareGroup").selectAll(".cOfC")
-      .data([75, 200, 350])
-      .enter().append("circle")
-        .classed("cOfC", true)
-        .style("fill", "none")
-        .attr("r", function(d) {
-          return d;
-        });
-  };
-
-
-  Graphmaker.prototype.showCirclesOfCare = function() {
-    if (!this.CofCCenter) {
-      this.CofCCenter = {"x": d3.select("#topGraphDiv").node().clientWidth / 2,
-                         "y": d3.select("#topGraphDiv").node().clientHeight / 2};
-    }
-    this.state.circlesOfCareVisible = true;
-    d3.select("#circlesOfCareGroup").classed("visible", this.state.circlesOfCareVisible);
-    d3.selectAll(".cOfC")
-      .attr("cx", this.CofCCenter.x)
-      .attr("cy", this.CofCCenter.y);
-    d3.select("#cOfCItem").text(this.consts.cOfChideText)
-      .datum({"name": this.consts.cOfChideText});
-  };
-
-
-  Graphmaker.prototype.hideCirclesOfCare = function() {
-    this.CofCCenter = null;
-    this.state.circlesOfCareVisible = false;
-    d3.select("#circlesOfCareGroup").classed("visible", this.state.circlesOfCareVisible);
-    d3.select("#cOfCItem").text("Show Circles of Care")
-      .datum({"name": "Show Circles of Care"});
-  };
-
-
   // Return the current map as an JS object.
   Graphmaker.prototype.getMapObject = function() {
     var saveEdges = [];
@@ -1526,7 +1485,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       "links": saveEdges,
       "graphGTransform": d3.select("#graphG").attr("transform"),
       "systemSupportMapCenter": this.SSMCenter,
-      "circlesOfCareCenter": this.CofCCenter
+      "circlesOfCareCenter": modCirclesOfCare.center
     };
   };
 
@@ -1581,10 +1540,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       } else {
         thisGraph.hideSystemSupportMap();
       }
-      thisGraph.hideCirclesOfCare();
-      thisGraph.CofCCenter = jsonObj.circlesOfCareCenter;
-      if (thisGraph.CofCCenter) {
-        thisGraph.showCirclesOfCare();
+      modCirclesOfCare.hide(d3);
+      modCirclesOfCare.center = jsonObj.circlesOfCareCenter;
+      if (modCirclesOfCare.center) {
+        modCirclesOfCare.show(d3);
       }
       thisGraph.updateGraph();
       if (typeof id === 'number') {
@@ -2145,7 +2104,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     // Set attributes of objects to render correctly without css:
     shapes.style("fill", "#F6FBFF");
     d3.select("#circlesOfCareGroup")
-      .attr("display", this.state.circlesOfCareVisible ? "inline-block" : "none");
+      .attr("display", modCirclesOfCare.visible ? "inline-block" : "none");
     d3.selectAll(".cOfC")
       .style("fill", "none")
       .style("stroke-width", "1px")
@@ -2254,10 +2213,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           this.hideSystemSupportMap();
           break;
         case choices[1].name:
-          this.showCirclesOfCare();
+          modCirclesOfCare.show(d3);
           break;
-        case this.consts.cOfChideText:
-          this.hideCirclesOfCare();
+        case modCirclesOfCare.hideText:
+          modCirclesOfCare.hide(d3);
           break;
         case choices[2].name:
         case choices[3].name:
