@@ -18,7 +18,6 @@
 **** TODO importMap()
 **** TODO links
 **** TODO nodes
-**** TODO SSMCenter
 *** TODO file.js
 **** TODO new Blob
 **** TODO saveAs()
@@ -31,7 +30,6 @@
 **** TODO state.selectedNode
 **** TODO selectNode()
 *** possible modules
-**** TODO system support rings
 **** TODO [tool]tips
 **** TODO options menu
 **** TODO save as image

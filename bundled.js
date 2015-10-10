@@ -433,7 +433,8 @@ exports.setup = function(d3) {
 
 },{"./selected-color.js":10}],4:[function(require,module,exports){
 var modAuth = require('./auth.js'),
-    modCirclesOfCare = require('./circles-of-care.js');
+    modCirclesOfCare = require('./circles-of-care.js'),
+    modSystemSupportMap = require('./system-support-map.js');
 
 // Fetch a map from the backend given its id
 var fetchMap = function(d3, id) {
@@ -541,7 +542,7 @@ var getMapObject = function(d3) {
     "nodes": this.nodes,
     "links": saveEdges,
     "graphGTransform": d3.select("#graphG").attr("transform"),
-    "systemSupportMapCenter": this.SSMCenter,
+    "systemSupportMapCenter": modSystemSupportMap.center,
     "circlesOfCareCenter": modCirclesOfCare.center
   };
 };
@@ -641,7 +642,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":2}],5:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./system-support-map.js":12}],5:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -1387,24 +1388,104 @@ exports.storeShapeSize = function(gEl, d) {
 };
 
 },{"./selected-color.js":10}],12:[function(require,module,exports){
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+var modSelectedColor = require('./selected-color.js');
+
+exports.hideText = "Hide system support rings";
+exports.center = null;
+exports.visible = true;
+
+// Center circles and text in window
+exports.show = function(d3) {
+  if (!exports.center) {
+    exports.center = {
+      "x": d3.select("#topGraphDiv").node().clientWidth / 2,
+      "y": d3.select("#topGraphDiv").node().clientHeight / 2};
+  }
+  var ssmCenter = exports.center;
+  d3.select(".ssmGroup")
+    .classed({"ssmHidden": false, "ssmVisible": true});
+  exports.visible = true;
+  d3.selectAll(".ssmCircle")
+    .attr("cx", ssmCenter.x)
+    .attr("cy", ssmCenter.y);
+  d3.selectAll(".ssmLabel")
+    .style("font-size", "12px")
+    .attr("x", function() {
+      return ssmCenter.x - this.getComputedTextLength() / 2;
+    })
+    .attr("y", function(d, i) {
+      var offset = [20, 28, 26, 18, 64];
+      return ssmCenter.y - d.radius + offset[i];
+    });
+  d3.select("#sysSptRingsItem").text(exports.ssmHideText)
+    .datum({"name": exports.ssmHideText});
+};
+
+exports.hide = function(d3) {
+  exports.center = null;
+  d3.select(".ssmGroup")
+    .classed({"ssmHidden": true, "ssmVisible": false});
+  exports.visible = false;
+  d3.select("#sysSptRingsItem").text("Show system support rings")
+    .datum({"name": "Show system support rings"});
+};
+
+// Create four concentric rings and five labels (one for each rings and one for
+// the outside)
+exports.create = function(d3) {
+  var rings = [{"name": "Role/Identity", "radius": 110,
+                "color": "#" + modSelectedColor.colorChoices[6]},
+               {"name": "Most Important Responsibilities", "radius": 275,
+                "color": "#" + modSelectedColor.colorChoices[5]},
+               {"name": "General Needs for Each Responsibility", "radius": 475,
+                "color": "#" + modSelectedColor.colorChoices[4]},
+               {"name": "Available Resources", "radius": 675,
+                "color": "#" + modSelectedColor.colorChoices[7]} ];
+  d3.select("#graphG").append("g")
+    .classed({"ssmGroup": true, "ssmHidden": true, "ssmVisible": false});
+  exports.visible = false;
+  d3.select(".ssmGroup").selectAll(".ssmCircle")
+    .data(rings)
+    .enter().append("circle")
+      .classed("ssmCircle", true)
+      .style("stroke", function(d) {
+        return d.color;
+      })
+      .style("fill", "none")
+      .attr("r", function(d) { return d.radius; });
+  rings.push({"name": "Wish List", "radius": 750, "color": "#" + modSelectedColor.colorChoices[2]});
+  d3.select(".ssmGroup").selectAll(".ssmLabel")
+    .data(rings)
+    .enter().append("text")
+      .classed("ssmLabel", true)
+      .style("fill", function(d) { return d.color; })
+      .text(function(d) { return d.name; });
+};
+
+},{"./selected-color.js":10}],13:[function(require,module,exports){
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
  * All rights reserved.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, CONTRIBUTORS, AND THE UNIVERSITY OF NORTH
- * CAROLINA AT CHAPEL HILL "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER, CONTRIBUTORS OR THE UNIVERSITY OF NORTH
- * CAROLINA AT CHAPEL HILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY * OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, CONTRIBUTORS, AND THE
+ * UNIVERSITY OF NORTH CAROLINA AT CHAPEL HILL "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED * TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL THE COPYRIGHT OWNER, CONTRIBUTORS OR THE UNIVERSITY OF NORTH
+ * CAROLINA AT CHAPEL HILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY * OF SUCH DAMAGE.
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-// Build a graph with nodes of several shapes and colors, and connect them with directed edges.
-// Save a constructed graph locally as a json file, and open and display saved graph files.
+// Build a graph with nodes of several shapes and colors, and connect them with
+// directed edges. Save a constructed graph locally as a json file, and open and
+// display saved graph files.
 // Based on Colorado Reed's https://github.com/cjrd/directed-graph-creator.
 
 document.onload = (function(d3, saveAs, Blob, undefined) {
@@ -1421,7 +1502,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modGrid = require('./grid.js'),
       modZoom = require('./zoom.js'),
       modSelectedColor = require('./selected-color.js'),
-      modSelectedShape = require('./selected-shape.js');
+      modSelectedShape = require('./selected-shape.js'),
+      modSystemSupportMap = require('./system-support-map.js');
 
   // Define graphcreator object
   var Graphmaker = function(svg, nodes, links) {
@@ -1435,14 +1517,14 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     if (this.displayAll) {
       modCirclesOfCare.create(d3);
     }
-    this.createSystemSupportMap();
+    modSystemSupportMap.create(d3);
     this.setupMMRGroup();
     this.setupDrag();
     this.setupDragHandle();
     modZoom.setup(d3, svg);
     this.setupSVGNodesAndLinks();
     this.setupEventListeners();
-    this.showSystemSupportMap();
+    modSystemSupportMap.show(d3);
     modFile.setupDownload(d3);
     modFile.setupUpload(d3);
     modDatabase.setupReadMapFromDatabase(d3);
@@ -1465,7 +1547,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                        "ellipse":   "Resource",
                        "star":      "Wish",
                        "noBorder":  "text"},
-    ssmHideText: "Hide system support rings",
     defaultFontSize: 12, // Also set in css file because image export doesn't see css
     rightMouseBtn: 3
   };
@@ -1495,8 +1576,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       lastKeyDown: -1,
       shiftNodeDrag: false,
       selectedText: null,
-      clickDragHandle: false,
-      ssmVisible: true
+      clickDragHandle: false
     };
     this.svgG = svg.append("g") // The group that contains the main SVG element
                    .classed("graph", true)
@@ -1524,7 +1604,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   Graphmaker.prototype.prepareToolbox = function() {
     var thisGraph = this;
     modCirclesOfCare.center = null; // CirclesOfCareCenter
-    thisGraph.SSMCenter = null; // System Support Map Center
+    modSystemSupportMap.center = null; // System Support Map Center
 
     // Handle delete graph
     d3.select("#delete-graph").on("click", function() { thisGraph.deleteGraph(false); });
@@ -1737,7 +1817,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       this.nodes = [];
       this.links = [];
       modCirclesOfCare.hide(d3);
-      this.showSystemSupportMap();
+      modSystemSupportMap.show(d3);
       this.updateGraph();
       location.hash = "";
     }
@@ -2577,38 +2657,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // Create four concentric rings and five labels (one for each rings and one for the outside)
-  Graphmaker.prototype.createSystemSupportMap = function() {
-    var rings = [{"name": "Role/Identity", "radius": 110,
-                  "color": "#" + modSelectedColor.colorChoices[6]},
-                 {"name": "Most Important Responsibilities", "radius": 275,
-                  "color": "#" + modSelectedColor.colorChoices[5]},
-                 {"name": "General Needs for Each Responsibility", "radius": 475,
-                  "color": "#" + modSelectedColor.colorChoices[4]},
-                 {"name": "Available Resources", "radius": 675,
-                  "color": "#" + modSelectedColor.colorChoices[7]} ];
-    d3.select("#graphG").append("g")
-      .classed({"ssmGroup": true, "ssmHidden": true, "ssmVisible": false});
-    this.state.ssmVisible = false;
-    d3.select(".ssmGroup").selectAll(".ssmCircle")
-      .data(rings)
-      .enter().append("circle")
-        .classed("ssmCircle", true)
-        .style("stroke", function(d) {
-          return d.color;
-        })
-        .style("fill", "none")
-        .attr("r", function(d) { return d.radius; });
-    rings.push({"name": "Wish List", "radius": 750, "color": "#" + modSelectedColor.colorChoices[2]});
-    d3.select(".ssmGroup").selectAll(".ssmLabel")
-      .data(rings)
-      .enter().append("text")
-        .classed("ssmLabel", true)
-        .style("fill", function(d) { return d.color; })
-        .text(function(d) { return d.name; });
-  };
-
-
   Graphmaker.prototype.setupEventListeners = function() {
     var thisGraph = this;
     var svg = thisGraph.svg;
@@ -2625,43 +2673,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       thisGraph.svgMouseUp();
     });
     window.onresize = function() {thisGraph.updateWindow(svg);};
-  };
-
-
-  // Center circles and text in window
-  Graphmaker.prototype.showSystemSupportMap = function() {
-    if (!this.SSMCenter) {
-      this.SSMCenter = {"x": d3.select("#topGraphDiv").node().clientWidth / 2,
-                        "y": d3.select("#topGraphDiv").node().clientHeight / 2};
-    }
-    var ssmCenter = this.SSMCenter;
-    d3.select(".ssmGroup")
-      .classed({"ssmHidden": false, "ssmVisible": true});
-    this.state.ssmVisible = true;
-    d3.selectAll(".ssmCircle")
-      .attr("cx", ssmCenter.x)
-      .attr("cy", ssmCenter.y);
-    d3.selectAll(".ssmLabel")
-      .style("font-size", "12px")
-      .attr("x", function() {
-        return ssmCenter.x - this.getComputedTextLength() / 2; // Why this and not thisGraph?
-      })
-      .attr("y", function(d, i) {
-        var offset = [20, 28, 26, 18, 64];
-        return ssmCenter.y - d.radius + offset[i];
-      });
-    d3.select("#sysSptRingsItem").text(this.consts.ssmHideText)
-      .datum({"name": this.consts.ssmHideText});
-  };
-
-
-  Graphmaker.prototype.hideSystemSupportMap = function() {
-    this.SSMCenter = null;
-    d3.select(".ssmGroup")
-      .classed({"ssmHidden": true, "ssmVisible": false});
-    this.state.ssmVisible = false;
-    d3.select("#sysSptRingsItem").text("Show system support rings")
-      .datum({"name": "Show system support rings"});
   };
 
 
@@ -2698,11 +2709,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modZoom.zoomSvg.translate([tx, ty]).scale(scale);
       modZoom.zoomSvg.event(thisGraph.svg.transition().duration(500));
 
-      thisGraph.SSMCenter = jsonObj.systemSupportMapCenter;
-      if (thisGraph.SSMCenter) {
-        thisGraph.showSystemSupportMap();
+      modSystemSupportMap.center = jsonObj.systemSupportMapCenter;
+      if (modSystemSupportMap.center) {
+        modSystemSupportMap.show(d3);
       } else {
-        thisGraph.hideSystemSupportMap();
+        modSystemSupportMap.hide(d3);
       }
       modCirclesOfCare.hide(d3);
       modCirclesOfCare.center = jsonObj.circlesOfCareCenter;
@@ -2717,7 +2728,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       window.alert("Error parsing uploaded file\nerror message: " + err.message);
       return;
     }
-  }
+  };
 
 
   Graphmaker.prototype.createEqShapeSizeSubmenu = function() {
@@ -2852,7 +2863,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .style("stroke", "#000000");
     d3.selectAll(".ssmCircle")
       .style("fill", "none")
-      .style("display", (this.state.ssmVisible ? "inline-block" : "none"));
+      .style("display", (modSystemSupportMap.visible ? "inline-block" : "none"));
     d3.selectAll(".ssmHidden").attr("display", "none");
     d3.select("#gridGroup").attr("display", "none");
     d3.select("#mainSVG").style("background-color", modSelectedColor.bgColor);
@@ -2948,10 +2959,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       switch (d3.select(listItem).datum().name) {
       // Beware: d3.select(listItem).text() returns concatenation of all submenu text.
         case choices[0].name:
-          this.showSystemSupportMap();
+          modSystemSupportMap.show(d3);
           break;
-        case this.consts.ssmHideText:
-          this.hideSystemSupportMap();
+        case modSystemSupportMap.hideText:
+          modSystemSupportMap.hide(d3);
           break;
         case choices[1].name:
           modCirclesOfCare.show(d3);
@@ -2972,8 +2983,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         case modGrid.hideText:
           modGrid.hide(d3);
           break;
-        case this.consts.ssmHideText:
-          this.hideSystemSupportMap();
+        case modSystemSupportMap.hideText:
+          modSystemSupportMap.hide(d3);
           break;
         case choices[7].name:
           this.exportGraphAsImage();
@@ -3100,7 +3111,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   modDatabase.loadMapFromLocation(d3);
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./file.js":7,"./grid.js":8,"./help.js":9,"./selected-color.js":10,"./selected-shape.js":11,"./zoom.js":13}],13:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./file.js":7,"./grid.js":8,"./help.js":9,"./selected-color.js":10,"./selected-shape.js":11,"./system-support-map.js":12,"./zoom.js":14}],14:[function(require,module,exports){
 var modGrid = require('./grid.js');
 
 exports.zoom = 1;
@@ -3143,4 +3154,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid.js":8}]},{},[12]);
+},{"./grid.js":8}]},{},[13]);

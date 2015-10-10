@@ -1,5 +1,6 @@
 var modAuth = require('./auth.js'),
-    modCirclesOfCare = require('./circles-of-care.js');
+    modCirclesOfCare = require('./circles-of-care.js'),
+    modSystemSupportMap = require('./system-support-map.js');
 
 // Fetch a map from the backend given its id
 var fetchMap = function(d3, id) {
@@ -107,7 +108,7 @@ var getMapObject = function(d3) {
     "nodes": this.nodes,
     "links": saveEdges,
     "graphGTransform": d3.select("#graphG").attr("transform"),
-    "systemSupportMapCenter": this.SSMCenter,
+    "systemSupportMapCenter": modSystemSupportMap.center,
     "circlesOfCareCenter": modCirclesOfCare.center
   };
 };
