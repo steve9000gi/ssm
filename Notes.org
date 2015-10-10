@@ -11,10 +11,19 @@
 **** TODO shapeGroups
 **** TODO updateExistingPaths()
 **** TODO updateGraph()
-*** low-hanging fruit for refactoring
-**** TODO circles of care
+*** possible modules
+**** TODO system support rings
+**** TODO [tool]tips
+**** TODO options menu
+**** TODO right-click menu
+**** TODO save as image
+**** TODO login/logout
+**** TODO save/load/list - database
+**** TODO save/load - files
 **** TODO toolbox
-**** TODO logo(s) and copyright
+**** TODO logo, copyright, and credits
+**** TODO event listeners
+**** TODO system support map
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users
