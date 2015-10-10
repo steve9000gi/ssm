@@ -1,4 +1,202 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+
+// Check whether we're authenticated at the backend, and call the callback
+// with the boolean result (i.e. true = authenticated, false = not).
+var checkAuthentication = function(d3, callback) {
+  d3.xhr(this.consts.backendBase + '/testauth')
+    .on('beforesend', function(request) { request.withCredentials = true; })
+    .get(function(error, data) {
+      if (error) {
+        callback(false);
+      } else {
+        var message = JSON.parse(data.response).message;
+        if (message === 'authenticated') {
+          callback(true);
+        } else {
+          callback(false);
+        }
+      }
+    });
+};
+
+// Render the registration (i.e. "new user") form and call the callback when
+// the user is created.
+var renderRegistrationForm = function(d3, callback) {
+  var content = d3.select('#authentication .content');
+  content.selectAll('*').remove();
+  var header = content
+    .append('h1')
+    .text('Create a new account');
+  var form = content
+    .append('form')
+    .html('<label>' +
+          '  Email address:' +
+          '  <input type="text" name="email" />' +
+          '</label>' +
+          '<br />' +
+          '<label>' +
+          '  Password:' +
+          '  <input type="password" name="password" />' +
+          '</label>' +
+          '<br />' +
+          '<label>' +
+          '  Confirm password:' +
+          '  <input type="password" name="password" />' +
+          '</label>' +
+          '<br />' +
+          '<input type="submit" name="Login" />');
+
+  // JST 2015-08-23 - Stop propagation of keydown events, so that the
+  // handlers elsewhere in this code don't prevent default. I needed to do
+  // this to allow users to hit 'backspace' in these fields.
+  form.selectAll('input[type=text]')
+    .on('keydown', function(elt) { d3.event.stopPropagation(); });
+  form.selectAll('input[type=password]')
+    .on('keydown', function(elt) { d3.event.stopPropagation(); });
+
+  var graph = this;
+  var link = content
+    .append('a')
+    .attr('href', '#')
+    .text('Already have an account? Login.')
+    .on('click', function() {
+      content.selectAll('*').remove();
+      renderLoginForm(d3, callback);
+    });
+  var message = content
+    .append('p')
+    .attr('class', 'message');
+
+  form.on('submit', function() {
+    d3.event.preventDefault();
+    if (d3.event.target[1].value != d3.event.target[2].value) {
+      d3.select('#authentication p.message')
+        .text("Passwords don't match. Try again.");
+    } else {
+      d3.select('#authentication p.message').text('Loading...');
+      var requestData = {
+        email   : d3.event.target[0].value,
+        password: d3.event.target[1].value
+      };
+      d3.xhr(graph.consts.backendBase + '/register')
+        .header('Content-Type', 'application/json')
+        .on('beforesend',
+            function(request) { request.withCredentials = true; })
+        .post(JSON.stringify(requestData), function(error, data) {
+          if (error) {
+            d3.select('#authentication p.message').text('Login failed');
+          } else {
+            d3.select('#authentication').style('visibility', 'hidden');
+            d3.select('#authentication .content *').remove();
+            callback();
+          }
+        });
+    }
+  });
+};
+
+// Render the login form and call the callback when the user is auth'd.
+var renderLoginForm = function(d3, callback) {
+  var content = d3.select('#authentication .content');
+  content.selectAll('*').remove();
+  var header = content
+    .append('h1')
+    .text('You must log in first:');
+  var form = content
+    .append('form')
+    .attr("id", "login")
+    .html('<label>' +
+          '  Email address:' +
+          '</label>' +
+          '  <input type="text" name="email" />' +
+          '<br />' +
+          '<label>' +
+          '  Password:' +
+          '</label>' +
+          '  <input type="password" name="password" />' +
+          '<br />' +
+          '<input type="submit" name="Log in" />');
+
+  // JST 2015-08-23 - Stop propagation of keydown events, so that the
+  // handlers elsewhere in this code don't prevent default. I needed to do
+  // this to allow users to hit 'backspace' in these fields.
+  form.selectAll('input[type=text]')
+    .on('keydown', function(elt) { d3.event.stopPropagation(); });
+  form.selectAll('input[type=password]')
+    .on('keydown', function(elt) { d3.event.stopPropagation(); });
+
+  var graph = this;
+  var link = content
+    .append('a')
+    .attr('href', '#')
+    .text("Don't have an account? Create one.")
+    .on('click', function() {
+      content.selectAll('*').remove();
+      renderRegistrationForm(d3, callback);
+    });
+  var message = content
+    .append('p')
+    .attr('class', 'message');
+
+  form.on('submit', function() {
+    d3.event.preventDefault();
+    d3.select('#authentication p.message').text('Loading...');
+    var requestData = {
+      email   : d3.event.target[0].value,
+      password: d3.event.target[1].value
+    };
+    d3.xhr(graph.consts.backendBase + '/login')
+      .header('Content-Type', 'application/json')
+      .on('beforesend', function(request) { request.withCredentials = true; })
+      .post(JSON.stringify(requestData), function(error, data) {
+        if (error) {
+          d3.select('#authentication p.message').text('Login failed');
+        } else {
+          d3.select('#authentication').style('visibility', 'hidden');
+          d3.select('#authentication .content *').remove();
+          callback();
+        }
+      });
+  });
+};
+
+// Prompt user for login/registration, then call the given function (with no
+// arguments).
+exports.afterAuthentication = function(d3, callback) {
+  checkAuthentication(d3, function(isAuthenticated) {
+    if (isAuthenticated) {
+      callback();
+    } else {
+      d3.select('#authentication')
+        .style('visibility', 'visible')
+        .on('click', function() {
+          d3.select('#authentication').style('visibility', 'hidden');
+          d3.select('#authentication .content *').remove();
+        });
+      d3.select('#authentication .content')
+        .on('click', function() {
+          d3.event.stopPropagation();
+        });
+      renderLoginForm(d3, callback);
+    }
+  });
+};
+
+// Log the current user out.
+exports.logoutUser = function(d3) {
+  d3.xhr(this.consts.backendBase + '/logout')
+    .on('beforesend', function(request) { request.withCredentials = true; })
+    .get(function(error, data) {
+      if (error) {
+        console.log('Logout error:', error);
+        alert('Error logging out.');
+      } else {
+        alert("You have logged out from SSM.");
+      }
+    });
+}
+
+},{}],2:[function(require,module,exports){
 exports.visible = false;
 exports.center = null;
 exports.hideText = 'Hide Circles of Care';
@@ -41,7 +239,227 @@ exports.hide = function(d3) {
     .datum({"name": "Show Circles of Care"});
 };
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
+var modAuth = require('./auth.js'),
+    modCirclesOfCare = require('./circles-of-care.js');
+
+// Fetch a map from the backend given its id
+var fetchMap = function(d3, id) {
+  var thisGraph = this;
+  d3.json(this.consts.backendBase + '/map/' + id)
+    .on('beforesend', function(request) { request.withCredentials = true; })
+    .on('error',
+        function() { window.alert('Error talking to backend server.'); })
+    .on('load', function(data) {
+      d3.select('#map-index').style('visibility', 'hidden');
+      thisGraph.importMap(data.document, id);
+      window.location.hash = '/map/' + id;
+    })
+    .send('GET');
+};
+
+var renderMapsList = function(d3, data) {
+  d3.selectAll('#map-index .content *').remove();
+  if (!data || data.length === 0) {
+    d3.select('#map-index .content').append('p')
+      .text("You're logged in, but you don't have any maps yet. " +
+            "To get started, create a map and click the 'save' button.");
+    return;
+  }
+
+  var asAdmin = data && data[0] && data[0].hasOwnProperty('owner_email');
+  var columns =
+    ['Map ID', 'Created At', 'Modified At', 'Num. Nodes', 'Num. Links'];
+  if (asAdmin) {
+    columns.push('Owner Email');
+  }
+
+  var table = d3.select('#map-index .content').append('table'),
+      thead = table.append('thead'),
+      tbody = table.append('tbody');
+
+  thead
+    .append('tr')
+    .selectAll('th')
+    .data(columns)
+    .enter()
+    .append('th')
+    .text(String);
+
+  var rows = tbody
+    .selectAll('tr')
+    .data(data)
+    .enter()
+    .append('tr');
+
+  rows.append('td')
+    .append('a')
+    .attr('href', '#')
+    .on('click', function(d) { fetchMap(d3, d.id); })
+    .text(function(d) { return d.id; });
+  rows.append('td').text(function(d) { return d.created_at; });
+  rows.append('td').text(function(d) { return d.modified_at; });
+  rows.append('td').text(function(d) { return d.num_nodes; });
+  rows.append('td').text(function(d) { return d.num_links; });
+  if (asAdmin) {
+    rows.append('td').text(function(d) { return d.owner_email; });
+  }
+};
+
+var listMaps = function(d3) {
+  d3.select('#map-index .content')
+    .append('div')
+    .attr('class', 'loading-message')
+    .text('Loading...');
+  d3.select('#map-index')
+    .style('visibility', 'visible')
+    .on('click', function() {
+      d3.select('#map-index .loading-message').remove();
+      d3.select('#map-index').style('visibility', 'hidden');
+      d3.select('#map-index table').remove();
+    });
+  d3.select('#map-index .content')
+    .on('click', function() {
+      d3.event.stopPropagation();
+    });
+  d3.json(this.consts.backendBase + '/maps')
+    .on('beforesend', function(request) { request.withCredentials = true; })
+    .on('error',
+        function(error) { window.alert('Error talking to backend server.'); })
+    .on('load', function(result) { renderMapsList(d3, result); })
+    .send('GET');
+};
+
+// Return the current map as an JS object.
+var getMapObject = function(d3) {
+  var saveEdges = [];
+  this.links.forEach(function(val) {
+    saveEdges.push({source: val.source.id,
+                    target: val.target.id,
+                    style: val.style,
+                    color: val.color,
+                    thickness: val.thickness,
+                    maxCharsPerLine: val.maxCharsPerLine,
+                    note: val.note,
+                    name: val.name,
+                    manualResize: val.manualResize || false
+                   });
+  });
+  return {
+    "nodes": this.nodes,
+    "links": saveEdges,
+    "graphGTransform": d3.select("#graphG").attr("transform"),
+    "systemSupportMapCenter": this.SSMCenter,
+    "circlesOfCareCenter": modCirclesOfCare.center
+  };
+};
+
+// Save as JSON file
+exports.setupDownload = function(d3) {
+  var thisGraph = this;
+  d3.select("#download-input").on("click", function() {
+    var blob = new Blob([window.JSON.stringify(getMapObject(d3))],
+                        {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "SystemSupportMap.json");
+  });
+};
+
+exports.setupReadMapFromDatabase = function(d3) {
+  d3.select("#read-from-db")
+    .on("click",
+        function() {
+          modAuth.afterAuthentication(d3, function() {
+            listMaps(d3);
+          });
+        });
+};
+
+// Look in the location's 'hash' property (i.e. everything after the '#') for
+// a map ID. If the hash property is of the form '/map/<id>', where '<id>' is
+// an integer, try to load the map from the server.
+exports.loadMapFromLocation = function(d3) {
+  var m  = window.location.hash.match(/\/map\/(\d+)/);
+  if (m) {
+    var id = m[1];
+    var thisGraph = this;
+    d3.json(this.consts.backendBase + '/map/' + id)
+      .on('beforesend', function(request) { request.withCredentials = true; })
+      .on('error',
+          function(error) {
+            var resp = JSON.parse(error.response);
+            if (resp.message && resp.message == 'not authenticated') {
+              modAuth.afterAuthentication(d3, function() {
+                exports.loadMapFromLocation();
+              });
+            } else if (resp.message
+                && resp.message == 'map not owned by authenticated user') {
+              alert("You don't have access to map # " + id + '. ' +
+                    'Redirecting to a blank map.');
+              window.location.hash = '';
+            } else {
+              console.error(error);
+              alert('Error talking to backend server.');
+            }
+          })
+      .on('load', function(data) {
+        thisGraph.importMap(data.document, id);
+        window.location.hash = '/map/' + id;
+      })
+      .send('GET');
+  }
+};
+
+exports.setupWriteMapToDatabase = function(d3) {
+  var graph = this;
+  d3.select("#write-to-db").on("click", function() {
+    modAuth.afterAuthentication(d3, function() {
+      var m  = window.location.hash.match(/\/map\/(\d+)/);
+      if (m) {
+        // update existing map
+        var id = m[1];
+        d3.xhr(graph.consts.backendBase + '/map/' + id)
+          .header('Content-Type', 'application/json')
+          .on('beforesend', function(request) {
+            request.withCredentials = true;
+          })
+          .on('error', function(req) {
+            var resp = req.response && JSON.parse(req.response);
+            if (resp
+                && resp.message == 'map not owned by authenticated user') {
+              alert("Can't save: you have read-only access to this map.");
+            } else {
+              console.error('Failed to save map. Request was:', req);
+              alert('Failed to save map # ' + id);
+            }
+          })
+          .on('load', function(data) {
+            console.log('saved map # ' + id);
+          })
+          .send('PUT', JSON.stringify(getMapObject(d3)));
+
+      } else {
+        // create new map
+        d3.xhr(graph.consts.backendBase + '/map')
+          .header('Content-Type', 'application/json')
+          .on('beforesend', function(request) {
+            request.withCredentials = true;
+          })
+          .on('error', function(req) {
+            console.error('Failed to save new map. Request was:', req);
+            alert('Failed to save new map ');
+          })
+          .on('load', function(request) {
+            var data = JSON.parse(request.response);
+            console.log('saved new map # ' + data.id);
+            window.location.hash = '/map/' + data.id;
+          })
+          .send('POST', JSON.stringify(getMapObject(d3)));
+      }
+    });
+  });
+};
+
+},{"./auth.js":1,"./circles-of-care.js":2}],4:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -169,7 +587,7 @@ exports.addControls = function(d3) {
   createEdgeStyleSelectionSampleEdges(d3);
 };
 
-},{"./edge-thickness.js":3,"./selected-color.js":6,"./selected-shape.js":7}],3:[function(require,module,exports){
+},{"./edge-thickness.js":5,"./selected-color.js":8,"./selected-shape.js":9}],5:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.thickness = 3;
@@ -216,7 +634,7 @@ exports.createSubmenu = function(d3) {
       });
 };
 
-},{"./selected-color.js":6}],4:[function(require,module,exports){
+},{"./selected-color.js":8}],6:[function(require,module,exports){
 var gridVisible = false,
     grid = null,
     gridCellW = 10,
@@ -333,7 +751,7 @@ exports.enableSnap = function(d3) {
   showTurnOffGridText(d3);
 };
 
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 // Help/instructions button and info box:
 module.exports = function(d3) {
   d3.select("#toolbox").insert("div", ":first-child")
@@ -370,7 +788,7 @@ module.exports = function(d3) {
   });
 };
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -430,7 +848,7 @@ exports.createColorPalette = function(d3) {
   d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
 };
 
-},{"./edge-style.js":2,"./selected-shape.js":7}],7:[function(require,module,exports){
+},{"./edge-style.js":4,"./selected-shape.js":9}],9:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.minCircleRadius = 20;
@@ -746,7 +1164,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":6}],8:[function(require,module,exports){
+},{"./selected-color.js":8}],10:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -771,6 +1189,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   "use strict";
 
   var modHelp = require('./help.js'),
+      modAuth = require('./auth.js'),
+      modDatabase = require('./database.js'),
       modCirclesOfCare = require('./circles-of-care.js'),
       modEdgeStyle = require('./edge-style.js'),
       modEdgeThickness = require('./edge-thickness.js'),
@@ -799,10 +1219,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.setupSVGNodesAndLinks();
     this.setupEventListeners();
     this.showSystemSupportMap();
-    this.setupDownload();
+    modDatabase.setupDownload(d3);
     this.setupUpload();
-    this.setupReadMapFromDatabase();
-    this.setupWriteMapToDatabase();
+    modDatabase.setupReadMapFromDatabase(d3);
+    modDatabase.setupWriteMapToDatabase(d3);
     this.setupContextMenu();
   };
 
@@ -2214,42 +2634,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // Return the current map as an JS object.
-  Graphmaker.prototype.getMapObject = function() {
-    var saveEdges = [];
-    this.links.forEach(function(val) {
-      saveEdges.push({source: val.source.id,
-                      target: val.target.id,
-                      style: val.style,
-                      color: val.color,
-                      thickness: val.thickness,
-                      maxCharsPerLine: val.maxCharsPerLine,
-                      note: val.note,
-                      name: val.name,
-                      manualResize: val.manualResize || false
-                    });
-    });
-    return {
-      "nodes": this.nodes,
-      "links": saveEdges,
-      "graphGTransform": d3.select("#graphG").attr("transform"),
-      "systemSupportMapCenter": this.SSMCenter,
-      "circlesOfCareCenter": modCirclesOfCare.center
-    };
-  };
-
-
-  // Save as JSON file
-  Graphmaker.prototype.setupDownload = function() {
-    var thisGraph = this;
-    d3.select("#download-input").on("click", function() {
-      var blob = new Blob([window.JSON.stringify(thisGraph.getMapObject())],
-                          {type: "text/plain;charset=utf-8"});
-      saveAs(blob, "SystemSupportMap.json");
-    });
-  };
-
-
   // Import a JSON document into the editing area
   Graphmaker.prototype.importMap = function(jsonObj, id) {
     var thisGraph = this;
@@ -2305,336 +2689,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   }
 
 
-  // Look in the location's 'hash' property (i.e. everything after the '#') for
-  // a map ID. If the hash property is of the form '/map/<id>', where '<id>' is
-  // an integer, try to load the map from the server.
-  Graphmaker.prototype.loadMapFromLocation = function() {
-    var m  = location.hash.match(/\/map\/(\d+)/);
-    if (m) {
-      var id = m[1];
-      var thisGraph = this;
-      d3.json(this.consts.backendBase + '/map/' + id)
-        .on('beforesend', function(request) { request.withCredentials = true })
-        .on('error',
-            function(error) {
-              var resp = JSON.parse(error.response);
-              if (resp.message && resp.message == 'not authenticated') {
-                thisGraph.afterAuthentication(function() {
-                  thisGraph.loadMapFromLocation();
-                });
-              } else if (resp.message
-                  && resp.message == 'map not owned by authenticated user') {
-                alert("You don't have access to map # " + id + '. ' +
-                      'Redirecting to a blank map.');
-                location.hash = '';
-              } else {
-                console.error(error);
-                alert('Error talking to backend server.');
-              }
-            })
-        .on('load', function(data) {
-          thisGraph.importMap(data.document, id);
-          location.hash = '/map/' + id;
-        })
-        .send('GET');
-    }
-  };
-
-
-  // Fetch a map from the backend given its id
-  Graphmaker.prototype.fetchMap = function(id) {
-    var thisGraph = this;
-    d3.json(thisGraph.consts.backendBase + '/map/' + id)
-      .on('beforesend', function(request) { request.withCredentials = true })
-      .on('error',
-          function() { window.alert('Error talking to backend server.') })
-      .on('load', function(data) {
-        d3.select('#map-index').style('visibility', 'hidden');
-        thisGraph.importMap(data.document, id);
-        location.hash = '/map/' + id;
-      })
-      .send('GET');
-  }
-
-
-  Graphmaker.prototype.renderMapsList = function(data) {
-    d3.selectAll('#map-index .content *').remove();
-    var graph = this;
-    if (!data || data.length === 0) {
-      d3.select('#map-index .content').append('p')
-        .text("You're logged in, but you don't have any maps yet. " +
-              "To get started, create a map and click the 'save' button.");
-      return;
-    }
-
-    var asAdmin = data && data[0] && data[0].hasOwnProperty('owner_email');
-    var columns =
-      ['Map ID', 'Created At', 'Modified At', 'Num. Nodes', 'Num. Links'];
-    if (asAdmin) {
-      columns.push('Owner Email');
-    }
-
-    var table = d3.select('#map-index .content').append('table'),
-        thead = table.append('thead'),
-        tbody = table.append('tbody');
-
-    thead
-      .append('tr')
-      .selectAll('th')
-      .data(columns)
-      .enter()
-      .append('th')
-      .text(String);
-
-    var rows = tbody
-      .selectAll('tr')
-      .data(data)
-      .enter()
-      .append('tr');
-
-    rows.append('td')
-      .append('a')
-      .attr('href', '#')
-      .on('click', function(d) { graph.fetchMap(d.id) })
-      .text(function(d) { return d.id });
-    rows.append('td').text(function(d) { return d.created_at });
-    rows.append('td').text(function(d) { return d.modified_at });
-    rows.append('td').text(function(d) { return d.num_nodes });
-    rows.append('td').text(function(d) { return d.num_links });
-    if (asAdmin) {
-      rows.append('td').text(function(d) { return d.owner_email });
-    }
-  };
-
-
-  Graphmaker.prototype.listMaps = function() {
-    d3.select('#map-index .content')
-      .append('div')
-      .attr('class', 'loading-message')
-      .text('Loading...');
-    d3.select('#map-index')
-      .style('visibility', 'visible')
-      .on('click', function() {
-        d3.select('#map-index .loading-message').remove();
-        d3.select('#map-index').style('visibility', 'hidden');
-        d3.select('#map-index table').remove();
-      });
-    d3.select('#map-index .content')
-      .on('click', function() {
-        d3.event.stopPropagation();
-      });
-    var graph = this;
-    d3.json(this.consts.backendBase + '/maps')
-      .on('beforesend', function(request) { request.withCredentials = true })
-      .on('error',
-          function(error) { window.alert('Error talking to backend server.') })
-      .on('load', function(result) { graph.renderMapsList(result) })
-      .send('GET');
-  }
-
-
-  // Check whether we're authenticated at the backend, and call the callback
-  // with the boolean result (i.e. true = authenticated, false = not).
-  Graphmaker.prototype.checkAuthentication = function(callback) {
-    d3.xhr(this.consts.backendBase + '/testauth')
-      .on('beforesend', function(request) { request.withCredentials = true })
-      .get(function(error, data) {
-        if (error) {
-          callback(false);
-        } else {
-          var message = JSON.parse(data.response).message;
-          if (message === 'authenticated') {
-            callback(true);
-          } else {
-            callback(false);
-          }
-        }
-      })
-  }
-
-
-  // Render the registration (i.e. "new user") form and call the callback when
-  // the user is created.
-  Graphmaker.prototype.renderRegistrationForm = function(callback) {
-    var content = d3.select('#authentication .content');
-    content.selectAll('*').remove();
-    var header = content
-      .append('h1')
-      .text('Create a new account');
-    var form = content
-      .append('form')
-      .html('<label>' +
-            '  Email address:' +
-            '  <input type="text" name="email" />' +
-            '</label>' +
-            '<br />' +
-            '<label>' +
-            '  Password:' +
-            '  <input type="password" name="password" />' +
-            '</label>' +
-            '<br />' +
-            '<label>' +
-            '  Confirm password:' +
-            '  <input type="password" name="password" />' +
-            '</label>' +
-            '<br />' +
-            '<input type="submit" name="Login" />');
-
-    // JST 2015-08-23 - Stop propagation of keydown events, so that the
-    // handlers elsewhere in this code don't prevent default. I needed to do
-    // this to allow users to hit 'backspace' in these fields.
-    form.selectAll('input[type=text]')
-      .on('keydown', function(elt) { d3.event.stopPropagation(); })
-    form.selectAll('input[type=password]')
-      .on('keydown', function(elt) { d3.event.stopPropagation(); })
-
-    var graph = this;
-    var link = content
-      .append('a')
-      .attr('href', '#')
-      .text('Already have an account? Login.')
-      .on('click', function() {
-        content.selectAll('*').remove();
-        graph.renderLoginForm(callback);
-      });
-    var message = content
-      .append('p')
-      .attr('class', 'message');
-
-    form.on('submit', function() {
-      d3.event.preventDefault();
-      if (d3.event.target[1].value != d3.event.target[2].value) {
-        d3.select('#authentication p.message')
-          .text("Passwords don't match. Try again.");
-      } else {
-        d3.select('#authentication p.message').text('Loading...');
-        var requestData = {
-          email   : d3.event.target[0].value,
-          password: d3.event.target[1].value
-        };
-        d3.xhr(graph.consts.backendBase + '/register')
-          .header('Content-Type', 'application/json')
-          .on('beforesend',
-              function(request) { request.withCredentials = true })
-          .post(JSON.stringify(requestData), function(error, data) {
-            if (error) {
-              d3.select('#authentication p.message').text('Login failed');
-            } else {
-              d3.select('#authentication').style('visibility', 'hidden');
-              d3.select('#authentication .content *').remove();
-              callback();
-            }
-          });
-      }
-    });
-  };
-
-
-  // Render the login form and call the callback when the user is auth'd.
-  Graphmaker.prototype.renderLoginForm = function(callback) {
-    var content = d3.select('#authentication .content');
-    content.selectAll('*').remove();
-    var header = content
-      .append('h1')
-      .text('You must log in first:');
-    var form = content
-      .append('form')
-      .attr("id", "login")
-      .html('<label>' +
-            '  Email address:' +
-            '</label>' +
-            '  <input type="text" name="email" />' +
-            '<br />' +
-            '<label>' +
-            '  Password:' +
-            '</label>' +
-            '  <input type="password" name="password" />' +
-            '<br />' +
-            '<input type="submit" name="Log in" />');
-
-    // JST 2015-08-23 - Stop propagation of keydown events, so that the
-    // handlers elsewhere in this code don't prevent default. I needed to do
-    // this to allow users to hit 'backspace' in these fields.
-    form.selectAll('input[type=text]')
-      .on('keydown', function(elt) { d3.event.stopPropagation(); })
-    form.selectAll('input[type=password]')
-      .on('keydown', function(elt) { d3.event.stopPropagation(); })
-
-    var graph = this;
-    var link = content
-      .append('a')
-      .attr('href', '#')
-      .text("Don't have an account? Create one.")
-      .on('click', function() {
-        content.selectAll('*').remove();
-        graph.renderRegistrationForm(callback);
-      });
-    var message = content
-      .append('p')
-      .attr('class', 'message');
-
-    form.on('submit', function() {
-      d3.event.preventDefault();
-      d3.select('#authentication p.message').text('Loading...');
-      var requestData = {
-        email   : d3.event.target[0].value,
-        password: d3.event.target[1].value
-      };
-      d3.xhr(graph.consts.backendBase + '/login')
-        .header('Content-Type', 'application/json')
-        .on('beforesend', function(request) { request.withCredentials = true })
-        .post(JSON.stringify(requestData), function(error, data) {
-          if (error) {
-            d3.select('#authentication p.message').text('Login failed');
-          } else {
-            d3.select('#authentication').style('visibility', 'hidden');
-            d3.select('#authentication .content *').remove();
-            callback();
-          }
-        });
-    });
-  };
-
-
-  // Prompt user for login/registration, then call the given function (with no
-  // arguments).
-  Graphmaker.prototype.afterAuthentication = function(callback) {
-    graph = this;
-    this.checkAuthentication(function(isAuthenticated) {
-      if (isAuthenticated) {
-        callback();
-      } else {
-        d3.select('#authentication')
-          .style('visibility', 'visible')
-          .on('click', function() {
-            d3.select('#authentication').style('visibility', 'hidden');
-            d3.select('#authentication .content *').remove();
-          });
-        d3.select('#authentication .content')
-          .on('click', function() {
-            d3.event.stopPropagation();
-          })
-        graph.renderLoginForm(callback);
-      }
-    });
-  };
-
-
-  // Log the current user out.
-  Graphmaker.prototype.logoutUser = function() {
-    d3.xhr(graph.consts.backendBase + '/logout')
-      .on('beforesend', function(request) { request.withCredentials = true })
-      .get(function(error, data) {
-        if (error) {
-          console.log('Logout error:', error);
-          alert('Error logging out.');
-        } else {
-          alert("You have logged out from SSM.");
-        }
-      });
-  }
-
-
   // Open/read JSON file
   Graphmaker.prototype.setupUpload = function() {
     var thisGraph = this;
@@ -2661,69 +2715,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         alert("Your browser won't let you read this file -- try upgrading your browser to IE 10+ "
             + "or Chrome or Firefox.");
       }
-    });
-  };
-
-
-  Graphmaker.prototype.setupReadMapFromDatabase = function() {
-    var graph = this;
-    d3.select("#read-from-db")
-      .on("click",
-          function() {
-            graph.afterAuthentication(function() {
-              graph.listMaps(graph)
-            });
-          });
-  };
-
-
-  Graphmaker.prototype.setupWriteMapToDatabase = function() {
-    var graph = this;
-    d3.select("#write-to-db").on("click", function() {
-      graph.afterAuthentication(function() {
-	var m  = location.hash.match(/\/map\/(\d+)/);
-	if (m) {
-	  // update existing map
-	  var id = m[1];
-	  d3.xhr(graph.consts.backendBase + '/map/' + id)
-	    .header('Content-Type', 'application/json')
-	    .on('beforesend', function(request) {
-	      request.withCredentials = true
-	    })
-	    .on('error', function(req) {
-	      var resp = req.response && JSON.parse(req.response);
-	      if (resp
-		  && resp.message == 'map not owned by authenticated user') {
-		alert("Can't save: you have read-only access to this map.");
-	      } else {
-		console.error('Failed to save map. Request was:', req);
-		alert('Failed to save map # ' + id);
-	      }
-	    })
-	    .on('load', function(data) {
-	      console.log('saved map # ' + id);
-	    })
-	    .send('PUT', JSON.stringify(graph.getMapObject()));
-
-	} else {
-	  // create new map
-	  d3.xhr(graph.consts.backendBase + '/map')
-	    .header('Content-Type', 'application/json')
-	    .on('beforesend', function(request) {
-	      request.withCredentials = true;
-	    })
-	    .on('error', function(req) {
-	      console.error('Failed to save new map. Request was:', req);
-	      alert('Failed to save new map ');
-	    })
-	    .on('load', function(request) {
-	      var data = JSON.parse(request.response);
-	      console.log('saved new map # ' + data.id);
-	      location.hash = '/map/' + data.id;
-	    })
-	    .send('POST', JSON.stringify(graph.getMapObject()));
-	}
-      });
     });
   };
 
@@ -2990,7 +2981,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           this.loadContextTextFromClient();
           break;
         case choices[9].name:
-          this.logoutUser();
+          modAuth.logoutUser(d3);
           break;
         default:
           alert("\"" + d.name + "\" not implemented.");
@@ -3001,7 +2992,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       } else if (d3.select(listItem).datum().id === "loadContextTextItem") {
         this.loadContextTextFromClient();
       } else if (d3.select(listItem).datum().id === "logoutUser") {
-        this.logoutUser();
+        modAuth.logoutUser(d3);
       }
     }
   };
@@ -3105,10 +3096,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   var graph = new Graphmaker(svg, nodes, links);
   graph.setShapeId(0);
   graph.updateGraph();
-  graph.loadMapFromLocation();
+  modDatabase.loadMapFromLocation(d3);
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./circles-of-care.js":1,"./edge-style.js":2,"./edge-thickness.js":3,"./grid.js":4,"./help.js":5,"./selected-color.js":6,"./selected-shape.js":7,"./zoom.js":9}],9:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./database.js":3,"./edge-style.js":4,"./edge-thickness.js":5,"./grid.js":6,"./help.js":7,"./selected-color.js":8,"./selected-shape.js":9,"./zoom.js":11}],11:[function(require,module,exports){
 var modGrid = require('./grid.js');
 
 exports.zoom = 1;
@@ -3151,4 +3142,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid.js":4}]},{},[8]);
+},{"./grid.js":6}]},{},[10]);
