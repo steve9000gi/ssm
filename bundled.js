@@ -431,7 +431,7 @@ exports.setup = function(d3) {
   }
 };
 
-},{"./selected-color.js":10}],4:[function(require,module,exports){
+},{"./selected-color.js":11}],4:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modSystemSupportMap = require('./system-support-map.js');
@@ -642,7 +642,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./system-support-map.js":12}],5:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./system-support-map.js":13}],5:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -770,7 +770,7 @@ exports.addControls = function(d3) {
   createEdgeStyleSelectionSampleEdges(d3);
 };
 
-},{"./edge-thickness.js":6,"./selected-color.js":10,"./selected-shape.js":11}],6:[function(require,module,exports){
+},{"./edge-thickness.js":6,"./selected-color.js":11,"./selected-shape.js":12}],6:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.thickness = 3;
@@ -817,10 +817,10 @@ exports.createSubmenu = function(d3) {
       });
 };
 
-},{"./selected-color.js":10}],7:[function(require,module,exports){
+},{"./selected-color.js":11}],7:[function(require,module,exports){
 
 // Save as JSON file
-exports.setupDownload = function(d3) {
+exports.setupDownload = function(d3, saveAs, Blob) {
   d3.select("#download-input").on("click", function() {
     var blob = new Blob([window.JSON.stringify(getMapObject(d3))],
                         {type: "text/plain;charset=utf-8"});
@@ -858,6 +858,32 @@ exports.setupUpload = function(d3) {
 };
 
 },{}],8:[function(require,module,exports){
+exports.addLogos = function(d3) {
+  d3.select("#mainSVG").append("svg:image")
+    .attr("xlink:href", "mch-tracs.png")
+    .attr("id", "logos")
+    .attr("width", 546)
+    .attr("height", 60)
+    .attr("x", -52)
+    .attr("y", 0);
+};
+
+exports.addCopyright = function(d3) {
+  d3.select("#topGraphDiv").append("div")
+    .attr("id", "copyrightDiv")
+    .append("text")
+    .attr("id", "copyright")
+    .text("\u00a9 2014-2015 The University of North Carolina at Chapel Hill");
+};
+
+exports.addCredits = function(d3) {
+  d3.select("#mainSVG").append("text")
+    .attr("id", "credits")
+    .attr("display", "none")
+    .attr("x", 30);
+};
+
+},{}],9:[function(require,module,exports){
 var gridVisible = false,
     grid = null,
     gridCellW = 10,
@@ -974,7 +1000,7 @@ exports.enableSnap = function(d3) {
   showTurnOffGridText(d3);
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // Help/instructions button and info box:
 module.exports = function(d3) {
   d3.select("#toolbox").insert("div", ":first-child")
@@ -1011,7 +1037,7 @@ module.exports = function(d3) {
   });
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -1071,7 +1097,7 @@ exports.createColorPalette = function(d3) {
   d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
 };
 
-},{"./edge-style.js":5,"./selected-shape.js":11}],11:[function(require,module,exports){
+},{"./edge-style.js":5,"./selected-shape.js":12}],12:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.minCircleRadius = 20;
@@ -1387,7 +1413,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":10}],12:[function(require,module,exports){
+},{"./selected-color.js":11}],13:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.hideText = "Hide system support rings";
@@ -1462,7 +1488,7 @@ exports.create = function(d3) {
       .text(function(d) { return d.name; });
 };
 
-},{"./selected-color.js":10}],13:[function(require,module,exports){
+},{"./selected-color.js":11}],14:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -1501,6 +1527,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modEdgeThickness = require('./edge-thickness.js'),
       modGrid = require('./grid.js'),
       modZoom = require('./zoom.js'),
+      modFrontMatter = require('./front-matter.js'),
       modSelectedColor = require('./selected-color.js'),
       modSelectedShape = require('./selected-shape.js'),
       modSystemSupportMap = require('./system-support-map.js');
@@ -1509,9 +1536,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   var Graphmaker = function(svg, nodes, links) {
     this.initializeMemberVariables();
     this.prepareToolbox();
-    this.addLogos();
-    this.addCopyright();
-    this.addCredits();
+    modFrontMatter.addLogos(d3);
+    modFrontMatter.addCopyright(d3);
+    modFrontMatter.addCredits(d3);
     this.setupNotes();
     this.defineArrowMarkers();
     if (this.displayAll) {
@@ -1525,7 +1552,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.setupSVGNodesAndLinks();
     this.setupEventListeners();
     modSystemSupportMap.show(d3);
-    modFile.setupDownload(d3);
+    modFile.setupDownload(d3, saveAs, Blob);
     modFile.setupUpload(d3);
     modDatabase.setupReadMapFromDatabase(d3);
     modDatabase.setupWriteMapToDatabase(d3);
@@ -1615,34 +1642,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     modSelectedColor.createColorPalette(d3);
     modSelectedShape.addShapeSelection(d3);
     modEdgeStyle.addControls(d3);
-  };
-
-
-  Graphmaker.prototype.addLogos = function() {
-    d3.select("#mainSVG").append("svg:image")
-      .attr("xlink:href", "mch-tracs.png")
-      .attr("id", "logos")
-      .attr("width", 546)
-      .attr("height", 60)
-      .attr("x", -52)
-      .attr("y", 0);
-  };
-
-
-  Graphmaker.prototype.addCopyright = function() {
-    d3.select("#topGraphDiv").append("div")
-      .attr("id", "copyrightDiv")
-        .append("text")
-          .attr("id", "copyright")
-      .text("\u00a9 2014-2015 The University of North Carolina at Chapel Hill");
-  };
-
-
-  Graphmaker.prototype.addCredits = function() {
-    d3.select("#mainSVG").append("text")
-      .attr("id", "credits")
-      .attr("display", "none")
-      .attr("x", 30);
   };
 
 
@@ -3111,7 +3110,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   modDatabase.loadMapFromLocation(d3);
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./file.js":7,"./grid.js":8,"./help.js":9,"./selected-color.js":10,"./selected-shape.js":11,"./system-support-map.js":12,"./zoom.js":14}],14:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./file.js":7,"./front-matter.js":8,"./grid.js":9,"./help.js":10,"./selected-color.js":11,"./selected-shape.js":12,"./system-support-map.js":13,"./zoom.js":15}],15:[function(require,module,exports){
 var modGrid = require('./grid.js');
 
 exports.zoom = 1;
@@ -3154,4 +3153,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid.js":8}]},{},[13]);
+},{"./grid.js":9}]},{},[14]);

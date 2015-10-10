@@ -19,8 +19,6 @@
 **** TODO links
 **** TODO nodes
 *** TODO file.js
-**** TODO new Blob
-**** TODO saveAs()
 **** TODO importMap()
 *** TODO context-menu.js
 **** TODO formatText()
@@ -34,9 +32,7 @@
 **** TODO options menu
 **** TODO save as image
 **** TODO toolbox
-**** TODO logo, copyright, and credits
 **** TODO event listeners
-**** TODO system support map
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users

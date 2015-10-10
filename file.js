@@ -1,6 +1,6 @@
 
 // Save as JSON file
-exports.setupDownload = function(d3) {
+exports.setupDownload = function(d3, saveAs, Blob) {
   d3.select("#download-input").on("click", function() {
     var blob = new Blob([window.JSON.stringify(getMapObject(d3))],
                         {type: "text/plain;charset=utf-8"});

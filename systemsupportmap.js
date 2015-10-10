@@ -36,6 +36,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modEdgeThickness = require('./edge-thickness.js'),
       modGrid = require('./grid.js'),
       modZoom = require('./zoom.js'),
+      modFrontMatter = require('./front-matter.js'),
       modSelectedColor = require('./selected-color.js'),
       modSelectedShape = require('./selected-shape.js'),
       modSystemSupportMap = require('./system-support-map.js');
@@ -44,9 +45,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   var Graphmaker = function(svg, nodes, links) {
     this.initializeMemberVariables();
     this.prepareToolbox();
-    this.addLogos();
-    this.addCopyright();
-    this.addCredits();
+    modFrontMatter.addLogos(d3);
+    modFrontMatter.addCopyright(d3);
+    modFrontMatter.addCredits(d3);
     this.setupNotes();
     this.defineArrowMarkers();
     if (this.displayAll) {
@@ -60,7 +61,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.setupSVGNodesAndLinks();
     this.setupEventListeners();
     modSystemSupportMap.show(d3);
-    modFile.setupDownload(d3);
+    modFile.setupDownload(d3, saveAs, Blob);
     modFile.setupUpload(d3);
     modDatabase.setupReadMapFromDatabase(d3);
     modDatabase.setupWriteMapToDatabase(d3);
@@ -150,34 +151,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     modSelectedColor.createColorPalette(d3);
     modSelectedShape.addShapeSelection(d3);
     modEdgeStyle.addControls(d3);
-  };
-
-
-  Graphmaker.prototype.addLogos = function() {
-    d3.select("#mainSVG").append("svg:image")
-      .attr("xlink:href", "mch-tracs.png")
-      .attr("id", "logos")
-      .attr("width", 546)
-      .attr("height", 60)
-      .attr("x", -52)
-      .attr("y", 0);
-  };
-
-
-  Graphmaker.prototype.addCopyright = function() {
-    d3.select("#topGraphDiv").append("div")
-      .attr("id", "copyrightDiv")
-        .append("text")
-          .attr("id", "copyright")
-      .text("\u00a9 2014-2015 The University of North Carolina at Chapel Hill");
-  };
-
-
-  Graphmaker.prototype.addCredits = function() {
-    d3.select("#mainSVG").append("text")
-      .attr("id", "credits")
-      .attr("display", "none")
-      .attr("x", 30);
   };
 
 
