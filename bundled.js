@@ -434,6 +434,7 @@ exports.setup = function(d3) {
 },{"./selected-color.js":11}],4:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
+    modSerialize = require('./serialize.js'),
     modSystemSupportMap = require('./system-support-map.js');
 
 // Fetch a map from the backend given its id
@@ -445,7 +446,7 @@ var fetchMap = function(d3, id) {
         function() { window.alert('Error talking to backend server.'); })
     .on('load', function(data) {
       d3.select('#map-index').style('visibility', 'hidden');
-      thisGraph.importMap(data.document, id);
+      modSerialize.importMap(d3, data.document, id);
       window.location.hash = '/map/' + id;
     })
     .send('GET');
@@ -523,30 +524,6 @@ var listMaps = function(d3) {
     .send('GET');
 };
 
-// Return the current map as an JS object.
-var getMapObject = function(d3) {
-  var saveEdges = [];
-  this.links.forEach(function(val) {
-    saveEdges.push({source: val.source.id,
-                    target: val.target.id,
-                    style: val.style,
-                    color: val.color,
-                    thickness: val.thickness,
-                    maxCharsPerLine: val.maxCharsPerLine,
-                    note: val.note,
-                    name: val.name,
-                    manualResize: val.manualResize || false
-                   });
-  });
-  return {
-    "nodes": this.nodes,
-    "links": saveEdges,
-    "graphGTransform": d3.select("#graphG").attr("transform"),
-    "systemSupportMapCenter": modSystemSupportMap.center,
-    "circlesOfCareCenter": modCirclesOfCare.center
-  };
-};
-
 exports.setupReadMapFromDatabase = function(d3) {
   d3.select("#read-from-db")
     .on("click",
@@ -585,7 +562,7 @@ exports.loadMapFromLocation = function(d3) {
             }
           })
       .on('load', function(data) {
-        thisGraph.importMap(data.document, id);
+        modSerialize.importMap(d3, data.document, id);
         window.location.hash = '/map/' + id;
       })
       .send('GET');
@@ -618,7 +595,7 @@ exports.setupWriteMapToDatabase = function(d3) {
           .on('load', function(data) {
             console.log('saved map # ' + id);
           })
-          .send('PUT', JSON.stringify(getMapObject(d3)));
+          .send('PUT', JSON.stringify(modSerialize.getMapObject(d3)));
 
       } else {
         // create new map
@@ -636,13 +613,13 @@ exports.setupWriteMapToDatabase = function(d3) {
             console.log('saved new map # ' + data.id);
             window.location.hash = '/map/' + data.id;
           })
-          .send('POST', JSON.stringify(getMapObject(d3)));
+          .send('POST', JSON.stringify(modSerialize.getMapObject(d3)));
       }
     });
   });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./system-support-map.js":13}],5:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./serialize.js":13,"./system-support-map.js":14}],5:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -818,11 +795,12 @@ exports.createSubmenu = function(d3) {
 };
 
 },{"./selected-color.js":11}],7:[function(require,module,exports){
+var modSerialize = require('./serialize.js');
 
 // Save as JSON file
 exports.setupDownload = function(d3, saveAs, Blob) {
   d3.select("#download-input").on("click", function() {
-    var blob = new Blob([window.JSON.stringify(getMapObject(d3))],
+    var blob = new Blob([window.JSON.stringify(modSerialize.getMapObject(d3))],
                         {type: "text/plain;charset=utf-8"});
     saveAs(blob, "SystemSupportMap.json");
   });
@@ -847,7 +825,7 @@ exports.setupUpload = function(d3) {
         } catch(err) {
           window.alert("Error reading file: " + err.message);
         }
-        return thisGraph.importMap(JSON.parse(txtRes));
+        return modSerialize.importMap(d3, JSON.parse(txtRes));
       };
       filereader.readAsText(uploadFile);
     } else {
@@ -857,7 +835,7 @@ exports.setupUpload = function(d3) {
   });
 };
 
-},{}],8:[function(require,module,exports){
+},{"./serialize.js":13}],8:[function(require,module,exports){
 exports.addLogos = function(d3) {
   d3.select("#mainSVG").append("svg:image")
     .attr("xlink:href", "mch-tracs.png")
@@ -1414,6 +1392,89 @@ exports.storeShapeSize = function(gEl, d) {
 };
 
 },{"./selected-color.js":11}],13:[function(require,module,exports){
+var modCirclesOfCare = require('./circles-of-care.js'),
+    modSystemSupportMap = require('./system-support-map.js'),
+    modZoom = require('./zoom.js');
+
+// Return the current map as an JS object.
+exports.getMapObject = function(d3) {
+  var saveEdges = [];
+  this.links.forEach(function(val) {
+    saveEdges.push({source: val.source.id,
+                    target: val.target.id,
+                    style: val.style,
+                    color: val.color,
+                    thickness: val.thickness,
+                    maxCharsPerLine: val.maxCharsPerLine,
+                    note: val.note,
+                    name: val.name,
+                    manualResize: val.manualResize || false
+                   });
+  });
+  return {
+    "nodes": this.nodes,
+    "links": saveEdges,
+    "graphGTransform": d3.select("#graphG").attr("transform"),
+    "systemSupportMapCenter": modSystemSupportMap.center,
+    "circlesOfCareCenter": modCirclesOfCare.center
+  };
+};
+
+// Import a JSON document into the editing area
+exports.importMap = function(d3, jsonObj, id) {
+  var thisGraph = this;
+  // TODO better error handling
+  try {
+    thisGraph.deleteGraph(true);
+    thisGraph.nodes = jsonObj.nodes;
+    thisGraph.setShapeId(thisGraph.getBiggestShapeId() + 1);
+    var newEdges = jsonObj.links;
+    newEdges.forEach(function(e, i) {
+      newEdges[i] = {source: thisGraph.nodes.filter(function(n) {
+                      return n.id === e.source; })[0],
+                     target: thisGraph.nodes.filter(function(n) {
+                      return n.id === e.target; })[0],
+                     style: (e.style === "dashed" ? "dashed" : "solid"),
+                     color: e.color,
+                     thickness: e.thickness,
+                     maxCharsPerLine: (e.maxCharsPerLine || 20),
+                     note: e.note,
+                     name: e.name,
+                     manualResize: e.manualResize};
+    });
+    thisGraph.links = newEdges;
+
+    var graphGTransform = jsonObj.graphGTransform || "translate(0,0) scale(1)";
+    // Inform zoomSvg that we're programmatically setting transform (so additional zoom and
+    // translate work smoothly from that transform instead of jumping back to default):
+    d3.select("#graphG").attr("transform", graphGTransform);
+    var xform = d3.transform(d3.select("#graphG").attr("transform"));
+    var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
+    modZoom.zoomSvg.translate([tx, ty]).scale(scale);
+    modZoom.zoomSvg.event(thisGraph.svg.transition().duration(500));
+
+    modSystemSupportMap.center = jsonObj.systemSupportMapCenter;
+    if (modSystemSupportMap.center) {
+      modSystemSupportMap.show(d3);
+    } else {
+      modSystemSupportMap.hide(d3);
+    }
+    modCirclesOfCare.hide(d3);
+    modCirclesOfCare.center = jsonObj.circlesOfCareCenter;
+    if (modCirclesOfCare.center) {
+      modCirclesOfCare.show(d3);
+    }
+    thisGraph.updateGraph();
+    if (typeof id === 'number') {
+      window.location.hash = '/map/' + id;
+    }
+  } catch(err) {
+    window.alert("Error parsing uploaded file\nerror message: " + err.message);
+    return;
+  }
+};
+
+},{"./circles-of-care.js":2,"./system-support-map.js":14,"./zoom.js":16}],14:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.hideText = "Hide system support rings";
@@ -1488,7 +1549,7 @@ exports.create = function(d3) {
       .text(function(d) { return d.name; });
 };
 
-},{"./selected-color.js":11}],14:[function(require,module,exports){
+},{"./selected-color.js":11}],15:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -2675,61 +2736,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // Import a JSON document into the editing area
-  Graphmaker.prototype.importMap = function(jsonObj, id) {
-    var thisGraph = this;
-    // TODO better error handling
-    try {
-      thisGraph.deleteGraph(true);
-      thisGraph.nodes = jsonObj.nodes;
-      thisGraph.setShapeId(thisGraph.getBiggestShapeId() + 1);
-      var newEdges = jsonObj.links;
-      newEdges.forEach(function(e, i) {
-        newEdges[i] = {source: thisGraph.nodes.filter(function(n) {
-                        return n.id === e.source; })[0],
-                       target: thisGraph.nodes.filter(function(n) {
-                        return n.id === e.target; })[0],
-                       style: (e.style === "dashed" ? "dashed" : "solid"),
-                       color: e.color,
-                       thickness: e.thickness,
-                       maxCharsPerLine: (e.maxCharsPerLine || 20),
-                       note: e.note,
-                       name: e.name,
-                       manualResize: e.manualResize};
-      });
-      thisGraph.links = newEdges;
-
-      var graphGTransform = jsonObj.graphGTransform || "translate(0,0) scale(1)";
-      // Inform zoomSvg that we're programmatically setting transform (so additional zoom and
-      // translate work smoothly from that transform instead of jumping back to default):
-      d3.select("#graphG").attr("transform", graphGTransform);
-      var xform = d3.transform(d3.select("#graphG").attr("transform"));
-      var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
-      modZoom.zoomSvg.translate([tx, ty]).scale(scale);
-      modZoom.zoomSvg.event(thisGraph.svg.transition().duration(500));
-
-      modSystemSupportMap.center = jsonObj.systemSupportMapCenter;
-      if (modSystemSupportMap.center) {
-        modSystemSupportMap.show(d3);
-      } else {
-        modSystemSupportMap.hide(d3);
-      }
-      modCirclesOfCare.hide(d3);
-      modCirclesOfCare.center = jsonObj.circlesOfCareCenter;
-      if (modCirclesOfCare.center) {
-        modCirclesOfCare.show(d3);
-      }
-      thisGraph.updateGraph();
-      if (typeof id === 'number') {
-        window.location.hash = '/map/' + id;
-      }
-    } catch(err) {
-      window.alert("Error parsing uploaded file\nerror message: " + err.message);
-      return;
-    }
-  };
-
-
   Graphmaker.prototype.createEqShapeSizeSubmenu = function() {
     var thisGraph = this;
     d3.select("#eqShapeSizeItem").append("div")
@@ -3110,7 +3116,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   modDatabase.loadMapFromLocation(d3);
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./file.js":7,"./front-matter.js":8,"./grid.js":9,"./help.js":10,"./selected-color.js":11,"./selected-shape.js":12,"./system-support-map.js":13,"./zoom.js":15}],15:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./file.js":7,"./front-matter.js":8,"./grid.js":9,"./help.js":10,"./selected-color.js":11,"./selected-shape.js":12,"./system-support-map.js":14,"./zoom.js":16}],16:[function(require,module,exports){
 var modGrid = require('./grid.js');
 
 exports.zoom = 1;
@@ -3153,4 +3159,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid.js":9}]},{},[14]);
+},{"./grid.js":9}]},{},[15]);

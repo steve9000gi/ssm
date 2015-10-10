@@ -1,5 +1,6 @@
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
+    modSerialize = require('./serialize.js'),
     modSystemSupportMap = require('./system-support-map.js');
 
 // Fetch a map from the backend given its id
@@ -11,7 +12,7 @@ var fetchMap = function(d3, id) {
         function() { window.alert('Error talking to backend server.'); })
     .on('load', function(data) {
       d3.select('#map-index').style('visibility', 'hidden');
-      thisGraph.importMap(data.document, id);
+      modSerialize.importMap(d3, data.document, id);
       window.location.hash = '/map/' + id;
     })
     .send('GET');
@@ -89,30 +90,6 @@ var listMaps = function(d3) {
     .send('GET');
 };
 
-// Return the current map as an JS object.
-var getMapObject = function(d3) {
-  var saveEdges = [];
-  this.links.forEach(function(val) {
-    saveEdges.push({source: val.source.id,
-                    target: val.target.id,
-                    style: val.style,
-                    color: val.color,
-                    thickness: val.thickness,
-                    maxCharsPerLine: val.maxCharsPerLine,
-                    note: val.note,
-                    name: val.name,
-                    manualResize: val.manualResize || false
-                   });
-  });
-  return {
-    "nodes": this.nodes,
-    "links": saveEdges,
-    "graphGTransform": d3.select("#graphG").attr("transform"),
-    "systemSupportMapCenter": modSystemSupportMap.center,
-    "circlesOfCareCenter": modCirclesOfCare.center
-  };
-};
-
 exports.setupReadMapFromDatabase = function(d3) {
   d3.select("#read-from-db")
     .on("click",
@@ -151,7 +128,7 @@ exports.loadMapFromLocation = function(d3) {
             }
           })
       .on('load', function(data) {
-        thisGraph.importMap(data.document, id);
+        modSerialize.importMap(d3, data.document, id);
         window.location.hash = '/map/' + id;
       })
       .send('GET');
@@ -184,7 +161,7 @@ exports.setupWriteMapToDatabase = function(d3) {
           .on('load', function(data) {
             console.log('saved map # ' + id);
           })
-          .send('PUT', JSON.stringify(getMapObject(d3)));
+          .send('PUT', JSON.stringify(modSerialize.getMapObject(d3)));
 
       } else {
         // create new map
@@ -202,7 +179,7 @@ exports.setupWriteMapToDatabase = function(d3) {
             console.log('saved new map # ' + data.id);
             window.location.hash = '/map/' + data.id;
           })
-          .send('POST', JSON.stringify(getMapObject(d3)));
+          .send('POST', JSON.stringify(modSerialize.getMapObject(d3)));
       }
     });
   });

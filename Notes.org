@@ -15,11 +15,6 @@
 **** TODO consts.backendbase
 *** TODO database.js
 **** TODO consts.backendBase
-**** TODO importMap()
-**** TODO links
-**** TODO nodes
-*** TODO file.js
-**** TODO importMap()
 *** TODO context-menu.js
 **** TODO formatText()
 **** TODO updateGraph()
@@ -27,6 +22,13 @@
 **** TODO consts.rightMouseBtn
 **** TODO state.selectedNode
 **** TODO selectNode()
+*** TODO import.js
+**** TODO deleteGraph()
+**** TODO updateGraph()
+**** TODO setShapeId
+**** TODO svg
+**** TODO nodes
+**** TODO links
 *** possible modules
 **** TODO [tool]tips
 **** TODO options menu

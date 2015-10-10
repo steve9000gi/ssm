@@ -1,8 +1,9 @@
+var modSerialize = require('./serialize.js');
 
 // Save as JSON file
 exports.setupDownload = function(d3, saveAs, Blob) {
   d3.select("#download-input").on("click", function() {
-    var blob = new Blob([window.JSON.stringify(getMapObject(d3))],
+    var blob = new Blob([window.JSON.stringify(modSerialize.getMapObject(d3))],
                         {type: "text/plain;charset=utf-8"});
     saveAs(blob, "SystemSupportMap.json");
   });
@@ -27,7 +28,7 @@ exports.setupUpload = function(d3) {
         } catch(err) {
           window.alert("Error reading file: " + err.message);
         }
-        return thisGraph.importMap(JSON.parse(txtRes));
+        return modSerialize.importMap(d3, JSON.parse(txtRes));
       };
       filereader.readAsText(uploadFile);
     } else {
