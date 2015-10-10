@@ -112,16 +112,6 @@ var getMapObject = function(d3) {
   };
 };
 
-// Save as JSON file
-exports.setupDownload = function(d3) {
-  var thisGraph = this;
-  d3.select("#download-input").on("click", function() {
-    var blob = new Blob([window.JSON.stringify(getMapObject(d3))],
-                        {type: "text/plain;charset=utf-8"});
-    saveAs(blob, "SystemSupportMap.json");
-  });
-};
-
 exports.setupReadMapFromDatabase = function(d3) {
   d3.select("#read-from-db")
     .on("click",

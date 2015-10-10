@@ -354,16 +354,6 @@ var getMapObject = function(d3) {
   };
 };
 
-// Save as JSON file
-exports.setupDownload = function(d3) {
-  var thisGraph = this;
-  d3.select("#download-input").on("click", function() {
-    var blob = new Blob([window.JSON.stringify(getMapObject(d3))],
-                        {type: "text/plain;charset=utf-8"});
-    saveAs(blob, "SystemSupportMap.json");
-  });
-};
-
 exports.setupReadMapFromDatabase = function(d3) {
   d3.select("#read-from-db")
     .on("click",
@@ -587,7 +577,7 @@ exports.addControls = function(d3) {
   createEdgeStyleSelectionSampleEdges(d3);
 };
 
-},{"./edge-thickness.js":5,"./selected-color.js":8,"./selected-shape.js":9}],5:[function(require,module,exports){
+},{"./edge-thickness.js":5,"./selected-color.js":9,"./selected-shape.js":10}],5:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.thickness = 3;
@@ -634,7 +624,47 @@ exports.createSubmenu = function(d3) {
       });
 };
 
-},{"./selected-color.js":8}],6:[function(require,module,exports){
+},{"./selected-color.js":9}],6:[function(require,module,exports){
+
+// Save as JSON file
+exports.setupDownload = function(d3) {
+  d3.select("#download-input").on("click", function() {
+    var blob = new Blob([window.JSON.stringify(getMapObject(d3))],
+                        {type: "text/plain;charset=utf-8"});
+    saveAs(blob, "SystemSupportMap.json");
+  });
+};
+
+// Open/read JSON file
+exports.setupUpload = function(d3) {
+  var thisGraph = this;
+  d3.select("#upload-input").on("click", function() {
+    document.getElementById("hidden-file-upload").click();
+  });
+
+  d3.select("#hidden-file-upload").on("change", function() {
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+      var uploadFile = this.files[0];
+      var filereader = new window.FileReader();
+      var txtRes;
+
+      filereader.onload = function() {
+        try {
+          txtRes = filereader.result;
+        } catch(err) {
+          window.alert("Error reading file: " + err.message);
+        }
+        return thisGraph.importMap(JSON.parse(txtRes));
+      };
+      filereader.readAsText(uploadFile);
+    } else {
+      alert("Your browser won't let you read this file -- try upgrading your browser to IE 10+ "
+            + "or Chrome or Firefox.");
+    }
+  });
+};
+
+},{}],7:[function(require,module,exports){
 var gridVisible = false,
     grid = null,
     gridCellW = 10,
@@ -751,7 +781,7 @@ exports.enableSnap = function(d3) {
   showTurnOffGridText(d3);
 };
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // Help/instructions button and info box:
 module.exports = function(d3) {
   d3.select("#toolbox").insert("div", ":first-child")
@@ -788,7 +818,7 @@ module.exports = function(d3) {
   });
 };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -848,7 +878,7 @@ exports.createColorPalette = function(d3) {
   d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
 };
 
-},{"./edge-style.js":4,"./selected-shape.js":9}],9:[function(require,module,exports){
+},{"./edge-style.js":4,"./selected-shape.js":10}],10:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.minCircleRadius = 20;
@@ -1164,7 +1194,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":8}],10:[function(require,module,exports){
+},{"./selected-color.js":9}],11:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -1191,6 +1221,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   var modHelp = require('./help.js'),
       modAuth = require('./auth.js'),
       modDatabase = require('./database.js'),
+      modFile = require('./file.js'),
       modCirclesOfCare = require('./circles-of-care.js'),
       modEdgeStyle = require('./edge-style.js'),
       modEdgeThickness = require('./edge-thickness.js'),
@@ -1219,8 +1250,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.setupSVGNodesAndLinks();
     this.setupEventListeners();
     this.showSystemSupportMap();
-    modDatabase.setupDownload(d3);
-    this.setupUpload();
+    modFile.setupDownload(d3);
+    modFile.setupUpload(d3);
     modDatabase.setupReadMapFromDatabase(d3);
     modDatabase.setupWriteMapToDatabase(d3);
     this.setupContextMenu();
@@ -2689,36 +2720,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   }
 
 
-  // Open/read JSON file
-  Graphmaker.prototype.setupUpload = function() {
-    var thisGraph = this;
-    d3.select("#upload-input").on("click", function() {
-      document.getElementById("hidden-file-upload").click();
-    });
-
-    d3.select("#hidden-file-upload").on("change", function() {
-      if (window.File && window.FileReader && window.FileList && window.Blob) {
-        var uploadFile = this.files[0];
-        var filereader = new window.FileReader();
-        var txtRes;
-
-        filereader.onload = function() {
-          try {
-            txtRes = filereader.result;
-          } catch(err) {
-            window.alert("Error reading file: " + err.message);
-          }
-          return thisGraph.importMap(JSON.parse(txtRes));
-        };
-        filereader.readAsText(uploadFile);
-      } else {
-        alert("Your browser won't let you read this file -- try upgrading your browser to IE 10+ "
-            + "or Chrome or Firefox.");
-      }
-    });
-  };
-
-
   Graphmaker.prototype.createEqShapeSizeSubmenu = function() {
     var thisGraph = this;
     d3.select("#eqShapeSizeItem").append("div")
@@ -3099,7 +3100,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   modDatabase.loadMapFromLocation(d3);
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./database.js":3,"./edge-style.js":4,"./edge-thickness.js":5,"./grid.js":6,"./help.js":7,"./selected-color.js":8,"./selected-shape.js":9,"./zoom.js":11}],11:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./database.js":3,"./edge-style.js":4,"./edge-thickness.js":5,"./file.js":6,"./grid.js":7,"./help.js":8,"./selected-color.js":9,"./selected-shape.js":10,"./zoom.js":12}],12:[function(require,module,exports){
 var modGrid = require('./grid.js');
 
 exports.zoom = 1;
@@ -3142,4 +3143,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid.js":6}]},{},[10]);
+},{"./grid.js":7}]},{},[11]);

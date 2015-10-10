@@ -24,6 +24,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   var modHelp = require('./help.js'),
       modAuth = require('./auth.js'),
       modDatabase = require('./database.js'),
+      modFile = require('./file.js'),
       modCirclesOfCare = require('./circles-of-care.js'),
       modEdgeStyle = require('./edge-style.js'),
       modEdgeThickness = require('./edge-thickness.js'),
@@ -52,8 +53,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.setupSVGNodesAndLinks();
     this.setupEventListeners();
     this.showSystemSupportMap();
-    modDatabase.setupDownload(d3);
-    this.setupUpload();
+    modFile.setupDownload(d3);
+    modFile.setupUpload(d3);
     modDatabase.setupReadMapFromDatabase(d3);
     modDatabase.setupWriteMapToDatabase(d3);
     this.setupContextMenu();
@@ -1520,36 +1521,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       return;
     }
   }
-
-
-  // Open/read JSON file
-  Graphmaker.prototype.setupUpload = function() {
-    var thisGraph = this;
-    d3.select("#upload-input").on("click", function() {
-      document.getElementById("hidden-file-upload").click();
-    });
-
-    d3.select("#hidden-file-upload").on("change", function() {
-      if (window.File && window.FileReader && window.FileList && window.Blob) {
-        var uploadFile = this.files[0];
-        var filereader = new window.FileReader();
-        var txtRes;
-
-        filereader.onload = function() {
-          try {
-            txtRes = filereader.result;
-          } catch(err) {
-            window.alert("Error reading file: " + err.message);
-          }
-          return thisGraph.importMap(JSON.parse(txtRes));
-        };
-        filereader.readAsText(uploadFile);
-      } else {
-        alert("Your browser won't let you read this file -- try upgrading your browser to IE 10+ "
-            + "or Chrome or Firefox.");
-      }
-    });
-  };
 
 
   Graphmaker.prototype.createEqShapeSizeSubmenu = function() {
