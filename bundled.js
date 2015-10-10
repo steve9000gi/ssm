@@ -240,7 +240,8 @@ exports.hide = function(d3) {
 };
 
 },{}],3:[function(require,module,exports){
-var modSelectedColor = require('./selected-color.js');
+var modSelectedColor = require('./selected-color.js'),
+    modSelection = require('./selection.js');
 
 var contextText = null;
 
@@ -410,8 +411,8 @@ exports.setup = function(d3) {
             var shapeGs = d3.selectAll(".shapeG");
             shapeGs.each(function(d) {
               if ((d.id === eltData.id) // Select the right-clicked-on shape group...
-                && (!thisGraph.state.selectedNode // ...if no shapeG is selected, or...
-                || (thisGraph.state.selectedNode.id !== d.id))) { // ...if d not already selected
+                && (!modSelection.selectedNode // ...if no shapeG is selected, or...
+                || (modSelection.selectedNode.id !== d.id))) { // ...if d not already selected
                 thisGraph.selectNode(d3.select(this), eltData); // Expects shapeG as the first arg
               }
             });
@@ -431,7 +432,7 @@ exports.setup = function(d3) {
   }
 };
 
-},{"./selected-color.js":11}],4:[function(require,module,exports){
+},{"./selected-color.js":11,"./selection.js":13}],4:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modSerialize = require('./serialize.js'),
@@ -619,7 +620,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./serialize.js":13,"./system-support-map.js":14}],5:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./serialize.js":14,"./system-support-map.js":15}],5:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -835,7 +836,7 @@ exports.setupUpload = function(d3) {
   });
 };
 
-},{"./serialize.js":13}],8:[function(require,module,exports){
+},{"./serialize.js":14}],8:[function(require,module,exports){
 exports.addLogos = function(d3) {
   d3.select("#mainSVG").append("svg:image")
     .attr("xlink:href", "mch-tracs.png")
@@ -1392,6 +1393,73 @@ exports.storeShapeSize = function(gEl, d) {
 };
 
 },{"./selected-color.js":11}],13:[function(require,module,exports){
+exports.selectedEdge = null;
+exports.selectedNode = null;
+exports.selectedClass = 'selected';
+
+var replaceSelectNode = function(d3Node, nodeData) {
+  d3Node.classed(exports.selectedClass, true);
+  if (exports.selectedNode) {
+    exports.removeSelectFromNode();
+  }
+  nodeData.domId = d3Node.attr("id");
+  exports.selectedNode = nodeData;
+};
+
+exports.selectNode = function(d3node, d) {
+  if (exports.selectedEdge) {
+    exports.removeSelectFromEdge();
+  }
+  var prevNode = this.state.selectedNode;
+  if (!prevNode || prevNode.id !== d.id) {
+    replaceSelectNode(d3node, d);
+  } else {
+    exports.removeSelectFromNode();
+  }
+};
+
+exports.removeSelectFromNode = function() {
+  this.shapeGroups.filter(function(cd) {
+    return cd.id === exports.selectedNode.id;
+  }).classed(exports.selectedClass, false);
+  exports.selectedNode = null;
+};
+
+// Includes setting edge color back to its unselected value.
+exports.removeSelectFromEdge = function() {
+  var thisGraph = this;
+  var deselectedEdgeGroup = thisGraph.edgeGroups.filter(function(cd) {
+    return cd === exports.selectedEdge;
+  }).classed(exports.selectedClass, false);
+
+  deselectedEdgeGroup.select("path")
+    .style("stroke", exports.selectedEdge.color)
+    .style("marker-end", function(d) {
+      var clr = d.color ? d.color.substr(1) : d.target.color.substr(1);
+      return "url(#end-arrow" + clr + ")";
+    });
+
+  deselectedEdgeGroup.select(".foregroundText")
+    .style("fill", exports.selectedEdge.color);
+  exports.selectedEdge = null;
+};
+
+// Includes setting selected edge to selected edge color.
+exports.replaceSelectEdge = function(d3, d3Path, edgeData) {
+  if (d3.event.shiftKey) { return; }
+  d3Path.classed(exports.selectedClass, true);
+  d3Path.select("path")
+    .style("stroke", modSelectedColor.color)
+    .style("marker-end", "url(#selected-end-arrow)");
+  d3Path.select(".foregroundText")
+    .style("fill", modSelectedColor.color);
+  if (modSelection.selectedEdge) {
+    exports.removeSelectFromEdge();
+  }
+  modSelection.selectedEdge = edgeData;
+};
+
+},{}],14:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modZoom = require('./zoom.js');
@@ -1474,7 +1542,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":2,"./system-support-map.js":14,"./zoom.js":16}],14:[function(require,module,exports){
+},{"./circles-of-care.js":2,"./system-support-map.js":15,"./zoom.js":17}],15:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.hideText = "Hide system support rings";
@@ -1549,7 +1617,7 @@ exports.create = function(d3) {
       .text(function(d) { return d.name; });
 };
 
-},{"./selected-color.js":11}],15:[function(require,module,exports){
+},{"./selected-color.js":11}],16:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -1591,6 +1659,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modFrontMatter = require('./front-matter.js'),
       modSelectedColor = require('./selected-color.js'),
       modSelectedShape = require('./selected-shape.js'),
+      modSelection = require('./selection.js'),
       modSystemSupportMap = require('./system-support-map.js');
 
   // Define graphcreator object
@@ -1623,7 +1692,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.consts =  {
     backendBase: 'http://syssci.renci.org:8080',
-    selectedClass: "selected",
     connectClass: "connect-node",
     activeEditId: "active-editing",
     BACKSPACE_KEY: 8,
@@ -1656,8 +1724,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.shapeNum = {"circle": 1, "rectangle": 1, "diamond": 1, "ellipse": 1, "star": 1,
                           "noBorder": 1};
     this.state = {
-      selectedNode: null,
-      selectedEdge: null,
       mouseDownNode: null,
       mouseDownLink: null,
       justDragged: false,
@@ -2022,74 +2088,19 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // Includes setting selected edge to selected edge color.
-  Graphmaker.prototype.replaceSelectEdge = function(d3Path, edgeData) {
-    if (d3.event.shiftKey) { return; }
-    d3Path.classed(this.consts.selectedClass, true);
-    d3Path.select("path")
-          .style("stroke", modSelectedColor.color)
-          .style("marker-end", "url(#selected-end-arrow)");
-    d3Path.select(".foregroundText")
-          .style("fill", modSelectedColor.color);
-    if (this.state.selectedEdge) {
-      this.removeSelectFromEdge();
-    }
-    this.state.selectedEdge = edgeData;
-  };
-
-
-  Graphmaker.prototype.replaceSelectNode = function(d3Node, nodeData) {
-    d3Node.classed(this.consts.selectedClass, true);
-    if (this.state.selectedNode) {
-      this.removeSelectFromNode();
-    }
-    nodeData.domId = d3Node.attr("id");
-    this.state.selectedNode = nodeData;
-  };
-
-
-  Graphmaker.prototype.removeSelectFromNode = function() {
-    var thisGraph = this;
-    thisGraph.shapeGroups.filter(function(cd) {
-      return cd.id === thisGraph.state.selectedNode.id;
-    }).classed(thisGraph.consts.selectedClass, false);
-    thisGraph.state.selectedNode = null;
-  };
-
-
-  // Includes setting edge color back to its unselected value.
-  Graphmaker.prototype.removeSelectFromEdge = function() {
-    var thisGraph = this;
-    var deselectedEdgeGroup = thisGraph.edgeGroups.filter(function(cd) {
-      return cd === thisGraph.state.selectedEdge;
-    }).classed(thisGraph.consts.selectedClass, false);
-
-    deselectedEdgeGroup.select("path")
-      .style("stroke", thisGraph.state.selectedEdge.color)
-      .style("marker-end", function(d) {
-        var clr = d.color ? d.color.substr(1) : d.target.color.substr(1);
-        return "url(#end-arrow" + clr + ")";
-      });
-
-    deselectedEdgeGroup.select(".foregroundText")
-      .style("fill", thisGraph.state.selectedEdge.color);
-    thisGraph.state.selectedEdge = null;
-  };
-
-
   Graphmaker.prototype.pathMouseDown = function(d3path, d) {
     d3.event.stopPropagation();
     this.state.mouseDownLink = d;
 
-    if (this.state.selectedNode) {
-      this.removeSelectFromNode();
+    if (modSelection.selectedNode) {
+      modSelection.removeSelectFromNode();
     }
 
-    var prevEdge = this.state.selectedEdge;
+    var prevEdge = modSelection.selectedEdge;
     if (!prevEdge || prevEdge !== d) {
-      this.replaceSelectEdge(d3path, d);
+      modSelection.replaceSelectEdge(d3, d3path, d);
     } else if (d3.event.which !== this.consts.rightMouseBtn) {
-      this.removeSelectFromEdge();
+      modSelection.removeSelectFromEdge();
     }
   };
 
@@ -2188,20 +2199,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.selectNode = function(d3node, d) {
-    if (this.state.selectedEdge) {
-      this.removeSelectFromEdge();
-    }
-    var prevNode = this.state.selectedNode;
-
-    if (!prevNode || prevNode.id !== d.id) {
-      this.replaceSelectNode(d3node, d);
-    } else {
-      this.removeSelectFromNode();
-    }
-  };
-
-
   // Mouseup on nodes
   Graphmaker.prototype.shapeMouseUp = function(d3node, d) {
     var state = this.state;
@@ -2232,7 +2229,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           this.selectText(txtNode);
           txtNode.focus();
         } else if (d3.event.which !== this.consts.rightMouseBtn) { // left- or mid-clicked
-          this.selectNode(d3node, d);
+          modSelection.selectNode(d3node, d);
         }
       }
     }
@@ -2280,10 +2277,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       state.shiftNodeDrag = false;
       this.dragLine.classed("hidden", true).style("stroke-width", 0);
     } else if (state.graphMouseDown) { // Left-click on background deselects currently selected
-      if (this.state.selectedNode) {
-        this.removeSelectFromNode();
-      } else if (this.state.selectedEdge) {
-        this.removeSelectFromEdge();
+      if (modSelection.selectedNode) {
+        modSelection.removeSelectFromNode();
+      } else if (modSelection.selectedEdge) {
+        modSelection.removeSelectFromEdge();
       }
     }
     state.graphMouseDown = false;
@@ -2292,28 +2289,25 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   // Keydown on main svg
   Graphmaker.prototype.svgKeyDown = function() {
-    var state = this.state,
-        consts = this.consts;
-
     // Make sure repeated key presses don't register for each keydown
-    if (state.lastKeyDown !== -1) { return; }
+    if (this.state.lastKeyDown !== -1) { return; }
 
-    state.lastKeyDown = d3.event.keyCode;
-    var selectedNode = state.selectedNode,
-        selectedEdge = state.selectedEdge;
+    this.state.lastKeyDown = d3.event.keyCode;
+    var selectedNode = modSelection.selectedNode,
+        selectedEdge = modSelection.selectedEdge;
 
     switch (d3.event.keyCode) {
-    case consts.BACKSPACE_KEY:
-    case consts.DELETE_KEY:
+    case this.consts.BACKSPACE_KEY:
+    case this.consts.DELETE_KEY:
       d3.event.preventDefault();
       if (selectedNode) {
         this.nodes.splice(this.nodes.indexOf(selectedNode), 1);
         this.spliceLinksForNode(selectedNode);
-        state.selectedNode = null;
+        modSelection.selectedNode = null;
         this.updateGraph();
       } else if (selectedEdge) {
         this.links.splice(this.links.indexOf(selectedEdge), 1);
-        state.selectedEdge = null;
+        modSelection.selectedEdge = null;
         this.updateGraph();
       }
       break;
@@ -2347,8 +2341,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     thisGraph.edgeGroups = thisGraph.edgeGroups.data(thisGraph.links, function(d) {
       return String(d.source.id) + "+" + String(d.target.id);
     });
-    thisGraph.edgeGroups.classed(thisGraph.consts.selectedClass, function(d) {
-           return d === thisGraph.state.selectedEdge;
+    thisGraph.edgeGroups.classed(modSelection.selectedClass, function(d) {
+           return d === modSelection.selectedEdge;
          })
          .attr("d",  function(d) {
            return thisGraph.setPath(d);
@@ -2542,8 +2536,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       })
       .on("mouseout", function(d) { // If selected go back to selectedColor.
       // Note: "mouseleave", was not getting called in Chrome when the shiftKey is down.
-        if (thisGraph.state.selectedEdge && (thisGraph.state.selectedEdge.source === d.source)
-          && (thisGraph.state.selectedEdge.target === d.target)) {
+        if (modSelection.selectedEdge && (modSelection.selectedEdge.source === d.source)
+          && (modSelection.selectedEdge.target === d.target)) {
           d3.select(this).selectAll("path").style("stroke", modSelectedColor.color);
           d3.select(this).selectAll("text").style("fill", modSelectedColor.color);
         } else { // Not selected: reapply edge color, including edge text:
@@ -2940,7 +2934,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   // Set the currently selected shape to the currently selected color. Generate an error message if
   // no shape is selected.
   Graphmaker.prototype.setSelectedObjectColor = function() {
-    var selectedObject = this.state.selectedNode || this.state.selectedEdge;
+    var selectedObject = modSelection.selectedNode || modSelection.selectedEdge;
     if (!selectedObject) {
       alert("setSelectedObjectColor: no object selected.");
       return;
@@ -3116,7 +3110,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   modDatabase.loadMapFromLocation(d3);
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./file.js":7,"./front-matter.js":8,"./grid.js":9,"./help.js":10,"./selected-color.js":11,"./selected-shape.js":12,"./system-support-map.js":14,"./zoom.js":16}],16:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./file.js":7,"./front-matter.js":8,"./grid.js":9,"./help.js":10,"./selected-color.js":11,"./selected-shape.js":12,"./selection.js":13,"./system-support-map.js":15,"./zoom.js":17}],17:[function(require,module,exports){
 var modGrid = require('./grid.js');
 
 exports.zoom = 1;
@@ -3159,4 +3153,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid.js":9}]},{},[15]);
+},{"./grid.js":9}]},{},[16]);

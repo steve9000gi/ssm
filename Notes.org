@@ -20,7 +20,6 @@
 **** TODO updateGraph()
 **** TODO new ActiveXObject
 **** TODO consts.rightMouseBtn
-**** TODO state.selectedNode
 **** TODO selectNode()
 *** TODO import.js
 **** TODO deleteGraph()
@@ -29,6 +28,9 @@
 **** TODO svg
 **** TODO nodes
 **** TODO links
+*** TODO selection.js
+**** TODO shapeGroups
+**** TODO edgeGroups
 *** possible modules
 **** TODO [tool]tips
 **** TODO options menu

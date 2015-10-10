@@ -39,6 +39,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modFrontMatter = require('./front-matter.js'),
       modSelectedColor = require('./selected-color.js'),
       modSelectedShape = require('./selected-shape.js'),
+      modSelection = require('./selection.js'),
       modSystemSupportMap = require('./system-support-map.js');
 
   // Define graphcreator object
@@ -71,7 +72,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.consts =  {
     backendBase: 'http://syssci.renci.org:8080',
-    selectedClass: "selected",
     connectClass: "connect-node",
     activeEditId: "active-editing",
     BACKSPACE_KEY: 8,
@@ -104,8 +104,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.shapeNum = {"circle": 1, "rectangle": 1, "diamond": 1, "ellipse": 1, "star": 1,
                           "noBorder": 1};
     this.state = {
-      selectedNode: null,
-      selectedEdge: null,
       mouseDownNode: null,
       mouseDownLink: null,
       justDragged: false,
@@ -470,74 +468,19 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // Includes setting selected edge to selected edge color.
-  Graphmaker.prototype.replaceSelectEdge = function(d3Path, edgeData) {
-    if (d3.event.shiftKey) { return; }
-    d3Path.classed(this.consts.selectedClass, true);
-    d3Path.select("path")
-          .style("stroke", modSelectedColor.color)
-          .style("marker-end", "url(#selected-end-arrow)");
-    d3Path.select(".foregroundText")
-          .style("fill", modSelectedColor.color);
-    if (this.state.selectedEdge) {
-      this.removeSelectFromEdge();
-    }
-    this.state.selectedEdge = edgeData;
-  };
-
-
-  Graphmaker.prototype.replaceSelectNode = function(d3Node, nodeData) {
-    d3Node.classed(this.consts.selectedClass, true);
-    if (this.state.selectedNode) {
-      this.removeSelectFromNode();
-    }
-    nodeData.domId = d3Node.attr("id");
-    this.state.selectedNode = nodeData;
-  };
-
-
-  Graphmaker.prototype.removeSelectFromNode = function() {
-    var thisGraph = this;
-    thisGraph.shapeGroups.filter(function(cd) {
-      return cd.id === thisGraph.state.selectedNode.id;
-    }).classed(thisGraph.consts.selectedClass, false);
-    thisGraph.state.selectedNode = null;
-  };
-
-
-  // Includes setting edge color back to its unselected value.
-  Graphmaker.prototype.removeSelectFromEdge = function() {
-    var thisGraph = this;
-    var deselectedEdgeGroup = thisGraph.edgeGroups.filter(function(cd) {
-      return cd === thisGraph.state.selectedEdge;
-    }).classed(thisGraph.consts.selectedClass, false);
-
-    deselectedEdgeGroup.select("path")
-      .style("stroke", thisGraph.state.selectedEdge.color)
-      .style("marker-end", function(d) {
-        var clr = d.color ? d.color.substr(1) : d.target.color.substr(1);
-        return "url(#end-arrow" + clr + ")";
-      });
-
-    deselectedEdgeGroup.select(".foregroundText")
-      .style("fill", thisGraph.state.selectedEdge.color);
-    thisGraph.state.selectedEdge = null;
-  };
-
-
   Graphmaker.prototype.pathMouseDown = function(d3path, d) {
     d3.event.stopPropagation();
     this.state.mouseDownLink = d;
 
-    if (this.state.selectedNode) {
-      this.removeSelectFromNode();
+    if (modSelection.selectedNode) {
+      modSelection.removeSelectFromNode();
     }
 
-    var prevEdge = this.state.selectedEdge;
+    var prevEdge = modSelection.selectedEdge;
     if (!prevEdge || prevEdge !== d) {
-      this.replaceSelectEdge(d3path, d);
+      modSelection.replaceSelectEdge(d3, d3path, d);
     } else if (d3.event.which !== this.consts.rightMouseBtn) {
-      this.removeSelectFromEdge();
+      modSelection.removeSelectFromEdge();
     }
   };
 
@@ -636,20 +579,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.selectNode = function(d3node, d) {
-    if (this.state.selectedEdge) {
-      this.removeSelectFromEdge();
-    }
-    var prevNode = this.state.selectedNode;
-
-    if (!prevNode || prevNode.id !== d.id) {
-      this.replaceSelectNode(d3node, d);
-    } else {
-      this.removeSelectFromNode();
-    }
-  };
-
-
   // Mouseup on nodes
   Graphmaker.prototype.shapeMouseUp = function(d3node, d) {
     var state = this.state;
@@ -680,7 +609,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           this.selectText(txtNode);
           txtNode.focus();
         } else if (d3.event.which !== this.consts.rightMouseBtn) { // left- or mid-clicked
-          this.selectNode(d3node, d);
+          modSelection.selectNode(d3node, d);
         }
       }
     }
@@ -728,10 +657,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       state.shiftNodeDrag = false;
       this.dragLine.classed("hidden", true).style("stroke-width", 0);
     } else if (state.graphMouseDown) { // Left-click on background deselects currently selected
-      if (this.state.selectedNode) {
-        this.removeSelectFromNode();
-      } else if (this.state.selectedEdge) {
-        this.removeSelectFromEdge();
+      if (modSelection.selectedNode) {
+        modSelection.removeSelectFromNode();
+      } else if (modSelection.selectedEdge) {
+        modSelection.removeSelectFromEdge();
       }
     }
     state.graphMouseDown = false;
@@ -740,28 +669,25 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   // Keydown on main svg
   Graphmaker.prototype.svgKeyDown = function() {
-    var state = this.state,
-        consts = this.consts;
-
     // Make sure repeated key presses don't register for each keydown
-    if (state.lastKeyDown !== -1) { return; }
+    if (this.state.lastKeyDown !== -1) { return; }
 
-    state.lastKeyDown = d3.event.keyCode;
-    var selectedNode = state.selectedNode,
-        selectedEdge = state.selectedEdge;
+    this.state.lastKeyDown = d3.event.keyCode;
+    var selectedNode = modSelection.selectedNode,
+        selectedEdge = modSelection.selectedEdge;
 
     switch (d3.event.keyCode) {
-    case consts.BACKSPACE_KEY:
-    case consts.DELETE_KEY:
+    case this.consts.BACKSPACE_KEY:
+    case this.consts.DELETE_KEY:
       d3.event.preventDefault();
       if (selectedNode) {
         this.nodes.splice(this.nodes.indexOf(selectedNode), 1);
         this.spliceLinksForNode(selectedNode);
-        state.selectedNode = null;
+        modSelection.selectedNode = null;
         this.updateGraph();
       } else if (selectedEdge) {
         this.links.splice(this.links.indexOf(selectedEdge), 1);
-        state.selectedEdge = null;
+        modSelection.selectedEdge = null;
         this.updateGraph();
       }
       break;
@@ -795,8 +721,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     thisGraph.edgeGroups = thisGraph.edgeGroups.data(thisGraph.links, function(d) {
       return String(d.source.id) + "+" + String(d.target.id);
     });
-    thisGraph.edgeGroups.classed(thisGraph.consts.selectedClass, function(d) {
-           return d === thisGraph.state.selectedEdge;
+    thisGraph.edgeGroups.classed(modSelection.selectedClass, function(d) {
+           return d === modSelection.selectedEdge;
          })
          .attr("d",  function(d) {
            return thisGraph.setPath(d);
@@ -990,8 +916,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       })
       .on("mouseout", function(d) { // If selected go back to selectedColor.
       // Note: "mouseleave", was not getting called in Chrome when the shiftKey is down.
-        if (thisGraph.state.selectedEdge && (thisGraph.state.selectedEdge.source === d.source)
-          && (thisGraph.state.selectedEdge.target === d.target)) {
+        if (modSelection.selectedEdge && (modSelection.selectedEdge.source === d.source)
+          && (modSelection.selectedEdge.target === d.target)) {
           d3.select(this).selectAll("path").style("stroke", modSelectedColor.color);
           d3.select(this).selectAll("text").style("fill", modSelectedColor.color);
         } else { // Not selected: reapply edge color, including edge text:
@@ -1388,7 +1314,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   // Set the currently selected shape to the currently selected color. Generate an error message if
   // no shape is selected.
   Graphmaker.prototype.setSelectedObjectColor = function() {
-    var selectedObject = this.state.selectedNode || this.state.selectedEdge;
+    var selectedObject = modSelection.selectedNode || modSelection.selectedEdge;
     if (!selectedObject) {
       alert("setSelectedObjectColor: no object selected.");
       return;

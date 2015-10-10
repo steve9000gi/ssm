@@ -1,4 +1,5 @@
-var modSelectedColor = require('./selected-color.js');
+var modSelectedColor = require('./selected-color.js'),
+    modSelection = require('./selection.js');
 
 var contextText = null;
 
@@ -168,8 +169,8 @@ exports.setup = function(d3) {
             var shapeGs = d3.selectAll(".shapeG");
             shapeGs.each(function(d) {
               if ((d.id === eltData.id) // Select the right-clicked-on shape group...
-                && (!thisGraph.state.selectedNode // ...if no shapeG is selected, or...
-                || (thisGraph.state.selectedNode.id !== d.id))) { // ...if d not already selected
+                && (!modSelection.selectedNode // ...if no shapeG is selected, or...
+                || (modSelection.selectedNode.id !== d.id))) { // ...if d not already selected
                 thisGraph.selectNode(d3.select(this), eltData); // Expects shapeG as the first arg
               }
             });
