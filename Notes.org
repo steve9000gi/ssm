@@ -8,8 +8,9 @@
 *** TODO zoom.js
 **** TODO consts.activeEditId
 *** TODO selected-shape.js
-**** TODO setShapeSizeAndPosition, maybe? 
-**** TODO equalizeSelectedShapeSize, maybe? 
+**** TODO shapeGroups
+**** TODO updateExistingPaths()
+**** TODO updateGraph()
 *** low-hanging fruit for refactoring
 **** TODO circles of care
 **** TODO toolbox
@@ -21,18 +22,3 @@
 ** TODO restrict registration (central control over who can register for SSM)
 *** invitation-only, only admins create new accounts, no email sending
 ** TODO data analysis (might be on Steve?)
-* SAT (State Assessment Tool)
-** DONE help Steve with git (see email)
-CLOSED: [2015-10-01 Thu 21:22]
-** TODO logout in main survey footer goes back to survey.html rather than to index.html :bugfix:
-** DONE missing data in downloaded files for s2.q4.other and s4.q1.other :bugfix:
-CLOSED: [2015-10-03 Sat 11:24]
-** DONE change file extension of downloaded files to CSV            :bugfix:
-CLOSED: [2015-10-03 Sat 11:29]
-** DONE "\n" in textarea results in weird spreadsheets              :bugfix:
-CLOSED: [2015-10-03 Sat 12:09]
-** TODO restrict registration (see SSM)
-** TODO delete surveys (see SSM)
-** TODO name surveys (see SSM)
-** TODO audit safety for slurp/apply functions                     :low:pri:
-*** TODO Uncaught TypeError: Cannot set property 'checked' of undefined, survey.js:461, survey 49 :bugfix:
