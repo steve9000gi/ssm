@@ -16,7 +16,6 @@
 *** TODO database.js
 **** TODO consts.backendBase
 *** TODO context-menu.js
-**** TODO formatText()
 **** TODO updateGraph()
 **** TODO new ActiveXObject
 **** TODO consts.rightMouseBtn
@@ -31,12 +30,17 @@
 *** TODO selection.js
 **** TODO shapeGroups
 **** TODO edgeGroups
+*** TODO text.js
+**** TODO boldFontWeight
+**** TODO consts.defaultFontSize
+**** TODO getComputedTextLength
 *** possible modules
+**** TODO event listeners
 **** TODO [tool]tips
 **** TODO options menu
 **** TODO save as image
 **** TODO toolbox
-**** TODO event listeners
+**** TODO exportGraphAsImage
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users

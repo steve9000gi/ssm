@@ -1,5 +1,6 @@
 var modSelectedColor = require('./selected-color.js'),
-    modSelection = require('./selection.js');
+    modSelection = require('./selection.js'),
+    modText = require('./text.js');
 
 var contextText = null;
 
@@ -99,7 +100,7 @@ var populateContextMenu = function(d3) {
          // Force shape resize in case bold characters overflow shape boundaries:
           data.r = data.width = data.height = data.dim = data.rx = data.ry = data.innerRadius
                  = undefined;
-          thisGraph.formatText(selectedElement, data);
+          modText.formatText(d3, selectedElement, data);
           if (data.source) { // It's an edge
             selectedElement.select(".foregroundText")
                            .style("fill", modSelectedColor.color);
