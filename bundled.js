@@ -433,7 +433,7 @@ exports.setup = function(d3) {
   }
 };
 
-},{"./selected-color.js":11,"./selection.js":13,"./text.js":17}],4:[function(require,module,exports){
+},{"./selected-color.js":12,"./selection.js":14,"./text.js":18}],4:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modSerialize = require('./serialize.js'),
@@ -621,7 +621,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./serialize.js":14,"./system-support-map.js":15}],5:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./serialize.js":15,"./system-support-map.js":16}],5:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -749,7 +749,7 @@ exports.addControls = function(d3) {
   createEdgeStyleSelectionSampleEdges(d3);
 };
 
-},{"./edge-thickness.js":6,"./selected-color.js":11,"./selected-shape.js":12}],6:[function(require,module,exports){
+},{"./edge-thickness.js":6,"./selected-color.js":12,"./selected-shape.js":13}],6:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.thickness = 3;
@@ -796,7 +796,123 @@ exports.createSubmenu = function(d3) {
       });
 };
 
-},{"./selected-color.js":11}],7:[function(require,module,exports){
+},{"./selected-color.js":12}],7:[function(require,module,exports){
+var modCirclesOfCare = require('./circles-of-care.js'),
+    modSelectedColor = require('./selected-color.js'),
+    modSystemSupportMap = require('./system-support-map.js'),
+    modText = require('./text.js');
+
+// Return dimensions of bounding box for all visible objects plus a little
+// extra. Ignore toolbox.
+var getGraphExtent = function(d3, shapes) {
+  var minX = Number.MAX_VALUE;
+  var maxX = Number.MIN_VALUE;
+  var minY = Number.MAX_VALUE;
+  var maxY = Number.MIN_VALUE;
+  shapes.each(function(d) {
+    if (d3.select(this).style("display") !== "none") { // Don't include hidden objects
+      var bbox = this.getBBox();
+      var x = d.x || parseFloat(d3.select(this).attr("cx")); // ssmCircles: no x, y
+      var y = d.y || parseFloat(d3.select(this).attr("cy"));
+      var thisXMin = x - bbox.width / 2;
+      var thisXMax = x + bbox.width / 2;
+      var thisYMin = y - bbox.height / 2;
+      var thisYMax = y + bbox.height / 2;
+      minX = (minX < thisXMin) ? minX : thisXMin;
+      maxX = (maxX > thisXMax) ? maxX : thisXMax;
+      minY = (minY < thisYMin) ? minY : thisYMin;
+      maxY = (maxY > thisYMax) ? maxY : thisYMax;
+    }
+  });
+  var width = maxX - minX;
+  var height = maxY - minY;
+  var xCushion = 40, yCushion = 100;
+  return {"w": width + xCushion, "h": height + yCushion};
+};
+
+// Based on http://techslides.com/save-svg-as-an-image
+exports.exportGraphAsImage = function(d3) {
+  var shapes = d3.selectAll(".ssmGroup circle, g.shapeG .shape, .cOfC");
+
+  // Set attributes of objects to render correctly without css:
+  shapes.style("fill", "#F6FBFF");
+  d3.select("#circlesOfCareGroup")
+    .attr("display", modCirclesOfCare.visible ? "inline-block" : "none");
+  d3.selectAll(".cOfC")
+    .style("fill", "none")
+    .style("stroke-width", "1px")
+    .style("stroke", "#000000");
+  d3.selectAll(".ssmCircle")
+    .style("fill", "none")
+    .style("display", (modSystemSupportMap.visible ? "inline-block" : "none"));
+  d3.selectAll(".ssmHidden").attr("display", "none");
+  d3.select("#gridGroup").attr("display", "none");
+  d3.select("#mainSVG").style("background-color", modSelectedColor.bgColor);
+  var edges = d3.selectAll(".link")
+                .style("marker-end", function() {
+                  var marker = d3.select(this).style("marker-end");
+                  return marker;
+                });
+
+  // Set svg viewport so that all objects are visible in image, even if clipped by window:
+  var extent = getGraphExtent(d3, shapes);
+  var mainSVG = d3.select("#mainSVG");
+  var previousW =  mainSVG.attr("width"); // Save for restoring after image is generated
+  var previousH = mainSVG.attr("height"); // "                                         "
+  mainSVG.attr("width", extent.w)
+         .attr("height", extent.h)
+         .style("font-size", modText.defaultFontSize) // export to image sees no css
+         .style("overflow", "visible");
+
+  // Make credits visible:
+  d3.select("#credits")
+    .attr("display", "block")
+    .attr("y", extent.h - 30)
+   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2015 UNC-CH)");
+
+  // Create canvas:
+  d3.select("body").append("canvas")
+    .attr("width", extent.w)
+    .attr("height", extent.h);
+  var canvas = document.querySelector("canvas");
+  var context = canvas.getContext("2d");
+
+  // Create event handler to draw svg onto canvas, convert to image, and export .png:
+  var image = new Image();
+  image.onload = function() {
+    context.drawImage(image, 0, 0);
+    var canvasData = canvas.toDataURL("image/png");
+    var pngImage = '<img src="' + canvasData + '">';
+    d3.select("#pngdataurl").html(pngImage);
+    var a = document.createElement("a");
+    a.download = "SystemSupportMap.png";
+    a.href = canvasData;
+    a.click();
+  };
+  image.onerror = function imageErrorHandler(event) {
+    alert("Export to image failed");
+  };
+
+  var html = mainSVG.attr("version", 1.1)
+                    .attr("xmlns", "http://www.w3.org/2000/svg")
+                    .node().parentNode.innerHTML;
+  var imgsrc = "data:image/svg+xml;base64," + btoa(html);
+  var img = '<img src="' + imgsrc + '">';
+  d3.select("#svgdataurl").html(img);
+  image.src = imgsrc;
+
+  // Reset dimensions and attributes for normal appearance and interactive behavior:
+  mainSVG.attr("width", previousW)
+         .attr("height", previousH)
+         .style("overflow", "hidden");
+  shapes.style("fill", undefined);
+  d3.selectAll(".ssmCircle, .cOfC").style("fill", "none");
+  d3.select("#credits").attr("display", "none");
+  this.updateGraph();
+  canvas.remove();
+};
+
+},{"./circles-of-care.js":2,"./selected-color.js":12,"./system-support-map.js":16,"./text.js":18}],8:[function(require,module,exports){
 var modSerialize = require('./serialize.js');
 
 // Save as JSON file
@@ -837,7 +953,7 @@ exports.setupUpload = function(d3) {
   });
 };
 
-},{"./serialize.js":14}],8:[function(require,module,exports){
+},{"./serialize.js":15}],9:[function(require,module,exports){
 exports.addLogos = function(d3) {
   d3.select("#mainSVG").append("svg:image")
     .attr("xlink:href", "mch-tracs.png")
@@ -863,7 +979,7 @@ exports.addCredits = function(d3) {
     .attr("x", 30);
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var gridVisible = false,
     grid = null,
     gridCellW = 10,
@@ -980,7 +1096,7 @@ exports.enableSnap = function(d3) {
   showTurnOffGridText(d3);
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // Help/instructions button and info box:
 module.exports = function(d3) {
   d3.select("#toolbox").insert("div", ":first-child")
@@ -1017,7 +1133,7 @@ module.exports = function(d3) {
   });
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -1077,7 +1193,7 @@ exports.createColorPalette = function(d3) {
   d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
 };
 
-},{"./edge-style.js":5,"./selected-shape.js":12}],12:[function(require,module,exports){
+},{"./edge-style.js":5,"./selected-shape.js":13}],13:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.minCircleRadius = 20;
@@ -1393,7 +1509,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":11}],13:[function(require,module,exports){
+},{"./selected-color.js":12}],14:[function(require,module,exports){
 exports.selectedEdge = null;
 exports.selectedNode = null;
 exports.selectedClass = 'selected';
@@ -1460,7 +1576,7 @@ exports.replaceSelectEdge = function(d3, d3Path, edgeData) {
   modSelection.selectedEdge = edgeData;
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modZoom = require('./zoom.js');
@@ -1543,7 +1659,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":2,"./system-support-map.js":15,"./zoom.js":18}],15:[function(require,module,exports){
+},{"./circles-of-care.js":2,"./system-support-map.js":16,"./zoom.js":19}],16:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.hideText = "Hide system support rings";
@@ -1618,7 +1734,7 @@ exports.create = function(d3) {
       .text(function(d) { return d.name; });
 };
 
-},{"./selected-color.js":11}],16:[function(require,module,exports){
+},{"./selected-color.js":12}],17:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -1662,7 +1778,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modSelectedColor = require('./selected-color.js'),
       modSelectedShape = require('./selected-shape.js'),
       modSelection = require('./selection.js'),
-      modSystemSupportMap = require('./system-support-map.js');
+      modSystemSupportMap = require('./system-support-map.js'),
+      modExport = require('./export.js');
 
   // Define graphcreator object
   var Graphmaker = function(svg, nodes, links) {
@@ -2693,117 +2810,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // Return dimensions of bounding box for all visible objects plus a little extra. Ignore toolbox.
-  Graphmaker.prototype.getGraphExtent = function(shapes) {
-    var minX = Number.MAX_VALUE;
-    var maxX = Number.MIN_VALUE;
-    var minY = Number.MAX_VALUE;
-    var maxY = Number.MIN_VALUE;
-    shapes.each(function(d) {
-      if (d3.select(this).style("display") !== "none") { // Don't include hidden objects
-        var bbox = this.getBBox();
-        var x = d.x || parseFloat(d3.select(this).attr("cx")); // ssmCircles: no x, y
-        var y = d.y || parseFloat(d3.select(this).attr("cy"));
-        var thisXMin = x - bbox.width / 2;
-        var thisXMax = x + bbox.width / 2;
-        var thisYMin = y - bbox.height / 2;
-        var thisYMax = y + bbox.height / 2;
-        minX = (minX < thisXMin) ? minX : thisXMin;
-        maxX = (maxX > thisXMax) ? maxX : thisXMax;
-        minY = (minY < thisYMin) ? minY : thisYMin;
-        maxY = (maxY > thisYMax) ? maxY : thisYMax;
-      }
-    });
-    var width = maxX - minX;
-    var height = maxY - minY;
-    var xCushion = 40, yCushion = 100;
-    return {"w": width + xCushion, "h": height + yCushion};
-  };
-
-
-  // Based on http://techslides.com/save-svg-as-an-image
-  Graphmaker.prototype.exportGraphAsImage = function() {
-    var shapes = d3.selectAll(".ssmGroup circle, g.shapeG .shape, .cOfC");
-
-    // Set attributes of objects to render correctly without css:
-    shapes.style("fill", "#F6FBFF");
-    d3.select("#circlesOfCareGroup")
-      .attr("display", modCirclesOfCare.visible ? "inline-block" : "none");
-    d3.selectAll(".cOfC")
-      .style("fill", "none")
-      .style("stroke-width", "1px")
-      .style("stroke", "#000000");
-    d3.selectAll(".ssmCircle")
-      .style("fill", "none")
-      .style("display", (modSystemSupportMap.visible ? "inline-block" : "none"));
-    d3.selectAll(".ssmHidden").attr("display", "none");
-    d3.select("#gridGroup").attr("display", "none");
-    d3.select("#mainSVG").style("background-color", modSelectedColor.bgColor);
-    var edges = d3.selectAll(".link")
-                  .style("marker-end", function() {
-                    var marker = d3.select(this).style("marker-end");
-                    return marker;
-                  });
-
-    // Set svg viewport so that all objects are visible in image, even if clipped by window:
-    var extent = this.getGraphExtent(shapes);
-    var mainSVG = d3.select("#mainSVG");
-    var previousW =  mainSVG.attr("width"); // Save for restoring after image is generated
-    var previousH = mainSVG.attr("height"); // "                                         "
-    mainSVG.attr("width", extent.w)
-           .attr("height", extent.h)
-           .style("font-size", modText.defaultFontSize) // export to image sees no css
-           .style("overflow", "visible");
-
-    // Make credits visible:
-    d3.select("#credits")
-      .attr("display", "block")
-      .attr("y", extent.h - 30)
-     .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2015 UNC-CH)");
-
-    // Create canvas:
-    d3.select("body").append("canvas")
-      .attr("width", extent.w)
-      .attr("height", extent.h);
-    var canvas = document.querySelector("canvas");
-    var context = canvas.getContext("2d");
-
-    // Create event handler to draw svg onto canvas, convert to image, and export .png:
-    var image = new Image();
-    image.onload = function() {
-      context.drawImage(image, 0, 0);
-      var canvasData = canvas.toDataURL("image/png");
-      var pngImage = '<img src="' + canvasData + '">';
-      d3.select("#pngdataurl").html(pngImage);
-      var a = document.createElement("a");
-      a.download = "SystemSupportMap.png";
-      a.href = canvasData;
-      a.click();
-    };
-    image.onerror = function imageErrorHandler(event) {
-      alert("Export to image failed");
-    };
-
-    var html = mainSVG.attr("version", 1.1)
-                      .attr("xmlns", "http://www.w3.org/2000/svg")
-                      .node().parentNode.innerHTML;
-    var imgsrc = "data:image/svg+xml;base64," + btoa(html);
-    var img = '<img src="' + imgsrc + '">';
-    d3.select("#svgdataurl").html(img);
-    image.src = imgsrc;
-
-    // Reset dimensions and attributes for normal appearance and interactive behavior:
-    mainSVG.attr("width", previousW)
-           .attr("height", previousH)
-           .style("overflow", "hidden");
-    shapes.style("fill", undefined);
-    d3.selectAll(".ssmCircle, .cOfC").style("fill", "none");
-    d3.select("#credits").attr("display", "none");
-    this.updateGraph();
-    canvas.remove();
-  };
-
-
   // Set the currently selected shape to the currently selected color. Generate an error message if
   // no shape is selected.
   Graphmaker.prototype.setSelectedObjectColor = function() {
@@ -2859,7 +2865,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           modSystemSupportMap.hide(d3);
           break;
         case choices[7].name:
-          this.exportGraphAsImage();
+          modExport.exportGraphAsImage(d3);
           break;
         case choices[8].name:
           modContextMenu.loadFromClient(d3);
@@ -2872,7 +2878,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       }
     } else {
       if (d3.select(listItem).datum().id === "exportMapAsImageItem") {
-        this.exportGraphAsImage();
+        modExport.exportGraphAsImage(d3);
       } else if (d3.select(listItem).datum().id === "loadContextTextItem") {
         modContextMenu.loadFromClient(d3);
       } else if (d3.select(listItem).datum().id === "logoutUser") {
@@ -2983,7 +2989,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   modDatabase.loadMapFromLocation(d3);
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./file.js":7,"./front-matter.js":8,"./grid.js":9,"./help.js":10,"./selected-color.js":11,"./selected-shape.js":12,"./selection.js":13,"./system-support-map.js":15,"./text.js":17,"./zoom.js":18}],17:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./export.js":7,"./file.js":8,"./front-matter.js":9,"./grid.js":10,"./help.js":11,"./selected-color.js":12,"./selected-shape.js":13,"./selection.js":14,"./system-support-map.js":16,"./text.js":18,"./zoom.js":19}],18:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -3119,7 +3125,7 @@ exports.formatText = function(d3, gEl, d) {
   }
 };
 
-},{"./selected-color.js":11,"./selected-shape.js":12}],18:[function(require,module,exports){
+},{"./selected-color.js":12,"./selected-shape.js":13}],19:[function(require,module,exports){
 var modGrid = require('./grid.js');
 
 exports.zoom = 1;
@@ -3162,4 +3168,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid.js":9}]},{},[16]);
+},{"./grid.js":10}]},{},[17]);
