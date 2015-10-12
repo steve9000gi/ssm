@@ -1705,7 +1705,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                        "ellipse":   "Resource",
                        "star":      "Wish",
                        "noBorder":  "text"},
-    defaultFontSize: 12, // Also set in css file because image export doesn't see css
     rightMouseBtn: 3
   };
 
@@ -1717,7 +1716,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.displayAll = true; // If false turns off some features
     this.svg = svg;
     this.shapeId = 0;
-    this.boldFontWeight = 900;
     this.edgeNum = 0;
     this.nodes = nodes || [];
     this.links = links || [];
@@ -2273,7 +2271,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             }
             d.url = newUrl;
             d3.select(this).select("text")
-              .style("font-weight", thisGraph.boldFontWeight)
+              .style("font-weight", modText.boldFontWeight)
               .style("text-decoration", "underline");
             if (!d.manualResize) {
               // Force shape resize in case bold characters overflow shape boundaries:
@@ -2754,7 +2752,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var previousH = mainSVG.attr("height"); // "                                         "
     mainSVG.attr("width", extent.w)
            .attr("height", extent.h)
-           .style("font-size", this.consts.defaultFontSize) // export to image sees no css
+           .style("font-size", modText.defaultFontSize) // export to image sees no css
            .style("overflow", "visible");
 
     // Make credits visible:
@@ -2990,6 +2988,8 @@ var modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
 
 exports.maxCharsPerLine = 20;
+exports.boldFontWeight = 900;
+exports.defaultFontSize = 12;
 
 // FIXME: seems to be unused anywhere.
 var appendText = function(gEl, phrases, yShift) {
@@ -3002,17 +3002,17 @@ var appendText = function(gEl, phrases, yShift) {
         .attr("text-decoration", function(d) {
           return d.url ? "underline" : "none"; })
         .style("font-weight", function(d) {
-          return d.url ? thisGraph.boldFontWeight: "none"; })
+          return d.url ? exports.boldFontWeight: "none"; })
         .style("fill", gEl[0][0].__data__.color)
         .attr("dy",  function() {
-          return yShift - ((nPhrases - 1) * thisGraph.consts.defaultFontSize / 2);
+          return yShift - ((nPhrases - 1) * exports.defaultFontSize / 2);
         });
   el.selectAll("tspan")
     .data(phrases)
     .enter().append("tspan")
     .text(function(d) { return d; })
     .attr("dy", function(d, i) {
-      return (i > 0) ? thisGraph.consts.defaultFontSize : null;
+      return (i > 0) ? exports.defaultFontSize : null;
     });
   return el;
 };
@@ -3056,12 +3056,12 @@ var appendEdgeShadowText = function(gEl, phrases, yShift) {
               .attr("alignment-baseline", "middle")
               .attr("text-decoration", function(d) { return d.url ? "underline" : "none"; })
               .style("font-weight", function(d) {
-                return d.url ? thisGraph.boldFontWeight: "none";
+                return d.url ? exports.boldFontWeight: "none";
               })
               .style("stroke", modSelectedColor.bgColor)
               .style("stroke-width", "3px")
               .attr("dy",  function() {
-                return yShift - ((phrases.length - 1) * thisGraph.consts.defaultFontSize / 2);
+                return yShift - ((phrases.length - 1) * exports.defaultFontSize / 2);
               });
   el.selectAll("tspan")
     .data(phrases)
@@ -3073,7 +3073,7 @@ var appendEdgeShadowText = function(gEl, phrases, yShift) {
         // centered from shape borders, not just shape centers).
         return -(tLen[i] + tLen[i + 1]) / 2;
       })
-      .attr("dy", function(d, i) { return (i > 0) ? thisGraph.consts.defaultFontSize : null; });
+      .attr("dy", function(d, i) { return (i > 0) ? exports.defaultFontSize : null; });
   return tLen;
 };
 

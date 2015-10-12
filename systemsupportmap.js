@@ -84,7 +84,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                        "ellipse":   "Resource",
                        "star":      "Wish",
                        "noBorder":  "text"},
-    defaultFontSize: 12, // Also set in css file because image export doesn't see css
     rightMouseBtn: 3
   };
 
@@ -96,7 +95,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.displayAll = true; // If false turns off some features
     this.svg = svg;
     this.shapeId = 0;
-    this.boldFontWeight = 900;
     this.edgeNum = 0;
     this.nodes = nodes || [];
     this.links = links || [];
@@ -652,7 +650,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             }
             d.url = newUrl;
             d3.select(this).select("text")
-              .style("font-weight", thisGraph.boldFontWeight)
+              .style("font-weight", modText.boldFontWeight)
               .style("text-decoration", "underline");
             if (!d.manualResize) {
               // Force shape resize in case bold characters overflow shape boundaries:
@@ -1133,7 +1131,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var previousH = mainSVG.attr("height"); // "                                         "
     mainSVG.attr("width", extent.w)
            .attr("height", extent.h)
-           .style("font-size", this.consts.defaultFontSize) // export to image sees no css
+           .style("font-size", modText.defaultFontSize) // export to image sees no css
            .style("overflow", "visible");
 
     // Make credits visible:

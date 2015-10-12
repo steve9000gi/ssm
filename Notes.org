@@ -30,10 +30,6 @@
 *** TODO selection.js
 **** TODO shapeGroups
 **** TODO edgeGroups
-*** TODO text.js
-**** TODO boldFontWeight
-**** TODO consts.defaultFontSize
-**** TODO getComputedTextLength
 *** possible modules
 **** TODO event listeners
 **** TODO [tool]tips

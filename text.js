@@ -2,6 +2,8 @@ var modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
 
 exports.maxCharsPerLine = 20;
+exports.boldFontWeight = 900;
+exports.defaultFontSize = 12;
 
 // FIXME: seems to be unused anywhere.
 var appendText = function(gEl, phrases, yShift) {
@@ -14,17 +16,17 @@ var appendText = function(gEl, phrases, yShift) {
         .attr("text-decoration", function(d) {
           return d.url ? "underline" : "none"; })
         .style("font-weight", function(d) {
-          return d.url ? thisGraph.boldFontWeight: "none"; })
+          return d.url ? exports.boldFontWeight: "none"; })
         .style("fill", gEl[0][0].__data__.color)
         .attr("dy",  function() {
-          return yShift - ((nPhrases - 1) * thisGraph.consts.defaultFontSize / 2);
+          return yShift - ((nPhrases - 1) * exports.defaultFontSize / 2);
         });
   el.selectAll("tspan")
     .data(phrases)
     .enter().append("tspan")
     .text(function(d) { return d; })
     .attr("dy", function(d, i) {
-      return (i > 0) ? thisGraph.consts.defaultFontSize : null;
+      return (i > 0) ? exports.defaultFontSize : null;
     });
   return el;
 };
@@ -68,12 +70,12 @@ var appendEdgeShadowText = function(gEl, phrases, yShift) {
               .attr("alignment-baseline", "middle")
               .attr("text-decoration", function(d) { return d.url ? "underline" : "none"; })
               .style("font-weight", function(d) {
-                return d.url ? thisGraph.boldFontWeight: "none";
+                return d.url ? exports.boldFontWeight: "none";
               })
               .style("stroke", modSelectedColor.bgColor)
               .style("stroke-width", "3px")
               .attr("dy",  function() {
-                return yShift - ((phrases.length - 1) * thisGraph.consts.defaultFontSize / 2);
+                return yShift - ((phrases.length - 1) * exports.defaultFontSize / 2);
               });
   el.selectAll("tspan")
     .data(phrases)
@@ -85,7 +87,7 @@ var appendEdgeShadowText = function(gEl, phrases, yShift) {
         // centered from shape borders, not just shape centers).
         return -(tLen[i] + tLen[i + 1]) / 2;
       })
-      .attr("dy", function(d, i) { return (i > 0) ? thisGraph.consts.defaultFontSize : null; });
+      .attr("dy", function(d, i) { return (i > 0) ? exports.defaultFontSize : null; });
   return tLen;
 };
 
