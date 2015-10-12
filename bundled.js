@@ -240,7 +240,8 @@ exports.hide = function(d3) {
 };
 
 },{}],3:[function(require,module,exports){
-var modSelectedColor = require('./selected-color.js'),
+var modEvents = require('./events.js'),
+    modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
     modText = require('./text.js');
 
@@ -401,7 +402,7 @@ exports.setup = function(d3) {
   createContextMenu(d3);
   if (document.addEventListener) {
     document.addEventListener("contextmenu", function(e) {
-      if (e.which === thisGraph.consts.rightMouseBtn) {
+      if (e.which === modEvents.rightMouseBtn) {
         var elt = e.target || e.srcElement; // target for Firefox, srcElement for Chrome
         if (elt && (elt.tagName !== "svg")) { // Did we right-click on an object?
           while (elt && (elt.tagName !== "g")) { // elt is probably a child of the shapeG we want
@@ -433,7 +434,7 @@ exports.setup = function(d3) {
   }
 };
 
-},{"./selected-color.js":12,"./selection.js":14,"./text.js":18}],4:[function(require,module,exports){
+},{"./events.js":7,"./selected-color.js":13,"./selection.js":15,"./text.js":19}],4:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modSerialize = require('./serialize.js'),
@@ -621,7 +622,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./serialize.js":15,"./system-support-map.js":16}],5:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./serialize.js":16,"./system-support-map.js":17}],5:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -749,7 +750,7 @@ exports.addControls = function(d3) {
   createEdgeStyleSelectionSampleEdges(d3);
 };
 
-},{"./edge-thickness.js":6,"./selected-color.js":12,"./selected-shape.js":13}],6:[function(require,module,exports){
+},{"./edge-thickness.js":6,"./selected-color.js":13,"./selected-shape.js":14}],6:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.thickness = 3;
@@ -796,7 +797,210 @@ exports.createSubmenu = function(d3) {
       });
 };
 
-},{"./selected-color.js":12}],7:[function(require,module,exports){
+},{"./selected-color.js":13}],7:[function(require,module,exports){
+var modEdgeThickness = require('./edge-thickness.js'),
+    modSelectedColor = require('./selected-color.js'),
+    modSelectedShape = require('./selected-shape.js'),
+    modSelection = require('./selection.js'),
+    modText = require('./text.js'),
+    modZoom = require('./zoom.js');
+
+exports.lastKeyDown = -1;
+exports.mouseDownNode = null;
+exports.mouseDownLink = null;
+
+var BACKSPACE_KEY = 8,
+    DELETE_KEY = 46,
+    rightMouseBtn = 3,
+    graphMouseDown = false,
+    defaultShapeText = {"circle":    "Identity",
+                        "rectangle": "Responsibility",
+                        "diamond":   "Need",
+                        "ellipse":   "Resource",
+                        "star":      "Wish",
+                        "noBorder":  "text"},
+    // shapeNum values are 1-based because they're used in front-facing text:
+    shapeNum = {"circle": 1,
+                "rectangle": 1,
+                "diamond": 1,
+                "ellipse": 1,
+                "star": 1,
+                "noBorder": 1};
+
+// Remove links associated with a node
+var spliceLinksForNode = function(node) {
+  var thisGraph = this,
+      toSplice = thisGraph.links.filter(function(l) {
+        return (l.source === node || l.target === node);
+      });
+  toSplice.map(function(l) {
+    thisGraph.links.splice(thisGraph.links.indexOf(l), 1);
+  });
+};
+
+// Keydown on main svg
+var svgKeyDown = function(d3) {
+  // Make sure repeated key presses don't register for each keydown
+  if (exports.lastKeyDown !== -1) { return; }
+
+  exports.lastKeyDown = d3.event.keyCode;
+  var selectedNode = modSelection.selectedNode,
+      selectedEdge = modSelection.selectedEdge;
+
+  switch (d3.event.keyCode) {
+  case BACKSPACE_KEY:
+  case DELETE_KEY:
+    d3.event.preventDefault();
+    if (selectedNode) {
+      this.nodes.splice(this.nodes.indexOf(selectedNode), 1);
+      spliceLinksForNode(selectedNode);
+      modSelection.selectedNode = null;
+      this.updateGraph();
+    } else if (selectedEdge) {
+      this.links.splice(this.links.indexOf(selectedEdge), 1);
+      modSelection.selectedEdge = null;
+      this.updateGraph();
+    }
+    break;
+  }
+};
+
+var svgKeyUp = function() {
+  exports.lastKeyDown = -1;
+};
+
+// Mousedown on main svg
+var svgMouseDown = function() {
+  graphMouseDown = true;
+};
+
+// Mouseup on main svg
+var svgMouseUp = function(d3) {
+  var state = this.state;
+
+  // Make sure options menu is closed:
+  d3.select("#optionsMenuDiv") .classed("menu", false).classed("menuHidden", true);
+
+  if (modZoom.justScaleTransGraph) { // Dragged not clicked
+    modZoom.justScaleTransGraph = false;
+  } else if (graphMouseDown && d3.event.shiftKey) { // Clicked not dragged from svg
+    var xycoords = d3.mouse(this.svgG.node());
+
+    var d = {id: this.shapeId,
+             name: defaultShapeText[modSelectedShape.shape] + " "
+                 + shapeNum[modSelectedShape.shape]++,
+             x: xycoords[0],
+             y: xycoords[1],
+             color: modSelectedColor.clr,
+             shape: modSelectedColor.shape};
+    this.nodes.push(d);
+    this.shapeId++;
+    this.updateGraph();
+
+    // Make text immediately editable
+    var d3txt = this.changeElementText(this.shapeGroups.filter(function(dval) {
+      return dval.id === d.id;
+    }), d),
+        txtNode = d3txt.node();
+    modText.selectText(txtNode);
+    txtNode.focus();
+  } else if (state.shiftNodeDrag) { // Dragged from node
+    state.shiftNodeDrag = false;
+    this.dragLine.classed("hidden", true).style("stroke-width", 0);
+  } else if (graphMouseDown) { // Left-click on background deselects currently selected
+    if (modSelection.selectedNode) {
+      modSelection.removeSelectFromNode();
+    } else if (modSelection.selectedEdge) {
+      modSelection.removeSelectFromEdge();
+    }
+  }
+  graphMouseDown = false;
+};
+
+exports.setupEventListeners = function(d3) {
+  var thisGraph = this;
+  var svg = thisGraph.svg;
+  d3.select(window).on("keydown", function() {
+    svgKeyDown(d3);
+  })
+    .on("keyup", function() {
+      thisGraph.svgKeyUp();
+    });
+  svg.on("mousedown", function() {
+    svgMouseDown();
+  });
+  svg.on("mouseup", function(){
+    svgMouseUp(d3);
+  });
+  window.onresize = function() {thisGraph.updateWindow(svg);};
+};
+
+// Mousedown on node
+exports.shapeMouseDown = function(d3, d) {
+  d3.event.stopPropagation();
+  exports.mouseDownNode = d;
+  if (d3.event.shiftKey && !d.manualResize) { // No edges from manually resized rectangles
+    this.state.shiftNodeDrag = d3.event.shiftKey;
+    this.dragLine.classed("hidden", false) // Reposition dragged directed edge
+      .style("stroke-width", modEdgeThickness.thickness)
+      .attr("d", "M" + d.x + "," + d.y + "L" + d.x + "," + d.y);
+  }
+};
+
+// Mouseup on nodes
+exports.shapeMouseUp = function(d3, d3node, d) {
+  var state = this.state;
+  var consts = this.consts;
+
+  // Reset the states
+  state.shiftNodeDrag = false;
+  state.justDragged = false;
+  d3node.classed(consts.connectClass, false);
+
+  var mouseDownNode = exports.mouseDownNode;
+
+  if (!mouseDownNode) { return; }
+
+  this.dragLine.classed("hidden", true).style("stroke-width", 0);
+
+  if (!mouseDownNode.manualResize // We didn't start on a manually resized rectangle...
+    && mouseDownNode !== d) { // ...& we're in a different node: create new edge and add to graph
+    this.createNewEdge(d);
+  } else { // We're in the same node or the dragged edge started on a manually resized rectangle
+    if (state.justDragged) { // Dragged, not clicked
+      state.justDragged = false;
+    } else { // Clicked, not dragged
+      if (d3.event.shiftKey // Shift-clicked node: edit text content...
+          && !d.manualResize) { // ...that is, if not manually resizing rect
+        var d3txt = this.changeElementText(d3node, d);
+        var txtNode = d3txt.node();
+        modText.selectText(txtNode);
+        txtNode.focus();
+      } else if (d3.event.which !== rightMouseBtn) { // left- or mid-clicked
+        modSelection.selectNode(d3node, d);
+      }
+    }
+  }
+  exports.mouseDownNode = null;
+};
+
+exports.pathMouseDown = function(d3, d3path, d) {
+  d3.event.stopPropagation();
+  exports.mouseDownLink = d;
+
+  if (modSelection.selectedNode) {
+    modSelection.removeSelectFromNode();
+  }
+
+  var prevEdge = modSelection.selectedEdge;
+  if (!prevEdge || prevEdge !== d) {
+    modSelection.replaceSelectEdge(d3, d3path, d);
+  } else if (d3.event.which !== rightMouseBtn) {
+    modSelection.removeSelectFromEdge();
+  }
+};
+
+},{"./edge-thickness.js":6,"./selected-color.js":13,"./selected-shape.js":14,"./selection.js":15,"./text.js":19,"./zoom.js":20}],8:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -912,7 +1116,7 @@ exports.exportGraphAsImage = function(d3) {
   canvas.remove();
 };
 
-},{"./circles-of-care.js":2,"./selected-color.js":12,"./system-support-map.js":16,"./text.js":18}],8:[function(require,module,exports){
+},{"./circles-of-care.js":2,"./selected-color.js":13,"./system-support-map.js":17,"./text.js":19}],9:[function(require,module,exports){
 var modSerialize = require('./serialize.js');
 
 // Save as JSON file
@@ -953,7 +1157,7 @@ exports.setupUpload = function(d3) {
   });
 };
 
-},{"./serialize.js":15}],9:[function(require,module,exports){
+},{"./serialize.js":16}],10:[function(require,module,exports){
 exports.addLogos = function(d3) {
   d3.select("#mainSVG").append("svg:image")
     .attr("xlink:href", "mch-tracs.png")
@@ -979,7 +1183,7 @@ exports.addCredits = function(d3) {
     .attr("x", 30);
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var gridVisible = false,
     grid = null,
     gridCellW = 10,
@@ -1096,7 +1300,7 @@ exports.enableSnap = function(d3) {
   showTurnOffGridText(d3);
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 // Help/instructions button and info box:
 module.exports = function(d3) {
   d3.select("#toolbox").insert("div", ":first-child")
@@ -1133,7 +1337,7 @@ module.exports = function(d3) {
   });
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -1193,7 +1397,7 @@ exports.createColorPalette = function(d3) {
   d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
 };
 
-},{"./edge-style.js":5,"./selected-shape.js":13}],13:[function(require,module,exports){
+},{"./edge-style.js":5,"./selected-shape.js":14}],14:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.minCircleRadius = 20;
@@ -1509,7 +1713,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":12}],14:[function(require,module,exports){
+},{"./selected-color.js":13}],15:[function(require,module,exports){
 exports.selectedEdge = null;
 exports.selectedNode = null;
 exports.selectedClass = 'selected';
@@ -1576,7 +1780,7 @@ exports.replaceSelectEdge = function(d3, d3Path, edgeData) {
   modSelection.selectedEdge = edgeData;
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modZoom = require('./zoom.js');
@@ -1659,7 +1863,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":2,"./system-support-map.js":16,"./zoom.js":19}],16:[function(require,module,exports){
+},{"./circles-of-care.js":2,"./system-support-map.js":17,"./zoom.js":20}],17:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.hideText = "Hide system support rings";
@@ -1734,7 +1938,7 @@ exports.create = function(d3) {
       .text(function(d) { return d.name; });
 };
 
-},{"./selected-color.js":12}],17:[function(require,module,exports){
+},{"./selected-color.js":13}],18:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -1767,6 +1971,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modContextMenu = require('./context-menu.js'),
       modAuth = require('./auth.js'),
       modDatabase = require('./database.js'),
+      modEvents = require('./events.js'),
       modFile = require('./file.js'),
       modCirclesOfCare = require('./circles-of-care.js'),
       modEdgeStyle = require('./edge-style.js'),
@@ -1799,7 +2004,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.setupDragHandle();
     modZoom.setup(d3, svg);
     this.setupSVGNodesAndLinks();
-    this.setupEventListeners();
+    modEvents.setupEventListeners(d3);
     modSystemSupportMap.show(d3);
     modFile.setupDownload(d3, saveAs, Blob);
     modFile.setupUpload(d3);
@@ -1813,16 +2018,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     backendBase: 'http://syssci.renci.org:8080',
     connectClass: "connect-node",
     activeEditId: "active-editing",
-    BACKSPACE_KEY: 8,
-    DELETE_KEY: 46,
-    ENTER_KEY: 13,
-    defaultShapeText: {"circle":    "Identity",
-                       "rectangle": "Responsibility",
-                       "diamond":   "Need",
-                       "ellipse":   "Resource",
-                       "star":      "Wish",
-                       "noBorder":  "text"},
-    rightMouseBtn: 3
+    ENTER_KEY: 13
   };
 
 
@@ -1836,14 +2032,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.edgeNum = 0;
     this.nodes = nodes || [];
     this.links = links || [];
-    // shapeNum values are 1-based because they're used in front-facing text:
-    this.shapeNum = {"circle": 1, "rectangle": 1, "diamond": 1, "ellipse": 1, "star": 1,
-                          "noBorder": 1};
     this.state = {
-      mouseDownNode: null,
-      mouseDownLink: null,
       justDragged: false,
-      lastKeyDown: -1,
       shiftNodeDrag: false,
       selectedText: null,
       clickDragHandle: false
@@ -2066,46 +2256,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // Remove links associated with a node
-  Graphmaker.prototype.spliceLinksForNode = function(node) {
-    var thisGraph = this,
-        toSplice = thisGraph.links.filter(function(l) {
-          return (l.source === node || l.target === node);
-        });
-    toSplice.map(function(l) { thisGraph.links.splice(thisGraph.links.indexOf(l), 1); });
-  };
-
-
-  Graphmaker.prototype.pathMouseDown = function(d3path, d) {
-    d3.event.stopPropagation();
-    this.state.mouseDownLink = d;
-
-    if (modSelection.selectedNode) {
-      modSelection.removeSelectFromNode();
-    }
-
-    var prevEdge = modSelection.selectedEdge;
-    if (!prevEdge || prevEdge !== d) {
-      modSelection.replaceSelectEdge(d3, d3path, d);
-    } else if (d3.event.which !== this.consts.rightMouseBtn) {
-      modSelection.removeSelectFromEdge();
-    }
-  };
-
-
-  // Mousedown on node
-  Graphmaker.prototype.shapeMouseDown = function(d) {
-    d3.event.stopPropagation();
-    this.state.mouseDownNode = d;
-    if (d3.event.shiftKey && !d.manualResize) { // No edges from manually resized rectangles
-      this.state.shiftNodeDrag = d3.event.shiftKey;
-      this.dragLine.classed("hidden", false) // Reposition dragged directed edge
-        .style("stroke-width", modEdgeThickness.thickness)
-        .attr("d", "M" + d.x + "," + d.y + "L" + d.x + "," + d.y);
-    }
-  };
-
-
   // Place editable text on node or edge in place of svg text
   //
   // Note: see bug report https://code.google.com/p/chromium/issues/detail?id=304567 "svg
@@ -2159,7 +2309,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.createNewEdge = function(d) {
     var thisGraph = this;
-    var newEdge = {source: this.state.mouseDownNode,
+    var newEdge = {source: modEvents.mouseDownNode,
                    target: d,
                    style: modEdgeStyle.style,
                    color: modSelectedColor.clr,
@@ -2184,127 +2334,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       txtNode.focus();
       */
     }
-  };
-
-
-  // Mouseup on nodes
-  Graphmaker.prototype.shapeMouseUp = function(d3node, d) {
-    var state = this.state;
-    var consts = this.consts;
-
-    // Reset the states
-    state.shiftNodeDrag = false;
-    state.justDragged = false;
-    d3node.classed(consts.connectClass, false);
-
-    var mouseDownNode = state.mouseDownNode;
-
-    if (!mouseDownNode) { return; }
-
-    this.dragLine.classed("hidden", true).style("stroke-width", 0);
-
-    if (!mouseDownNode.manualResize // We didn't start on a manually resized rectangle...
-      && mouseDownNode !== d) { // ...& we're in a different node: create new edge and add to graph
-      this.createNewEdge(d);
-    } else { // We're in the same node or the dragged edge started on a manually resized rectangle
-      if (state.justDragged) { // Dragged, not clicked
-        state.justDragged = false;
-      } else { // Clicked, not dragged
-        if (d3.event.shiftKey // Shift-clicked node: edit text content...
-            && !d.manualResize) { // ...that is, if not manually resizing rect
-          var d3txt = this.changeElementText(d3node, d);
-          var txtNode = d3txt.node();
-          modText.selectText(txtNode);
-          txtNode.focus();
-        } else if (d3.event.which !== this.consts.rightMouseBtn) { // left- or mid-clicked
-          modSelection.selectNode(d3node, d);
-        }
-      }
-    }
-    state.mouseDownNode = null;
-  };
-
-
-  // Mousedown on main svg
-  Graphmaker.prototype.svgMouseDown = function() {
-    this.state.graphMouseDown = true;
-  };
-
-
-  // Mouseup on main svg
-  Graphmaker.prototype.svgMouseUp = function() {
-    var state = this.state;
-
-    // Make sure options menu is closed:
-    d3.select("#optionsMenuDiv") .classed("menu", false).classed("menuHidden", true);
-
-    if (modZoom.justScaleTransGraph) { // Dragged not clicked
-      modZoom.justScaleTransGraph = false;
-    } else if (state.graphMouseDown && d3.event.shiftKey) { // Clicked not dragged from svg
-      var xycoords = d3.mouse(this.svgG.node());
-
-      var d = {id: this.shapeId,
-               name: this.consts.defaultShapeText[modSelectedShape.shape] + " "
-                   + this.shapeNum[modSelectedShape.shape]++,
-               x: xycoords[0],
-               y: xycoords[1],
-               color: modSelectedColor.clr,
-               shape: modSelectedColor.shape};
-      this.nodes.push(d);
-      this.shapeId++;
-      this.updateGraph();
-
-      // Make text immediately editable
-      var d3txt = this.changeElementText(this.shapeGroups.filter(function(dval) {
-        return dval.id === d.id;
-      }), d),
-          txtNode = d3txt.node();
-      modText.selectText(txtNode);
-      txtNode.focus();
-    } else if (state.shiftNodeDrag) { // Dragged from node
-      state.shiftNodeDrag = false;
-      this.dragLine.classed("hidden", true).style("stroke-width", 0);
-    } else if (state.graphMouseDown) { // Left-click on background deselects currently selected
-      if (modSelection.selectedNode) {
-        modSelection.removeSelectFromNode();
-      } else if (modSelection.selectedEdge) {
-        modSelection.removeSelectFromEdge();
-      }
-    }
-    state.graphMouseDown = false;
-  };
-
-
-  // Keydown on main svg
-  Graphmaker.prototype.svgKeyDown = function() {
-    // Make sure repeated key presses don't register for each keydown
-    if (this.state.lastKeyDown !== -1) { return; }
-
-    this.state.lastKeyDown = d3.event.keyCode;
-    var selectedNode = modSelection.selectedNode,
-        selectedEdge = modSelection.selectedEdge;
-
-    switch (d3.event.keyCode) {
-    case this.consts.BACKSPACE_KEY:
-    case this.consts.DELETE_KEY:
-      d3.event.preventDefault();
-      if (selectedNode) {
-        this.nodes.splice(this.nodes.indexOf(selectedNode), 1);
-        this.spliceLinksForNode(selectedNode);
-        modSelection.selectedNode = null;
-        this.updateGraph();
-      } else if (selectedEdge) {
-        this.links.splice(this.links.indexOf(selectedEdge), 1);
-        modSelection.selectedEdge = null;
-        this.updateGraph();
-      }
-      break;
-    }
-  };
-
-
-  Graphmaker.prototype.svgKeyUp = function() {
-    this.state.lastKeyDown = -1;
   };
 
 
@@ -2369,7 +2398,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         d3.select(this).classed(thisGraph.consts.connectClass, false);
       })
       .on("mousedown", function(d) {
-          thisGraph.shapeMouseDown(d);
+        modEvents.shapeMouseDown(d3, d);
       })
       .on("mouseup", function(d) {
         if (d3.event.ctrlKey && d.url) {
@@ -2399,9 +2428,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         } else if (d3.event.ctrlKey && d3.event.shiftKey) {
           var defaultNote = d.note || "";
           d.note = prompt("Enter note for this node: ", defaultNote);
-          thisGraph.state.lastKeyDown = -1;
+          modEvents.lastKeyDown = -1;
         } else {
-          thisGraph.shapeMouseUp(d3.select(this), d);
+          modEvents.shapeMouseUp(d3, d3.select(this), d);
         }
       })
       .call(thisGraph.drag);
@@ -2500,7 +2529,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var newPathGroups = edgeGroups.enter().append("g");
     newPathGroups.classed("pathG", true)
       .on("mousedown", function(d) {
-        thisGraph.pathMouseDown(d3.select(this), d);
+        modEvents.pathMouseDown(d3, d3.select(this), d);
       })
       .on("mouseup", function(d) {
         if (d3.event.shiftKey) {
@@ -2512,7 +2541,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           modText.selectText(txtNode);
           txtNode.focus();
         }
-        thisGraph.state.mouseDownLink = null;
+        modEvents.mouseDownLink = null;
       })
       .on("mouseover", function() { // Hover color iff not (selected, new edge or inside shape):
         if ((d3.select(this).selectAll("path").style("stroke") !== modSelectedColor.color)
@@ -2698,25 +2727,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var newP2 = this.changeLineLength(edge.source.x, edge.source.y, edge.target.x, edge.target.y,
                                      -boundary, (edge.thickness || 3));
     return "M" + edge.source.x + "," + edge.source.y + "L" + newP2.x + "," + newP2.y;
-  };
-
-
-  Graphmaker.prototype.setupEventListeners = function() {
-    var thisGraph = this;
-    var svg = thisGraph.svg;
-    d3.select(window).on("keydown", function() {
-      thisGraph.svgKeyDown();
-    })
-    .on("keyup", function() {
-      thisGraph.svgKeyUp();
-    });
-    svg.on("mousedown", function() {
-      thisGraph.svgMouseDown();
-    });
-    svg.on("mouseup", function(){
-      thisGraph.svgMouseUp();
-    });
-    window.onresize = function() {thisGraph.updateWindow(svg);};
   };
 
 
@@ -2989,7 +2999,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   modDatabase.loadMapFromLocation(d3);
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./export.js":7,"./file.js":8,"./front-matter.js":9,"./grid.js":10,"./help.js":11,"./selected-color.js":12,"./selected-shape.js":13,"./selection.js":14,"./system-support-map.js":16,"./text.js":18,"./zoom.js":19}],18:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./edge-style.js":5,"./edge-thickness.js":6,"./events.js":7,"./export.js":8,"./file.js":9,"./front-matter.js":10,"./grid.js":11,"./help.js":12,"./selected-color.js":13,"./selected-shape.js":14,"./selection.js":15,"./system-support-map.js":17,"./text.js":19,"./zoom.js":20}],19:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -3125,7 +3135,7 @@ exports.formatText = function(d3, gEl, d) {
   }
 };
 
-},{"./selected-color.js":12,"./selected-shape.js":13}],19:[function(require,module,exports){
+},{"./selected-color.js":13,"./selected-shape.js":14}],20:[function(require,module,exports){
 var modGrid = require('./grid.js');
 
 exports.zoom = 1;
@@ -3168,4 +3178,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid.js":10}]},{},[17]);
+},{"./grid.js":11}]},{},[18]);

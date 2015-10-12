@@ -1,4 +1,5 @@
-var modSelectedColor = require('./selected-color.js'),
+var modEvents = require('./events.js'),
+    modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
     modText = require('./text.js');
 
@@ -159,7 +160,7 @@ exports.setup = function(d3) {
   createContextMenu(d3);
   if (document.addEventListener) {
     document.addEventListener("contextmenu", function(e) {
-      if (e.which === thisGraph.consts.rightMouseBtn) {
+      if (e.which === modEvents.rightMouseBtn) {
         var elt = e.target || e.srcElement; // target for Firefox, srcElement for Chrome
         if (elt && (elt.tagName !== "svg")) { // Did we right-click on an object?
           while (elt && (elt.tagName !== "g")) { // elt is probably a child of the shapeG we want
