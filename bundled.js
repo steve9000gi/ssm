@@ -984,7 +984,7 @@ var svgMouseUp = function(d3) {
     this.updateGraph();
 
     // Make text immediately editable
-    var d3txt = this.changeElementText(this.shapeGroups.filter(function(dval) {
+    var d3txt = modText.changeElementText(d3, this.shapeGroups.filter(function(dval) {
       return dval.id === d.id;
     }), d),
         txtNode = d3txt.node();
@@ -1055,7 +1055,7 @@ exports.shapeMouseUp = function(d3, d3node, d) {
     } else { // Clicked, not dragged
       if (d3.event.shiftKey // Shift-clicked node: edit text content...
           && !d.manualResize) { // ...that is, if not manually resizing rect
-        var d3txt = this.changeElementText(d3node, d);
+        var d3txt = modText.changeElementText(d3, d3node, d);
         var txtNode = d3txt.node();
         modText.selectText(txtNode);
         txtNode.focus();
@@ -2504,57 +2504,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // Place editable text on node or edge in place of svg text
-  //
-  // Note: see bug report https://code.google.com/p/chromium/issues/detail?id=304567 "svg
-  // foreignObject with contentEditable=true editing/placement inconsistency" for possible
-  // explanation of some editable text positioning difficulties.
-  Graphmaker.prototype.changeElementText = function(d3element, d) {
-    var thisGraph = this,
-        consts = thisGraph.consts,
-        htmlEl = d3element.node();
-    d3element.selectAll("text").remove();
-    var nodeBCR = htmlEl.getBoundingClientRect(),
-        curScale = nodeBCR.width / (modSelectedShape.minCircleRadius * 2),
-        useHW = curScale > 1 ? nodeBCR.width * 1.71 : modSelectedShape.minCircleRadius * 4.84;
-
-    // Replace with editable content text:
-    var d3txt = thisGraph.svg.selectAll("foreignObject")
-      .data([d])
-      .enter().append("foreignObject")
-        .attr("x", nodeBCR.left + nodeBCR.width / 2)
-        .attr("y", nodeBCR.top + nodeBCR.height / 2)
-        .attr("height", 2 * useHW)
-        .attr("width", useHW)
-      .append("xhtml:p")
-        .attr("id", consts.activeEditId)
-        .attr("contentEditable", true)
-        .text(d.name)
-      .on("mousedown", function() {
-        d3.event.stopPropagation();
-      })
-      .on("keydown", function() {
-        d3.event.stopPropagation();
-        if (d3.event.keyCode === consts.ENTER_KEY && !d3.event.shiftKey) { this.blur(); }
-      })
-      .on("blur", function(d) {
-        d.name = this.textContent.trim(); // Remove whitespace fore and aft
-        if (d.manualResize) {
-          modDrag.clickDragHandle = false;
-          d.name = "";
-        } else {
-          // Force shape shrinkwrap:
-          d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
-          d.maxCharsPerLine = undefined; // User may want different value if editing text
-        }
-        modText.formatText(d3, d3element, d);
-        d3.select(this.parentElement).remove();
-        thisGraph.updateGraph();
-      });
-    return d3txt;
-  };
-
-
   Graphmaker.prototype.createNewEdge = function(d) {
     var thisGraph = this;
     var newEdge = {source: modEvents.mouseDownNode,
@@ -2574,7 +2523,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       thisGraph.updateGraph();
       // Todo: finish adapting the following code block for edges for immediate text edit on create.
       /*
-      var d3txt = thisGraph.changeElementText(thisGraph.links.filter(function(dval) {
+      var d3txt = modText.changeElementText(d3, thisGraph.links.filter(function(dval) {
         return dval.name === newEdge.name;
       }), newEdge);
       var txtNode = d3txt.node();
@@ -2784,7 +2733,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           thisGraph.setEdgeColor(this);
           d3.select(this).selectAll("path")
             .style("stroke-width", function(d) { return d.thickness; });
-          var d3txt = thisGraph.changeElementText(d3.select(this), d);
+          var d3txt = modText.changeElementText(d3, d3.select(this), d);
           var txtNode = d3txt.node();
           modText.selectText(txtNode);
           txtNode.focus();
@@ -3113,6 +3062,57 @@ exports.formatText = function(d3, gEl, d) {
     modSelectedShape.setShapeSizeAndPosition(d3, gEl, el, d);
     modSelectedShape.storeShapeSize(gEl, d);
   }
+};
+
+// Place editable text on node or edge in place of svg text
+//
+// Note: see bug report
+// https://code.google.com/p/chromium/issues/detail?id=304567
+// "svg foreignObject with contentEditable=true editing/placement inconsistency"
+// for possible explanation of some editable text positioning difficulties.
+exports.changeElementText = function(d3, d3element, d) {
+  var thisGraph = this,
+      consts = thisGraph.consts,
+      htmlEl = d3element.node();
+  d3element.selectAll("text").remove();
+  var nodeBCR = htmlEl.getBoundingClientRect(),
+      curScale = nodeBCR.width / (modSelectedShape.minCircleRadius * 2),
+      useHW = curScale > 1 ? nodeBCR.width * 1.71 : modSelectedShape.minCircleRadius * 4.84;
+
+  // Replace with editable content text:
+  var d3txt = thisGraph.svg.selectAll("foreignObject")
+    .data([d])
+    .enter().append("foreignObject")
+      .attr("x", nodeBCR.left + nodeBCR.width / 2)
+      .attr("y", nodeBCR.top + nodeBCR.height / 2)
+      .attr("height", 2 * useHW)
+      .attr("width", useHW)
+    .append("xhtml:p")
+      .attr("id", consts.activeEditId)
+      .attr("contentEditable", true)
+      .text(d.name)
+    .on("mousedown", function() {
+      d3.event.stopPropagation();
+    })
+    .on("keydown", function() {
+      d3.event.stopPropagation();
+      if (d3.event.keyCode === consts.ENTER_KEY && !d3.event.shiftKey) { this.blur(); }
+    })
+    .on("blur", function(d) {
+      d.name = this.textContent.trim(); // Remove whitespace fore and aft
+      if (d.manualResize) {
+        modDrag.clickDragHandle = false;
+        d.name = "";
+      } else {
+        // Force shape shrinkwrap:
+        d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
+        d.maxCharsPerLine = undefined; // User may want different value if editing text
+      }
+      modText.formatText(d3, d3element, d);
+      d3.select(this.parentElement).remove();
+      thisGraph.updateGraph();
+    });
+  return d3txt;
 };
 
 },{"./selected-color.js":15,"./selected-shape.js":16}],22:[function(require,module,exports){

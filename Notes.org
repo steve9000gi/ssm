@@ -37,7 +37,6 @@
 **** TODO links
 **** TODO svgG
 **** TODO shapeId
-**** TODO changeElementText()
 **** TODO shapeGroups
 **** TODO consts.connectClass
 **** TODO updateGraph()

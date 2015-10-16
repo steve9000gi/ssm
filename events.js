@@ -97,7 +97,7 @@ var svgMouseUp = function(d3) {
     this.updateGraph();
 
     // Make text immediately editable
-    var d3txt = this.changeElementText(this.shapeGroups.filter(function(dval) {
+    var d3txt = modText.changeElementText(d3, this.shapeGroups.filter(function(dval) {
       return dval.id === d.id;
     }), d),
         txtNode = d3txt.node();
@@ -168,7 +168,7 @@ exports.shapeMouseUp = function(d3, d3node, d) {
     } else { // Clicked, not dragged
       if (d3.event.shiftKey // Shift-clicked node: edit text content...
           && !d.manualResize) { // ...that is, if not manually resizing rect
-        var d3txt = this.changeElementText(d3node, d);
+        var d3txt = modText.changeElementText(d3, d3node, d);
         var txtNode = d3txt.node();
         modText.selectText(txtNode);
         txtNode.focus();
