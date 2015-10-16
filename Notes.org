@@ -45,10 +45,11 @@
 **** TODO createNewEdge()
 *** TODO drag.js
 **** TODO svgG
-**** TODO updateGraph
+**** TODO updateGraph()
+*** TODO options-menu.js
+**** TODO updateGraph()
 *** possible modules
 **** TODO [tool]tips
-**** TODO options menu
 **** TODO toolbox
 ** TODO add 'delete' functionality
 ** TODO create admin interface

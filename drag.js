@@ -5,6 +5,7 @@ exports.shiftNodeDrag = false;
 exports.clickDragHandle = false;
 exports.dragLine = null;
 exports.drag = null;
+exports.dragHandle = null;
 
 var dragmove = function(d3, d) {
   if (exports.shiftNodeDrag) { // Creating a new edge
@@ -44,7 +45,7 @@ exports.setupDrag = function(d3) {
 // resize rectangle.
 exports.setupDragHandle = function(d3) {
   var thisGraph = this;
-  thisGraph.dragHandle = d3.behavior.drag()
+  exports.dragHandle = d3.behavior.drag()
     .on("dragstart", function(d) {
       if (!d3.event.sourceEvent.shiftKey) { return; }
       d.manualResize = true;
