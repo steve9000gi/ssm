@@ -35,6 +35,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modCirclesOfCare = require('./circles-of-care.js'),
       modEdgeStyle = require('./edge-style.js'),
       modEdgeThickness = require('./edge-thickness.js'),
+      modDrag = require('./drag.js'),
       modGrid = require('./grid.js'),
       modZoom = require('./zoom.js'),
       modText = require('./text.js'),
@@ -59,8 +60,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     }
     modSystemSupportMap.create(d3);
     this.setupMMRGroup();
-    this.setupDrag();
-    this.setupDragHandle();
+    modDrag.setupDrag(d3);
+    modDrag.setupDragHandle(d3);
     modZoom.setup(d3, svg);
     this.setupSVGNodesAndLinks();
     modEvents.setupEventListeners(d3);
@@ -92,10 +93,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.nodes = nodes || [];
     this.links = links || [];
     this.state = {
-      justDragged: false,
-      shiftNodeDrag: false,
-      selectedText: null,
-      clickDragHandle: false
+      selectedText: null
     };
     this.svgG = svg.append("g") // The group that contains the main SVG element
                    .classed("graph", true)
@@ -190,71 +188,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.setupDrag = function() {
-    var thisGraph = this;
-    thisGraph.dragLine = thisGraph.svgG.append("svg:path") // Displayed when dragging between nodes
-      .attr("class", "link dragline hidden")
-      .attr("d", function() { return "M0,0L0,0"; })
-      .style("marker-end", "url(#mark-end-arrow)");
-
-    thisGraph.drag = d3.behavior.drag()
-      .origin(function(d) {
-        return {x: d.x, y: d.y};
-      })
-      .on("drag", function(args) {
-        thisGraph.state.justDragged = true;
-        thisGraph.dragmove(args);
-      })
-      .on("dragend", function(args) {
-        modGrid.snap(args);
-        // Todo check if edge-mode is selected
-      });
-  };
-
-
-  // Handle goes in the lower right-hand corner of a rectangle: shift-drag to resize rectangle.
-  Graphmaker.prototype.setupDragHandle = function() {
-    var thisGraph = this;
-    thisGraph.dragHandle = d3.behavior.drag()
-      .on("dragstart", function(d) {
-        if (!d3.event.sourceEvent.shiftKey) { return; }
-        d.manualResize = true;
-        d.name = "";
-        d3.select(this).style("opacity", 1);
-        if (!d.xOffset) {
-          d.xOffset = d.width / 2;
-          d.yOffset = d.height / 2;
-        }
-        d3.event.sourceEvent.stopPropagation();
-      })
-      .on("drag", function(d) {
-        var x = d3.event.x;
-        var y = d3.event.y;
-        d3.select(this)
-          .attr("transform", function() {
-          return "translate(" + x + "," + y + ")";
-        });
-        d3.select("#shape" + d.id)
-          .attr("width", Math.abs(x + d.xOffset))
-          .attr("height", Math.abs(y + d.yOffset));
-      })
-      .on("dragend", function(d) {
-        var rectangle = d3.select("#shape" + d.id);
-        d.width = parseFloat(rectangle.attr("width"));
-        d.height = parseFloat(rectangle.attr("height"));
-        d3.select(this).style("opacity", 0);
-        var currG = d3.select("#shapeG" + d.id);
-        currG.select("text").text("");
-
-        // Move the resized rect group to higher in the DOM so edges and other shapes are on top:
-        var remove = currG.remove();
-        d3.select("#manResizeGG").append(function() {
-          return remove.node();
-        });
-      });
-  };
-
-
   // Manually Resized Rectangles (MMRs) are moved to manResizeGroups so that other shapes and edges
   // appear on top of them because manResizeGroups is earlier in the DOM.
   Graphmaker.prototype.setupMMRGroup = function() {
@@ -282,20 +215,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       }
     }
     return currMax;
-  };
-
-
-  Graphmaker.prototype.dragmove = function(d) {
-    if (this.state.shiftNodeDrag) { // Creating a new edge
-      this.dragLine.attr("d", "M" + d.x + "," + d.y + "L" + d3.mouse(this.svgG.node())[0]
-                                        + "," + d3.mouse(this.svgG.node())[1]);
-    } else { // Translating a shape
-      this.dragLine.style("stroke-width", 0);
-      d.x += d3.event.dx;
-      d.y +=  d3.event.dy;
-      modGrid.snap(d);
-      this.updateGraph();
-    }
   };
 
 
@@ -351,7 +270,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .on("blur", function(d) {
         d.name = this.textContent.trim(); // Remove whitespace fore and aft
         if (d.manualResize) {
-          thisGraph.state.clickDragHandle = false;
+          modDrag.clickDragHandle = false;
           d.name = "";
         } else {
           // Force shape shrinkwrap:
@@ -447,7 +366,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         return "translate(" + d.x + "," + d.y + ")";
       })
       .on("mouseover", function() {
-        if (thisGraph.state.shiftNodeDrag) {
+        if (modDrag.shiftNodeDrag) {
           d3.select(this).classed(thisGraph.consts.connectClass, true);
         }
       })
@@ -492,7 +411,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           modEvents.shapeMouseUp(d3, d3.select(this), d);
         }
       })
-      .call(thisGraph.drag);
+      .call(modDrag.drag);
     return newShapeGroups;
   };
 
@@ -544,7 +463,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       })
       .on("mousedown", function() {
         if (d3.event.shiftKey) {
-          thisGraph.state.clickDragHandle = true;
+          modDrag.clickDragHandle = true;
         }
       })
       .on("mouseup", function() {
@@ -604,7 +523,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       })
       .on("mouseover", function() { // Hover color iff not (selected, new edge or inside shape):
         if ((d3.select(this).selectAll("path").style("stroke") !== modSelectedColor.color)
-            && (!thisGraph.state.shiftNodeDrag) && (!thisGraph.state.justDragged)) {
+            && (!modDrag.shiftNodeDrag) && (!modDrag.justDragged)) {
           d3.select(this).selectAll("path").style("stroke", modSelectedColor.hoverColor)
             .style("marker-end", "url(#hover-end-arrow)");
           d3.select(this).selectAll("text").style("fill", modSelectedColor.hoverColor);

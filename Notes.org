@@ -39,15 +39,14 @@
 **** TODO shapeId
 **** TODO changeElementText()
 **** TODO shapeGroups
-**** TODO dragLine
-**** TODO state.shiftNodeDrag
-**** TODO state.justDragged
 **** TODO consts.connectClass
 **** TODO updateGraph()
 **** TODO updateWindow()
 **** TODO createNewEdge()
+*** TODO drag.js
+**** TODO svgG
+**** TODO updateGraph
 *** possible modules
-**** TODO drag
 **** TODO [tool]tips
 **** TODO options menu
 **** TODO toolbox

@@ -1,4 +1,5 @@
-var modEdgeThickness = require('./edge-thickness.js'),
+var modDrag = require('./drag.js'),
+    modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
     modSelection = require('./selection.js'),
@@ -76,8 +77,6 @@ var svgMouseDown = function() {
 
 // Mouseup on main svg
 var svgMouseUp = function(d3) {
-  var state = this.state;
-
   // Make sure options menu is closed:
   d3.select("#optionsMenuDiv") .classed("menu", false).classed("menuHidden", true);
 
@@ -104,9 +103,9 @@ var svgMouseUp = function(d3) {
         txtNode = d3txt.node();
     modText.selectText(txtNode);
     txtNode.focus();
-  } else if (state.shiftNodeDrag) { // Dragged from node
-    state.shiftNodeDrag = false;
-    this.dragLine.classed("hidden", true).style("stroke-width", 0);
+  } else if (modDrag.shiftNodeDrag) { // Dragged from node
+    modDrag.shiftNodeDrag = false;
+    modDrag.dragLine.classed("hidden", true).style("stroke-width", 0);
   } else if (graphMouseDown) { // Left-click on background deselects currently selected
     if (modSelection.selectedNode) {
       modSelection.removeSelectFromNode();
@@ -140,8 +139,8 @@ exports.shapeMouseDown = function(d3, d) {
   d3.event.stopPropagation();
   exports.mouseDownNode = d;
   if (d3.event.shiftKey && !d.manualResize) { // No edges from manually resized rectangles
-    this.state.shiftNodeDrag = d3.event.shiftKey;
-    this.dragLine.classed("hidden", false) // Reposition dragged directed edge
+    modDrag.shiftNodeDrag = d3.event.shiftKey;
+    modDrag.dragLine.classed("hidden", false) // Reposition dragged directed edge
       .style("stroke-width", modEdgeThickness.thickness)
       .attr("d", "M" + d.x + "," + d.y + "L" + d.x + "," + d.y);
   }
@@ -149,26 +148,23 @@ exports.shapeMouseDown = function(d3, d) {
 
 // Mouseup on nodes
 exports.shapeMouseUp = function(d3, d3node, d) {
-  var state = this.state;
-  var consts = this.consts;
-
   // Reset the states
-  state.shiftNodeDrag = false;
-  state.justDragged = false;
-  d3node.classed(consts.connectClass, false);
+  modDrag.shiftNodeDrag = false;
+  modDrag.justDragged = false;
+  d3node.classed(this.consts.connectClass, false);
 
   var mouseDownNode = exports.mouseDownNode;
 
   if (!mouseDownNode) { return; }
 
-  this.dragLine.classed("hidden", true).style("stroke-width", 0);
+  modDrag.dragLine.classed("hidden", true).style("stroke-width", 0);
 
   if (!mouseDownNode.manualResize // We didn't start on a manually resized rectangle...
     && mouseDownNode !== d) { // ...& we're in a different node: create new edge and add to graph
     this.createNewEdge(d);
   } else { // We're in the same node or the dragged edge started on a manually resized rectangle
-    if (state.justDragged) { // Dragged, not clicked
-      state.justDragged = false;
+    if (modDrag.justDragged) { // Dragged, not clicked
+      modDrag.justDragged = false;
     } else { // Clicked, not dragged
       if (d3.event.shiftKey // Shift-clicked node: edit text content...
           && !d.manualResize) { // ...that is, if not manually resizing rect
