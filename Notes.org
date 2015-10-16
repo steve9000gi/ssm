@@ -59,6 +59,31 @@
 **** TODO consts.activeEditId
 **** TODO svg
 **** TODO updateGraph()
+*** remaining top-level functions/variables in systemsupportmap.js
+**** TODO Graphmaker()
+**** TODO consts = {}
+**** TODO initializeMemberVariables()
+**** TODO defineArrowMarkers()
+**** TODO setupMMRGroup()
+**** TODO setupSVGNodesAndLinks()
+**** TODO setShapeId()
+**** TODO deleteGraph()
+**** TODO createNewEdge()
+**** TODO changeLineLength()
+**** TODO updateExistingPaths()
+**** TODO updateExistingNodes()
+**** TODO addNewNodes()
+**** TODO createNewShapes()
+**** TODO addHandle()
+**** TODO addNewShapes()
+**** TODO setEdgeColor()
+**** TODO addNewPaths()
+**** TODO appendPathText()
+**** TODO updateGraph()
+**** TODO fitGridToZoom()
+**** TODO updateWindow()
+**** TODO setPath()
+**** TODO onbeforeunload()
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users
