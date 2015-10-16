@@ -55,6 +55,10 @@
 **** TODO setShapeId()
 **** TODO svg
 **** TODO updateGraph()
+*** TODO text.js
+**** TODO consts.activeEditId
+**** TODO svg
+**** TODO updateGraph()
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users

@@ -2895,7 +2895,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 })(window.d3, window.saveAs, window.Blob);
 
 },{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./drag.js":5,"./edge-style.js":6,"./edge-thickness.js":7,"./events.js":8,"./export.js":9,"./file.js":10,"./front-matter.js":11,"./grid.js":12,"./help.js":13,"./options-menu.js":14,"./selected-color.js":15,"./selected-shape.js":16,"./selection.js":17,"./system-support-map.js":19,"./text.js":21,"./toolbox.js":22,"./tooltips.js":23,"./util.js":24,"./zoom.js":25}],21:[function(require,module,exports){
-var modSelectedColor = require('./selected-color.js'),
+var modDrag = require('./drag.js'),
+    modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
 
 exports.maxCharsPerLine = 20;
@@ -2904,7 +2905,6 @@ exports.defaultFontSize = 12;
 
 // FIXME: seems to be unused anywhere.
 var appendText = function(gEl, phrases, yShift) {
-  var thisGraph = this;
   var nPhrases = phrases.length;
   var el = gEl.append("text")
         .classed("foregroundText", true)
@@ -2960,7 +2960,6 @@ var splitTextIntoLines = function(element) {
 };
 
 var appendEdgeShadowText = function(gEl, phrases, yShift) {
-  var thisGraph = this;
   var tLen = [0]; // Initialize array with 0 so we don't try to access element at -1
   var el = gEl.append("text")
               .attr("text-anchor","left")
@@ -3017,7 +3016,7 @@ exports.formatText = function(d3, gEl, d) {
   if (d.source) { // ...then it's an edge: add shadow text for legibility:
     tLen = appendEdgeShadowText(gEl, phrases, yShift);
   }
-  var el = this.appendText(gEl, phrases, yShift);
+  var el = appendText(gEl, phrases, yShift);
   if (d.source) { // It's an edge
     el.selectAll("tspan")
       .attr("dx", function(d, i) {
@@ -3074,14 +3073,14 @@ exports.changeElementText = function(d3, d3element, d) {
         d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
         d.maxCharsPerLine = undefined; // User may want different value if editing text
       }
-      modText.formatText(d3, d3element, d);
+      exports.formatText(d3, d3element, d);
       d3.select(this.parentElement).remove();
       thisGraph.updateGraph();
     });
   return d3txt;
 };
 
-},{"./selected-color.js":15,"./selected-shape.js":16}],22:[function(require,module,exports){
+},{"./drag.js":5,"./selected-color.js":15,"./selected-shape.js":16}],22:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modEdgeStyle = require('./edge-style.js'),
     modHelp = require('./help.js'),
