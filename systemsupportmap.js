@@ -47,6 +47,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modSelection = require('./selection.js'),
       modSystemSupportMap = require('./system-support-map.js'),
       modToolbox = require('./toolbox.js'),
+      modTooltips = require('./tooltips.js'),
       modExport = require('./export.js');
 
   // Define graphcreator object
@@ -56,7 +57,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     modFrontMatter.addLogos(d3);
     modFrontMatter.addCopyright(d3);
     modFrontMatter.addCredits(d3);
-    this.setupNotes();
+    modTooltips.setupNotes(d3);
     this.defineArrowMarkers();
     if (modOptionsMenu.displayAll) {
       modCirclesOfCare.create(d3);
@@ -100,22 +101,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.svgG = svg.append("g") // The group that contains the main SVG element
                    .classed("graph", true)
                    .attr("id", "graphG");
-  };
-
-
-  // "Notes" == tooltips
-  Graphmaker.prototype.setupNotes = function() {
-    this.tip = d3.tip()
-                 .attr("class", "d3-tip")
-                 .offset([-10, 0])
-                 .style("font-family", "Arial")
-                 .style("font-weight", "bold")
-                 .html(function (d) {
-                   d3.select(".d3-tip")
-                     .style("display", function() { return d.note ? "block" : "none"; });
-                   return  d.note || null;
-                 });
-    d3.select("#mainSVG").call(this.tip);
   };
 
 
@@ -287,8 +272,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           d3.select(this).classed(thisGraph.consts.connectClass, true);
         }
       })
-      .on("mouseenter", thisGraph.tip.show)
-      .on("mouseleave", thisGraph.tip.hide)
+      .on("mouseenter", modTooltips.tip.show)
+      .on("mouseleave", modTooltips.tip.hide)
       .on("mouseout", function() {
         d3.select(this).classed(thisGraph.consts.connectClass, false);
       })
