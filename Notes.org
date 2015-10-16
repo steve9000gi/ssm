@@ -47,9 +47,10 @@
 **** TODO updateGraph()
 *** TODO options-menu.js
 **** TODO updateGraph()
+*** TODO toolbox.js
+**** TODO deleteGraph()
 *** possible modules
 **** TODO [tool]tips
-**** TODO toolbox
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users

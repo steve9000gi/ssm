@@ -241,3 +241,18 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
     }
   }
 };
+
+exports.createOptionsButton = function(d3) {
+  d3.select("#btnDiv").append("input")
+    .attr("type", "button")
+    .attr("id", "optionsBtn")
+    .attr("value", "Options")
+    .on("click", function() {
+      var position = d3.mouse(d3.select("#topGraphDiv")[0][0]);
+      position[1] -= 120;
+      d3.select("#optionsMenuDiv")
+        .classed("menuHidden", false).classed("menu", true)
+        .style("left", position[0] + "px")
+        .style("top", position[1] + "px");
+    });
+};

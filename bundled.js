@@ -1083,7 +1083,7 @@ exports.pathMouseDown = function(d3, d3path, d) {
   }
 };
 
-},{"./drag.js":5,"./edge-thickness.js":7,"./selected-color.js":15,"./selected-shape.js":16,"./selection.js":17,"./text.js":21,"./zoom.js":23}],9:[function(require,module,exports){
+},{"./drag.js":5,"./edge-thickness.js":7,"./selected-color.js":15,"./selected-shape.js":16,"./selection.js":17,"./text.js":21,"./zoom.js":24}],9:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -1665,6 +1665,21 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
   }
 };
 
+exports.createOptionsButton = function(d3) {
+  d3.select("#btnDiv").append("input")
+    .attr("type", "button")
+    .attr("id", "optionsBtn")
+    .attr("value", "Options")
+    .on("click", function() {
+      var position = d3.mouse(d3.select("#topGraphDiv")[0][0]);
+      position[1] -= 120;
+      d3.select("#optionsMenuDiv")
+        .classed("menuHidden", false).classed("menu", true)
+        .style("left", position[0] + "px")
+        .style("top", position[1] + "px");
+    });
+};
+
 },{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./edge-thickness.js":7,"./export.js":9,"./grid.js":12,"./selected-color.js":15,"./selected-shape.js":16,"./selection.js":17,"./system-support-map.js":19,"./text.js":21}],15:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -2191,7 +2206,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":2,"./system-support-map.js":19,"./zoom.js":23}],19:[function(require,module,exports){
+},{"./circles-of-care.js":2,"./system-support-map.js":19,"./zoom.js":24}],19:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.hideText = "Hide system support rings";
@@ -2315,12 +2330,13 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modSelectedShape = require('./selected-shape.js'),
       modSelection = require('./selection.js'),
       modSystemSupportMap = require('./system-support-map.js'),
+      modToolbox = require('./toolbox.js'),
       modExport = require('./export.js');
 
   // Define graphcreator object
   var Graphmaker = function(svg, nodes, links) {
     this.initializeMemberVariables();
-    this.prepareToolbox();
+    modToolbox.prepareToolbox(d3);
     modFrontMatter.addLogos(d3);
     modFrontMatter.addCopyright(d3);
     modFrontMatter.addCredits(d3);
@@ -2368,40 +2384,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.svgG = svg.append("g") // The group that contains the main SVG element
                    .classed("graph", true)
                    .attr("id", "graphG");
-  };
-
-
-  Graphmaker.prototype.createOptionsButton = function() {
-    d3.select("#btnDiv").append("input")
-      .attr("type", "button")
-      .attr("id", "optionsBtn")
-      .attr("value", "Options")
-      .on("click", function() {
-        var position = d3.mouse(d3.select("#topGraphDiv")[0][0]);
-        position[1] -= 120;
-        d3.select("#optionsMenuDiv")
-          .classed("menuHidden", false).classed("menu", true)
-          .style("left", position[0] + "px")
-          .style("top", position[1] + "px");
-      });
-  };
-
-
-  // Edge, shape, and color selection, plus "?" help and Options buttons, load, save, and delete.
-  Graphmaker.prototype.prepareToolbox = function() {
-    var thisGraph = this;
-    modCirclesOfCare.center = null; // CirclesOfCareCenter
-    modSystemSupportMap.center = null; // System Support Map Center
-
-    // Handle delete graph
-    d3.select("#delete-graph").on("click", function() { thisGraph.deleteGraph(false); });
-
-    modHelp(d3);
-    modOptionsMenu.createOptionsMenu(d3);
-    thisGraph.createOptionsButton();
-    modSelectedColor.createColorPalette(d3);
-    modSelectedShape.addShapeSelection(d3);
-    modEdgeStyle.addControls(d3);
   };
 
 
@@ -2928,7 +2910,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   modDatabase.loadMapFromLocation(d3);
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./drag.js":5,"./edge-style.js":6,"./edge-thickness.js":7,"./events.js":8,"./export.js":9,"./file.js":10,"./front-matter.js":11,"./grid.js":12,"./help.js":13,"./options-menu.js":14,"./selected-color.js":15,"./selected-shape.js":16,"./selection.js":17,"./system-support-map.js":19,"./text.js":21,"./util.js":22,"./zoom.js":23}],21:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./drag.js":5,"./edge-style.js":6,"./edge-thickness.js":7,"./events.js":8,"./export.js":9,"./file.js":10,"./front-matter.js":11,"./grid.js":12,"./help.js":13,"./options-menu.js":14,"./selected-color.js":15,"./selected-shape.js":16,"./selection.js":17,"./system-support-map.js":19,"./text.js":21,"./toolbox.js":22,"./util.js":23,"./zoom.js":24}],21:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -3116,6 +3098,33 @@ exports.changeElementText = function(d3, d3element, d) {
 };
 
 },{"./selected-color.js":15,"./selected-shape.js":16}],22:[function(require,module,exports){
+var modCirclesOfCare = require('./circles-of-care.js'),
+    modEdgeStyle = require('./edge-style.js'),
+    modHelp = require('./help.js'),
+    modOptionsMenu = require('./options-menu.js'),
+    modSelectedColor = require('./selected-color.js'),
+    modSelectedShape = require('./selected-shape.js'),
+    modSystemSupportMap = require('./system-support-map.js');
+
+// Edge, shape, and color selection, plus "?" help and Options buttons, load,
+// save, and delete.
+exports.prepareToolbox = function(d3) {
+  var thisGraph = this;
+  modCirclesOfCare.center = null; // CirclesOfCareCenter
+  modSystemSupportMap.center = null; // System Support Map Center
+
+  // Handle delete graph
+  d3.select("#delete-graph").on("click", function() { thisGraph.deleteGraph(false); });
+
+  modHelp(d3);
+  modOptionsMenu.createOptionsMenu(d3);
+  modOptionsMenu.createOptionsButton(d3);
+  modSelectedColor.createColorPalette(d3);
+  modSelectedShape.addShapeSelection(d3);
+  modEdgeStyle.addControls(d3);
+};
+
+},{"./circles-of-care.js":2,"./edge-style.js":6,"./help.js":13,"./options-menu.js":14,"./selected-color.js":15,"./selected-shape.js":16,"./system-support-map.js":19}],23:[function(require,module,exports){
 
 // http://warpycode.wordpress.com/2011/01/21/calculating-the-distance-to-the-edge-of-an-ellipse/
 // Angle theta is measured from the -y axis (recalling that +y is down)
@@ -3146,7 +3155,7 @@ exports.computeRectangleBoundary = function(edge) {
   return ((absCosTheta > thresholdCos) ? h * hyp / dy : w * hyp / dx) + offset;
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 var modGrid = require('./grid.js');
 
 exports.zoom = 1;

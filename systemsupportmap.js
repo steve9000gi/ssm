@@ -46,12 +46,13 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modSelectedShape = require('./selected-shape.js'),
       modSelection = require('./selection.js'),
       modSystemSupportMap = require('./system-support-map.js'),
+      modToolbox = require('./toolbox.js'),
       modExport = require('./export.js');
 
   // Define graphcreator object
   var Graphmaker = function(svg, nodes, links) {
     this.initializeMemberVariables();
-    this.prepareToolbox();
+    modToolbox.prepareToolbox(d3);
     modFrontMatter.addLogos(d3);
     modFrontMatter.addCopyright(d3);
     modFrontMatter.addCredits(d3);
@@ -99,40 +100,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.svgG = svg.append("g") // The group that contains the main SVG element
                    .classed("graph", true)
                    .attr("id", "graphG");
-  };
-
-
-  Graphmaker.prototype.createOptionsButton = function() {
-    d3.select("#btnDiv").append("input")
-      .attr("type", "button")
-      .attr("id", "optionsBtn")
-      .attr("value", "Options")
-      .on("click", function() {
-        var position = d3.mouse(d3.select("#topGraphDiv")[0][0]);
-        position[1] -= 120;
-        d3.select("#optionsMenuDiv")
-          .classed("menuHidden", false).classed("menu", true)
-          .style("left", position[0] + "px")
-          .style("top", position[1] + "px");
-      });
-  };
-
-
-  // Edge, shape, and color selection, plus "?" help and Options buttons, load, save, and delete.
-  Graphmaker.prototype.prepareToolbox = function() {
-    var thisGraph = this;
-    modCirclesOfCare.center = null; // CirclesOfCareCenter
-    modSystemSupportMap.center = null; // System Support Map Center
-
-    // Handle delete graph
-    d3.select("#delete-graph").on("click", function() { thisGraph.deleteGraph(false); });
-
-    modHelp(d3);
-    modOptionsMenu.createOptionsMenu(d3);
-    thisGraph.createOptionsButton();
-    modSelectedColor.createColorPalette(d3);
-    modSelectedShape.addShapeSelection(d3);
-    modEdgeStyle.addControls(d3);
   };
 
 
