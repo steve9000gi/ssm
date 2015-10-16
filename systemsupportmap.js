@@ -37,6 +37,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modEdgeThickness = require('./edge-thickness.js'),
       modDrag = require('./drag.js'),
       modGrid = require('./grid.js'),
+      modUtil = require('./util.js'),
       modZoom = require('./zoom.js'),
       modText = require('./text.js'),
       modFrontMatter = require('./front-matter.js'),
@@ -641,36 +642,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // http://warpycode.wordpress.com/2011/01/21/calculating-the-distance-to-the-edge-of-an-ellipse/
-  // Angle theta is measured from the -y axis (recalling that +y is down) clockwise.
-  Graphmaker.prototype.computeEllipseBoundary = function(edge) {
-    var dx = edge.target.x - edge.source.x;
-    var dy = edge.target.y - edge.source.y;
-    var rx  = edge.target.rx,
-        ry  = edge.target.ry;
-    var h = Math.sqrt(dx * dx + dy * dy);
-    var s = dx / h; // sin theta
-    var c = dy / h; // cos theta
-    var length = Math.sqrt(1 / ((s / rx) * (s / rx) + (c / ry) * (c / ry)));
-    var offset = 18;
-    return length + offset;
-  };
-
-
-  // Angle theta is measured from -y axis (up) clockwise.
-  Graphmaker.prototype.computeRectangleBoundary = function(edge) {
-    var dx = Math.abs(edge.source.x - edge.target.x);
-    var dy = Math.abs(edge.target.y - edge.source.y);
-    var hyp = Math.sqrt(dx * dx + dy * dy);
-    var absCosTheta = dy / hyp; // Absolute value of cosine theta
-    var w = edge.target.width / 2;
-    var h = edge.target.height / 2;
-    var thresholdCos = h / Math.sqrt(w * w + h * h); // cos of angle where intersect switches sides
-    var offset = 22; // Give the arrow a little breathing room
-    return ((absCosTheta > thresholdCos) ? h * hyp / dy : w * hyp / dx) + offset;
-  };
-
-
   Graphmaker.prototype.setPath = function(edge) {
     var boundary = 16; // Initialize to default number of pixels padding for circle, diamond.
     switch (edge.target.shape) {
@@ -683,7 +654,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         break;
       case ("rectangle"):
       case ("noBorder"):
-        boundary = this.computeRectangleBoundary(edge);
+        boundary = modUtil.computeRectangleBoundary(edge);
         break;
       case "diamond":
         if (edge.target.dim) {
@@ -693,7 +664,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         }
         break;
       case "ellipse":
-        boundary = this.computeEllipseBoundary(edge);
+        boundary = modUtil.computeEllipseBoundary(edge);
         break;
       case "star":
         boundary = edge.target.boundary;

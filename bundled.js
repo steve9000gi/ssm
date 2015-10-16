@@ -1082,7 +1082,7 @@ exports.pathMouseDown = function(d3, d3path, d) {
   }
 };
 
-},{"./drag.js":5,"./edge-thickness.js":7,"./selected-color.js":14,"./selected-shape.js":15,"./selection.js":16,"./text.js":20,"./zoom.js":21}],9:[function(require,module,exports){
+},{"./drag.js":5,"./edge-thickness.js":7,"./selected-color.js":14,"./selected-shape.js":15,"./selection.js":16,"./text.js":20,"./zoom.js":22}],9:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -1945,7 +1945,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":2,"./system-support-map.js":18,"./zoom.js":21}],18:[function(require,module,exports){
+},{"./circles-of-care.js":2,"./system-support-map.js":18,"./zoom.js":22}],18:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.hideText = "Hide system support rings";
@@ -2060,6 +2060,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modEdgeThickness = require('./edge-thickness.js'),
       modDrag = require('./drag.js'),
       modGrid = require('./grid.js'),
+      modUtil = require('./util.js'),
       modZoom = require('./zoom.js'),
       modText = require('./text.js'),
       modFrontMatter = require('./front-matter.js'),
@@ -2664,36 +2665,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  // http://warpycode.wordpress.com/2011/01/21/calculating-the-distance-to-the-edge-of-an-ellipse/
-  // Angle theta is measured from the -y axis (recalling that +y is down) clockwise.
-  Graphmaker.prototype.computeEllipseBoundary = function(edge) {
-    var dx = edge.target.x - edge.source.x;
-    var dy = edge.target.y - edge.source.y;
-    var rx  = edge.target.rx,
-        ry  = edge.target.ry;
-    var h = Math.sqrt(dx * dx + dy * dy);
-    var s = dx / h; // sin theta
-    var c = dy / h; // cos theta
-    var length = Math.sqrt(1 / ((s / rx) * (s / rx) + (c / ry) * (c / ry)));
-    var offset = 18;
-    return length + offset;
-  };
-
-
-  // Angle theta is measured from -y axis (up) clockwise.
-  Graphmaker.prototype.computeRectangleBoundary = function(edge) {
-    var dx = Math.abs(edge.source.x - edge.target.x);
-    var dy = Math.abs(edge.target.y - edge.source.y);
-    var hyp = Math.sqrt(dx * dx + dy * dy);
-    var absCosTheta = dy / hyp; // Absolute value of cosine theta
-    var w = edge.target.width / 2;
-    var h = edge.target.height / 2;
-    var thresholdCos = h / Math.sqrt(w * w + h * h); // cos of angle where intersect switches sides
-    var offset = 22; // Give the arrow a little breathing room
-    return ((absCosTheta > thresholdCos) ? h * hyp / dy : w * hyp / dx) + offset;
-  };
-
-
   Graphmaker.prototype.setPath = function(edge) {
     var boundary = 16; // Initialize to default number of pixels padding for circle, diamond.
     switch (edge.target.shape) {
@@ -2706,7 +2677,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         break;
       case ("rectangle"):
       case ("noBorder"):
-        boundary = this.computeRectangleBoundary(edge);
+        boundary = modUtil.computeRectangleBoundary(edge);
         break;
       case "diamond":
         if (edge.target.dim) {
@@ -2716,7 +2687,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         }
         break;
       case "ellipse":
-        boundary = this.computeEllipseBoundary(edge);
+        boundary = modUtil.computeEllipseBoundary(edge);
         break;
       case "star":
         boundary = edge.target.boundary;
@@ -3000,7 +2971,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   modDatabase.loadMapFromLocation(d3);
 })(window.d3, window.saveAs, window.Blob);
 
-},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./drag.js":5,"./edge-style.js":6,"./edge-thickness.js":7,"./events.js":8,"./export.js":9,"./file.js":10,"./front-matter.js":11,"./grid.js":12,"./help.js":13,"./selected-color.js":14,"./selected-shape.js":15,"./selection.js":16,"./system-support-map.js":18,"./text.js":20,"./zoom.js":21}],20:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":2,"./context-menu.js":3,"./database.js":4,"./drag.js":5,"./edge-style.js":6,"./edge-thickness.js":7,"./events.js":8,"./export.js":9,"./file.js":10,"./front-matter.js":11,"./grid.js":12,"./help.js":13,"./selected-color.js":14,"./selected-shape.js":15,"./selection.js":16,"./system-support-map.js":18,"./text.js":20,"./util.js":21,"./zoom.js":22}],20:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -3137,6 +3108,37 @@ exports.formatText = function(d3, gEl, d) {
 };
 
 },{"./selected-color.js":14,"./selected-shape.js":15}],21:[function(require,module,exports){
+
+// http://warpycode.wordpress.com/2011/01/21/calculating-the-distance-to-the-edge-of-an-ellipse/
+// Angle theta is measured from the -y axis (recalling that +y is down)
+// clockwise.
+exports.computeEllipseBoundary = function(edge) {
+  var dx = edge.target.x - edge.source.x;
+  var dy = edge.target.y - edge.source.y;
+  var rx  = edge.target.rx,
+      ry  = edge.target.ry;
+  var h = Math.sqrt(dx * dx + dy * dy);
+  var s = dx / h; // sin theta
+  var c = dy / h; // cos theta
+  var length = Math.sqrt(1 / ((s / rx) * (s / rx) + (c / ry) * (c / ry)));
+  var offset = 18;
+  return length + offset;
+};
+
+// Angle theta is measured from -y axis (up) clockwise.
+exports.computeRectangleBoundary = function(edge) {
+  var dx = Math.abs(edge.source.x - edge.target.x);
+  var dy = Math.abs(edge.target.y - edge.source.y);
+  var hyp = Math.sqrt(dx * dx + dy * dy);
+  var absCosTheta = dy / hyp; // Absolute value of cosine theta
+  var w = edge.target.width / 2;
+  var h = edge.target.height / 2;
+  var thresholdCos = h / Math.sqrt(w * w + h * h); // cos of angle where intersect switches sides
+  var offset = 22; // Give the arrow a little breathing room
+  return ((absCosTheta > thresholdCos) ? h * hyp / dy : w * hyp / dx) + offset;
+};
+
+},{}],22:[function(require,module,exports){
 var modGrid = require('./grid.js');
 
 exports.zoom = 1;
