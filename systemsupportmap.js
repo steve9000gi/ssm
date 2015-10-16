@@ -159,18 +159,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.getBiggestShapeId = function() {
-    var currMax = 0;
-    var i;
-    for (i = 0; i < this.nodes.length; i++) {
-      if (this.nodes[i].id > currMax) {
-        currMax = this.nodes[i].id;
-      }
-    }
-    return currMax;
-  };
-
-
   Graphmaker.prototype.deleteGraph = function(skipPrompt) {
     var doDelete = true;
     if (!skipPrompt) {

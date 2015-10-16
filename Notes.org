@@ -18,7 +18,6 @@
 *** TODO context-menu.js
 **** TODO updateGraph()
 **** TODO new ActiveXObject
-**** TODO selectNode()
 *** TODO import.js
 **** TODO deleteGraph()
 **** TODO updateGraph()
@@ -49,6 +48,13 @@
 **** TODO updateGraph()
 *** TODO toolbox.js
 **** TODO deleteGraph()
+*** TODO serialize.js
+**** TODO nodes
+**** TODO links
+**** TODO deleteGraph()
+**** TODO setShapeId()
+**** TODO svg
+**** TODO updateGraph()
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users

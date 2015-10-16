@@ -173,7 +173,7 @@ exports.setup = function(d3) {
               if ((d.id === eltData.id) // Select the right-clicked-on shape group...
                 && (!modSelection.selectedNode // ...if no shapeG is selected, or...
                 || (modSelection.selectedNode.id !== d.id))) { // ...if d not already selected
-                thisGraph.selectNode(d3.select(this), eltData); // Expects shapeG as the first arg
+                modSelection.selectNode(d3.select(this), eltData); // Expects shapeG as the first arg
               }
             });
         }

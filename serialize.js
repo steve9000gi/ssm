@@ -2,6 +2,17 @@ var modCirclesOfCare = require('./circles-of-care.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modZoom = require('./zoom.js');
 
+var getBiggestShapeId = function() {
+  var currMax = 0;
+  var i;
+  for (i = 0; i < this.nodes.length; i++) {
+    if (this.nodes[i].id > currMax) {
+      currMax = this.nodes[i].id;
+    }
+  }
+  return currMax;
+};
+
 // Return the current map as an JS object.
 exports.getMapObject = function(d3) {
   var saveEdges = [];
@@ -33,7 +44,7 @@ exports.importMap = function(d3, jsonObj, id) {
   try {
     thisGraph.deleteGraph(true);
     thisGraph.nodes = jsonObj.nodes;
-    thisGraph.setShapeId(thisGraph.getBiggestShapeId() + 1);
+    thisGraph.setShapeId(getBiggestShapeId() + 1);
     var newEdges = jsonObj.links;
     newEdges.forEach(function(e, i) {
       newEdges[i] = {source: thisGraph.nodes.filter(function(n) {
