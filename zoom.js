@@ -1,4 +1,5 @@
-var modGrid = require('./grid.js');
+var modGrid = require('./grid.js'),
+    modText = require('./text.js');
 
 exports.zoom = 1;
 exports.zoomSvg = null;
@@ -26,7 +27,7 @@ exports.setup = function(d3, svg) {
       return true;
     })
     .on("zoomstart", function() {
-      var ael = d3.select("#" + thisGraph.consts.activeEditId).node();
+      var ael = d3.select("#" + modText.activeEditId).node();
       if (ael) {
         ael.blur();
       }

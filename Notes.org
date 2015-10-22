@@ -5,8 +5,6 @@
 *** TODO grid.js
 **** TODO zoom - currently in zoom.js, but that would create a circular dependency
 **** TODO fitGridToZoom
-*** TODO zoom.js
-**** TODO consts.activeEditId
 *** TODO selected-shape.js
 **** TODO updateExistingPaths()
 **** TODO updateGraph()
@@ -36,7 +34,6 @@
 **** TODO setShapeId()
 **** TODO updateGraph()
 *** TODO text.js
-**** TODO consts.activeEditId
 **** TODO updateGraph()
 *** remaining top-level functions/variables in systemsupportmap.js
 **** TODO Graphmaker()

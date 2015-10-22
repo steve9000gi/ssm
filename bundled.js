@@ -2410,9 +2410,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.consts =  {
     backendBase: 'http://syssci.renci.org:8080',
-    connectClass: "connect-node",
-    activeEditId: "active-editing",
-    ENTER_KEY: 13
+    connectClass: "connect-node"
   };
 
 
@@ -2908,6 +2906,9 @@ var modDrag = require('./drag.js'),
 exports.maxCharsPerLine = 20;
 exports.boldFontWeight = 900;
 exports.defaultFontSize = 12;
+exports.activeEditId = 'active-editing';
+
+var ENTER_KEY = 13;
 
 // FIXME: seems to be unused anywhere.
 var appendText = function(gEl, phrases, yShift) {
@@ -3059,7 +3060,7 @@ exports.changeElementText = function(d3, d3element, d) {
       .attr("height", 2 * useHW)
       .attr("width", useHW)
     .append("xhtml:p")
-      .attr("id", consts.activeEditId)
+      .attr("id", exports.activeEditId)
       .attr("contentEditable", true)
       .text(d.name)
     .on("mousedown", function() {
@@ -3067,7 +3068,7 @@ exports.changeElementText = function(d3, d3element, d) {
     })
     .on("keydown", function() {
       d3.event.stopPropagation();
-      if (d3.event.keyCode === consts.ENTER_KEY && !d3.event.shiftKey) { this.blur(); }
+      if (d3.event.keyCode === ENTER_KEY && !d3.event.shiftKey) { this.blur(); }
     })
     .on("blur", function(d) {
       d.name = this.textContent.trim(); // Remove whitespace fore and aft
@@ -3163,7 +3164,8 @@ exports.computeRectangleBoundary = function(edge) {
 };
 
 },{}],26:[function(require,module,exports){
-var modGrid = require('./grid.js');
+var modGrid = require('./grid.js'),
+    modText = require('./text.js');
 
 exports.zoom = 1;
 exports.zoomSvg = null;
@@ -3191,7 +3193,7 @@ exports.setup = function(d3, svg) {
       return true;
     })
     .on("zoomstart", function() {
-      var ael = d3.select("#" + thisGraph.consts.activeEditId).node();
+      var ael = d3.select("#" + modText.activeEditId).node();
       if (ael) {
         ael.blur();
       }
@@ -3205,4 +3207,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid.js":12}]},{},[21]);
+},{"./grid.js":12,"./text.js":22}]},{},[21]);

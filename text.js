@@ -6,6 +6,9 @@ var modDrag = require('./drag.js'),
 exports.maxCharsPerLine = 20;
 exports.boldFontWeight = 900;
 exports.defaultFontSize = 12;
+exports.activeEditId = 'active-editing';
+
+var ENTER_KEY = 13;
 
 // FIXME: seems to be unused anywhere.
 var appendText = function(gEl, phrases, yShift) {
@@ -157,7 +160,7 @@ exports.changeElementText = function(d3, d3element, d) {
       .attr("height", 2 * useHW)
       .attr("width", useHW)
     .append("xhtml:p")
-      .attr("id", consts.activeEditId)
+      .attr("id", exports.activeEditId)
       .attr("contentEditable", true)
       .text(d.name)
     .on("mousedown", function() {
@@ -165,7 +168,7 @@ exports.changeElementText = function(d3, d3element, d) {
     })
     .on("keydown", function() {
       d3.event.stopPropagation();
-      if (d3.event.keyCode === consts.ENTER_KEY && !d3.event.shiftKey) { this.blur(); }
+      if (d3.event.keyCode === ENTER_KEY && !d3.event.shiftKey) { this.blur(); }
     })
     .on("blur", function(d) {
       d.name = this.textContent.trim(); // Remove whitespace fore and aft
