@@ -4,7 +4,6 @@
 ** TODO refactoring
 *** remaining top-level functions/variables in systemsupportmap.js
 **** TODO Graphmaker()
-**** TODO initializeMemberVariables()
 **** TODO defineArrowMarkers()
 **** TODO setupMMRGroup()
 **** TODO setupSVGNodesAndLinks()

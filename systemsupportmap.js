@@ -55,7 +55,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   // Define graphcreator object
   var Graphmaker = function() {
-    this.initializeMemberVariables();
     modToolbox.prepareToolbox(d3);
     modFrontMatter.addLogos(d3);
     modFrontMatter.addCopyright(d3);
@@ -81,14 +80,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   /* PROTOTYPE FUNCTIONS */
-
-
-  Graphmaker.prototype.initializeMemberVariables = function() {
-    this.edgeNum = 0;
-    this.state = {
-      selectedText: null
-    };
-  };
 
 
   Graphmaker.prototype.defineArrowMarkers = function() {
