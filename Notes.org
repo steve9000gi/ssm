@@ -1,6 +1,45 @@
 * SSM (System Support Mapper)
 ** TODO reassociate login form labels with input elements           :bugfix:
 ** TODO login broken due to CORS on Safari                          :bugfix:
+** TODO exercise the full app to find any refactoring bugs
+*** functions to test
+**** TODO creating nodes
+**** TODO moving nodes
+**** TODO deleting nodes
+**** TODO creating edges
+**** TODO moving edges (by moving nodes)
+**** TODO deleting edges
+**** TODO both edge styles
+**** TODO all 6 shape styles
+**** TODO all 8 colors
+**** TODO export to file
+**** TODO import from file
+**** TODO login (registration?)
+**** TODO logout
+**** TODO save to DB
+**** TODO listing maps
+**** TODO load from DB
+**** TODO delete map
+**** TODO dragging canvas
+**** TODO zooming canvas
+**** TODO shift-click on node's text to edit
+**** TODO shift-click on an edge to edit text
+**** TODO alt-click on node to see/create URL
+**** TODO ctrl-click on node with URL to open URL
+**** TODO ctrl-shift-click on node to add/edit note
+**** TODO hover a node to see its note
+**** TODO help text appears
+**** TODO options menu appears, as do submenus
+**** TODO hide/show system support rings
+**** TODO hide/show circles of care
+**** TODO equalize selected shape size
+**** TODO equalize sizes for all shapes
+**** TODO set text line length (try all 9 options)
+**** TODO set line thickness (try all 7 options)
+**** TODO set selected object color
+**** TODO snap to grid
+**** TODO export map as image
+**** TODO load text for context menu
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users
