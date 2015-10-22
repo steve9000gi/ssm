@@ -2,9 +2,6 @@
 ** TODO reassociate login form labels with input elements           :bugfix:
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO refactoring
-*** TODO grid.js
-**** TODO zoom - currently in zoom.js, but that would create a circular dependency
-**** TODO fitGridToZoom
 *** TODO auth.js
 **** TODO consts.backendbase
 *** TODO database.js
@@ -32,7 +29,6 @@
 **** TODO setShapeId()
 **** TODO deleteGraph()
 **** TODO createNewEdge()
-**** TODO fitGridToZoom()
 **** TODO onbeforeunload()
 ** TODO add 'delete' functionality
 ** TODO create admin interface

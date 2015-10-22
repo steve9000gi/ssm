@@ -1,8 +1,8 @@
 var modCirclesOfCare = require('./circles-of-care.js'),
+    modGridZoom = require('./grid-zoom.js'),
     modSvg = require('./svg.js'),
     modSystemSupportMap = require('./system-support-map.js'),
-    modUpdate = require('./update.js'),
-    modZoom = require('./zoom.js');
+    modUpdate = require('./update.js');
 
 var getBiggestShapeId = function() {
   var currMax = 0;
@@ -69,8 +69,8 @@ exports.importMap = function(d3, jsonObj, id) {
     d3.select("#graphG").attr("transform", graphGTransform);
     var xform = d3.transform(d3.select("#graphG").attr("transform"));
     var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
-    modZoom.zoomSvg.translate([tx, ty]).scale(scale);
-    modZoom.zoomSvg.event(modSvg.svg.transition().duration(500));
+    modGridZoom.zoomSvg.translate([tx, ty]).scale(scale);
+    modGridZoom.zoomSvg.event(modSvg.svg.transition().duration(500));
 
     modSystemSupportMap.center = jsonObj.systemSupportMapCenter;
     if (modSystemSupportMap.center) {

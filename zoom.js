@@ -1,17 +1,16 @@
 var modGrid = require('./grid.js'),
+    modGridZoom = require('./grid-zoom.js'),
     modText = require('./text.js');
 
-exports.zoom = 1;
 exports.zoomSvg = null;
 exports.justScaleTransGraph = false;
-exports.translate = [0, 0];
 
 var zoomed = function(d3) {
   exports.justScaleTransGraph = true;
-  exports.zoom = d3.event.scale;
-  exports.translate = d3.event.translate;
+  modGridZoom.zoom = d3.event.scale;
+  modGridZoom.translate = d3.event.translate;
   d3.select(".graph")
-    .attr("transform", "translate(" + exports.translate + ") scale(" + exports.zoom + ")");
+    .attr("transform", "translate(" + modGridZoom.translate + ") scale(" + modGridZoom.zoom + ")");
   modGrid.create(d3);
 };
 

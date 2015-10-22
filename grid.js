@@ -1,3 +1,5 @@
+var modGridZoom = require('./grid-zoom.js');
+
 var gridVisible = false,
     grid = null,
     gridCellW = 10,
@@ -8,15 +10,15 @@ var generateGridLineEndPoints = function(d3) {
   var data = [];
   var topDiv = d3.select("#topGraphDiv");
   var bcr = d3.select("#mainSVG").node().getBoundingClientRect();
-  var maxX = bcr.width / this.zoom, maxY = bcr.height / this.zoom;
+  var maxX = bcr.width / modGridZoom.zoom, maxY = bcr.height / modGridZoom.zoom;
   var x1 = 0, y1 = 0, x2 = 0, y2 = maxY, n = 0;
   // Create fewer gridlines when zooming out:
-  var w = thisGraph.zoom > 0.2 ? gridCellW
-                               : (thisGraph.zoom > 0.02 ? gridCellW * 4
-                                                        : gridCellW * 40);
-  var h = thisGraph.zoom > 0.2 ? gridCellH
-                               : (thisGraph.zoom > 0.02 ? gridCellH * 4
-                                                        : gridCellH * 40);
+  var w = modGridZoom.zoom > 0.2 ? gridCellW
+                                 : (thisGraph.zoom > 0.02 ? gridCellW * 4
+                                                          : gridCellW * 40);
+  var h = modGridZoom.zoom > 0.2 ? gridCellH
+                                 : (thisGraph.zoom > 0.02 ? gridCellH * 4
+                                                          : gridCellH * 40);
   while(x1 <= maxX) {
     data.push({
       "x1": x1,
@@ -103,7 +105,7 @@ exports.create = function(d3) {
     .style("stroke-width", function(d) { return (d.n % 4) ? "0.1px" : "0.5px"; })
     .style("stroke-dasharray", ("1, 1"))
     .style("fill", "none");
-  thisGraph.fitGridToZoom();
+  modGridZoom.fitGridToZoom(d3);
 };
 
 exports.enableSnap = function(d3) {

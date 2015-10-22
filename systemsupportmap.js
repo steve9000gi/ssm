@@ -37,8 +37,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modEdgeThickness = require('./edge-thickness.js'),
       modDrag = require('./drag.js'),
       modGrid = require('./grid.js'),
-      modUtil = require('./util.js'),
       modZoom = require('./zoom.js'),
+      modGridZoom = require('./grid-zoom.js'),
+      modUtil = require('./util.js'),
       modText = require('./text.js'),
       modFrontMatter = require('./front-matter.js'),
       modOptionsMenu = require('./options-menu.js'),
@@ -189,15 +190,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       txtNode.focus();
       */
     }
-  };
-
-
-  Graphmaker.prototype.fitGridToZoom = function() {
-    var reverseTranslate = modZoom.translate;
-    reverseTranslate[0] /= -modZoom.zoom;
-    reverseTranslate[1] /= -modZoom.zoom;
-    d3.select("#gridGroup")
-      .attr("transform", "translate(" + reverseTranslate + ")");
   };
 
 
