@@ -18,13 +18,6 @@
 *** TODO context-menu.js
 **** TODO updateGraph()
 **** TODO new ActiveXObject
-*** TODO import.js (umm, what is this??)
-**** TODO deleteGraph()
-**** TODO updateGraph()
-**** TODO setShapeId
-**** TODO svg
-**** TODO nodes
-**** TODO links
 *** TODO selection.js
 **** TODO shapeGroups
 **** TODO edgeGroups
