@@ -2,10 +2,6 @@
 ** TODO reassociate login form labels with input elements           :bugfix:
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO refactoring
-*** TODO auth.js
-**** TODO consts.backendbase
-*** TODO database.js
-**** TODO consts.backendBase
 *** TODO context-menu.js
 **** TODO new ActiveXObject
 *** TODO events.js

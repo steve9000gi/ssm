@@ -1,4 +1,5 @@
 var modAuth = require('./auth.js'),
+    modBackend = require('./backend.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modSerialize = require('./serialize.js'),
     modSystemSupportMap = require('./system-support-map.js');
@@ -6,7 +7,7 @@ var modAuth = require('./auth.js'),
 // Fetch a map from the backend given its id
 var fetchMap = function(d3, id) {
   var thisGraph = this;
-  d3.json(this.consts.backendBase + '/map/' + id)
+  d3.json(modBackend.backendBase + '/map/' + id)
     .on('beforesend', function(request) { request.withCredentials = true; })
     .on('error',
         function() { window.alert('Error talking to backend server.'); })
@@ -82,7 +83,7 @@ var listMaps = function(d3) {
     .on('click', function() {
       d3.event.stopPropagation();
     });
-  d3.json(this.consts.backendBase + '/maps')
+  d3.json(modBackend.backendBase + '/maps')
     .on('beforesend', function(request) { request.withCredentials = true; })
     .on('error',
         function(error) { window.alert('Error talking to backend server.'); })
@@ -108,7 +109,7 @@ exports.loadMapFromLocation = function(d3) {
   if (m) {
     var id = m[1];
     var thisGraph = this;
-    d3.json(this.consts.backendBase + '/map/' + id)
+    d3.json(modBackend.backendBase + '/map/' + id)
       .on('beforesend', function(request) { request.withCredentials = true; })
       .on('error',
           function(error) {
@@ -143,7 +144,7 @@ exports.setupWriteMapToDatabase = function(d3) {
       if (m) {
         // update existing map
         var id = m[1];
-        d3.xhr(graph.consts.backendBase + '/map/' + id)
+        d3.xhr(modBackend.backendBase + '/map/' + id)
           .header('Content-Type', 'application/json')
           .on('beforesend', function(request) {
             request.withCredentials = true;
@@ -165,7 +166,7 @@ exports.setupWriteMapToDatabase = function(d3) {
 
       } else {
         // create new map
-        d3.xhr(graph.consts.backendBase + '/map')
+        d3.xhr(modBackend.backendBase + '/map')
           .header('Content-Type', 'application/json')
           .on('beforesend', function(request) {
             request.withCredentials = true;
