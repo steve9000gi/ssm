@@ -1,4 +1,5 @@
 var modCirclesOfCare = require('./circles-of-care.js'),
+    modEvents = require('./events.js'),
     modGridZoom = require('./grid-zoom.js'),
     modSvg = require('./svg.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -46,7 +47,7 @@ exports.importMap = function(d3, jsonObj, id) {
   try {
     thisGraph.deleteGraph(true);
     modSvg.nodes = jsonObj.nodes;
-    thisGraph.setShapeId(getBiggestShapeId() + 1);
+    modEvents.shapeId = getBiggestShapeId() + 1;
     var newEdges = jsonObj.links;
     newEdges.forEach(function(e, i) {
       newEdges[i] = {source: modSvg.nodes.filter(function(n) {

@@ -50,13 +50,13 @@ var addNewNodes = function(d3) {
     })
     .on("mouseover", function() {
       if (modDrag.shiftNodeDrag) {
-        d3.select(this).classed(thisGraph.consts.connectClass, true);
+        d3.select(this).classed(modEvents.connectClass, true);
       }
     })
     .on("mouseenter", modTooltips.tip.show)
     .on("mouseleave", modTooltips.tip.hide)
     .on("mouseout", function() {
-      d3.select(this).classed(thisGraph.consts.connectClass, false);
+      d3.select(this).classed(modEvents.connectClass, false);
     })
     .on("mousedown", function(d) {
       modEvents.shapeMouseDown(d3, d);

@@ -1,4 +1,5 @@
 var modDrag = require('./drag.js'),
+    modEdgeStyle = require('./edge-style.js'),
     modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
@@ -8,9 +9,11 @@ var modDrag = require('./drag.js'),
     modUpdate = require('./update.js'),
     modZoom = require('./zoom.js');
 
+exports.connectClass = 'connect-node';
 exports.lastKeyDown = -1;
 exports.mouseDownNode = null;
 exports.mouseDownLink = null;
+exports.shapeId = 0;
 
 var BACKSPACE_KEY = 8,
     DELETE_KEY = 46,
@@ -30,10 +33,37 @@ var BACKSPACE_KEY = 8,
                 "star": 1,
                 "noBorder": 1};
 
+var createNewEdge = function(d3, d) {
+  var newEdge = {source: exports.mouseDownNode,
+                 target: d,
+                 style: modEdgeStyle.style,
+                 color: modSelectedColor.clr,
+                 thickness: modEdgeThickness.thickness,
+                 name: ""};
+  var filtRes = modSvg.edgeGroups.filter(function(d) {
+    if (d.source === newEdge.target && d.target === newEdge.source) {
+      modSvg.links.splice(modSvg.links.indexOf(d), 1);
+    }
+    return d.source === newEdge.source && d.target === newEdge.target;
+  });
+  if (!filtRes[0].length) {
+    modSvg.links.push(newEdge);
+    modUpdate.updateGraph(d3);
+    // Todo: finish adapting the following code block for edges for immediate text edit on create.
+    /*
+    var d3txt = modText.changeElementText(d3, modSvg.links.filter(function(dval) {
+      return dval.name === newEdge.name;
+    }), newEdge);
+    var txtNode = d3txt.node();
+    modText.selectText(txtNode);
+    txtNode.focus();
+    */
+  }
+};
+
 // Remove links associated with a node
 var spliceLinksForNode = function(node) {
-  var thisGraph = this,
-      toSplice = modSvg.links.filter(function(l) {
+  var toSplice = modSvg.links.filter(function(l) {
         return (l.source === node || l.target === node);
       });
   toSplice.map(function(l) {
@@ -87,7 +117,7 @@ var svgMouseUp = function(d3) {
   } else if (graphMouseDown && d3.event.shiftKey) { // Clicked not dragged from svg
     var xycoords = d3.mouse(modSvg.svgG.node());
 
-    var d = {id: this.shapeId,
+    var d = {id: exports.shapeId,
              name: defaultShapeText[modSelectedShape.shape] + " "
                  + shapeNum[modSelectedShape.shape]++,
              x: xycoords[0],
@@ -95,7 +125,7 @@ var svgMouseUp = function(d3) {
              color: modSelectedColor.clr,
              shape: modSelectedColor.shape};
     modSvg.nodes.push(d);
-    this.shapeId++;
+    exports.shapeId++;
     modUpdate.updateGraph(d3);
 
     // Make text immediately editable
@@ -119,13 +149,12 @@ var svgMouseUp = function(d3) {
 };
 
 exports.setupEventListeners = function(d3) {
-  var thisGraph = this;
   var svg = modSvg.svg;
   d3.select(window).on("keydown", function() {
     svgKeyDown(d3);
   })
     .on("keyup", function() {
-      thisGraph.svgKeyUp();
+      exports.svgKeyUp();
     });
   svg.on("mousedown", function() {
     svgMouseDown();
@@ -153,7 +182,7 @@ exports.shapeMouseUp = function(d3, d3node, d) {
   // Reset the states
   modDrag.shiftNodeDrag = false;
   modDrag.justDragged = false;
-  d3node.classed(this.consts.connectClass, false);
+  d3node.classed(exports.connectClass, false);
 
   var mouseDownNode = exports.mouseDownNode;
 
@@ -163,7 +192,7 @@ exports.shapeMouseUp = function(d3, d3node, d) {
 
   if (!mouseDownNode.manualResize // We didn't start on a manually resized rectangle...
     && mouseDownNode !== d) { // ...& we're in a different node: create new edge and add to graph
-    this.createNewEdge(d);
+    createNewEdge(d3, d);
   } else { // We're in the same node or the dragged edge started on a manually resized rectangle
     if (modDrag.justDragged) { // Dragged, not clicked
       modDrag.justDragged = false;

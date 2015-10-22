@@ -80,16 +80,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.consts =  {
-    connectClass: "connect-node"
-  };
-
-
   /* PROTOTYPE FUNCTIONS */
 
 
   Graphmaker.prototype.initializeMemberVariables = function() {
-    this.shapeId = 0;
     this.edgeNum = 0;
     this.state = {
       selectedText: null
@@ -141,11 +135,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.setShapeId = function(shapeId) {
-    this.shapeId = shapeId;
-  };
-
-
   Graphmaker.prototype.deleteGraph = function(skipPrompt) {
     var doDelete = true;
     if (!skipPrompt) {
@@ -162,36 +151,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.createNewEdge = function(d) {
-    var thisGraph = this;
-    var newEdge = {source: modEvents.mouseDownNode,
-                   target: d,
-                   style: modEdgeStyle.style,
-                   color: modSelectedColor.clr,
-                   thickness: modEdgeThickness.thickness,
-                   name: ""};
-    var filtRes = modSvg.edgeGroups.filter(function(d) {
-      if (d.source === newEdge.target && d.target === newEdge.source) {
-        modSvg.links.splice(modSvg.links.indexOf(d), 1);
-      }
-      return d.source === newEdge.source && d.target === newEdge.target;
-    });
-    if (!filtRes[0].length) {
-      modSvg.links.push(newEdge);
-      modUpdate.updateGraph(d3);
-      // Todo: finish adapting the following code block for edges for immediate text edit on create.
-      /*
-      var d3txt = modText.changeElementText(d3, modSvg.links.filter(function(dval) {
-        return dval.name === newEdge.name;
-      }), newEdge);
-      var txtNode = d3txt.node();
-      modText.selectText(txtNode);
-      txtNode.focus();
-      */
-    }
-  };
-
-
   /**** MAIN ****/
 
   window.onbeforeunload = function() {
@@ -200,7 +159,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   modSvg.setup(d3);
   var graph = new Graphmaker();
-  graph.setShapeId(0);
-  graph.updateGraph();
+  modEvents.shapeId = 0;
+  modUpdate.updateGraph();
   modDatabase.loadMapFromLocation(d3);
 })(window.d3, window.saveAs, window.Blob);

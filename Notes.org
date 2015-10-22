@@ -2,29 +2,17 @@
 ** TODO reassociate login form labels with input elements           :bugfix:
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO refactoring
-*** TODO context-menu.js
-**** TODO new ActiveXObject
-*** TODO events.js
-**** TODO shapeId
-**** TODO consts.connectClass
-**** TODO createNewEdge()
 *** TODO toolbox.js
 **** TODO deleteGraph()
 *** TODO serialize.js
 **** TODO deleteGraph()
-**** TODO setShapeId()
-*** TODO update.js
-**** TODO consts.connectClass
 *** remaining top-level functions/variables in systemsupportmap.js
 **** TODO Graphmaker()
-**** TODO consts = {}
 **** TODO initializeMemberVariables()
 **** TODO defineArrowMarkers()
 **** TODO setupMMRGroup()
 **** TODO setupSVGNodesAndLinks()
-**** TODO setShapeId()
 **** TODO deleteGraph()
-**** TODO createNewEdge()
 **** TODO onbeforeunload()
 ** TODO add 'delete' functionality
 ** TODO create admin interface
