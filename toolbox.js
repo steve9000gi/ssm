@@ -4,7 +4,8 @@ var modCirclesOfCare = require('./circles-of-care.js'),
     modOptionsMenu = require('./options-menu.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
-    modSystemSupportMap = require('./system-support-map.js');
+    modSystemSupportMap = require('./system-support-map.js'),
+    modUpdate = require('./update.js');
 
 // Edge, shape, and color selection, plus "?" help and Options buttons, load,
 // save, and delete.
@@ -14,7 +15,7 @@ exports.prepareToolbox = function(d3) {
   modSystemSupportMap.center = null; // System Support Map Center
 
   // Handle delete graph
-  d3.select("#delete-graph").on("click", function() { thisGraph.deleteGraph(false); });
+  d3.select("#delete-graph").on("click", function() { modUpdate.deleteGraph(d3, false); });
 
   modHelp(d3);
   modOptionsMenu.createOptionsMenu(d3);

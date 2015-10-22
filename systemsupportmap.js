@@ -135,22 +135,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.deleteGraph = function(skipPrompt) {
-    var doDelete = true;
-    if (!skipPrompt) {
-      doDelete = window.confirm("Press OK to delete this graph");
-    }
-    if(doDelete) {
-      modSvg.nodes = [];
-      modSvg.links = [];
-      modCirclesOfCare.hide(d3);
-      modSystemSupportMap.show(d3);
-      modUpdate.updateGraph(d3);
-      window.location.hash = "";
-    }
-  };
-
-
   /**** MAIN ****/
 
   window.onbeforeunload = function() {

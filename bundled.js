@@ -2232,7 +2232,7 @@ exports.importMap = function(d3, jsonObj, id) {
   var thisGraph = this;
   // TODO better error handling
   try {
-    thisGraph.deleteGraph(true);
+    modUpdate.deleteGraph(d3, true);
     modSvg.nodes = jsonObj.nodes;
     modEvents.shapeId = getBiggestShapeId() + 1;
     var newEdges = jsonObj.links;
@@ -2523,22 +2523,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.deleteGraph = function(skipPrompt) {
-    var doDelete = true;
-    if (!skipPrompt) {
-      doDelete = window.confirm("Press OK to delete this graph");
-    }
-    if(doDelete) {
-      modSvg.nodes = [];
-      modSvg.links = [];
-      modCirclesOfCare.hide(d3);
-      modSystemSupportMap.show(d3);
-      modUpdate.updateGraph(d3);
-      window.location.hash = "";
-    }
-  };
-
-
   /**** MAIN ****/
 
   window.onbeforeunload = function() {
@@ -2750,7 +2734,8 @@ var modCirclesOfCare = require('./circles-of-care.js'),
     modOptionsMenu = require('./options-menu.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
-    modSystemSupportMap = require('./system-support-map.js');
+    modSystemSupportMap = require('./system-support-map.js'),
+    modUpdate = require('./update.js');
 
 // Edge, shape, and color selection, plus "?" help and Options buttons, load,
 // save, and delete.
@@ -2760,7 +2745,7 @@ exports.prepareToolbox = function(d3) {
   modSystemSupportMap.center = null; // System Support Map Center
 
   // Handle delete graph
-  d3.select("#delete-graph").on("click", function() { thisGraph.deleteGraph(false); });
+  d3.select("#delete-graph").on("click", function() { modUpdate.deleteGraph(d3, false); });
 
   modHelp(d3);
   modOptionsMenu.createOptionsMenu(d3);
@@ -2770,7 +2755,7 @@ exports.prepareToolbox = function(d3) {
   modEdgeStyle.addControls(d3);
 };
 
-},{"./circles-of-care.js":3,"./edge-style.js":7,"./help.js":15,"./options-menu.js":16,"./selected-color.js":17,"./selected-shape.js":18,"./system-support-map.js":22}],26:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./edge-style.js":7,"./help.js":15,"./options-menu.js":16,"./selected-color.js":17,"./selected-shape.js":18,"./system-support-map.js":22,"./update.js":27}],26:[function(require,module,exports){
 exports.tip = null;
 
 // "Notes" == tooltips
@@ -2789,12 +2774,14 @@ Graphmaker.prototype.setupNotes = function(d3) {
 };
 
 },{}],27:[function(require,module,exports){
-var modDrag = require('./drag.js'),
+var modCirclesOfCare = require('./circles-of-care.js'),
+    modDrag = require('./drag.js'),
     modEvents = require('./events.js'),
     modGrid = require('./grid.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
     modSvg = require('./svg.js'),
+    modSystemSupportMap = require('./system-support-map.js'),
     modText = require('./text.js'),
     modTooltips = require('./tooltips.js'),
     modUtil = require('./util.js');
@@ -3095,6 +3082,21 @@ var updateExistingNodes = function() {
   });
 };
 
+exports.deleteGraph = function(d3, skipPrompt) {
+  var doDelete = true;
+  if (!skipPrompt) {
+    doDelete = window.confirm("Press OK to delete this graph");
+  }
+  if(doDelete) {
+    modSvg.nodes = [];
+    modSvg.links = [];
+    modCirclesOfCare.hide(d3);
+    modSystemSupportMap.show(d3);
+    exports.updateGraph(d3);
+    window.location.hash = "";
+  }
+};
+
 exports.updateExistingPaths = function() {
   var thisGraph = this;
   modSvg.edgeGroups = modSvg.edgeGroups.data(modSvg.links, function(d) {
@@ -3142,7 +3144,7 @@ exports.updateWindow = function(d3) {
   exports.updateGraph(d3);
 };
 
-},{"./drag.js":6,"./events.js":9,"./grid.js":14,"./selected-color.js":17,"./selection.js":19,"./svg.js":21,"./text.js":24,"./tooltips.js":26,"./util.js":28}],28:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./drag.js":6,"./events.js":9,"./grid.js":14,"./selected-color.js":17,"./selection.js":19,"./svg.js":21,"./system-support-map.js":22,"./text.js":24,"./tooltips.js":26,"./util.js":28}],28:[function(require,module,exports){
 
 // http://warpycode.wordpress.com/2011/01/21/calculating-the-distance-to-the-edge-of-an-ellipse/
 // Angle theta is measured from the -y axis (recalling that +y is down)

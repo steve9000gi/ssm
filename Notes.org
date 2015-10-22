@@ -2,17 +2,12 @@
 ** TODO reassociate login form labels with input elements           :bugfix:
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO refactoring
-*** TODO toolbox.js
-**** TODO deleteGraph()
-*** TODO serialize.js
-**** TODO deleteGraph()
 *** remaining top-level functions/variables in systemsupportmap.js
 **** TODO Graphmaker()
 **** TODO initializeMemberVariables()
 **** TODO defineArrowMarkers()
 **** TODO setupMMRGroup()
 **** TODO setupSVGNodesAndLinks()
-**** TODO deleteGraph()
 **** TODO onbeforeunload()
 ** TODO add 'delete' functionality
 ** TODO create admin interface

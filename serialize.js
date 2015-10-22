@@ -45,7 +45,7 @@ exports.importMap = function(d3, jsonObj, id) {
   var thisGraph = this;
   // TODO better error handling
   try {
-    thisGraph.deleteGraph(true);
+    modUpdate.deleteGraph(d3, true);
     modSvg.nodes = jsonObj.nodes;
     modEvents.shapeId = getBiggestShapeId() + 1;
     var newEdges = jsonObj.links;

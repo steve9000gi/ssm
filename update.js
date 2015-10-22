@@ -1,9 +1,11 @@
-var modDrag = require('./drag.js'),
+var modCirclesOfCare = require('./circles-of-care.js'),
+    modDrag = require('./drag.js'),
     modEvents = require('./events.js'),
     modGrid = require('./grid.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
     modSvg = require('./svg.js'),
+    modSystemSupportMap = require('./system-support-map.js'),
     modText = require('./text.js'),
     modTooltips = require('./tooltips.js'),
     modUtil = require('./util.js');
@@ -302,6 +304,21 @@ var updateExistingNodes = function() {
   modSvg.shapeGroups.attr("transform", function(d) {
     return "translate(" + d.x + "," + d.y + ")";
   });
+};
+
+exports.deleteGraph = function(d3, skipPrompt) {
+  var doDelete = true;
+  if (!skipPrompt) {
+    doDelete = window.confirm("Press OK to delete this graph");
+  }
+  if(doDelete) {
+    modSvg.nodes = [];
+    modSvg.links = [];
+    modCirclesOfCare.hide(d3);
+    modSystemSupportMap.show(d3);
+    exports.updateGraph(d3);
+    window.location.hash = "";
+  }
 };
 
 exports.updateExistingPaths = function() {
