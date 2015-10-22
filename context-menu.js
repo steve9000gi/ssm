@@ -1,7 +1,8 @@
 var modEvents = require('./events.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
-    modText = require('./text.js');
+    modText = require('./text.js'),
+    modUpdate = require('./update.js');
 
 var contextText = null;
 
@@ -106,7 +107,7 @@ var populateContextMenu = function(d3) {
             selectedElement.select(".foregroundText")
                            .style("fill", modSelectedColor.color);
           }
-          thisGraph.updateGraph();
+          modUpdate.updateGraph(d3);
         } else {
           alert("contextMenuListItem.on(\"mouseup\"): no element selected.");
           return false;

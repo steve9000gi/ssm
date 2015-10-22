@@ -1,5 +1,6 @@
 var modSelectedColor = require('./selected-color.js'),
-    modSvg = require('./svg.js');
+    modSvg = require('./svg.js'),
+    modUpdate = require('./update.js');
 
 exports.minCircleRadius = 20;
 var ssCircleCy = exports.minCircleRadius * 2 - 16; // ShapeSelectionCircleCy
@@ -269,7 +270,7 @@ exports.equalizeSelectedShapeSize = function(d3, shape) {
       break;
     case "star":
       selectedShapes.attr("points",
-        modSelectedShape.calculateStarPoints(0, 0, 5, innerRadius * 2, innerRadius));
+        exports.calculateStarPoints(0, 0, 5, innerRadius * 2, innerRadius));
       break;
     default:
       alert("equalizeSelectedShapeSize(): unknown shape \"" + d.shape + "\"");
@@ -279,8 +280,8 @@ exports.equalizeSelectedShapeSize = function(d3, shape) {
   modSvg.shapeGroups.each(function(d) {
     exports.storeShapeSize(d3.select(this), d);
   });
-  thisGraph.updateExistingPaths();
-  thisGraph.updateGraph();
+  modUpdate.updateExistingPaths();
+  modUpdate.updateGraph(d3);
 };
 
 exports.storeShapeSize = function(gEl, d) {

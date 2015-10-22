@@ -1,5 +1,6 @@
 var modGrid = require('./grid.js'),
-    modSvg = require('./svg.js');
+    modSvg = require('./svg.js'),
+    modUpdate = require('./update.js');
 
 exports.justDragged = false;
 exports.shiftNodeDrag = false;
@@ -17,7 +18,7 @@ var dragmove = function(d3, d) {
     d.x += d3.event.dx;
     d.y +=  d3.event.dy;
     modGrid.snap(d);
-    this.updateGraph();
+    modUpdate.updateGraph(d3);
   }
 };
 

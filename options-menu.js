@@ -8,7 +8,8 @@ var modAuth = require('./auth.js'),
     modSelectedShape = require('./selected-shape.js'),
     modSelection = require('./selection.js'),
     modSystemSupportMap = require('./system-support-map.js'),
-    modText = require('./text.js');
+    modText = require('./text.js'),
+    modUpdate = require('./update.js');
 
 exports.displayAll = true; // If false turns off some features
 
@@ -110,7 +111,7 @@ var setSelectedObjectColor = function(d3) {
   var selectedElement = d3.select("#" + selectedObject.domId);
   selectedElement.select(".shape").style("stroke", modSelectedColor.clr);
   selectedElement.select("text").style("fill", modSelectedColor.clr);
-  this.updateGraph();
+  modUpdate.updateGraph(d3);
 };
 
 exports.createOptionsMenu = function(d3) {

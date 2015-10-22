@@ -1,7 +1,8 @@
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
-    modText = require('./text.js');
+    modText = require('./text.js'),
+    modUpdate = require('./update.js');
 
 // Return dimensions of bounding box for all visible objects plus a little
 // extra. Ignore toolbox.
@@ -109,6 +110,6 @@ exports.exportGraphAsImage = function(d3) {
   shapes.style("fill", undefined);
   d3.selectAll(".ssmCircle, .cOfC").style("fill", "none");
   d3.select("#credits").attr("display", "none");
-  this.updateGraph();
+  modUpdate.updateGraph(d3);
   canvas.remove();
 };

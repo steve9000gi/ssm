@@ -5,6 +5,7 @@ var modDrag = require('./drag.js'),
     modSelection = require('./selection.js'),
     modSvg = require('./svg.js'),
     modText = require('./text.js'),
+    modUpdate = require('./update.js'),
     modZoom = require('./zoom.js');
 
 exports.lastKeyDown = -1;
@@ -57,11 +58,11 @@ var svgKeyDown = function(d3) {
       modSvg.nodes.splice(modSvg.nodes.indexOf(selectedNode), 1);
       spliceLinksForNode(selectedNode);
       modSelection.selectedNode = null;
-      this.updateGraph();
+      modUpdate.updateGraph(d3);
     } else if (selectedEdge) {
       modSvg.links.splice(modSvg.links.indexOf(selectedEdge), 1);
       modSelection.selectedEdge = null;
-      this.updateGraph();
+      modUpdate.updateGraph(d3);
     }
     break;
   }
@@ -95,7 +96,7 @@ var svgMouseUp = function(d3) {
              shape: modSelectedColor.shape};
     modSvg.nodes.push(d);
     this.shapeId++;
-    this.updateGraph();
+    modUpdate.updateGraph(d3);
 
     // Make text immediately editable
     var d3txt = modText.changeElementText(d3, modSvg.shapeGroups.filter(function(dval) {
@@ -132,7 +133,7 @@ exports.setupEventListeners = function(d3) {
   svg.on("mouseup", function(){
     svgMouseUp(d3);
   });
-  window.onresize = function() {thisGraph.updateWindow();};
+  window.onresize = function() {modUpdate.updateWindow(d3);};
 };
 
 // Mousedown on node

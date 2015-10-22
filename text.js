@@ -1,7 +1,8 @@
 var modDrag = require('./drag.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
-    modSvg = require('./svg.js');
+    modSvg = require('./svg.js'),
+    modUpdate = require('./update.js');
 
 exports.maxCharsPerLine = 20;
 exports.boldFontWeight = 900;
@@ -182,7 +183,7 @@ exports.changeElementText = function(d3, d3element, d) {
       }
       exports.formatText(d3, d3element, d);
       d3.select(this.parentElement).remove();
-      thisGraph.updateGraph();
+      modUpdate.updateGraph(d3);
     });
   return d3txt;
 };

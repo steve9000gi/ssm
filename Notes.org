@@ -5,36 +5,23 @@
 *** TODO grid.js
 **** TODO zoom - currently in zoom.js, but that would create a circular dependency
 **** TODO fitGridToZoom
-*** TODO selected-shape.js
-**** TODO updateExistingPaths()
-**** TODO updateGraph()
 *** TODO auth.js
 **** TODO consts.backendbase
 *** TODO database.js
 **** TODO consts.backendBase
 *** TODO context-menu.js
-**** TODO updateGraph()
 **** TODO new ActiveXObject
-*** TODO export.js
-**** TODO updateGraph()
 *** TODO events.js
 **** TODO shapeId
 **** TODO consts.connectClass
-**** TODO updateGraph()
-**** TODO updateWindow()
 **** TODO createNewEdge()
-*** TODO drag.js
-**** TODO updateGraph()
-*** TODO options-menu.js
-**** TODO updateGraph()
 *** TODO toolbox.js
 **** TODO deleteGraph()
 *** TODO serialize.js
 **** TODO deleteGraph()
 **** TODO setShapeId()
-**** TODO updateGraph()
-*** TODO text.js
-**** TODO updateGraph()
+*** TODO update.js
+**** TODO consts.connectClass
 *** remaining top-level functions/variables in systemsupportmap.js
 **** TODO Graphmaker()
 **** TODO consts = {}
@@ -45,20 +32,7 @@
 **** TODO setShapeId()
 **** TODO deleteGraph()
 **** TODO createNewEdge()
-**** TODO changeLineLength()
-**** TODO updateExistingPaths()
-**** TODO updateExistingNodes()
-**** TODO addNewNodes()
-**** TODO createNewShapes()
-**** TODO addHandle()
-**** TODO addNewShapes()
-**** TODO setEdgeColor()
-**** TODO addNewPaths()
-**** TODO appendPathText()
-**** TODO updateGraph()
 **** TODO fitGridToZoom()
-**** TODO updateWindow()
-**** TODO setPath()
 **** TODO onbeforeunload()
 ** TODO add 'delete' functionality
 ** TODO create admin interface

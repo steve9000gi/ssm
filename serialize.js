@@ -1,6 +1,7 @@
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSvg = require('./svg.js'),
     modSystemSupportMap = require('./system-support-map.js'),
+    modUpdate = require('./update.js'),
     modZoom = require('./zoom.js');
 
 var getBiggestShapeId = function() {
@@ -82,7 +83,7 @@ exports.importMap = function(d3, jsonObj, id) {
     if (modCirclesOfCare.center) {
       modCirclesOfCare.show(d3);
     }
-    thisGraph.updateGraph();
+    modUpdate.updateGraph(d3);
     if (typeof id === 'number') {
       window.location.hash = '/map/' + id;
     }
