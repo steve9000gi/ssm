@@ -1,13 +1,6 @@
 * SSM (System Support Mapper)
 ** TODO reassociate login form labels with input elements           :bugfix:
 ** TODO login broken due to CORS on Safari                          :bugfix:
-** TODO refactoring
-*** remaining top-level functions/variables in systemsupportmap.js
-**** TODO Graphmaker()
-**** TODO defineArrowMarkers()
-**** TODO setupMMRGroup()
-**** TODO setupSVGNodesAndLinks()
-**** TODO onbeforeunload()
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users
