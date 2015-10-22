@@ -1,13 +1,14 @@
 var modCirclesOfCare = require('./circles-of-care.js'),
+    modSvg = require('./svg.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modZoom = require('./zoom.js');
 
 var getBiggestShapeId = function() {
   var currMax = 0;
   var i;
-  for (i = 0; i < this.nodes.length; i++) {
-    if (this.nodes[i].id > currMax) {
-      currMax = this.nodes[i].id;
+  for (i = 0; i < modSvg.nodes.length; i++) {
+    if (modSvg.nodes[i].id > currMax) {
+      currMax = modSvg.nodes[i].id;
     }
   }
   return currMax;
@@ -16,7 +17,7 @@ var getBiggestShapeId = function() {
 // Return the current map as an JS object.
 exports.getMapObject = function(d3) {
   var saveEdges = [];
-  this.links.forEach(function(val) {
+  modSvg.links.forEach(function(val) {
     saveEdges.push({source: val.source.id,
                     target: val.target.id,
                     style: val.style,
@@ -29,7 +30,7 @@ exports.getMapObject = function(d3) {
                    });
   });
   return {
-    "nodes": this.nodes,
+    "nodes": modSvg.nodes,
     "links": saveEdges,
     "graphGTransform": d3.select("#graphG").attr("transform"),
     "systemSupportMapCenter": modSystemSupportMap.center,
@@ -43,13 +44,13 @@ exports.importMap = function(d3, jsonObj, id) {
   // TODO better error handling
   try {
     thisGraph.deleteGraph(true);
-    thisGraph.nodes = jsonObj.nodes;
+    modSvg.nodes = jsonObj.nodes;
     thisGraph.setShapeId(getBiggestShapeId() + 1);
     var newEdges = jsonObj.links;
     newEdges.forEach(function(e, i) {
-      newEdges[i] = {source: thisGraph.nodes.filter(function(n) {
+      newEdges[i] = {source: modSvg.nodes.filter(function(n) {
                       return n.id === e.source; })[0],
-                     target: thisGraph.nodes.filter(function(n) {
+                     target: modSvg.nodes.filter(function(n) {
                       return n.id === e.target; })[0],
                      style: (e.style === "dashed" ? "dashed" : "solid"),
                      color: e.color,
@@ -59,7 +60,7 @@ exports.importMap = function(d3, jsonObj, id) {
                      name: e.name,
                      manualResize: e.manualResize};
     });
-    thisGraph.links = newEdges;
+    modSvg.links = newEdges;
 
     var graphGTransform = jsonObj.graphGTransform || "translate(0,0) scale(1)";
     // Inform zoomSvg that we're programmatically setting transform (so additional zoom and
@@ -68,7 +69,7 @@ exports.importMap = function(d3, jsonObj, id) {
     var xform = d3.transform(d3.select("#graphG").attr("transform"));
     var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
     modZoom.zoomSvg.translate([tx, ty]).scale(scale);
-    modZoom.zoomSvg.event(thisGraph.svg.transition().duration(500));
+    modZoom.zoomSvg.event(modSvg.svg.transition().duration(500));
 
     modSystemSupportMap.center = jsonObj.systemSupportMapCenter;
     if (modSystemSupportMap.center) {

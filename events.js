@@ -3,6 +3,7 @@ var modDrag = require('./drag.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
     modSelection = require('./selection.js'),
+    modSvg = require('./svg.js'),
     modText = require('./text.js'),
     modZoom = require('./zoom.js');
 
@@ -31,11 +32,11 @@ var BACKSPACE_KEY = 8,
 // Remove links associated with a node
 var spliceLinksForNode = function(node) {
   var thisGraph = this,
-      toSplice = thisGraph.links.filter(function(l) {
+      toSplice = modSvg.links.filter(function(l) {
         return (l.source === node || l.target === node);
       });
   toSplice.map(function(l) {
-    thisGraph.links.splice(thisGraph.links.indexOf(l), 1);
+    modSvg.links.splice(modSvg.links.indexOf(l), 1);
   });
 };
 
@@ -53,12 +54,12 @@ var svgKeyDown = function(d3) {
   case DELETE_KEY:
     d3.event.preventDefault();
     if (selectedNode) {
-      this.nodes.splice(this.nodes.indexOf(selectedNode), 1);
+      modSvg.nodes.splice(modSvg.nodes.indexOf(selectedNode), 1);
       spliceLinksForNode(selectedNode);
       modSelection.selectedNode = null;
       this.updateGraph();
     } else if (selectedEdge) {
-      this.links.splice(this.links.indexOf(selectedEdge), 1);
+      modSvg.links.splice(modSvg.links.indexOf(selectedEdge), 1);
       modSelection.selectedEdge = null;
       this.updateGraph();
     }
@@ -83,7 +84,7 @@ var svgMouseUp = function(d3) {
   if (modZoom.justScaleTransGraph) { // Dragged not clicked
     modZoom.justScaleTransGraph = false;
   } else if (graphMouseDown && d3.event.shiftKey) { // Clicked not dragged from svg
-    var xycoords = d3.mouse(this.svgG.node());
+    var xycoords = d3.mouse(modSvg.svgG.node());
 
     var d = {id: this.shapeId,
              name: defaultShapeText[modSelectedShape.shape] + " "
@@ -92,7 +93,7 @@ var svgMouseUp = function(d3) {
              y: xycoords[1],
              color: modSelectedColor.clr,
              shape: modSelectedColor.shape};
-    this.nodes.push(d);
+    modSvg.nodes.push(d);
     this.shapeId++;
     this.updateGraph();
 
@@ -118,7 +119,7 @@ var svgMouseUp = function(d3) {
 
 exports.setupEventListeners = function(d3) {
   var thisGraph = this;
-  var svg = thisGraph.svg;
+  var svg = modSvg.svg;
   d3.select(window).on("keydown", function() {
     svgKeyDown(d3);
   })
@@ -131,7 +132,7 @@ exports.setupEventListeners = function(d3) {
   svg.on("mouseup", function(){
     svgMouseUp(d3);
   });
-  window.onresize = function() {thisGraph.updateWindow(svg);};
+  window.onresize = function() {thisGraph.updateWindow();};
 };
 
 // Mousedown on node

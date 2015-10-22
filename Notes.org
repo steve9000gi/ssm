@@ -18,7 +18,7 @@
 *** TODO context-menu.js
 **** TODO updateGraph()
 **** TODO new ActiveXObject
-*** TODO import.js
+*** TODO import.js (umm, what is this??)
 **** TODO deleteGraph()
 **** TODO updateGraph()
 **** TODO setShapeId
@@ -31,10 +31,6 @@
 *** TODO export.js
 **** TODO updateGraph()
 *** TODO events.js
-**** TODO svg
-**** TODO nodes
-**** TODO links
-**** TODO svgG
 **** TODO shapeId
 **** TODO shapeGroups
 **** TODO consts.connectClass
@@ -42,22 +38,17 @@
 **** TODO updateWindow()
 **** TODO createNewEdge()
 *** TODO drag.js
-**** TODO svgG
 **** TODO updateGraph()
 *** TODO options-menu.js
 **** TODO updateGraph()
 *** TODO toolbox.js
 **** TODO deleteGraph()
 *** TODO serialize.js
-**** TODO nodes
-**** TODO links
 **** TODO deleteGraph()
 **** TODO setShapeId()
-**** TODO svg
 **** TODO updateGraph()
 *** TODO text.js
 **** TODO consts.activeEditId
-**** TODO svg
 **** TODO updateGraph()
 *** remaining top-level functions/variables in systemsupportmap.js
 **** TODO Graphmaker()

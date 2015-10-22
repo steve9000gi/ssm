@@ -1,6 +1,7 @@
 var modDrag = require('./drag.js'),
     modSelectedColor = require('./selected-color.js'),
-    modSelectedShape = require('./selected-shape.js');
+    modSelectedShape = require('./selected-shape.js'),
+    modSvg = require('./svg.js');
 
 exports.maxCharsPerLine = 20;
 exports.boldFontWeight = 900;
@@ -148,7 +149,7 @@ exports.changeElementText = function(d3, d3element, d) {
       useHW = curScale > 1 ? nodeBCR.width * 1.71 : modSelectedShape.minCircleRadius * 4.84;
 
   // Replace with editable content text:
-  var d3txt = thisGraph.svg.selectAll("foreignObject")
+  var d3txt = modSvg.svg.selectAll("foreignObject")
     .data([d])
     .enter().append("foreignObject")
       .attr("x", nodeBCR.left + nodeBCR.width / 2)

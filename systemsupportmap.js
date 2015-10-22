@@ -48,10 +48,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       modSystemSupportMap = require('./system-support-map.js'),
       modToolbox = require('./toolbox.js'),
       modTooltips = require('./tooltips.js'),
-      modExport = require('./export.js');
+      modExport = require('./export.js'),
+      modSvg = require('./svg.js');
 
   // Define graphcreator object
-  var Graphmaker = function(svg, nodes, links) {
+  var Graphmaker = function() {
     this.initializeMemberVariables();
     modToolbox.prepareToolbox(d3);
     modFrontMatter.addLogos(d3);
@@ -66,7 +67,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     this.setupMMRGroup();
     modDrag.setupDrag(d3);
     modDrag.setupDragHandle(d3);
-    modZoom.setup(d3, svg);
+    modZoom.setup(d3, modSvg.svg);
     this.setupSVGNodesAndLinks();
     modEvents.setupEventListeners(d3);
     modSystemSupportMap.show(d3);
@@ -90,17 +91,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.initializeMemberVariables = function() {
-    this.svg = svg;
     this.shapeId = 0;
     this.edgeNum = 0;
-    this.nodes = nodes || [];
-    this.links = links || [];
     this.state = {
       selectedText: null
     };
-    this.svgG = svg.append("g") // The group that contains the main SVG element
-                   .classed("graph", true)
-                   .attr("id", "graphG");
   };
 
 
@@ -144,13 +139,13 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   // Manually Resized Rectangles (MMRs) are moved to manResizeGroups so that other shapes and edges
   // appear on top of them because manResizeGroups is earlier in the DOM.
   Graphmaker.prototype.setupMMRGroup = function() {
-    this.manResizeGroups = this.svgG.append("g").attr("id", "manResizeGG").selectAll("g");
+    this.manResizeGroups = modSvg.svgG.append("g").attr("id", "manResizeGG").selectAll("g");
   };
 
 
   Graphmaker.prototype.setupSVGNodesAndLinks = function() {
-    this.edgeGroups = this.svgG.append("g").attr("id", "pathGG").selectAll("g");
-    this.shapeGroups = this.svgG.append("g").attr("id", "shapeGG").selectAll("g");
+    this.edgeGroups = modSvg.svgG.append("g").attr("id", "pathGG").selectAll("g");
+    this.shapeGroups = modSvg.svgG.append("g").attr("id", "shapeGG").selectAll("g");
   };
 
 
@@ -165,8 +160,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       doDelete = window.confirm("Press OK to delete this graph");
     }
     if(doDelete) {
-      this.nodes = [];
-      this.links = [];
+      modSvg.nodes = [];
+      modSvg.links = [];
       modCirclesOfCare.hide(d3);
       modSystemSupportMap.show(d3);
       this.updateGraph();
@@ -185,16 +180,16 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                    name: ""};
     var filtRes = thisGraph.edgeGroups.filter(function(d) {
       if (d.source === newEdge.target && d.target === newEdge.source) {
-        thisGraph.links.splice(thisGraph.links.indexOf(d), 1);
+        modSvg.links.splice(modSvg.links.indexOf(d), 1);
       }
       return d.source === newEdge.source && d.target === newEdge.target;
     });
     if (!filtRes[0].length) {
-      thisGraph.links.push(newEdge);
+      modSvg.links.push(newEdge);
       thisGraph.updateGraph();
       // Todo: finish adapting the following code block for edges for immediate text edit on create.
       /*
-      var d3txt = modText.changeElementText(d3, thisGraph.links.filter(function(dval) {
+      var d3txt = modText.changeElementText(d3, modSvg.links.filter(function(dval) {
         return dval.name === newEdge.name;
       }), newEdge);
       var txtNode = d3txt.node();
@@ -223,7 +218,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.updateExistingPaths = function() {
     var thisGraph = this;
-    thisGraph.edgeGroups = thisGraph.edgeGroups.data(thisGraph.links, function(d) {
+    thisGraph.edgeGroups = thisGraph.edgeGroups.data(modSvg.links, function(d) {
       return String(d.source.id) + "+" + String(d.target.id);
     });
     thisGraph.edgeGroups.classed(modSelection.selectedClass, function(d) {
@@ -237,7 +232,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   Graphmaker.prototype.updateExistingNodes = function() {
-    this.shapeGroups = this.shapeGroups.data(this.nodes, function(d) { // ???
+    this.shapeGroups = this.shapeGroups.data(modSvg.nodes, function(d) { // ???
       return d.id;
     });
     this.shapeGroups.attr("transform", function(d) {
@@ -310,8 +305,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   Graphmaker.prototype.createNewShapes = function()  {
     var shapeElts = [];
     var shape;
-    for (var i = 0; i < this.nodes.length; i++) {
-      switch (this.nodes[i].shape) {
+    for (var i = 0; i < modSvg.nodes.length; i++) {
+      switch (modSvg.nodes[i].shape) {
         case "rectangle":
         case "noBorder":
           shape = "rect";
@@ -323,7 +318,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
           shape = "polygon";
           break;
         default: // circle and ellipse
-          shape = this.nodes[i].shape;
+          shape = modSvg.nodes[i].shape;
           break;
       }
       var shapeElement = document.createElementNS("http://www.w3.org/2000/svg", shape);
@@ -520,12 +515,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.updateWindow = function(svg) {
+  Graphmaker.prototype.updateWindow = function() {
     var docEl = document.documentElement,
         bodyEl = document.getElementsByTagName("body")[0];
     var x = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth;
     var y = window.innerHeight|| docEl.clientHeight|| bodyEl.clientHeight;
-    svg.attr("width", x).attr("height", y);
+    modSvg.svg.attr("width", x).attr("height", y);
     modGrid.create(d3);
     this.updateGraph();
   };
@@ -574,26 +569,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     return "Make sure to save your graph locally before leaving.";
   };
 
-  var docEl = document.documentElement,
-      bodyEl = document.getElementsByTagName("body")[0];
-
-  var width = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth,
-      height =  window.innerHeight|| docEl.clientHeight|| bodyEl.clientHeight;
-
-  // Initial node data
-  var nodes = [];
-  var links = [];
-
-  /** MAIN SVG **/
-  d3.select("#topGraphDiv").append("div")
-    .attr("id", "mainSVGDiv");
-
-  var svg = d3.select("#mainSVGDiv").append("svg")
-        .attr("id", "mainSVG")
-        .style("font-family", "arial")
-        .attr("width", width)
-        .attr("height", height);
-  var graph = new Graphmaker(svg, nodes, links);
+  modSvg.setup(d3);
+  var graph = new Graphmaker();
   graph.setShapeId(0);
   graph.updateGraph();
   modDatabase.loadMapFromLocation(d3);

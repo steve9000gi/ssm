@@ -1,4 +1,5 @@
-var modGrid = require('./grid.js');
+var modGrid = require('./grid.js'),
+    modSvg = require('./svg.js');
 
 exports.justDragged = false;
 exports.shiftNodeDrag = false;
@@ -9,8 +10,8 @@ exports.dragHandle = null;
 
 var dragmove = function(d3, d) {
   if (exports.shiftNodeDrag) { // Creating a new edge
-    exports.dragLine.attr("d", "M" + d.x + "," + d.y + "L" + d3.mouse(this.svgG.node())[0]
-                       + "," + d3.mouse(this.svgG.node())[1]);
+    exports.dragLine.attr("d", "M" + d.x + "," + d.y + "L" + d3.mouse(modSvg.svgG.node())[0]
+                       + "," + d3.mouse(modSvg.svgG.node())[1]);
   } else { // Translating a shape
     exports.dragLine.style("stroke-width", 0);
     d.x += d3.event.dx;
@@ -22,7 +23,7 @@ var dragmove = function(d3, d) {
 
 exports.setupDrag = function(d3) {
   var thisGraph = this;
-  exports.dragLine = thisGraph.svgG.append("svg:path") // Displayed when dragging between nodes
+  exports.dragLine = modSvg.svgG.append("svg:path") // Displayed when dragging between nodes
     .attr("class", "link dragline hidden")
     .attr("d", function() { return "M0,0L0,0"; })
     .style("marker-end", "url(#mark-end-arrow)");
