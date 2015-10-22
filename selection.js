@@ -1,3 +1,5 @@
+var modSvg = require('./svg.js');
+
 exports.selectedEdge = null;
 exports.selectedNode = null;
 exports.selectedClass = 'selected';
@@ -24,7 +26,7 @@ exports.selectNode = function(d3node, d) {
 };
 
 exports.removeSelectFromNode = function() {
-  this.shapeGroups.filter(function(cd) {
+  modSvg.shapeGroups.filter(function(cd) {
     return cd.id === exports.selectedNode.id;
   }).classed(exports.selectedClass, false);
   exports.selectedNode = null;
@@ -33,7 +35,7 @@ exports.removeSelectFromNode = function() {
 // Includes setting edge color back to its unselected value.
 exports.removeSelectFromEdge = function() {
   var thisGraph = this;
-  var deselectedEdgeGroup = thisGraph.edgeGroups.filter(function(cd) {
+  var deselectedEdgeGroup = modSvg.edgeGroups.filter(function(cd) {
     return cd === exports.selectedEdge;
   }).classed(exports.selectedClass, false);
 

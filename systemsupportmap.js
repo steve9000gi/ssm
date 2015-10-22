@@ -68,7 +68,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     modDrag.setupDrag(d3);
     modDrag.setupDragHandle(d3);
     modZoom.setup(d3, modSvg.svg);
-    this.setupSVGNodesAndLinks();
     modEvents.setupEventListeners(d3);
     modSystemSupportMap.show(d3);
     modFile.setupDownload(d3, saveAs, Blob);
@@ -143,12 +142,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.setupSVGNodesAndLinks = function() {
-    this.edgeGroups = modSvg.svgG.append("g").attr("id", "pathGG").selectAll("g");
-    this.shapeGroups = modSvg.svgG.append("g").attr("id", "shapeGG").selectAll("g");
-  };
-
-
   Graphmaker.prototype.setShapeId = function(shapeId) {
     this.shapeId = shapeId;
   };
@@ -178,7 +171,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                    color: modSelectedColor.clr,
                    thickness: modEdgeThickness.thickness,
                    name: ""};
-    var filtRes = thisGraph.edgeGroups.filter(function(d) {
+    var filtRes = modSvg.edgeGroups.filter(function(d) {
       if (d.source === newEdge.target && d.target === newEdge.source) {
         modSvg.links.splice(modSvg.links.indexOf(d), 1);
       }
@@ -218,24 +211,24 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.updateExistingPaths = function() {
     var thisGraph = this;
-    thisGraph.edgeGroups = thisGraph.edgeGroups.data(modSvg.links, function(d) {
+    modSvg.edgeGroups = modSvg.edgeGroups.data(modSvg.links, function(d) {
       return String(d.source.id) + "+" + String(d.target.id);
     });
-    thisGraph.edgeGroups.classed(modSelection.selectedClass, function(d) {
+    modSvg.edgeGroups.classed(modSelection.selectedClass, function(d) {
            return d === modSelection.selectedEdge;
          })
          .attr("d",  function(d) {
            return thisGraph.setPath(d);
          });
-    return thisGraph.edgeGroups;
+    return modSvg.edgeGroups;
   };
 
 
   Graphmaker.prototype.updateExistingNodes = function() {
-    this.shapeGroups = this.shapeGroups.data(modSvg.nodes, function(d) { // ???
+    modSvg.shapeGroups = modSvg.shapeGroups.data(modSvg.nodes, function(d) { // ???
       return d.id;
     });
-    this.shapeGroups.attr("transform", function(d) {
+    modSvg.shapeGroups.attr("transform", function(d) {
       return "translate(" + d.x + "," + d.y + ")";
     });
   };
@@ -243,7 +236,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.addNewNodes = function() {
     var thisGraph = this;
-    var newShapeGroups = thisGraph.shapeGroups.enter().append("g");
+    var newShapeGroups = modSvg.shapeGroups.enter().append("g");
 
     newShapeGroups.classed("shapeG", true)
       .attr("id", function(d) { return "shapeG" + d.id; })
@@ -488,9 +481,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var newShapeGroups = this.addNewNodes();
     var shapeElts = this.createNewShapes();
     this.addNewShapes(newShapeGroups, shapeElts);
-    this.shapeGroups.exit().remove(); // Remove old nodes
-    if (this.shapeGroups) {
-      this.shapeGroups.each(function(d) {
+    modSvg.shapeGroups.exit().remove(); // Remove old nodes
+    if (modSvg.shapeGroups) {
+      modSvg.shapeGroups.each(function(d) {
         if (d.manualResize) {
           var remove = d3.select(this).remove();
           d3.select("#manResizeGG").append(function() {

@@ -8,7 +8,6 @@
 *** TODO zoom.js
 **** TODO consts.activeEditId
 *** TODO selected-shape.js
-**** TODO shapeGroups
 **** TODO updateExistingPaths()
 **** TODO updateGraph()
 *** TODO auth.js
@@ -18,14 +17,10 @@
 *** TODO context-menu.js
 **** TODO updateGraph()
 **** TODO new ActiveXObject
-*** TODO selection.js
-**** TODO shapeGroups
-**** TODO edgeGroups
 *** TODO export.js
 **** TODO updateGraph()
 *** TODO events.js
 **** TODO shapeId
-**** TODO shapeGroups
 **** TODO consts.connectClass
 **** TODO updateGraph()
 **** TODO updateWindow()

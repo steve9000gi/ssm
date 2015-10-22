@@ -986,7 +986,7 @@ var svgMouseUp = function(d3) {
     this.updateGraph();
 
     // Make text immediately editable
-    var d3txt = modText.changeElementText(d3, this.shapeGroups.filter(function(dval) {
+    var d3txt = modText.changeElementText(d3, modSvg.shapeGroups.filter(function(dval) {
       return dval.id === d.id;
     }), d),
         txtNode = d3txt.node();
@@ -1743,7 +1743,8 @@ exports.createColorPalette = function(d3) {
 };
 
 },{"./edge-style.js":6,"./selected-shape.js":16}],16:[function(require,module,exports){
-var modSelectedColor = require('./selected-color.js');
+var modSelectedColor = require('./selected-color.js'),
+    modSvg = require('./svg.js');
 
 exports.minCircleRadius = 20;
 var ssCircleCy = exports.minCircleRadius * 2 - 16; // ShapeSelectionCircleCy
@@ -2020,7 +2021,7 @@ exports.equalizeSelectedShapeSize = function(d3, shape) {
       break;
   }
 
-  thisGraph.shapeGroups.each(function(d) {
+  modSvg.shapeGroups.each(function(d) {
     exports.storeShapeSize(d3.select(this), d);
   });
   thisGraph.updateExistingPaths();
@@ -2058,7 +2059,9 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":15}],17:[function(require,module,exports){
+},{"./selected-color.js":15,"./svg.js":19}],17:[function(require,module,exports){
+var modSvg = require('./svg.js');
+
 exports.selectedEdge = null;
 exports.selectedNode = null;
 exports.selectedClass = 'selected';
@@ -2085,7 +2088,7 @@ exports.selectNode = function(d3node, d) {
 };
 
 exports.removeSelectFromNode = function() {
-  this.shapeGroups.filter(function(cd) {
+  modSvg.shapeGroups.filter(function(cd) {
     return cd.id === exports.selectedNode.id;
   }).classed(exports.selectedClass, false);
   exports.selectedNode = null;
@@ -2094,7 +2097,7 @@ exports.removeSelectFromNode = function() {
 // Includes setting edge color back to its unselected value.
 exports.removeSelectFromEdge = function() {
   var thisGraph = this;
-  var deselectedEdgeGroup = thisGraph.edgeGroups.filter(function(cd) {
+  var deselectedEdgeGroup = modSvg.edgeGroups.filter(function(cd) {
     return cd === exports.selectedEdge;
   }).classed(exports.selectedClass, false);
 
@@ -2125,7 +2128,7 @@ exports.replaceSelectEdge = function(d3, d3Path, edgeData) {
   modSelection.selectedEdge = edgeData;
 };
 
-},{}],18:[function(require,module,exports){
+},{"./svg.js":19}],18:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSvg = require('./svg.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -2225,6 +2228,8 @@ exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
 exports.links = [];
+exports.shapeGroups = null;
+exports.edgeGroups = null;
 
 exports.setup = function(d3) {
   var docEl = document.documentElement,
@@ -2243,6 +2248,8 @@ exports.setup = function(d3) {
   // MAIN SVG:
   d3.select("#topGraphDiv").append("div")
     .attr("id", "mainSVGDiv");
+  exports.edgeGroups = exports.svgG.append("g").attr("id", "pathGG").selectAll("g");
+  exports.shapeGroups = exports.svgG.append("g").attr("id", "shapeGG").selectAll("g");
 }
 
 },{}],20:[function(require,module,exports){
@@ -2391,7 +2398,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     modDrag.setupDrag(d3);
     modDrag.setupDragHandle(d3);
     modZoom.setup(d3, modSvg.svg);
-    this.setupSVGNodesAndLinks();
     modEvents.setupEventListeners(d3);
     modSystemSupportMap.show(d3);
     modFile.setupDownload(d3, saveAs, Blob);
@@ -2466,12 +2472,6 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
 
-  Graphmaker.prototype.setupSVGNodesAndLinks = function() {
-    this.edgeGroups = modSvg.svgG.append("g").attr("id", "pathGG").selectAll("g");
-    this.shapeGroups = modSvg.svgG.append("g").attr("id", "shapeGG").selectAll("g");
-  };
-
-
   Graphmaker.prototype.setShapeId = function(shapeId) {
     this.shapeId = shapeId;
   };
@@ -2501,7 +2501,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
                    color: modSelectedColor.clr,
                    thickness: modEdgeThickness.thickness,
                    name: ""};
-    var filtRes = thisGraph.edgeGroups.filter(function(d) {
+    var filtRes = modSvg.edgeGroups.filter(function(d) {
       if (d.source === newEdge.target && d.target === newEdge.source) {
         modSvg.links.splice(modSvg.links.indexOf(d), 1);
       }
@@ -2541,24 +2541,24 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.updateExistingPaths = function() {
     var thisGraph = this;
-    thisGraph.edgeGroups = thisGraph.edgeGroups.data(modSvg.links, function(d) {
+    modSvg.edgeGroups = modSvg.edgeGroups.data(modSvg.links, function(d) {
       return String(d.source.id) + "+" + String(d.target.id);
     });
-    thisGraph.edgeGroups.classed(modSelection.selectedClass, function(d) {
+    modSvg.edgeGroups.classed(modSelection.selectedClass, function(d) {
            return d === modSelection.selectedEdge;
          })
          .attr("d",  function(d) {
            return thisGraph.setPath(d);
          });
-    return thisGraph.edgeGroups;
+    return modSvg.edgeGroups;
   };
 
 
   Graphmaker.prototype.updateExistingNodes = function() {
-    this.shapeGroups = this.shapeGroups.data(modSvg.nodes, function(d) { // ???
+    modSvg.shapeGroups = modSvg.shapeGroups.data(modSvg.nodes, function(d) { // ???
       return d.id;
     });
-    this.shapeGroups.attr("transform", function(d) {
+    modSvg.shapeGroups.attr("transform", function(d) {
       return "translate(" + d.x + "," + d.y + ")";
     });
   };
@@ -2566,7 +2566,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
   Graphmaker.prototype.addNewNodes = function() {
     var thisGraph = this;
-    var newShapeGroups = thisGraph.shapeGroups.enter().append("g");
+    var newShapeGroups = modSvg.shapeGroups.enter().append("g");
 
     newShapeGroups.classed("shapeG", true)
       .attr("id", function(d) { return "shapeG" + d.id; })
@@ -2811,9 +2811,9 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     var newShapeGroups = this.addNewNodes();
     var shapeElts = this.createNewShapes();
     this.addNewShapes(newShapeGroups, shapeElts);
-    this.shapeGroups.exit().remove(); // Remove old nodes
-    if (this.shapeGroups) {
-      this.shapeGroups.each(function(d) {
+    modSvg.shapeGroups.exit().remove(); // Remove old nodes
+    if (modSvg.shapeGroups) {
+      modSvg.shapeGroups.each(function(d) {
         if (d.manualResize) {
           var remove = d3.select(this).remove();
           d3.select("#manResizeGG").append(function() {

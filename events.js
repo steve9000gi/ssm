@@ -98,7 +98,7 @@ var svgMouseUp = function(d3) {
     this.updateGraph();
 
     // Make text immediately editable
-    var d3txt = modText.changeElementText(d3, this.shapeGroups.filter(function(dval) {
+    var d3txt = modText.changeElementText(d3, modSvg.shapeGroups.filter(function(dval) {
       return dval.id === d.id;
     }), d),
         txtNode = d3txt.node();

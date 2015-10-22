@@ -2,6 +2,8 @@ exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
 exports.links = [];
+exports.shapeGroups = null;
+exports.edgeGroups = null;
 
 exports.setup = function(d3) {
   var docEl = document.documentElement,
@@ -20,4 +22,6 @@ exports.setup = function(d3) {
   // MAIN SVG:
   d3.select("#topGraphDiv").append("div")
     .attr("id", "mainSVGDiv");
+  exports.edgeGroups = exports.svgG.append("g").attr("id", "pathGG").selectAll("g");
+  exports.shapeGroups = exports.svgG.append("g").attr("id", "shapeGG").selectAll("g");
 }

@@ -1,4 +1,5 @@
-var modSelectedColor = require('./selected-color.js');
+var modSelectedColor = require('./selected-color.js'),
+    modSvg = require('./svg.js');
 
 exports.minCircleRadius = 20;
 var ssCircleCy = exports.minCircleRadius * 2 - 16; // ShapeSelectionCircleCy
@@ -275,7 +276,7 @@ exports.equalizeSelectedShapeSize = function(d3, shape) {
       break;
   }
 
-  thisGraph.shapeGroups.each(function(d) {
+  modSvg.shapeGroups.each(function(d) {
     exports.storeShapeSize(d3.select(this), d);
   });
   thisGraph.updateExistingPaths();
