@@ -123,7 +123,7 @@ var svgMouseUp = function(d3) {
              x: xycoords[0],
              y: xycoords[1],
              color: modSelectedColor.clr,
-             shape: modSelectedColor.shape};
+             shape: modSelectedShape.shape};
     modSvg.nodes.push(d);
     exports.shapeId++;
     modUpdate.updateGraph(d3);
@@ -154,7 +154,7 @@ exports.setupEventListeners = function(d3) {
     svgKeyDown(d3);
   })
     .on("keyup", function() {
-      exports.svgKeyUp();
+      svgKeyUp();
     });
   svg.on("mousedown", function() {
     svgMouseDown();
