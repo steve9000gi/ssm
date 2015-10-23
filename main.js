@@ -39,6 +39,6 @@ document.onload = (function(d3) {
   modSvg.setup(d3);
   modGraph.create(d3);
   modEvents.shapeId = 0;
-  modUpdate.updateGraph();
+  modUpdate.updateGraph(d3);
   modDatabase.loadMapFromLocation(d3);
 })(window.d3);
