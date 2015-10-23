@@ -1,7 +1,7 @@
 exports.tip = null;
 
 // "Notes" == tooltips
-Graphmaker.prototype.setupNotes = function(d3) {
+exports.setupNotes = function(d3) {
   exports.tip = d3.tip()
     .attr("class", "d3-tip")
     .offset([-10, 0])
