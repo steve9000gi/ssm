@@ -21,7 +21,7 @@ exports.setup = function(d3, svg) {
         // TODO  the internal d3 state is still changing
         return false;
       } else {
-        zoomed();
+        zoomed(d3);
       }
       return true;
     })

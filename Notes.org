@@ -3,10 +3,6 @@
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO exercise the full app to find any refactoring bugs
 *** functions to test
-**** TODO all 6 shape styles
-**** TODO all 8 colors
-**** TODO export to file
-**** TODO import from file
 **** TODO login (registration?)
 **** TODO logout
 **** TODO save to DB

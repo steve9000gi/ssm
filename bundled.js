@@ -2307,7 +2307,8 @@ var modCirclesOfCare = require('./circles-of-care.js'),
     modGridZoom = require('./grid-zoom.js'),
     modSvg = require('./svg.js'),
     modSystemSupportMap = require('./system-support-map.js'),
-    modUpdate = require('./update.js');
+    modUpdate = require('./update.js'),
+    modZoom = require('./zoom.js');
 
 var getBiggestShapeId = function() {
   var currMax = 0;
@@ -2373,8 +2374,8 @@ exports.importMap = function(d3, jsonObj, id) {
     d3.select("#graphG").attr("transform", graphGTransform);
     var xform = d3.transform(d3.select("#graphG").attr("transform"));
     var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
-    modGridZoom.zoomSvg.translate([tx, ty]).scale(scale);
-    modGridZoom.zoomSvg.event(modSvg.svg.transition().duration(500));
+    modZoom.zoomSvg.translate([tx, ty]).scale(scale);
+    modZoom.zoomSvg.event(modSvg.svg.transition().duration(500));
 
     modSystemSupportMap.center = jsonObj.systemSupportMapCenter;
     if (modSystemSupportMap.center) {
@@ -2397,7 +2398,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./svg.js":23,"./system-support-map.js":24,"./update.js":28}],23:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./svg.js":23,"./system-support-map.js":24,"./update.js":28,"./zoom.js":30}],23:[function(require,module,exports){
 exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
@@ -3155,7 +3156,7 @@ exports.setup = function(d3, svg) {
         // TODO  the internal d3 state is still changing
         return false;
       } else {
-        zoomed();
+        zoomed(d3);
       }
       return true;
     })
