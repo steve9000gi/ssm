@@ -22,6 +22,4 @@ exports.setup = function(d3) {
   exports.svgG = exports.svg.append("g")
     .classed("graph", true)
     .attr("id", "graphG");
-  exports.edgeGroups = exports.svgG.append("g").attr("id", "pathGG").selectAll("g");
-  exports.shapeGroups = exports.svgG.append("g").attr("id", "shapeGG").selectAll("g");
 }

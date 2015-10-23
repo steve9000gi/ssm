@@ -1368,6 +1368,8 @@ exports.create = function(d3) {
   modDrag.setupDrag(d3);
   modDrag.setupDragHandle(d3);
   modZoom.setup(d3, modSvg.svg);
+  modSvg.edgeGroups = modSvg.svgG.append("g").attr("id", "pathGG").selectAll("g");
+  modSvg.shapeGroups = modSvg.svgG.append("g").attr("id", "shapeGG").selectAll("g");
   modEvents.setupEventListeners(d3);
   modSystemSupportMap.show(d3);
   modFile.setupDownload(d3, window.saveAs, window.Blob);
@@ -2230,7 +2232,9 @@ exports.storeShapeSize = function(gEl, d) {
 };
 
 },{"./selected-color.js":19,"./svg.js":23,"./update.js":28}],21:[function(require,module,exports){
-var modSvg = require('./svg.js');
+var modSelectedColor = require('./selected-color.js'),
+    modSelection = require('./selection.js'),
+    modSvg = require('./svg.js');
 
 exports.selectedEdge = null;
 exports.selectedNode = null;
@@ -2297,7 +2301,7 @@ exports.replaceSelectEdge = function(d3, d3Path, edgeData) {
   modSelection.selectedEdge = edgeData;
 };
 
-},{"./svg.js":23}],22:[function(require,module,exports){
+},{"./selected-color.js":19,"./selection.js":21,"./svg.js":23}],22:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modEvents = require('./events.js'),
     modGridZoom = require('./grid-zoom.js'),
@@ -2418,8 +2422,6 @@ exports.setup = function(d3) {
   exports.svgG = exports.svg.append("g")
     .classed("graph", true)
     .attr("id", "graphG");
-  exports.edgeGroups = exports.svgG.append("g").attr("id", "pathGG").selectAll("g");
-  exports.shapeGroups = exports.svgG.append("g").attr("id", "shapeGG").selectAll("g");
 }
 
 },{}],24:[function(require,module,exports){

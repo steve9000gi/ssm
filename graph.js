@@ -72,6 +72,8 @@ exports.create = function(d3) {
   modDrag.setupDrag(d3);
   modDrag.setupDragHandle(d3);
   modZoom.setup(d3, modSvg.svg);
+  modSvg.edgeGroups = modSvg.svgG.append("g").attr("id", "pathGG").selectAll("g");
+  modSvg.shapeGroups = modSvg.svgG.append("g").attr("id", "shapeGG").selectAll("g");
   modEvents.setupEventListeners(d3);
   modSystemSupportMap.show(d3);
   modFile.setupDownload(d3, window.saveAs, window.Blob);

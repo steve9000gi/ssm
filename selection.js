@@ -1,4 +1,6 @@
-var modSvg = require('./svg.js');
+var modSelectedColor = require('./selected-color.js'),
+    modSelection = require('./selection.js'),
+    modSvg = require('./svg.js');
 
 exports.selectedEdge = null;
 exports.selectedNode = null;
