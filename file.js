@@ -11,7 +11,6 @@ exports.setupDownload = function(d3, saveAs, Blob) {
 
 // Open/read JSON file
 exports.setupUpload = function(d3) {
-  var thisGraph = this;
   d3.select("#upload-input").on("click", function() {
     document.getElementById("hidden-file-upload").click();
   });

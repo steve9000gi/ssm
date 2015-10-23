@@ -202,7 +202,6 @@ exports.setShapeSizeAndPosition = function(d3, gEl, el, d) {
 };
 
 exports.equalizeSelectedShapeSize = function(d3, shape) {
-  var thisGraph = this;
   var selectedClassName = "." + shape;
   var selectedShapes = d3.selectAll(selectedClassName);
   var rMax = 0;             // circle

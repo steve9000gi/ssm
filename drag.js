@@ -23,7 +23,6 @@ var dragmove = function(d3, d) {
 };
 
 exports.setupDrag = function(d3) {
-  var thisGraph = this;
   exports.dragLine = modSvg.svgG.append("svg:path") // Displayed when dragging between nodes
     .attr("class", "link dragline hidden")
     .attr("d", function() { return "M0,0L0,0"; })
@@ -46,7 +45,6 @@ exports.setupDrag = function(d3) {
 // Handle goes in the lower right-hand corner of a rectangle: shift-drag to
 // resize rectangle.
 exports.setupDragHandle = function(d3) {
-  var thisGraph = this;
   exports.dragHandle = d3.behavior.drag()
     .on("dragstart", function(d) {
       if (!d3.event.sourceEvent.shiftKey) { return; }

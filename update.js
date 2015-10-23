@@ -42,7 +42,6 @@ var addHandle = function(d3, parentG, rectData) {
 };
 
 var addNewNodes = function(d3) {
-  var thisGraph = this;
   var newShapeGroups = modSvg.shapeGroups.enter().append("g");
 
   newShapeGroups.classed("shapeG", true)
@@ -101,7 +100,6 @@ var addNewNodes = function(d3) {
 };
 
 var addNewPaths = function(d3, edgeGroups) {
-  var thisGraph = this;
   var newPathGroups = edgeGroups.enter().append("g");
   newPathGroups.classed("pathG", true)
     .on("mousedown", function(d) {
@@ -161,7 +159,6 @@ var addNewPaths = function(d3, edgeGroups) {
 // Add the newly created shapes to the graph, assigning attributes common to
 // all.
 var addNewShapes = function(d3, newShapeGroups, shapeElts) {
-  var thisGraph = this;
   newShapeGroups.append(function(d, i) { return shapeElts[i]; })
     .attr("class", function(d) { return "shape " + d.shape; })
     .attr("id", function(d) { return "shape" + d.id; })
@@ -322,7 +319,6 @@ exports.deleteGraph = function(d3, skipPrompt) {
 };
 
 exports.updateExistingPaths = function() {
-  var thisGraph = this;
   modSvg.edgeGroups = modSvg.edgeGroups.data(modSvg.links, function(d) {
     return String(d.source.id) + "+" + String(d.target.id);
   });

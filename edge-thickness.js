@@ -3,7 +3,6 @@ var modSelectedColor = require('./selected-color.js');
 exports.thickness = 3;
 
 exports.createSubmenu = function(d3) {
-  var thisGraph = this;
   d3.select("#setLineThicknessItem").append("div")
     .classed("menuHidden", true).classed("menu", false)
     .attr("id", "edgeThicknessSubmenuDiv")

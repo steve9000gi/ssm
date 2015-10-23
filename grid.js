@@ -6,7 +6,6 @@ var gridVisible = false,
     gridCellH = 10;
 
 var generateGridLineEndPoints = function(d3) {
-  var thisGraph = this;
   var data = [];
   var topDiv = d3.select("#topGraphDiv");
   var bcr = d3.select("#mainSVG").node().getBoundingClientRect();
@@ -14,11 +13,11 @@ var generateGridLineEndPoints = function(d3) {
   var x1 = 0, y1 = 0, x2 = 0, y2 = maxY, n = 0;
   // Create fewer gridlines when zooming out:
   var w = modGridZoom.zoom > 0.2 ? gridCellW
-                                 : (thisGraph.zoom > 0.02 ? gridCellW * 4
-                                                          : gridCellW * 40);
+                                 : (modGridZoom.zoom > 0.02 ? gridCellW * 4
+                                                            : gridCellW * 40);
   var h = modGridZoom.zoom > 0.2 ? gridCellH
-                                 : (thisGraph.zoom > 0.02 ? gridCellH * 4
-                                                          : gridCellH * 40);
+                                 : (modGridZoom.zoom > 0.02 ? gridCellH * 4
+                                                            : gridCellH * 40);
   while(x1 <= maxX) {
     data.push({
       "x1": x1,
@@ -71,7 +70,7 @@ var showTurnOffGridText = function(d3) {
 };
 
 exports.snap = function(d) {
-  if (this.state.gridVisible) {
+  if (gridVisible) {
     var leftGridlineDist = d.x % gridCellW;
     var upperGridlineDist = d.y % gridCellH;
     d.x += (leftGridlineDist <= gridCellW / 2) ? -leftGridlineDist
@@ -82,7 +81,6 @@ exports.snap = function(d) {
 };
 
 exports.create = function(d3) {
-  var thisGraph = this;
   if (grid) {
     grid.remove();
     grid = null;

@@ -144,9 +144,7 @@ exports.formatText = function(d3, gEl, d) {
 // "svg foreignObject with contentEditable=true editing/placement inconsistency"
 // for possible explanation of some editable text positioning difficulties.
 exports.changeElementText = function(d3, d3element, d) {
-  var thisGraph = this,
-      consts = thisGraph.consts,
-      htmlEl = d3element.node();
+  var htmlEl = d3element.node();
   d3element.selectAll("text").remove();
   var nodeBCR = htmlEl.getBoundingClientRect(),
       curScale = nodeBCR.width / (modSelectedShape.minCircleRadius * 2),

@@ -55,7 +55,6 @@ var renderRegistrationForm = function(d3, callback) {
   form.selectAll('input[type=password]')
     .on('keydown', function(elt) { d3.event.stopPropagation(); });
 
-  var graph = this;
   var link = content
     .append('a')
     .attr('href', '#')
@@ -126,7 +125,6 @@ var renderLoginForm = function(d3, callback) {
   form.selectAll('input[type=password]')
     .on('keydown', function(elt) { d3.event.stopPropagation(); });
 
-  var graph = this;
   var link = content
     .append('a')
     .attr('href', '#')
@@ -255,7 +253,6 @@ var contextText = null;
 // Based on http://www.w3schools.com/ajax/tryit.asp?filename=tryajax_first
 // Read a file from the server into contextText.
 var loadContextTextFromServer = function(fileName) {
-  var thisGraph = this;
   var jsonObj = null;
   var xmlhttp;
   if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
@@ -291,7 +288,6 @@ var createContextMenu = function(d3) {
 // the right-click context menu with items appropriate to the object selected,
 // and returns true.
 var populateContextMenu = function(d3) {
-  var thisGraph = this;
   var choices = null;
   var selectedElement = d3.select(".selected");
 
@@ -371,7 +367,6 @@ var showContextMenu = function(d3, e) {
 
 // User uploads new file from client into contextText.
 exports.loadFromClient = function(d3) {
-  var thisGraph = this;
   document.getElementById("hidden-textFile-upload").click();
   d3.select("#hidden-textFile-upload").on("change", function() {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -403,7 +398,6 @@ exports.loadFromClient = function(d3) {
 
 // http://stackoverflow.com/questions/4909167/how-to-add-a-custom-right-click-menu-to-a-webpage
 exports.setup = function(d3) {
-  var thisGraph = this;
   createContextMenu(d3);
   if (document.addEventListener) {
     document.addEventListener("contextmenu", function(e) {
@@ -439,7 +433,7 @@ exports.setup = function(d3) {
   }
 };
 
-},{"./events.js":9,"./selected-color.js":18,"./selection.js":20,"./text.js":25,"./update.js":28}],5:[function(require,module,exports){
+},{"./events.js":9,"./selected-color.js":19,"./selection.js":21,"./text.js":25,"./update.js":28}],5:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modBackend = require('./backend.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
@@ -448,7 +442,6 @@ var modAuth = require('./auth.js'),
 
 // Fetch a map from the backend given its id
 var fetchMap = function(d3, id) {
-  var thisGraph = this;
   d3.json(modBackend.backendBase + '/map/' + id)
     .on('beforesend', function(request) { request.withCredentials = true; })
     .on('error',
@@ -550,7 +543,6 @@ exports.loadMapFromLocation = function(d3) {
   var m  = window.location.hash.match(/\/map\/(\d+)/);
   if (m) {
     var id = m[1];
-    var thisGraph = this;
     d3.json(modBackend.backendBase + '/map/' + id)
       .on('beforesend', function(request) { request.withCredentials = true; })
       .on('error',
@@ -579,7 +571,6 @@ exports.loadMapFromLocation = function(d3) {
 };
 
 exports.setupWriteMapToDatabase = function(d3) {
-  var graph = this;
   d3.select("#write-to-db").on("click", function() {
     modAuth.afterAuthentication(d3, function() {
       var m  = window.location.hash.match(/\/map\/(\d+)/);
@@ -628,7 +619,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./backend.js":2,"./circles-of-care.js":3,"./serialize.js":21,"./system-support-map.js":23}],6:[function(require,module,exports){
+},{"./auth.js":1,"./backend.js":2,"./circles-of-care.js":3,"./serialize.js":22,"./system-support-map.js":24}],6:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -654,7 +645,6 @@ var dragmove = function(d3, d) {
 };
 
 exports.setupDrag = function(d3) {
-  var thisGraph = this;
   exports.dragLine = modSvg.svgG.append("svg:path") // Displayed when dragging between nodes
     .attr("class", "link dragline hidden")
     .attr("d", function() { return "M0,0L0,0"; })
@@ -677,7 +667,6 @@ exports.setupDrag = function(d3) {
 // Handle goes in the lower right-hand corner of a rectangle: shift-drag to
 // resize rectangle.
 exports.setupDragHandle = function(d3) {
-  var thisGraph = this;
   exports.dragHandle = d3.behavior.drag()
     .on("dragstart", function(d) {
       if (!d3.event.sourceEvent.shiftKey) { return; }
@@ -717,7 +706,7 @@ exports.setupDragHandle = function(d3) {
     });
 };
 
-},{"./grid.js":15,"./svg.js":22,"./update.js":28}],7:[function(require,module,exports){
+},{"./grid.js":15,"./svg.js":23,"./update.js":28}],7:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -845,13 +834,12 @@ exports.addControls = function(d3) {
   createEdgeStyleSelectionSampleEdges(d3);
 };
 
-},{"./edge-thickness.js":8,"./selected-color.js":18,"./selected-shape.js":19}],8:[function(require,module,exports){
+},{"./edge-thickness.js":8,"./selected-color.js":19,"./selected-shape.js":20}],8:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.thickness = 3;
 
 exports.createSubmenu = function(d3) {
-  var thisGraph = this;
   d3.select("#setLineThicknessItem").append("div")
     .classed("menuHidden", true).classed("menu", false)
     .attr("id", "edgeThicknessSubmenuDiv")
@@ -892,7 +880,7 @@ exports.createSubmenu = function(d3) {
       });
 };
 
-},{"./selected-color.js":18}],9:[function(require,module,exports){
+},{"./selected-color.js":19}],9:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modEdgeStyle = require('./edge-style.js'),
     modEdgeThickness = require('./edge-thickness.js'),
@@ -1122,7 +1110,7 @@ exports.pathMouseDown = function(d3, d3path, d) {
   }
 };
 
-},{"./drag.js":6,"./edge-style.js":7,"./edge-thickness.js":8,"./selected-color.js":18,"./selected-shape.js":19,"./selection.js":20,"./svg.js":22,"./text.js":25,"./update.js":28,"./zoom.js":30}],10:[function(require,module,exports){
+},{"./drag.js":6,"./edge-style.js":7,"./edge-thickness.js":8,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./svg.js":23,"./text.js":25,"./update.js":28,"./zoom.js":30}],10:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -1239,7 +1227,7 @@ exports.exportGraphAsImage = function(d3) {
   canvas.remove();
 };
 
-},{"./circles-of-care.js":3,"./selected-color.js":18,"./system-support-map.js":23,"./text.js":25,"./update.js":28}],11:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./selected-color.js":19,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],11:[function(require,module,exports){
 var modSerialize = require('./serialize.js');
 
 // Save as JSON file
@@ -1253,7 +1241,6 @@ exports.setupDownload = function(d3, saveAs, Blob) {
 
 // Open/read JSON file
 exports.setupUpload = function(d3) {
-  var thisGraph = this;
   d3.select("#upload-input").on("click", function() {
     document.getElementById("hidden-file-upload").click();
   });
@@ -1280,7 +1267,7 @@ exports.setupUpload = function(d3) {
   });
 };
 
-},{"./serialize.js":21}],12:[function(require,module,exports){
+},{"./serialize.js":22}],12:[function(require,module,exports){
 exports.addLogos = function(d3) {
   d3.select("#mainSVG").append("svg:image")
     .attr("xlink:href", "mch-tracs.png")
@@ -1390,7 +1377,7 @@ exports.create = function(d3) {
   modContextMenu.setup(d3);
 };
 
-},{"./circles-of-care.js":3,"./context-menu.js":4,"./database.js":5,"./drag.js":6,"./events.js":9,"./file.js":11,"./front-matter.js":12,"./options-menu.js":17,"./selected-color.js":18,"./svg.js":22,"./system-support-map.js":23,"./toolbox.js":26,"./tooltips.js":27,"./zoom.js":30}],14:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./context-menu.js":4,"./database.js":5,"./drag.js":6,"./events.js":9,"./file.js":11,"./front-matter.js":12,"./options-menu.js":18,"./selected-color.js":19,"./svg.js":23,"./system-support-map.js":24,"./toolbox.js":26,"./tooltips.js":27,"./zoom.js":30}],14:[function(require,module,exports){
 // This file is necessary to break a circular dependency between the grid and
 // zoom modules. JST 2015-10-21
 exports.translate = [0, 0];
@@ -1413,7 +1400,6 @@ var gridVisible = false,
     gridCellH = 10;
 
 var generateGridLineEndPoints = function(d3) {
-  var thisGraph = this;
   var data = [];
   var topDiv = d3.select("#topGraphDiv");
   var bcr = d3.select("#mainSVG").node().getBoundingClientRect();
@@ -1421,11 +1407,11 @@ var generateGridLineEndPoints = function(d3) {
   var x1 = 0, y1 = 0, x2 = 0, y2 = maxY, n = 0;
   // Create fewer gridlines when zooming out:
   var w = modGridZoom.zoom > 0.2 ? gridCellW
-                                 : (thisGraph.zoom > 0.02 ? gridCellW * 4
-                                                          : gridCellW * 40);
+                                 : (modGridZoom.zoom > 0.02 ? gridCellW * 4
+                                                            : gridCellW * 40);
   var h = modGridZoom.zoom > 0.2 ? gridCellH
-                                 : (thisGraph.zoom > 0.02 ? gridCellH * 4
-                                                          : gridCellH * 40);
+                                 : (modGridZoom.zoom > 0.02 ? gridCellH * 4
+                                                            : gridCellH * 40);
   while(x1 <= maxX) {
     data.push({
       "x1": x1,
@@ -1478,7 +1464,7 @@ var showTurnOffGridText = function(d3) {
 };
 
 exports.snap = function(d) {
-  if (this.state.gridVisible) {
+  if (gridVisible) {
     var leftGridlineDist = d.x % gridCellW;
     var upperGridlineDist = d.y % gridCellH;
     d.x += (leftGridlineDist <= gridCellW / 2) ? -leftGridlineDist
@@ -1489,7 +1475,6 @@ exports.snap = function(d) {
 };
 
 exports.create = function(d3) {
-  var thisGraph = this;
   if (grid) {
     grid.remove();
     grid = null;
@@ -1561,6 +1546,52 @@ module.exports = function(d3) {
 };
 
 },{}],17:[function(require,module,exports){
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
+ * All rights reserved.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, CONTRIBUTORS, AND THE
+ * UNIVERSITY OF NORTH CAROLINA AT CHAPEL HILL "AS IS" AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED * TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL THE COPYRIGHT OWNER, CONTRIBUTORS OR THE UNIVERSITY OF NORTH
+ * CAROLINA AT CHAPEL HILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY * OF SUCH DAMAGE.
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+// Build a graph with nodes of several shapes and colors, and connect them with
+// directed edges. Save a constructed graph locally as a json file, and open and
+// display saved graph files.
+// Based on Colorado Reed's https://github.com/cjrd/directed-graph-creator.
+
+document.onload = (function(d3) {
+  "use strict";
+
+  var modDatabase = require('./database.js'),
+      modEvents = require('./events.js'),
+      modGraph = require('./graph.js'),
+      modSvg = require('./svg.js'),
+      modUpdate = require('./update.js');
+
+  window.onbeforeunload = function() {
+    return "Make sure to save your graph locally before leaving.";
+  };
+
+  modSvg.setup(d3);
+  modGraph.create(d3);
+  modEvents.shapeId = 0;
+  modUpdate.updateGraph();
+  modDatabase.loadMapFromLocation(d3);
+})(window.d3);
+
+},{"./database.js":5,"./events.js":9,"./graph.js":13,"./svg.js":23,"./update.js":28}],18:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modContextMenu = require('./context-menu.js'),
@@ -1821,7 +1852,7 @@ exports.createOptionsButton = function(d3) {
     });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":3,"./context-menu.js":4,"./edge-thickness.js":8,"./export.js":10,"./grid.js":15,"./selected-color.js":18,"./selected-shape.js":19,"./selection.js":20,"./system-support-map.js":23,"./text.js":25,"./update.js":28}],18:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":3,"./context-menu.js":4,"./edge-thickness.js":8,"./export.js":10,"./grid.js":15,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],19:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -1881,7 +1912,7 @@ exports.createColorPalette = function(d3) {
   d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
 };
 
-},{"./edge-style.js":7,"./selected-shape.js":19}],19:[function(require,module,exports){
+},{"./edge-style.js":7,"./selected-shape.js":20}],20:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -2086,7 +2117,6 @@ exports.setShapeSizeAndPosition = function(d3, gEl, el, d) {
 };
 
 exports.equalizeSelectedShapeSize = function(d3, shape) {
-  var thisGraph = this;
   var selectedClassName = "." + shape;
   var selectedShapes = d3.selectAll(selectedClassName);
   var rMax = 0;             // circle
@@ -2199,7 +2229,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":18,"./svg.js":22,"./update.js":28}],20:[function(require,module,exports){
+},{"./selected-color.js":19,"./svg.js":23,"./update.js":28}],21:[function(require,module,exports){
 var modSvg = require('./svg.js');
 
 exports.selectedEdge = null;
@@ -2219,7 +2249,7 @@ exports.selectNode = function(d3node, d) {
   if (exports.selectedEdge) {
     exports.removeSelectFromEdge();
   }
-  var prevNode = this.state.selectedNode;
+  var prevNode = exports.selectedNode;
   if (!prevNode || prevNode.id !== d.id) {
     replaceSelectNode(d3node, d);
   } else {
@@ -2236,7 +2266,6 @@ exports.removeSelectFromNode = function() {
 
 // Includes setting edge color back to its unselected value.
 exports.removeSelectFromEdge = function() {
-  var thisGraph = this;
   var deselectedEdgeGroup = modSvg.edgeGroups.filter(function(cd) {
     return cd === exports.selectedEdge;
   }).classed(exports.selectedClass, false);
@@ -2268,7 +2297,7 @@ exports.replaceSelectEdge = function(d3, d3Path, edgeData) {
   modSelection.selectedEdge = edgeData;
 };
 
-},{"./svg.js":22}],21:[function(require,module,exports){
+},{"./svg.js":23}],22:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modEvents = require('./events.js'),
     modGridZoom = require('./grid-zoom.js'),
@@ -2313,7 +2342,6 @@ exports.getMapObject = function(d3) {
 
 // Import a JSON document into the editing area
 exports.importMap = function(d3, jsonObj, id) {
-  var thisGraph = this;
   // TODO better error handling
   try {
     modUpdate.deleteGraph(d3, true);
@@ -2365,7 +2393,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./svg.js":22,"./system-support-map.js":23,"./update.js":28}],22:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./svg.js":23,"./system-support-map.js":24,"./update.js":28}],23:[function(require,module,exports){
 exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
@@ -2394,7 +2422,7 @@ exports.setup = function(d3) {
   exports.shapeGroups = exports.svgG.append("g").attr("id", "shapeGG").selectAll("g");
 }
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.hideText = "Hide system support rings";
@@ -2469,55 +2497,7 @@ exports.create = function(d3) {
       .text(function(d) { return d.name; });
 };
 
-},{"./selected-color.js":18}],24:[function(require,module,exports){
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
- * All rights reserved.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, CONTRIBUTORS, AND THE
- * UNIVERSITY OF NORTH CAROLINA AT CHAPEL HILL "AS IS" AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED * TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL THE COPYRIGHT OWNER, CONTRIBUTORS OR THE UNIVERSITY OF NORTH
- * CAROLINA AT CHAPEL HILL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY * OF SUCH DAMAGE.
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-// Build a graph with nodes of several shapes and colors, and connect them with
-// directed edges. Save a constructed graph locally as a json file, and open and
-// display saved graph files.
-// Based on Colorado Reed's https://github.com/cjrd/directed-graph-creator.
-
-document.onload = (function(d3) {
-  "use strict";
-
-  var modDatabase = require('./database.js'),
-      modEvents = require('./events.js'),
-      modGraph = require('./graph.js'),
-      modSvg = require('./svg.js'),
-      modUpdate = require('./update.js');
-
-  /**** MAIN ****/
-
-  window.onbeforeunload = function() {
-    return "Make sure to save your graph locally before leaving.";
-  };
-
-  modSvg.setup(d3);
-  modGraph.create(d3);
-  modEvents.shapeId = 0;
-  modUpdate.updateGraph();
-  modDatabase.loadMapFromLocation(d3);
-})(window.d3);
-
-},{"./database.js":5,"./events.js":9,"./graph.js":13,"./svg.js":22,"./update.js":28}],25:[function(require,module,exports){
+},{"./selected-color.js":19}],25:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
@@ -2664,9 +2644,7 @@ exports.formatText = function(d3, gEl, d) {
 // "svg foreignObject with contentEditable=true editing/placement inconsistency"
 // for possible explanation of some editable text positioning difficulties.
 exports.changeElementText = function(d3, d3element, d) {
-  var thisGraph = this,
-      consts = thisGraph.consts,
-      htmlEl = d3element.node();
+  var htmlEl = d3element.node();
   d3element.selectAll("text").remove();
   var nodeBCR = htmlEl.getBoundingClientRect(),
       curScale = nodeBCR.width / (modSelectedShape.minCircleRadius * 2),
@@ -2708,7 +2686,7 @@ exports.changeElementText = function(d3, d3element, d) {
   return d3txt;
 };
 
-},{"./drag.js":6,"./selected-color.js":18,"./selected-shape.js":19,"./svg.js":22,"./update.js":28}],26:[function(require,module,exports){
+},{"./drag.js":6,"./selected-color.js":19,"./selected-shape.js":20,"./svg.js":23,"./update.js":28}],26:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modEdgeStyle = require('./edge-style.js'),
     modHelp = require('./help.js'),
@@ -2721,7 +2699,6 @@ var modCirclesOfCare = require('./circles-of-care.js'),
 // Edge, shape, and color selection, plus "?" help and Options buttons, load,
 // save, and delete.
 exports.prepareToolbox = function(d3) {
-  var thisGraph = this;
   modCirclesOfCare.center = null; // CirclesOfCareCenter
   modSystemSupportMap.center = null; // System Support Map Center
 
@@ -2736,7 +2713,7 @@ exports.prepareToolbox = function(d3) {
   modEdgeStyle.addControls(d3);
 };
 
-},{"./circles-of-care.js":3,"./edge-style.js":7,"./help.js":16,"./options-menu.js":17,"./selected-color.js":18,"./selected-shape.js":19,"./system-support-map.js":23,"./update.js":28}],27:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./edge-style.js":7,"./help.js":16,"./options-menu.js":18,"./selected-color.js":19,"./selected-shape.js":20,"./system-support-map.js":24,"./update.js":28}],27:[function(require,module,exports){
 exports.tip = null;
 
 // "Notes" == tooltips
@@ -2799,7 +2776,6 @@ var addHandle = function(d3, parentG, rectData) {
 };
 
 var addNewNodes = function(d3) {
-  var thisGraph = this;
   var newShapeGroups = modSvg.shapeGroups.enter().append("g");
 
   newShapeGroups.classed("shapeG", true)
@@ -2858,7 +2834,6 @@ var addNewNodes = function(d3) {
 };
 
 var addNewPaths = function(d3, edgeGroups) {
-  var thisGraph = this;
   var newPathGroups = edgeGroups.enter().append("g");
   newPathGroups.classed("pathG", true)
     .on("mousedown", function(d) {
@@ -2918,7 +2893,6 @@ var addNewPaths = function(d3, edgeGroups) {
 // Add the newly created shapes to the graph, assigning attributes common to
 // all.
 var addNewShapes = function(d3, newShapeGroups, shapeElts) {
-  var thisGraph = this;
   newShapeGroups.append(function(d, i) { return shapeElts[i]; })
     .attr("class", function(d) { return "shape " + d.shape; })
     .attr("id", function(d) { return "shape" + d.id; })
@@ -3079,7 +3053,6 @@ exports.deleteGraph = function(d3, skipPrompt) {
 };
 
 exports.updateExistingPaths = function() {
-  var thisGraph = this;
   modSvg.edgeGroups = modSvg.edgeGroups.data(modSvg.links, function(d) {
     return String(d.source.id) + "+" + String(d.target.id);
   });
@@ -3125,7 +3098,7 @@ exports.updateWindow = function(d3) {
   exports.updateGraph(d3);
 };
 
-},{"./circles-of-care.js":3,"./drag.js":6,"./events.js":9,"./grid.js":15,"./selected-color.js":18,"./selection.js":20,"./svg.js":22,"./system-support-map.js":23,"./text.js":25,"./tooltips.js":27,"./util.js":29}],29:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./drag.js":6,"./events.js":9,"./grid.js":15,"./selected-color.js":19,"./selection.js":21,"./svg.js":23,"./system-support-map.js":24,"./text.js":25,"./tooltips.js":27,"./util.js":29}],29:[function(require,module,exports){
 
 // http://warpycode.wordpress.com/2011/01/21/calculating-the-distance-to-the-edge-of-an-ellipse/
 // Angle theta is measured from the -y axis (recalling that +y is down)
@@ -3199,4 +3172,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid-zoom.js":14,"./grid.js":15,"./text.js":25}]},{},[24]);
+},{"./grid-zoom.js":14,"./grid.js":15,"./text.js":25}]},{},[17]);

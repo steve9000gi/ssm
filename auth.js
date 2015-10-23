@@ -54,7 +54,6 @@ var renderRegistrationForm = function(d3, callback) {
   form.selectAll('input[type=password]')
     .on('keydown', function(elt) { d3.event.stopPropagation(); });
 
-  var graph = this;
   var link = content
     .append('a')
     .attr('href', '#')
@@ -125,7 +124,6 @@ var renderLoginForm = function(d3, callback) {
   form.selectAll('input[type=password]')
     .on('keydown', function(elt) { d3.event.stopPropagation(); });
 
-  var graph = this;
   var link = content
     .append('a')
     .attr('href', '#')

@@ -9,7 +9,6 @@ var contextText = null;
 // Based on http://www.w3schools.com/ajax/tryit.asp?filename=tryajax_first
 // Read a file from the server into contextText.
 var loadContextTextFromServer = function(fileName) {
-  var thisGraph = this;
   var jsonObj = null;
   var xmlhttp;
   if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
@@ -45,7 +44,6 @@ var createContextMenu = function(d3) {
 // the right-click context menu with items appropriate to the object selected,
 // and returns true.
 var populateContextMenu = function(d3) {
-  var thisGraph = this;
   var choices = null;
   var selectedElement = d3.select(".selected");
 
@@ -125,7 +123,6 @@ var showContextMenu = function(d3, e) {
 
 // User uploads new file from client into contextText.
 exports.loadFromClient = function(d3) {
-  var thisGraph = this;
   document.getElementById("hidden-textFile-upload").click();
   d3.select("#hidden-textFile-upload").on("change", function() {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -157,7 +154,6 @@ exports.loadFromClient = function(d3) {
 
 // http://stackoverflow.com/questions/4909167/how-to-add-a-custom-right-click-menu-to-a-webpage
 exports.setup = function(d3) {
-  var thisGraph = this;
   createContextMenu(d3);
   if (document.addEventListener) {
     document.addEventListener("contextmenu", function(e) {

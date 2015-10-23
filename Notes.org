@@ -3,6 +3,7 @@
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO exercise the full app to find any refactoring bugs
 *** functions to test
+**** TODO open page without errors
 **** TODO creating nodes
 **** TODO moving nodes
 **** TODO deleting nodes

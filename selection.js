@@ -17,7 +17,7 @@ exports.selectNode = function(d3node, d) {
   if (exports.selectedEdge) {
     exports.removeSelectFromEdge();
   }
-  var prevNode = this.state.selectedNode;
+  var prevNode = exports.selectedNode;
   if (!prevNode || prevNode.id !== d.id) {
     replaceSelectNode(d3node, d);
   } else {
@@ -34,7 +34,6 @@ exports.removeSelectFromNode = function() {
 
 // Includes setting edge color back to its unselected value.
 exports.removeSelectFromEdge = function() {
-  var thisGraph = this;
   var deselectedEdgeGroup = modSvg.edgeGroups.filter(function(cd) {
     return cd === exports.selectedEdge;
   }).classed(exports.selectedClass, false);

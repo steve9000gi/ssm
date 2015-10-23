@@ -42,7 +42,6 @@ exports.getMapObject = function(d3) {
 
 // Import a JSON document into the editing area
 exports.importMap = function(d3, jsonObj, id) {
-  var thisGraph = this;
   // TODO better error handling
   try {
     modUpdate.deleteGraph(d3, true);

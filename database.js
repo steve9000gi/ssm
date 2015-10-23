@@ -6,7 +6,6 @@ var modAuth = require('./auth.js'),
 
 // Fetch a map from the backend given its id
 var fetchMap = function(d3, id) {
-  var thisGraph = this;
   d3.json(modBackend.backendBase + '/map/' + id)
     .on('beforesend', function(request) { request.withCredentials = true; })
     .on('error',
@@ -108,7 +107,6 @@ exports.loadMapFromLocation = function(d3) {
   var m  = window.location.hash.match(/\/map\/(\d+)/);
   if (m) {
     var id = m[1];
-    var thisGraph = this;
     d3.json(modBackend.backendBase + '/map/' + id)
       .on('beforesend', function(request) { request.withCredentials = true; })
       .on('error',
@@ -137,7 +135,6 @@ exports.loadMapFromLocation = function(d3) {
 };
 
 exports.setupWriteMapToDatabase = function(d3) {
-  var graph = this;
   d3.select("#write-to-db").on("click", function() {
     modAuth.afterAuthentication(d3, function() {
       var m  = window.location.hash.match(/\/map\/(\d+)/);
