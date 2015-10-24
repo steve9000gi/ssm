@@ -2187,7 +2187,7 @@ exports.equalizeSelectedShapeSize = function(d3, shape) {
       break;
     case "star":
       selectedShapes.attr("points",
-        exports.calculateStarPoints(0, 0, 5, innerRadius * 2, innerRadius));
+        calculateStarPoints(0, 0, 5, innerRadius * 2, innerRadius));
       break;
     default:
       alert("equalizeSelectedShapeSize(): unknown shape \"" + d.shape + "\"");
@@ -2456,8 +2456,8 @@ exports.show = function(d3) {
       var offset = [20, 28, 26, 18, 64];
       return ssmCenter.y - d.radius + offset[i];
     });
-  d3.select("#sysSptRingsItem").text(exports.ssmHideText)
-    .datum({"name": exports.ssmHideText});
+  d3.select("#sysSptRingsItem").text(exports.hideText)
+    .datum({"name": exports.hideText});
 };
 
 exports.hide = function(d3) {

@@ -3,22 +3,6 @@
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO exercise the full app to find any refactoring bugs
 *** functions to test
-**** TODO dragging canvas
-**** TODO zooming canvas
-**** TODO shift-click on node's text to edit
-**** TODO shift-click on an edge to edit text
-**** TODO alt-click on node to see/create URL
-**** TODO ctrl-click on node with URL to open URL
-**** TODO ctrl-shift-click on node to add/edit note
-**** TODO hover a node to see its note
-**** TODO help text appears
-**** TODO options menu appears, as do submenus
-**** TODO hide/show system support rings
-**** TODO hide/show circles of care
-**** TODO equalize selected shape size
-**** TODO equalize sizes for all shapes
-**** TODO set text line length (try all 9 options)
-**** TODO set line thickness (try all 7 options)
 **** TODO set selected object color
 **** TODO snap to grid
 **** TODO export map as image

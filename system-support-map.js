@@ -27,8 +27,8 @@ exports.show = function(d3) {
       var offset = [20, 28, 26, 18, 64];
       return ssmCenter.y - d.radius + offset[i];
     });
-  d3.select("#sysSptRingsItem").text(exports.ssmHideText)
-    .datum({"name": exports.ssmHideText});
+  d3.select("#sysSptRingsItem").text(exports.hideText)
+    .datum({"name": exports.hideText});
 };
 
 exports.hide = function(d3) {

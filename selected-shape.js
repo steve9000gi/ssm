@@ -269,7 +269,7 @@ exports.equalizeSelectedShapeSize = function(d3, shape) {
       break;
     case "star":
       selectedShapes.attr("points",
-        exports.calculateStarPoints(0, 0, 5, innerRadius * 2, innerRadius));
+        calculateStarPoints(0, 0, 5, innerRadius * 2, innerRadius));
       break;
     default:
       alert("equalizeSelectedShapeSize(): unknown shape \"" + d.shape + "\"");
