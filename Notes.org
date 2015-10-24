@@ -3,12 +3,6 @@
 ** TODO login broken due to CORS on Safari                          :bugfix:
 ** TODO exercise the full app to find any refactoring bugs
 *** functions to test
-**** TODO login (registration?)
-**** TODO logout
-**** TODO save to DB
-**** TODO listing maps
-**** TODO load from DB
-**** TODO delete map
 **** TODO dragging canvas
 **** TODO zooming canvas
 **** TODO shift-click on node's text to edit
