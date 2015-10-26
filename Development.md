@@ -73,5 +73,5 @@ Whenever you're about to change any javascript files, start a `watchify`
 process to watch the files for changes and rebuild the bundled script as
 needed:
 
-    watchify main.js -o bundled.js -v
+    watchify js/main.js -o bundled.js -v
 
