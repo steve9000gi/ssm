@@ -14,10 +14,10 @@ exports.lastKeyDown = -1;
 exports.mouseDownNode = null;
 exports.mouseDownLink = null;
 exports.shapeId = 0;
+exports.rightMouseBtn = 3;
 
 var BACKSPACE_KEY = 8,
     DELETE_KEY = 46,
-    rightMouseBtn = 3,
     graphMouseDown = false,
     defaultShapeText = {"circle":    "Identity",
                         "rectangle": "Responsibility",
@@ -203,7 +203,7 @@ exports.shapeMouseUp = function(d3, d3node, d) {
         var txtNode = d3txt.node();
         modText.selectText(txtNode);
         txtNode.focus();
-      } else if (d3.event.which !== rightMouseBtn) { // left- or mid-clicked
+      } else if (d3.event.which !== exports.rightMouseBtn) { // left- or mid-clicked
         modSelection.selectNode(d3node, d);
       }
     }
@@ -222,7 +222,7 @@ exports.pathMouseDown = function(d3, d3path, d) {
   var prevEdge = modSelection.selectedEdge;
   if (!prevEdge || prevEdge !== d) {
     modSelection.replaceSelectEdge(d3, d3path, d);
-  } else if (d3.event.which !== rightMouseBtn) {
+  } else if (d3.event.which !== exports.rightMouseBtn) {
     modSelection.removeSelectFromEdge();
   }
 };

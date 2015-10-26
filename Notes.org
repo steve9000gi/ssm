@@ -1,14 +1,6 @@
 * SSM (System Support Mapper)
 ** TODO reassociate login form labels with input elements           :bugfix:
 ** TODO login broken due to CORS on Safari                          :bugfix:
-** TODO exercise the full app to find any refactoring bugs
-*** functions to test
-**** TODO set selected object color
-**** TODO snap to grid
-**** TODO export map as image
-**** TODO load text for context menu
-**** TODO context menu for a node
-**** TODO context menu for an edge
 ** TODO add 'delete' functionality
 ** TODO create admin interface
 *** Research team needs to access all maps from all users
