@@ -5,7 +5,7 @@
     [clojure.java.jdbc :as jdbc]
     [reloaded.repl :refer [system]]
     [ring.util.http-response :as resp]
-    [backend.postgres :refer [insert! update! query]]
+    [backend.postgres :refer [insert! update! delete! query]]
     [backend.user :as user]
     [cheshire.core :refer [generate-string parse-string parse-stream]]
     )
@@ -147,3 +147,26 @@
               (resp/bad-request {:message "document did not save"})))
           (resp/bad-request {:message "invalid map document"}))))))
 
+(defn delete
+  [owner-id id]
+  {:pre [(integer? owner-id)
+         (pos? owner-id)]}
+  (prn 'map/delete {:owner-id owner-id, :map-id id})
+  (let [map-id (try
+                 (Integer/parseInt id)
+                 (catch NumberFormatException e nil))]
+    (if (or (nil? map-id)
+            (not (pos? map-id)))
+      (resp/bad-request {:message (str "invalid map ID: " (pr-str id))})
+      (if (not= owner-id (-> map-id internal-fetch :owner))
+        (resp/forbidden {:message "map not owned by authenticated user"})
+        (let [[deleted] (delete! (:db system)
+                                 "ssm.maps"
+                                 ["id = ?" map-id])]
+          (case deleted
+            1 (resp/ok {:message "map deleted"})
+            0 (resp/bad-request {:message "map not deleted; reason unknown"})
+              (resp/bad-request
+                {:message
+                  (format "Houston, apparently %d maps were deleted!"
+                          deleted)})))))))

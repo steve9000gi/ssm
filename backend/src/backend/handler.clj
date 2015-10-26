@@ -7,7 +7,7 @@
     [ring.middleware.cookies :refer [wrap-cookies]]
     [ring.middleware.format :refer [wrap-restful-format]]
     [ring.middleware.cors :as cors]
-    [compojure.core :refer [defroutes GET POST PUT]]
+    [compojure.core :refer [defroutes GET POST PUT DELETE]]
     [reloaded.repl :refer [system]]
     [backend.user :as user]
     [backend.map :as map]
@@ -60,6 +60,10 @@
   (PUT "/map/:id" {:keys [current-user-id body] {map-id :id} :params}
     (if current-user-id
       (map/update current-user-id map-id body)
+      (resp/forbidden {:message "not authenticated"})))
+  (DELETE "/map/:id" {:keys [current-user-id ] {map-id :id} :params}
+    (if current-user-id
+      (map/delete current-user-id map-id)
       (resp/forbidden {:message "not authenticated"})))
   )
 

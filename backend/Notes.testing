@@ -134,6 +134,28 @@ Now do a bunch of curl commands:
     curl -buser_id=1,auth_token=692ec64b-58bb-4a68-8581-1ec5b919b9a3 http://localhost:8080/map/a
     # {"message":"invalid map ID: \"a\""}
 
+    # Deleting a map
+    curl -buser_id=1,auth_token=$TOKEN \
+         -X DELETE \
+         http://localhost:8080/map/1
+
+    # Trying to delete a nonexistent map
+    curl -buser_id=1,auth_token=$TOKEN \
+         -X DELETE \
+         http://localhost:8080/map/99
+    # {"message":"map ID 99 not found"}
+
+    # Deleting a map not owned by authenticated user
+    export TOKEN2=$(curl -demail="jeff%2B2@altometrics.com" -dpassword="foo" http://localhost:8080/login 2>/dev/null | cut -d: -f2 | cut -d\" -f2)
+    curl -buser_id=2,auth_token=$TOKEN2 \
+         -X DELETE \
+         http://localhost:8080/map/1
+    # {"message":"map not owned by authenticated user"}
+
+    # Delete map: non-numeric id
+    curl -buser_id=1,auth_token=692ec64b-58bb-4a68-8581-1ec5b919b9a3 -X DELETE http://localhost:8080/map/a
+    # {"message":"invalid map ID: \"a\""}
+
 
     ##### Testing admin listing #####
     dropdb ssm && createdb ssm
