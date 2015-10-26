@@ -2,7 +2,8 @@ var modAuth = require('./auth.js'),
     modBackend = require('./backend.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modSerialize = require('./serialize.js'),
-    modSystemSupportMap = require('./system-support-map.js');
+    modSystemSupportMap = require('./system-support-map.js'),
+    modUtil = require('./util.js');
 
 // Fetch a map from the backend given its id
 var fetchMap = function(d3, id) {
@@ -18,6 +19,20 @@ var fetchMap = function(d3, id) {
     .send('GET');
 };
 
+// Delete a map from the backend given its id
+var deleteMap = function(d3, id) {
+  d3.xhr(modBackend.backendBase + '/map/' + id)
+    .header('Content-Type', 'application/json')
+    .on('beforesend', function(request) { request.withCredentials = true; })
+    .on('error',
+        function() { window.alert('Error talking to backend server.'); })
+    .on('load', function(data) {
+      window.alert('Map deleted.');
+      d3.select('#map-index').style('visibility', 'hidden');
+    })
+    .send('DELETE');
+};
+
 var renderMapsList = function(d3, data) {
   d3.selectAll('#map-index .content *').remove();
   if (!data || data.length === 0) {
@@ -28,11 +43,13 @@ var renderMapsList = function(d3, data) {
   }
 
   var asAdmin = data && data[0] && data[0].hasOwnProperty('owner_email');
+  var userId = modUtil.readCookieByName('user_id');
   var columns =
     ['Map ID', 'Created At', 'Modified At', 'Num. Nodes', 'Num. Links'];
   if (asAdmin) {
     columns.push('Owner Email');
   }
+  columns.push('Delete');
 
   var table = d3.select('#map-index .content').append('table'),
       thead = table.append('thead'),
@@ -64,6 +81,25 @@ var renderMapsList = function(d3, data) {
   if (asAdmin) {
     rows.append('td').text(function(d) { return d.owner_email; });
   }
+  rows.append('td')
+    .append('a')
+    .attr('href', '#')
+    .on('click', function(d) {
+      if (userId == d.owner) {
+        if (window.confirm("Press OK to delete this graph from the server.")) {
+          deleteMap(d3, d.id);
+        }
+      } else {
+        alert("You cannot delete a map that you don't own, even if you're an admin. Sorry about that.");
+      }
+    })
+    .text(function(d) {
+      if (userId == d.owner) {
+        return 'X';
+      } else {
+        return '';
+      }
+    });
 };
 
 var listMaps = function(d3) {

@@ -1,7 +1,6 @@
 * SSM (System Support Mapper)
 ** TODO reassociate login form labels with input elements           :bugfix:
 ** TODO login broken due to CORS on Safari                          :bugfix:
-** TODO add 'delete' functionality [2]
 ** TODO create admin interface [4]
 *** Research team needs to access all maps from all users
 ** TODO add ability to name maps [4]

@@ -306,7 +306,7 @@ var updateExistingNodes = function() {
 exports.deleteGraph = function(d3, skipPrompt) {
   var doDelete = true;
   if (!skipPrompt) {
-    doDelete = window.confirm("Press OK to delete this graph");
+    doDelete = window.confirm("Press OK to delete this graph from the canvas. (It will still be saved on the server.)");
   }
   if(doDelete) {
     modSvg.nodes = [];

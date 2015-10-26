@@ -1,3 +1,18 @@
+var cookiesByName = null;
+
+exports.readCookieByName = function(name) {
+  if (cookiesByName) { return cookiesByName[name]; }
+  if (!document.cookie) { return undefined; }
+  // `document.cookie` is a string like so:
+  // "auth_token=bfb35669-04f7-4f25-8876-c482dd8580bc; user_id=1"
+  var strs = document.cookie.split('; ');
+  cookiesByName = {};
+  for (var i=0; i<strs.length; i++) {
+    var vals = strs[i].split('=');
+    cookiesByName[vals[0]] = vals[1];
+  }
+  return cookiesByName[name];
+};
 
 // http://warpycode.wordpress.com/2011/01/21/calculating-the-distance-to-the-edge-of-an-ellipse/
 // Angle theta is measured from the -y axis (recalling that +y is down)

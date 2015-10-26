@@ -439,7 +439,8 @@ var modAuth = require('./auth.js'),
     modBackend = require('./backend.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modSerialize = require('./serialize.js'),
-    modSystemSupportMap = require('./system-support-map.js');
+    modSystemSupportMap = require('./system-support-map.js'),
+    modUtil = require('./util.js');
 
 // Fetch a map from the backend given its id
 var fetchMap = function(d3, id) {
@@ -455,6 +456,20 @@ var fetchMap = function(d3, id) {
     .send('GET');
 };
 
+// Delete a map from the backend given its id
+var deleteMap = function(d3, id) {
+  d3.xhr(modBackend.backendBase + '/map/' + id)
+    .header('Content-Type', 'application/json')
+    .on('beforesend', function(request) { request.withCredentials = true; })
+    .on('error',
+        function() { window.alert('Error talking to backend server.'); })
+    .on('load', function(data) {
+      window.alert('Map deleted.');
+      d3.select('#map-index').style('visibility', 'hidden');
+    })
+    .send('DELETE');
+};
+
 var renderMapsList = function(d3, data) {
   d3.selectAll('#map-index .content *').remove();
   if (!data || data.length === 0) {
@@ -465,11 +480,13 @@ var renderMapsList = function(d3, data) {
   }
 
   var asAdmin = data && data[0] && data[0].hasOwnProperty('owner_email');
+  var userId = modUtil.readCookieByName('user_id');
   var columns =
     ['Map ID', 'Created At', 'Modified At', 'Num. Nodes', 'Num. Links'];
   if (asAdmin) {
     columns.push('Owner Email');
   }
+  columns.push('Delete');
 
   var table = d3.select('#map-index .content').append('table'),
       thead = table.append('thead'),
@@ -501,6 +518,25 @@ var renderMapsList = function(d3, data) {
   if (asAdmin) {
     rows.append('td').text(function(d) { return d.owner_email; });
   }
+  rows.append('td')
+    .append('a')
+    .attr('href', '#')
+    .on('click', function(d) {
+      if (userId == d.owner) {
+        if (window.confirm("Press OK to delete this graph from the server.")) {
+          deleteMap(d3, d.id);
+        }
+      } else {
+        alert("You cannot delete a map that you don't own, even if you're an admin. Sorry about that.");
+      }
+    })
+    .text(function(d) {
+      if (userId == d.owner) {
+        return 'X';
+      } else {
+        return '';
+      }
+    });
 };
 
 var listMaps = function(d3) {
@@ -620,7 +656,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./backend.js":2,"./circles-of-care.js":3,"./serialize.js":22,"./system-support-map.js":24}],6:[function(require,module,exports){
+},{"./auth.js":1,"./backend.js":2,"./circles-of-care.js":3,"./serialize.js":22,"./system-support-map.js":24,"./util.js":29}],6:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -3044,7 +3080,7 @@ var updateExistingNodes = function() {
 exports.deleteGraph = function(d3, skipPrompt) {
   var doDelete = true;
   if (!skipPrompt) {
-    doDelete = window.confirm("Press OK to delete this graph");
+    doDelete = window.confirm("Press OK to delete this graph from the canvas. (It will still be saved on the server.)");
   }
   if(doDelete) {
     modSvg.nodes = [];
@@ -3103,6 +3139,21 @@ exports.updateWindow = function(d3) {
 };
 
 },{"./circles-of-care.js":3,"./drag.js":6,"./events.js":9,"./grid.js":15,"./selected-color.js":19,"./selection.js":21,"./svg.js":23,"./system-support-map.js":24,"./text.js":25,"./tooltips.js":27,"./util.js":29}],29:[function(require,module,exports){
+var cookiesByName = null;
+
+exports.readCookieByName = function(name) {
+  if (cookiesByName) { return cookiesByName[name]; }
+  if (!document.cookie) { return undefined; }
+  // `document.cookie` is a string like so:
+  // "auth_token=bfb35669-04f7-4f25-8876-c482dd8580bc; user_id=1"
+  var strs = document.cookie.split('; ');
+  cookiesByName = {};
+  for (var i=0; i<strs.length; i++) {
+    var vals = strs[i].split('=');
+    cookiesByName[vals[0]] = vals[1];
+  }
+  return cookiesByName[name];
+};
 
 // http://warpycode.wordpress.com/2011/01/21/calculating-the-distance-to-the-edge-of-an-ellipse/
 // Angle theta is measured from the -y axis (recalling that +y is down)
