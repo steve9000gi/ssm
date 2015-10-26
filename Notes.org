@@ -1,10 +1,10 @@
 * SSM (System Support Mapper)
 ** TODO reassociate login form labels with input elements           :bugfix:
 ** TODO login broken due to CORS on Safari                          :bugfix:
-** TODO add 'delete' functionality
-** TODO create admin interface
+** TODO add 'delete' functionality [2]
+** TODO create admin interface [4]
 *** Research team needs to access all maps from all users
-** TODO add ability to name maps
-** TODO restrict registration (central control over who can register for SSM)
+** TODO add ability to name maps [4]
+** TODO restrict registration (central control over who can register for SSM) [4]
 *** invitation-only, only admins create new accounts, no email sending
 ** TODO data analysis (might be on Steve?)
