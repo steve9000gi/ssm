@@ -58,17 +58,74 @@ var deleteMap = function(d3, id) {
     .send('DELETE');
 };
 
+var renderAdminRegisterUserForm = function(d3) {
+  d3.selectAll('#admin-register-user .content *').remove();
+  d3.select('#admin-register-user').style('visibility', 'visible');
+  var content = d3.select('#admin-register-user .content');
+  content.html(
+    '<form>' +
+    '  <label>Email address: <input type="text" placeholder="user@example.com" /></label><br/>' +
+    '  <label>Password: <input type="password" /></label><br/>' +
+    '  <input type="submit" />' +
+    '</form>'
+  );
+  content.selectAll('input')
+    .on('keydown', function(elt) { d3.event.stopPropagation(); });
+  var emailInput = content.select('input[type=text]'),
+      passwordInput = content.select('input[type=password]'),
+      submitButton = content.select('input[type=submit]');
+
+  submitButton.on('click', function() {
+    var confirmText = 'Are you sure you want to create a new user? ' +
+          '(This action cannot be undone.) ' +
+          'Note that you must remember the password, ' +
+          'because you must email it to them afterwards.';
+    if (window.confirm(confirmText)) {
+      var requestObject = {email: emailInput.property('value'),
+                           password: passwordInput.property('value')};
+      d3.xhr(modBackend.backendBase + '/register')
+        .header('Content-Type', 'application/json')
+        .on('beforesend', function(request) {request.withCredentials = true;})
+        .on('error', function(req) {
+          console.error('Failed to create new user. Request was:', req);
+          alert('Failed to create new user.');
+        })
+        .on('load', function(request) {
+          alert('Created new user. You must email them to inform them of their password.');
+        })
+        .send('POST', JSON.stringify(requestObject));}
+  });
+
+  d3.select('#admin-register-user')
+    .style('visibility', 'visible')
+    .on('click', function() {
+      d3.select('#admin-register-user .loading-message').remove();
+      d3.select('#admin-register-user').style('visibility', 'hidden');
+      d3.select('#admin-register-user table').remove();
+    });
+  content
+    .on('click', function() {
+      d3.event.stopPropagation();
+    });
+};
+
 var renderMapsList = function(d3, data) {
   d3.selectAll('#map-index .content *').remove();
-  if (!data || data.length === 0) {
-    d3.select('#map-index .content').append('p')
-      .text("You're logged in, but you don't have any maps yet. " +
-            "To get started, create a map and click the 'save' button.");
-    return;
-  }
-
   var asAdmin = data && data[0] && data[0].hasOwnProperty('owner_email');
   var userId = modUtil.readCookieByName('user_id');
+
+  if (asAdmin) {
+    d3.select('#map-index .content')
+      .append('p')
+      .append('a')
+      .attr('href', '#')
+      .text('Register a new user')
+      .on('click', function() {
+        d3.select('#map-index').style('visibility', 'hidden');
+        renderAdminRegisterUserForm(d3);
+      });
+  }
+
   var columns =
     ['Map ID', 'Name', 'Created At', 'Modified At', 'Num. Nodes', 'Num. Links'];
   if (asAdmin) {
@@ -76,6 +133,13 @@ var renderMapsList = function(d3, data) {
   }
   columns.push('Rename');
   columns.push('Delete');
+
+  if (!data || data.length === 0) {
+    d3.select('#map-index .content').append('p')
+      .text("You're logged in, but you don't have any maps yet. " +
+            "To get started, create a map and click the 'save' button.");
+    return;
+  }
 
   var table = d3.select('#map-index .content').append('table'),
       thead = table.append('thead'),

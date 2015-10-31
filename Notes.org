@@ -9,5 +9,5 @@ BEGIN; ALTER TABLE ssm.maps ADD COLUMN name VARCHAR(240) NOT NULL DEFAULT ''; UP
 *** DONE Clicking this link (which could also be a button) would popup a dialog asking the user for a name.
 *** DONE Upon successful save, notify the usr about success with a popup. If saved new map, give additional pointer for updating the name from the default.
 ** TODO restrict registration (central control over who can register for SSM) [4]
-*** TODO Admins, if logged in, can see a link to create an account. Fill out form, hit submit, get instructions to email new user their credentials.
+*** DONE Admins, if logged in, can see a link to create an account. Fill out form, hit submit, get instructions to email new user their credentials.
 *** TODO Email instructions to Steve for giving an existing user admin rights.

@@ -107,8 +107,7 @@
                                        password
                                        :work-factor password-work-factor)}))]
           (if new-user
-            (add-session new-user
-                         (resp/ok (select-keys new-user [:id :email])))
+            (resp/ok (select-keys new-user [:id :email]))
             (resp/bad-request {:message "unknown error"
                                :data new-user})))
         (catch PSQLException e
