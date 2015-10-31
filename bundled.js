@@ -456,6 +456,31 @@ var fetchMap = function(d3, id) {
     .send('GET');
 };
 
+var defaultName = function(mapId) {
+  return 'map #' + mapId;
+};
+
+var renameMap = function(d3, id, newName) {
+  d3.xhr(modBackend.backendBase + '/map/' + id + '/rename')
+    .header('Content-Type', 'application/json')
+    .on('beforesend', function(request) { request.withCredentials = true; })
+    .on('error', function(req) {
+      var resp = req.response && JSON.parse(req.response);
+      if (resp
+          && resp.message == 'map not owned by authenticated user') {
+        alert("Can't save: you have read-only access to this map.");
+      } else {
+        console.error('Failed to save map. Request was:', req);
+        alert('Failed to save map #' + id);
+      }
+    })
+    .on('load', function(data) {
+      window.alert('Map renamed.');
+      d3.select('#map-index').style('visibility', 'hidden');
+    })
+    .send('PUT', JSON.stringify({name: newName}));
+};
+
 // Delete a map from the backend given its id
 var deleteMap = function(d3, id) {
   d3.xhr(modBackend.backendBase + '/map/' + id)
@@ -482,10 +507,11 @@ var renderMapsList = function(d3, data) {
   var asAdmin = data && data[0] && data[0].hasOwnProperty('owner_email');
   var userId = modUtil.readCookieByName('user_id');
   var columns =
-    ['Map ID', 'Created At', 'Modified At', 'Num. Nodes', 'Num. Links'];
+    ['Map ID', 'Name', 'Created At', 'Modified At', 'Num. Nodes', 'Num. Links'];
   if (asAdmin) {
     columns.push('Owner Email');
   }
+  columns.push('Rename');
   columns.push('Delete');
 
   var table = d3.select('#map-index .content').append('table'),
@@ -511,6 +537,11 @@ var renderMapsList = function(d3, data) {
     .attr('href', '#')
     .on('click', function(d) { fetchMap(d3, d.id); })
     .text(function(d) { return d.id; });
+  rows.append('td')
+    .append('a')
+    .attr('href', '#')
+    .on('click', function(d) { fetchMap(d3, d.id); })
+    .text(function(d) { return d.name; });
   rows.append('td').text(function(d) { return d.created_at; });
   rows.append('td').text(function(d) { return d.modified_at; });
   rows.append('td').text(function(d) { return d.num_nodes; });
@@ -518,6 +549,30 @@ var renderMapsList = function(d3, data) {
   if (asAdmin) {
     rows.append('td').text(function(d) { return d.owner_email; });
   }
+
+  rows.append('td')
+    .append('a')
+    .attr('href', '#')
+    .on('click', function(d) {
+      if (userId == d.owner) {
+        var promptText = 'Please enter the name for map #' + d.id;
+        var defaultText = d.name || defaultName(d.id);
+        var newName = prompt(promptText, defaultText);
+        if (newName != null) {
+          renameMap(d3, d.id, newName);
+        }
+      } else {
+        alert("You cannot rename a map that you don't own, even if you're an admin. Sorry about that.");
+      }
+    })
+    .text(function(d) {
+      if (userId == d.owner) {
+        return 'rename';
+      } else {
+        return '';
+      }
+    });
+
   rows.append('td')
     .append('a')
     .attr('href', '#')
@@ -630,7 +685,7 @@ exports.setupWriteMapToDatabase = function(d3) {
             }
           })
           .on('load', function(data) {
-            console.log('saved map # ' + id);
+            alert('Saved map #' + id + '.');
           })
           .send('PUT', JSON.stringify(modSerialize.getMapObject(d3)));
 
@@ -647,7 +702,10 @@ exports.setupWriteMapToDatabase = function(d3) {
           })
           .on('load', function(request) {
             var data = JSON.parse(request.response);
-            console.log('saved new map # ' + data.id);
+            var text = 'Saved new map #' + data.id + ' with default name. ' +
+                  'To change the name, click the "Read map from database" ' +
+                  'button in the toolbox, then click "Rename".';
+            alert(text);
             window.location.hash = '/map/' + data.id;
           })
           .send('POST', JSON.stringify(modSerialize.getMapObject(d3)));

@@ -101,6 +101,15 @@ Now do a bunch of curl commands:
          http://localhost:8080/map
     # Should get some JSON back
 
+    # Renaming a map
+    curl -H 'Content-Type: application/json' \
+         -H 'Accept: application/json' \
+         -X PUT \
+         -buser_id=1,auth_token=$TOKEN \
+         -d '{"name": "new name"}' \
+         http://localhost:8080/map/1/rename
+    # Should get some JSON back
+
     # Updating a complicated map (from a file)
     curl -H 'Content-Type: application/json' \
          -H 'Accept: application/json' \

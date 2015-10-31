@@ -34,11 +34,18 @@
                  "  WHERE id = ?")
             id])))
 
+(defn- set-default-name
+  [id]
+  (update! (:db system)
+           "ssm.maps"
+           {:name (str "map #" id)}
+           ["id = ?" id]))
+
 (defn create
   [owner-id document]
   {:pre [(integer? owner-id)
          (pos? owner-id)]}
-  (prn 'map/create owner-id document)
+  (prn 'map/create owner-id)
   (if-let [document (try-parse-document document)]
     (try
       (prn 'document document)
@@ -50,7 +57,9 @@
                                    (.setType "jsonb")
                                    (.setValue (generate-string document)))})]
         (if new-map
-          (resp/ok (result->response (first new-map)))
+          (resp/ok (let [new-map (first new-map)]
+                     (set-default-name (:id new-map))
+                     (result->response new-map)))
           (resp/bad-request {:message "unknown error"
                              :data new-map})))
       (catch Exception e
@@ -61,7 +70,7 @@
 
 (defn- list-as-admin-sql
   []
-  [(str "SELECT m.id, owner, u.email AS owner_email, "
+  [(str "SELECT m.id, name, owner, u.email AS owner_email, "
         "       created_at, modified_at,"
         "       jsonb_array_length(document #> '{nodes}') AS num_nodes,"
         "       jsonb_array_length(document #> '{links}') AS num_links"
@@ -72,7 +81,7 @@
 
 (defn- list-as-user-sql
   [user-id]
-  [(str "SELECT id, owner, created_at, modified_at,"
+  [(str "SELECT id, name, owner, created_at, modified_at,"
         "       jsonb_array_length(document #> '{nodes}') AS num_nodes,"
         "       jsonb_array_length(document #> '{links}') AS num_links"
         "  FROM ssm.maps"
@@ -117,6 +126,30 @@
                    (not (user/is-admin? owner-id)))
             (resp/forbidden {:message "map not owned by authenticated user"})
             (resp/ok (result->response map))))))))
+
+(defn rename
+  [owner-id id body]
+  {:pre [(integer? owner-id)
+         (pos? owner-id)]}
+  (prn 'map/update {:owner-id owner-id, :map-id id})
+  (let [map-id (try
+                 (Integer/parseInt id)
+                 (catch NumberFormatException e nil))]
+    (if (or (nil? map-id)
+            (not (pos? map-id)))
+      (resp/bad-request {:message (str "invalid map ID: " (pr-str id))})
+      (if (not= owner-id (-> map-id internal-fetch :owner))
+        (resp/forbidden {:message "map not owned by authenticated user"})
+        (if-let [new-name (get (try-parse-document body) "name")]
+          (let [[updated] (update! (:db system)
+                                   "ssm.maps"
+                                   {:name new-name}
+                                   ["id = ?" map-id])]
+            (if (= 1 updated)
+              (resp/ok {:name new-name})
+              (resp/bad-request {:message "document did not save"})))
+          (resp/bad-request
+           {:message "invalid body; specify 'name' as the only property"}))))))
 
 (defn update
   [owner-id id document]

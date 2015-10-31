@@ -57,6 +57,10 @@
     (if current-user-id
       (map/fetch current-user-id map-id)
       (resp/forbidden {:message "not authenticated"})))
+  (PUT "/map/:id/rename" {:keys [current-user-id body] {map-id :id} :params}
+    (if current-user-id
+      (map/rename current-user-id map-id body)
+      (resp/forbidden {:message "not authenticated"})))
   (PUT "/map/:id" {:keys [current-user-id body] {map-id :id} :params}
     (if current-user-id
       (map/update current-user-id map-id body)
