@@ -104,15 +104,15 @@ var renderLoginForm = function(d3, callback) {
   var form = content
     .append('form')
     .attr("id", "login")
-    .html('<label>' +
+    .html('<label for="email_input">' +
           '  Email address:' +
           '</label>' +
-          '  <input type="text" name="email" />' +
+          '  <input type="text" name="email" id="email_input" />' +
           '<br />' +
-          '<label>' +
+          '<label for="password_input">' +
           '  Password:' +
           '</label>' +
-          '  <input type="password" name="password" />' +
+          '  <input type="password" name="password" id="password_input" />' +
           '<br />' +
           '<input type="submit" name="Log in" />');
 
