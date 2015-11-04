@@ -11,3 +11,4 @@ BEGIN; ALTER TABLE ssm.maps ADD COLUMN name VARCHAR(240) NOT NULL DEFAULT ''; UP
 ** TODO restrict registration (central control over who can register for SSM) [4]
 *** DONE Admins, if logged in, can see a link to create an account. Fill out form, hit submit, get instructions to email new user their credentials.
 *** TODO Email instructions to Steve for giving an existing user admin rights.
+** TODO point backendBase to prod backend
