@@ -1,3 +1,0 @@
-* SSM (System Support Mapper)
-** TODO login broken due to CORS on Safari                          :bugfix:
-** TODO point backendBase to prod backend
