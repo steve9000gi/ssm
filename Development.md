@@ -77,8 +77,8 @@ step, you (a) don't actually need to setup a local backend process and (b) will
 be using (and potentially modifying) the actual production database. This is a
 useful tool, but also dangerous, so use at your own risk.
 
-If you'd rather use your own local backend server, you'll need to tell edit the
-file `js/backend.js`. Change the `backendBase` variable to be
+If you'd rather use your own local backend server, you'll need to edit the file
+`js/backend.js`. Change the `backendBase` variable to be
 `http://localhost:8080/`. Note that this change won't take effect, not even with
 a browser refresh, unless you follow the next step.
 
