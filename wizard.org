@@ -1,0 +1,306 @@
+* Wizard libraries
+** Contenders
+Both of these are pretty mature and fully featured.
+*** Zurb Foundation Joyride [[http://zurb.com/playground/jquery-joyride-feature-tour-plugin][demo/blog post]] - [[https://github.com/zurb/joyride][Github]]
+*** Bootstrap Tour [[http://bootstraptour.com/][link]]
+** Meh
+*** jQuery Simple Tour [[http://alvaroveliz.github.io/aSimpleTour/][website]] - [[https://github.com/alvaroveliz/aSimpleTour][Github]]
+Interesting separation between the remote control (with next/prev buttons) and the highlighter/pointer.
+Seems a little buggy, maybe not quite mature.
+Evidence:
+- go forward up to the "Data" section. Then go back. Doesn't switch immediately back to prev section, even though pointer changes.
+- also, go forward until remote goes to the bottom. Hitting previous doesn't bring it back to top.
+*** jQuery TourBus [[http://ryanfunduk.com/jquery-tourbus/][website]] - [[https://github.com/rfunduk/jquery-tourbus][Github]]
+Seems a little odd, possibly immature.
+** Nah
+*** Pageguide.js [[http://tracelytics.github.io/pageguide/][website]] - [[https://github.com/tracelytics/pageguide][Github]]
+seems to overlay stuff on top of actual document, hindering functionality
+*** jQuery Website Tour [[http://tympanus.net/codrops/2010/12/21/website-tour/][website]] - [[http://tympanus.net/Development/WebsiteTour/][demo]]
+same weakness as Pageguide.js
+*** Boostro.js [[http://clu3.github.io/bootstro.js/][website]] - [[http://github.com/clu3/bootstro.js][Github]]
+ditto about overlay
+*** Trip.js [[http://eragonj.github.io/Trip.js/][website]] - [[https://github.com/EragonJ/Trip.js][Github]]
+meh about aesthetics, plus seems oriented towards auto-advancing (though not exclusively)
+*** Crumble [[http://blog.tommoor.com/crumble/][website]] - [[https://github.com/tommoor/crumble][Github]]
+ambivalent. unusual aesthetic/UX. but circle-oriented, which kinda fits. No
+next/prev buttons. And actually, a "prev" button is probably pretty important.
+*** Intro.js [[http://usablica.github.io/intro.js/][website]] - [[https://github.com/usablica/intro.js][Github]]
+Overlay
+** Decision: Bootstrap Tour
+Rationale: Joyride seems great, but it seems more oriented to a relatively
+static set of steps decided in the document. Bootstrap is all JS-oriented, and
+my guess is that it will be more friendly for SSM (a pure-JS app) and dynamic
+steps.
+* Description of phase 3 work
+** from Steve, in [[https://mail.google.com/mail/u/0/#search/from%3Astevec%40renci.org+wizard/150ecdcb03a3373c][this email]]:
+There may be some additional work for you.
+Kristen would like to build an SSM "wizard":
+an online tool that not only lets you build ssms,
+but takes you step by step through the process of building them
+and actually does the construction automatically.
+For example, it starts with an explanation,
+then asks the user what role or roles she wants to have in the middle of the ssm.
+The user types in the role[s],
+and the software then displays an ssm with that role (or those roles)
+in the proper location (the center of the ssm).
+Then the user is asked what the primary responsibilities are
+in support of that role (those roles).
+The user types them in
+and they're displayed as nodes in an ssm,
+in the second ring,
+connected by edges to the role[s].
+Then again for the next ring: needs. 
+
+She'd like this hand-holding software to work for just the first three levels:
+roles, responsibilities, needs.
+The user types in the info in response to prompts,
+and the software builds the map.
+
+I've attached a script that Kristen uses to construct ssms
+out of paper and post-it notes:
+she'd like something similar,
+except entirely online.
+** Script (in attachment)
+Script: System support mapping using Paper
+*** Context
+Used when it is important to understand the role, responsibilities, needs, resources, and 
+wishes of individual participants navigating and/or supporting a system. This tool has 
+been particularly useful in the context of care coordination or coaching. It is also useful 
+when studying a fragmented system in which many stakeholders shape outcomes.
+*** Purpose
+Used in order to elicit the role an individual plays in a system, their responsibilities or 
+objectives/goals, needs for meeting each, resources used to support needs (and notes on 
+whether they were helpful and why/why not), and wishes for being better supported in 
+the system.
+*** Status
+Experimental
+*** Primary nature of group task
+Divergent – we are attempting to understand each individual’s experience in and/or 
+shaping the system being studied. 
+*** Time
+- Preparation time: No preparation time needed
+- Time to walk through activity: 60 to 80 minutes
+- Follow-up time: No follow-up time needed (unless you want to turn maps into electronic 
+files for data analysis or update the maps over time)
+*** Materials needed
+Post-it notes (ideally purple, blue, aqua, yellow and gold), paper, thin sharpies (black, 
+red, and green), and wall/size post-its or butcher block paper and blue painters tape
+*** Inputs
+Nothing. However, if this script is being used in a meeting with stakeholders supporting a 
+system, it is very helpful to have 1-3 consumers prepare system support maps ahead of 
+time so that they can raise awareness of what it’s like to experience the system as well as 
+to familiarize participants with the structure of system support maps.
+*** Outputs
+Completed system support map
+*** Roles
+- A guide to lead participant through system support mapping process and answer 
+questions
+- For large groups, it is helpful to have multiple facilitators circulating to answer 
+questions and ensure maps are being completed as intended
+- A participant/stakeholder (or someone who speaks for the person that the system 
+support map is being filled out for, as appropriate) 
+*** Steps
+**** 1. foundations: clarity about system
+It is critical that this exercise begin with a clear boundary around the system being 
+studied. Examples of systems that have been studied using this tool include:
+
+- a. Supporting a child/children with special health care needs and/or 
+     developmental disabilities;
+- b. Above, but in a specific life-course (i.e., transition to adulthood);
+- c. Family outcomes in the 3 months post-partum;
+- d. The social-emotional health of a child/children;
+- e. Migraine self-management;
+- f. Community-academic partnerships working to improve population health;
+- g. Efforts to address isolation among individuals in a community;
+- h. Efforts to increase inter-generational cohesion in a community;
+- i. And, efforts to reconnect with one’s landscape/environment.
+
+If the system under study is not clear, this exercise will be unclear and potentially 
+overwhelming. It is very important to emphasize the focus on this system, or 
+else individuals will have a hard time limiting/focusing on their responsibilities. 
+This step may require conversation and consensus-building. It’s a good time to 
+establish shared definitions of the system.
+**** 2. introduction
+Guide: “This exercise will walk you through reflecting on and documenting 
+(diagrammatically), your role in the system under study, your 
+responsibilities/objectives/goals (choose the most appropriate term), and what 
+supports you in meeting these responsibilities/objectives/goals. This exercise will 
+require you to really think about your priorities and what supports you, what 
+doesn’t, and what you need. We will ask you to talk through your map, so keep 
+that in mind as you write.” 
+**** 3. a note about process
+The planning team should decide if it is best to walk participants through the 
+exercise step by step, or to present the overall process and then let them work at 
+their own pace. While it is far more complex to present the whole process, it can 
+be better with a large group as participants often spend more/less time on different 
+steps and re-convening the group for each step can be challenging. If the whole 
+process is going to be shared at once, it is preferable to illustrate the map first 
+with a participant (often the consumer in the system under study) telling their 
+story through their completed map. This familiarizes others with the task, and also 
+illustrates the power/value of storytelling with a map. Either way, the steps to 
+complete a map are as follows:
+**** 4. draw 4 concentric circles
+Each participant should be given a large sheet of paper, a sharpie, post-it notes 
+and enough space to work (on a table or a wall). They should be asked to draw 4 
+concentric circles with the marker, each large enough for a post-it note (inner 
+circle) or ring of post-it notes (all other rings). You should create an example map 
+to show them. If time permits, it’s helpful to pre-draw the rings for participants.
+**** 5. identify role of self within system
+Ask the patient to identify their role in the system under study. Repeat the agreed 
+upon description of the system to reinforce the focus. If multiple systems are 
+being studied at once, we recommend working through one at a time, completely. 
+
+a. Guide: What role do you play in this system? Are you a patient, a family 
+member, a teacher, an organizational leader, a legislator, a community 
+member, etc? (Guide should fill in examples relevant to the system being 
+studied.)
+
+b. When they identify their role, ask them to write it on a purple post-it note, 
+and place it in the innermost circle (in the center of the map).
+**** 6. clarify own role
+Ask the participant to think about whether they want to describe any context or 
+clarify their role in any way. For example, they might describe the kind of 
+organization they lead, another role that complicates this one, or the context in 
+which they practice primary care. 
+
+a. Guide: Now further clarify your stakeholder role by providing any context 
+that will help others understand your unique situation. For example, if you 
+are a provider, what is your specialty and what kind of patients do you 
+typically see (i.e., uninsured patients in a primary care community health 
+center)? If you are a parent, what shapes your experience (i.e., describe 
+your child or your community).
+
+b. This information should be written on a second purple post-it note and 
+slipped under their role (make sure it’s partially visible so we know it’s 
+there)!
+
+c. Note that participants who feel uncomfortable defining their role only in 
+relation to the system under study should feel encouraged to document 
+additional/broader roles here (e.g., “I am a mother of 2 other children in 
+addition to the one with special health care needs; I am also a wife, a 
+person of faith, and a person with a career.”)
+**** 7. describe responsibilities/objectives/goals in the system
+Ask the participant to describe their responsibilities/objectives/goals in the system 
+being studied. Write one per post-it note. 
+
+a. Guide: “In your role in ____ (fill in the system being studied), what do 
+you see as the main activities you are responsible for/objectives you are 
+working toward/goals? Identify the 4-8 most important responsibilities, 
+and write one per post-it notes.”
+
+b. Ask them to make a list of the 4-8 (or a reasonable number given the 
+project at hand) most pressing responsibilities that come to mind. Write 
+each responsibility on a separate blue post-it note, and spread these around 
+the second ring (the one surrounding their role). Review the list together 
+and encourage them to reflect on what is missing from it. 
+
+c. Next, ask them to draw arrows from their role to each responsibility it 
+creates for them. 
+**** 8. identify needs for meeting responsibilities/objectives/goals
+Ask the patient to identify what they need, in general terms, to meet each 
+responsibility/objective/goal.
+
+a. Guide: Next, we want you to consider each responsibility, one at a time, 
+and identify what you need – in general terms – to get it done. Think about 
+this as a recipe. To meet a given responsibility/objective/goal, what 
+ingredients would you need? Common responses include time, money, 
+reimbursement, buy-in from my organization, information, access to ____, 
+etc. Please be creative here – it really helps if this list is complete. Also 
+consider internal needs – like patience, empathy, energy, creativity, etc. 
+Here is an example for a parent/caregiver of a child with special health 
+care needs supporting the physical health of their child: a doctor who 
+“gets” us (my daughter and our family) and who is open in the evenings 
+or weekends, child care for my other kids, transportation, and money for 
+the copayment).
+
+b. Instruct participants to write each need on a separate aqua post-it note, and 
+stick them in the ring surrounding responsibilities/objectives/goals – close 
+to the item generating the need.
+
+c. They should then draw arrows that link each responsibility to the needs it 
+generates. Repeat for each responsibility. If a need repeats, you can draw 
+multiple arrows to the single post-it, or duplicate the post-it (to keep your 
+system support map cleaner). It’s ok to duplicate – needs repeat (flour is 
+an important ingredient when cooking; time is an important need for 
+getting many things done)! 
+**** 9. identify specific resources that have been tried
+Ask the participant to identify specific resources that they have tried in the past 
+(decide on a unit of time – ever, year, month, week, etc).
+
+a. Guide: The next step is to think about the needs you listed. Are there any 
+specific resources that you have tried (whether or not they have helped 
+you) to get that need met? What supports you? If needs were ingredients 
+in a recipe, resources might include things like a favorite recipe, 
+particular brands of an ingredient, a store that sells many ingredients on 
+your list, etc. Back to system support maps, resources might include 
+websites, information/brochures, training programs/classes, organizations 
+in your community, providers, books you read to build a skill in yourself 
+(e.g., communication skills, mindfulness, the ability to relax). Here we also 
+want to know about your experience with each resource. Did it help you? 
+Why or why not – what about the resource worked/didn’t work?
+
+b. Write each resource on a separate yellow post-it note, and place it in the 
+ring surrounding needs, close to the need(s) it targeted.
+
+c. Put a green, black, or red star on the post-it to indicate whether the 
+resource helped, was neutral (or in the middle), or did not help/support 
+you, respectively. If you can, make a note in that color of marker 
+explaining.
+
+d. Please draw an arrow from each resource to the corresponding need they 
+targeted. 
+
+e. Note that some participants might be concerned about judging the 
+usefulness of a service based on their own experience. Remind them that 
+this map is meant to reflect only their own experiences, and would never 
+be used on its own to evaluate services. It will be used as one piece of the 
+overall picture.
+**** 10. a note about order of process
+NOTE: A good order is to fill in role/context and responsibilities first. Then, ask
+the participant to rank their priorities in terms of importance or time spent on each 
+(the team should decide and ask participants to rank consistently). They might put 
+number in the corner of each responsibility post-it. Then, ask them to work 
+through the responsibilities in their rank order. For each one, push out in the 
+diagram – fill in needs and resources. Work through all the responsibilities before 
+moving to the next step.
+**** 11. reflection
+Ask participants to reflect on their whole map. Are arrows drawn? Is anything 
+missing?
+**** 12. add wishes
+Ask them to add their wishes
+
+a. Guide: In the area outside the resources ring, we now want you to add 
+your top three wishes for what would most help you meet your 
+responsibilities/objectives/goals.”
+
+b. Ask the patient to reflect on what they are trying to do, what they need, 
+and resources they have tried. What would most help them meet their 
+responsibilities? How could the system better support them? Are there any 
+responsibilities they just can’t begin to get their head around that they’d 
+like help with? Is there a need not currently met? Do they wish a current 
+resource was different in some way? 
+
+c. Write one wish on each of three gold post-it notes. Draw an arrow from 
+the post-it note to whatever the wish targets in their map.
+*** Evaluation criteria:
+ Participants complete a system support map
+ Participants are primed to share their responsibilities/objectives/goals, what they 
+need, resources they have tried (and how they helped) and their top 3 wishes
+ Participants feel this exercise has helped them think about what they are trying to 
+do within the system, and how well the system supports them
+*** Authors:
+Kristen Hassmiller-Lich
+Steve Chall
+Seri Link
+Ruchir Karmali
+*** History:
+Adapted from “Gabe’s Map”: http://www.huffingtonpost.com/2013/01/18/gabes-care-
+map-special-needs-children-caregivers_n_2469564.html
+AND
+http://www.childrenshospital.org/care-coordination-curriculum/care-mapping. Also 
+inspired by ecomaps typically done in social work. The goal was to capture more 
+information about system supports and guide improvement.
+*** Revisions:
+No revisions
+*** References:
+*** Notes:
