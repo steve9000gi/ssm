@@ -311,3 +311,18 @@ path.link.selected, g.pathG.selected path {
   float: left;
 }
 
+#wizard.open {
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background-color: white;
+  border: 2px solid green;
+  z-index: 100;
+}
+
+#wizard.closed {
+  display: none;
+  height: 0px;
+}

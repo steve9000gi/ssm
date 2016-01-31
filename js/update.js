@@ -355,11 +355,10 @@ exports.updateGraph = function(d3) {
 };
 
 exports.updateWindow = function(d3) {
-  var docEl = document.documentElement,
-      bodyEl = document.getElementsByTagName("body")[0];
-  var x = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth;
-  var y = window.innerHeight|| docEl.clientHeight|| bodyEl.clientHeight;
-  modSvg.svg.attr("width", x).attr("height", y);
+  var wizardEl = document.getElementById('wizard'),
+      width = window.innerWidth,
+      height = window.innerHeight - wizardEl.clientHeight;
+  modSvg.svg.attr('width', width).attr('height', height);
   modGrid.create(d3);
   exports.updateGraph(d3);
 };

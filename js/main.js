@@ -30,7 +30,8 @@ document.onload = (function(d3) {
       modEvents = require('./events.js'),
       modGraph = require('./graph.js'),
       modSvg = require('./svg.js'),
-      modUpdate = require('./update.js');
+      modUpdate = require('./update.js'),
+      modWizard = require('./wizard.js');
 
   window.onbeforeunload = function() {
     return "Make sure to save your graph locally before leaving.";
@@ -41,4 +42,7 @@ document.onload = (function(d3) {
   modEvents.shapeId = 0;
   modUpdate.updateGraph(d3);
   modDatabase.loadMapFromLocation(d3);
+  modWizard.showWizard(d3);
+  window.showWizard = function() { modWizard.showWizard(d3); };
+  window.hideWizard = function() { modWizard.hideWizard(d3); };
 })(window.d3);

@@ -6,10 +6,9 @@ exports.shapeGroups = null;
 exports.edgeGroups = null;
 
 exports.setup = function(d3) {
-  var docEl = document.documentElement,
-      bodyEl = document.getElementsByTagName("body")[0],
-      width = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth,
-      height =  window.innerHeight|| docEl.clientHeight|| bodyEl.clientHeight;
+  var wizardEl = document.getElementById('wizard'),
+      width = window.innerWidth,
+      height = window.innerHeight - wizardEl.clientHeight;
   // MAIN SVG:
   d3.select("#topGraphDiv").append("div")
     .attr("id", "mainSVGDiv");

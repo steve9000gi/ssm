@@ -196,7 +196,7 @@ exports.logoutUser = function(d3) {
 }
 
 },{"./backend.js":2}],2:[function(require,module,exports){
-exports.backendBase = 'http://syssci.renci.org:8080';
+exports.backendBase = 'http://localhost:8080';
 
 },{}],3:[function(require,module,exports){
 exports.visible = false;
@@ -1268,7 +1268,7 @@ exports.pathMouseDown = function(d3, d3path, d) {
   }
 };
 
-},{"./drag.js":6,"./edge-style.js":7,"./edge-thickness.js":8,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./svg.js":23,"./text.js":25,"./update.js":28,"./zoom.js":30}],10:[function(require,module,exports){
+},{"./drag.js":6,"./edge-style.js":7,"./edge-thickness.js":8,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./svg.js":23,"./text.js":25,"./update.js":28,"./zoom.js":31}],10:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -1537,7 +1537,7 @@ exports.create = function(d3) {
   modContextMenu.setup(d3);
 };
 
-},{"./circles-of-care.js":3,"./context-menu.js":4,"./database.js":5,"./drag.js":6,"./events.js":9,"./file.js":11,"./front-matter.js":12,"./options-menu.js":18,"./selected-color.js":19,"./svg.js":23,"./system-support-map.js":24,"./toolbox.js":26,"./tooltips.js":27,"./zoom.js":30}],14:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./context-menu.js":4,"./database.js":5,"./drag.js":6,"./events.js":9,"./file.js":11,"./front-matter.js":12,"./options-menu.js":18,"./selected-color.js":19,"./svg.js":23,"./system-support-map.js":24,"./toolbox.js":26,"./tooltips.js":27,"./zoom.js":31}],14:[function(require,module,exports){
 // This file is necessary to break a circular dependency between the grid and
 // zoom modules. JST 2015-10-21
 exports.translate = [0, 0];
@@ -1738,7 +1738,8 @@ document.onload = (function(d3) {
       modEvents = require('./events.js'),
       modGraph = require('./graph.js'),
       modSvg = require('./svg.js'),
-      modUpdate = require('./update.js');
+      modUpdate = require('./update.js'),
+      modWizard = require('./wizard.js');
 
   window.onbeforeunload = function() {
     return "Make sure to save your graph locally before leaving.";
@@ -1749,9 +1750,12 @@ document.onload = (function(d3) {
   modEvents.shapeId = 0;
   modUpdate.updateGraph(d3);
   modDatabase.loadMapFromLocation(d3);
+  modWizard.showWizard(d3);
+  window.showWizard = function() { modWizard.showWizard(d3); };
+  window.hideWizard = function() { modWizard.hideWizard(d3); };
 })(window.d3);
 
-},{"./database.js":5,"./events.js":9,"./graph.js":13,"./svg.js":23,"./update.js":28}],18:[function(require,module,exports){
+},{"./database.js":5,"./events.js":9,"./graph.js":13,"./svg.js":23,"./update.js":28,"./wizard.js":30}],18:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modContextMenu = require('./context-menu.js'),
@@ -2556,7 +2560,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./svg.js":23,"./system-support-map.js":24,"./update.js":28,"./zoom.js":30}],23:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./svg.js":23,"./system-support-map.js":24,"./update.js":28,"./zoom.js":31}],23:[function(require,module,exports){
 exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
@@ -2565,10 +2569,9 @@ exports.shapeGroups = null;
 exports.edgeGroups = null;
 
 exports.setup = function(d3) {
-  var docEl = document.documentElement,
-      bodyEl = document.getElementsByTagName("body")[0],
-      width = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth,
-      height =  window.innerHeight|| docEl.clientHeight|| bodyEl.clientHeight;
+  var wizardEl = document.getElementById('wizard'),
+      width = window.innerWidth,
+      height = window.innerHeight - wizardEl.clientHeight;
   // MAIN SVG:
   d3.select("#topGraphDiv").append("div")
     .attr("id", "mainSVGDiv");
@@ -3250,11 +3253,10 @@ exports.updateGraph = function(d3) {
 };
 
 exports.updateWindow = function(d3) {
-  var docEl = document.documentElement,
-      bodyEl = document.getElementsByTagName("body")[0];
-  var x = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth;
-  var y = window.innerHeight|| docEl.clientHeight|| bodyEl.clientHeight;
-  modSvg.svg.attr("width", x).attr("height", y);
+  var wizardEl = document.getElementById('wizard'),
+      width = window.innerWidth,
+      height = window.innerHeight - wizardEl.clientHeight;
+  modSvg.svg.attr('width', width).attr('height', height);
   modGrid.create(d3);
   exports.updateGraph(d3);
 };
@@ -3306,6 +3308,19 @@ exports.computeRectangleBoundary = function(edge) {
 };
 
 },{}],30:[function(require,module,exports){
+var modUpdate = require('./update.js');
+
+exports.showWizard = function(d3) {
+  document.getElementById('wizard').className = 'open';
+  modUpdate.updateWindow(d3);
+};
+
+exports.hideWizard = function(d3) {
+  document.getElementById('wizard').className = 'closed';
+  modUpdate.updateWindow(d3);
+};
+
+},{"./update.js":28}],31:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modGridZoom = require('./grid-zoom.js'),
     modText = require('./text.js');
