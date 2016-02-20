@@ -15,19 +15,19 @@
                  [org.clojure/java.jdbc "0.4.1"]
                  [com.jolbox/bonecp "0.8.0.RELEASE"]
                  [cheshire "5.5.0"]
-                 ]
+                 [ragtime "0.5.2"]]
 
   :profiles {:uberjar {:aot :all
                        :main backend.main}
              :dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]]
                    :source-paths ["dev"]}}
 
+  :aliases {"migrate"  ["run" "-m" "user/migrate"]
+            "rollback" ["run" "-m" "user/rollback"]}
+
   :jvm-opts ~(mapv (fn [[p v]] (str "-D" (name p) "=" v))
                    {:DB_HOST "localhost"
                     :DB_PORT 5432
                     :DB_NAME "ssm"
                     :DB_USER "jeff"
-                    :DB_PASS ""})
-
-  )
-
+                    :DB_PASS ""}))

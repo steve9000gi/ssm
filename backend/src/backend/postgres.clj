@@ -56,21 +56,24 @@
   []
   (every? get-config ["DB_HOST" "DB_PORT" "DB_NAME" "DB_USER" "DB_PASS"]))
 
+(defn db-spec
+  []
+  {:subprotocol "postgresql"
+   :host     (get-config "DB_HOST")
+   :port     (get-config "DB_PORT")
+   :dbname   (get-config "DB_NAME")
+   :user     (get-config "DB_USER")
+   :password (get-config "DB_PASS")
+   :classname "org.postgresql.Driver"
+   :init-part-size 1
+   :max-part-size 4
+   :partitions 2})
+
 (defrecord PostgresDB []
   component/Lifecycle
   (start [this]
     (println ";; Starting PostgresDB component")
-    (let [datasource (pooled-datasource
-                       {:subprotocol "postgresql"
-                        :host     (get-config "DB_HOST")
-                        :port     (get-config "DB_PORT")
-                        :dbname   (get-config "DB_NAME")
-                        :user     (get-config "DB_USER")
-                        :password (get-config "DB_PASS")
-                        :classname "org.postgresql.Driver"
-                        :init-part-size 1
-                        :max-part-size 4
-                        :partitions 2})]
+    (let [datasource (pooled-datasource (db-spec))]
       (ensure-schema-installed datasource)
       (assoc this :datasource datasource)))
 

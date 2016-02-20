@@ -43,8 +43,11 @@ bit off. If so, please correct the instructions above and remove this note.)
 
 ### Start a local API server
 
-In the `backend` directory, say `lein repl`. If your shell can't find the `lein`
-command, you'll need to install [Leiningen](http://leiningen.org/).
+In the `backend` directory, say `lein migrate` to apply database migrations. If
+your shell can't find the `lein` command, you'll need to install
+[Leiningen](http://leiningen.org/).
+
+Next, also in the `backend` directory, say `lein repl`.
 
 Once you're presented with a prompt, type `(go)` to start the backend process.
 Note that you'll need to have a `postgres` process running for the backend to
