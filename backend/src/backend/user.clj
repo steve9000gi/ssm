@@ -128,6 +128,7 @@
                  :affil_smcha_staff (= "on" affil_smcha_staff)
                  :affil_local_org_staff (= "on" affil_local_org_staff)}
                 new-user (first (insert! (:db system) "ssm.users" user-map))]
+
             (if new-user
               (add-session new-user (resp/ok (select-keys new-user [:id :email])))
               (resp/bad-request {:message "unknown error"
