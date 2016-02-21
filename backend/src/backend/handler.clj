@@ -36,8 +36,8 @@
                  (assoc :async-channel "redacted")
                  (update-in [:body] slurp))))
 
-  (POST "/register" [email password]
-    (user/create email password))
+  (POST "/register" [email password name state affiliations reason]
+    (user/create email password name state affiliations reason))
   (GET "/testauth" {:keys [current-user-id]}
     (if current-user-id
       (resp/ok {:message "authenticated"})
