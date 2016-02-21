@@ -262,6 +262,8 @@ exports.logoutUser = function(d3) {
         alert('Error logging out.');
       } else {
         alert("You have logged out from SSM.");
+        window.onbeforeunload = null;
+        window.location.reload();
       }
     });
 }
@@ -1805,7 +1807,8 @@ module.exports = function(d3) {
 document.onload = (function(d3) {
   "use strict";
 
-  var modDatabase = require('./database.js'),
+  var modAuth = require('./auth.js'),
+      modDatabase = require('./database.js'),
       modEvents = require('./events.js'),
       modGraph = require('./graph.js'),
       modSvg = require('./svg.js'),
@@ -1815,14 +1818,16 @@ document.onload = (function(d3) {
     return "Make sure to save your graph locally before leaving.";
   };
 
-  modSvg.setup(d3);
-  modGraph.create(d3);
-  modEvents.shapeId = 0;
-  modUpdate.updateGraph(d3);
-  modDatabase.loadMapFromLocation(d3);
+  modAuth.afterAuthentication(d3, function() {
+    modSvg.setup(d3);
+    modGraph.create(d3);
+    modEvents.shapeId = 0;
+    modUpdate.updateGraph(d3);
+    modDatabase.loadMapFromLocation(d3);
+  });
 })(window.d3);
 
-},{"./database.js":5,"./events.js":9,"./graph.js":13,"./svg.js":23,"./update.js":28}],18:[function(require,module,exports){
+},{"./auth.js":1,"./database.js":5,"./events.js":9,"./graph.js":13,"./svg.js":23,"./update.js":28}],18:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modContextMenu = require('./context-menu.js'),

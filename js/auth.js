@@ -261,6 +261,8 @@ exports.logoutUser = function(d3) {
         alert('Error logging out.');
       } else {
         alert("You have logged out from SSM.");
+        window.onbeforeunload = null;
+        window.location.reload();
       }
     });
 }

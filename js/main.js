@@ -26,7 +26,8 @@
 document.onload = (function(d3) {
   "use strict";
 
-  var modDatabase = require('./database.js'),
+  var modAuth = require('./auth.js'),
+      modDatabase = require('./database.js'),
       modEvents = require('./events.js'),
       modGraph = require('./graph.js'),
       modSvg = require('./svg.js'),
@@ -36,9 +37,11 @@ document.onload = (function(d3) {
     return "Make sure to save your graph locally before leaving.";
   };
 
-  modSvg.setup(d3);
-  modGraph.create(d3);
-  modEvents.shapeId = 0;
-  modUpdate.updateGraph(d3);
-  modDatabase.loadMapFromLocation(d3);
+  modAuth.afterAuthentication(d3, function() {
+    modSvg.setup(d3);
+    modGraph.create(d3);
+    modEvents.shapeId = 0;
+    modUpdate.updateGraph(d3);
+    modDatabase.loadMapFromLocation(d3);
+  });
 })(window.d3);
