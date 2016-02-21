@@ -29,16 +29,49 @@ var renderRegistrationForm = function(d3, callback) {
     .text('Create a new account');
   var form = content
     .append('form')
-    .html('<label>' +
+    .html('<p>Note: all fields are required.</p>' +
+          '<label>' +
           '  Email address:' +
           '  <input type="text" name="email" />' +
           '</label>' +
           '<br />' +
+
+          '<label>' +
+          '  Name:' +
+          '  <input type="text" name="name" />' +
+          '</label>' +
+          '<br />' +
+
+          '<label>' +
+          '  State/Territory:' +
+          '  <input type="text" name="state" />' +
+          '</label>' +
+          '<br />' +
+          '<br />' +
+
+          'Affiliations (select all that apply):' +
+          '<br /><input type="checkbox" name="affil_self_advocate" value="on" /> Self Advocate' +
+          '<br /><input type="checkbox" name="affil_family_member" value="on" /> Family Member/Representative' +
+          '<br /><input type="checkbox" name="affil_health_provider" value="on" /> Health Provider or Professional' +
+          '<br /><input type="checkbox" name="affil_education_provider" value="on" /> Education Provider or Professional' +
+          '<br /><input type="checkbox" name="affil_smcha_staff" value="on" /> State Maternal Child Health Agency Staff' +
+          '<br /><input type="checkbox" name="affil_local_org_staff" value="on" /> Community-Based or Local Organization Staff' +
+          '<br />' +
+          '<br />' +
+
+          '<label>' +
+          '  Reason for using the System Support Mapper:' +
+          '  <br />' +
+          '  <textarea name="reason" rows="5" cols="60"></textarea>' +
+          '</label>' +
+          '<br />' +
+
           '<label>' +
           '  Password:' +
           '  <input type="password" name="password" />' +
           '</label>' +
           '<br />' +
+
           '<label>' +
           '  Confirm password:' +
           '  <input type="password" name="password" />' +
@@ -50,6 +83,8 @@ var renderRegistrationForm = function(d3, callback) {
   // handlers elsewhere in this code don't prevent default. I needed to do
   // this to allow users to hit 'backspace' in these fields.
   form.selectAll('input[type=text]')
+    .on('keydown', function(elt) { d3.event.stopPropagation(); });
+  form.selectAll('textarea')
     .on('keydown', function(elt) { d3.event.stopPropagation(); });
   form.selectAll('input[type=password]')
     .on('keydown', function(elt) { d3.event.stopPropagation(); });
@@ -68,15 +103,51 @@ var renderRegistrationForm = function(d3, callback) {
 
   form.on('submit', function() {
     d3.event.preventDefault();
-    if (d3.event.target[1].value != d3.event.target[2].value) {
+    var elements = d3.event.target.elements;
+    if (elements.password[0].value !== elements.password[1].value) {
       d3.select('#authentication p.message')
         .text("Passwords don't match. Try again.");
+    } else if (!elements.email.value) {
+      d3.select('#authentication p.message')
+        .text("Email is required. Try again.");
+    } else if (!elements.name.value) {
+      d3.select('#authentication p.message')
+        .text("Name is required. Try again.");
+    } else if (!elements.state.value) {
+      d3.select('#authentication p.message')
+        .text("State is required. Try again.");
+    } else if (!elements.reason.value) {
+      d3.select('#authentication p.message')
+        .text("Reason is required. Try again.");
+    } else if (!elements.password[0].value) {
+      d3.select('#authentication p.message')
+        .text("Password is required. Try again.");
     } else {
+
       d3.select('#authentication p.message').text('Loading...');
       var requestData = {
-        email   : d3.event.target[0].value,
-        password: d3.event.target[1].value
+        email: elements.email.value,
+        password: elements.password[0].value,
+        name: elements.name.value,
+        state: elements.state.value,
+        reason: elements.reason.value
       };
+
+      var affiliations = [
+        'affil_self_advocate',
+        'affil_family_member',
+        'affil_health_provider',
+        'affil_education_provider',
+        'affil_smcha_staff',
+        'affil_local_org_staff'
+      ];
+
+      for (var i=0; i<affiliations.length; i++) {
+        if (elements[affiliations[i]].checked) {
+          requestData[affiliations[i]] = 'on';
+        }
+      }
+
       d3.xhr(modBackend.backendBase + '/register')
         .header('Content-Type', 'application/json')
         .on('beforesend',
