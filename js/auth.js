@@ -77,7 +77,9 @@ var renderRegistrationForm = function(d3, callback) {
           '  <input type="password" name="password" />' +
           '</label>' +
           '<br />' +
-          '<input type="submit" name="Login" />');
+          '<input type="submit" name="Login" />' +
+          '<br />' +
+          '<br />');
 
   // JST 2015-08-23 - Stop propagation of keydown events, so that the
   // handlers elsewhere in this code don't prevent default. I needed to do
@@ -169,6 +171,13 @@ var renderRegistrationForm = function(d3, callback) {
 var renderLoginForm = function(d3, callback) {
   var content = d3.select('#authentication .content');
   content.selectAll('*').remove();
+  content.append('h1')
+    .text('Welcome to the System Support Mapper');
+  content.append('p')
+    .text('The System Support Mapper (SSM) is a tool that can help you visualize a network of support. For example, if you have a special needs child, SSM can help you understand what your needs are to support your child, how you address those needs, and where you might need more help.');
+  content.append('p')
+    .text("In order to save your work, you'll need to complete a free registration. If you've already registered, please log in below. Otherwise, click the link below to register.");
+
   var header = content
     .append('h1')
     .text('You must log in first:');
@@ -185,7 +194,9 @@ var renderLoginForm = function(d3, callback) {
           '</label>' +
           '  <input type="password" name="password" id="password_input" />' +
           '<br />' +
-          '<input type="submit" name="Log in" />');
+          '<input type="submit" name="Log in" />' +
+          '<br />' +
+          '<br />');
 
   // JST 2015-08-23 - Stop propagation of keydown events, so that the
   // handlers elsewhere in this code don't prevent default. I needed to do
