@@ -72,26 +72,6 @@
          {:auth_token {:value "", :max-age a-long-time}
           :user_id    {:value "", :max-age a-long-time}}))
 
-(defn- make-affil-map
-  "Convert a string like
-  \"affil_self_advocate,affil_local_org_staff\"
-  into a map like
-  {:affil_self_advocate true, :affil_local_org_staff true}
-  with whitelisted keys.
-  Should be robust to all manner of input."
-  [affiliations]
-  (if-not (string? affiliations)
-    {}
-    (let [parts (str/split affiliations #",")
-          whitelist #{"affil_self_advocate"
-                      "affil_family_member"
-                      "affil_health_provider"
-                      "affil_education_provider"
-                      "affil_smcha_staff"
-                      "affil_local_org_staff"}
-          whitelisted (keep whitelist parts)]
-      (into {} (map vector whitelisted (repeat true))))))
-
 (defn is-admin?
   [user-id]
   {:pre [(integer? user-id)
@@ -112,8 +92,19 @@
       (= (str (:auth_token user)) given-token))))
 
 (defn create
-  [email password name state affiliations reason]
-  (prn 'user/create email name state affiliations reason)
+  [email password name state reason
+   affil_self_advocate
+   affil_family_member
+   affil_health_provider
+   affil_education_provider
+   affil_smcha_staff
+   affil_local_org_staff]
+
+  (prn 'user/create
+       email name state reason affil_self_advocate affil_family_member
+       affil_health_provider affil_education_provider affil_smcha_staff
+       affil_local_org_staff)
+
   (if-not (valid-email? email)
     (resp/bad-request {:message "invalid email"})
     (if-not (valid-password? password)
@@ -122,15 +113,20 @@
         (resp/bad-request {:message "name/state/reason are required"})
 
         (try
-          (let [affil-map (make-affil-map affiliations)
-                user-map  (assoc affil-map
-                                 :email email
-                                 :password (creds/hash-bcrypt
-                                            password
-                                            :work-factor password-work-factor)
-                                 :name name
-                                 :state state
-                                 :reason reason)
+          (let [user-map
+                {:email email
+                 :password (creds/hash-bcrypt
+                            password
+                            :work-factor password-work-factor)
+                 :name name
+                 :state state
+                 :reason reason
+                 :affil_self_advocate (= "on" affil_self_advocate)
+                 :affil_family_member (= "on" affil_family_member)
+                 :affil_health_provider (= "on" affil_health_provider)
+                 :affil_education_provider (= "on" affil_education_provider)
+                 :affil_smcha_staff (= "on" affil_smcha_staff)
+                 :affil_local_org_staff (= "on" affil_local_org_staff)}
                 new-user (first (insert! (:db system) "ssm.users" user-map))]
             (if new-user
               (resp/ok (select-keys new-user [:id :email]))

@@ -37,8 +37,9 @@ Now do a bunch of curl commands:
     curl -demail="jeff@altometrics.com" -dpassword="foo" http://localhost:8080/register
     # {"id":1,"email":"jeff@altometrics.com"}
 
-    # create user; successful
-    curl -demail="jeff@altometrics.com" -dpassword="foo" -dname="Jeff" -dstate="NC" -daffiliations="affil_self_advocate,affil_local_org_staff" -dreason="I AM DEVLOPER" http://localhost:8080/register
+    # create user (all affiliations); successful
+    curl -demail="jeff@altometrics.com" -dpassword="foo" -dname="Jeff" -dstate="NC" -daffil_self_advocate=on -daffil_family_member=on -daffil_health_provider=on -daffil_education_provider=on -daffil_smcha_staff=on -daffil_local_org_staff=on -dreason="I AM DEVLOPER" http://localhost:8080/register
+
     # {"id":1,"email":"jeff@altometrics.com"}
 
     # create user; conflict
