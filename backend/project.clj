@@ -22,8 +22,8 @@
              :dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]]
                    :source-paths ["dev"]}}
 
-  :aliases {"migrate"  ["run" "-m" "user/migrate"]
-            "rollback" ["run" "-m" "user/rollback"]}
+  :aliases {"migrate"  ["run" "-m" "backend.migrate/migrate"]
+            "rollback" ["run" "-m" "backend.migrate/rollback"]}
 
   :jvm-opts ~(mapv (fn [[p v]] (str "-D" (name p) "=" v))
                    {:DB_HOST "localhost"
