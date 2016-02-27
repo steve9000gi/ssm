@@ -5,6 +5,7 @@
     [reloaded.repl :refer [system]]
     [ring.util.http-response :as resp]
     [backend.postgres :refer [insert! query]]
+    [clojure.string :as str]
     )
   (:import org.postgresql.util.PSQLException))
 
@@ -91,31 +92,54 @@
       (= (str (:auth_token user)) given-token))))
 
 (defn create
-  [email password]
-  (prn 'user/create email)
+  [email password name state reason
+   affil_self_advocate
+   affil_family_member
+   affil_health_provider
+   affil_education_provider
+   affil_smcha_staff
+   affil_local_org_staff]
+
+  (prn 'user/create
+       email name state reason affil_self_advocate affil_family_member
+       affil_health_provider affil_education_provider affil_smcha_staff
+       affil_local_org_staff)
+
   (if-not (valid-email? email)
     (resp/bad-request {:message "invalid email"})
     (if-not (valid-password? password)
       (resp/bad-request {:message "invalid password"})
-      (try
-        (let [new-user (first
-                         (insert!
-                           (:db system)
-                           "ssm.users"
-                           {:email email
-                            :password (creds/hash-bcrypt
-                                       password
-                                       :work-factor password-work-factor)}))]
-          (if new-user
-            (resp/ok (select-keys new-user [:id :email]))
-            (resp/bad-request {:message "unknown error"
-                               :data new-user})))
-        (catch PSQLException e
-          (check-conflict e))
-        (catch Exception e
-          (println "Exception" e)
-          (.printStackTrace e)
-          (resp/internal-server-error {:message (.getMessage e)}))))))
+      (if (some empty? [name state reason])
+        (resp/bad-request {:message "name/state/reason are required"})
+
+        (try
+          (let [user-map
+                {:email email
+                 :password (creds/hash-bcrypt
+                            password
+                            :work-factor password-work-factor)
+                 :name name
+                 :state state
+                 :reason reason
+                 :affil_self_advocate (= "on" affil_self_advocate)
+                 :affil_family_member (= "on" affil_family_member)
+                 :affil_health_provider (= "on" affil_health_provider)
+                 :affil_education_provider (= "on" affil_education_provider)
+                 :affil_smcha_staff (= "on" affil_smcha_staff)
+                 :affil_local_org_staff (= "on" affil_local_org_staff)}
+                new-user (first (insert! (:db system) "ssm.users" user-map))]
+
+            (if new-user
+              (add-session new-user (resp/ok (select-keys new-user [:id :email])))
+              (resp/bad-request {:message "unknown error"
+                                 :data new-user})))
+
+          (catch PSQLException e
+            (check-conflict e))
+          (catch Exception e
+            (println "Exception" e)
+            (.printStackTrace e)
+            (resp/internal-server-error {:message (.getMessage e)})))))))
 
 (defn login
   [email password]

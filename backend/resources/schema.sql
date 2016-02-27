@@ -15,6 +15,7 @@ CREATE TABLE ssm.maps (
   owner INTEGER REFERENCES ssm.users(id) NOT NULL,
   document JSONB NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT now(),
-  modified_at TIMESTAMP NOT NULL DEFAULT now()
+  modified_at TIMESTAMP NOT NULL DEFAULT now(),
+  name VARCHAR(240) DEFAULT ''::VARCHAR NOT NULL
 );
 

@@ -36,8 +36,21 @@
                  (assoc :async-channel "redacted")
                  (update-in [:body] slurp))))
 
-  (POST "/register" [email password]
-    (user/create email password))
+  (POST "/register" [email password name state reason
+                     affil_self_advocate
+                     affil_family_member
+                     affil_health_provider
+                     affil_education_provider
+                     affil_smcha_staff
+                     affil_local_org_staff]
+    (user/create email password name state reason
+                 affil_self_advocate
+                 affil_family_member
+                 affil_health_provider
+                 affil_education_provider
+                 affil_smcha_staff
+                 affil_local_org_staff))
+
   (GET "/testauth" {:keys [current-user-id]}
     (if current-user-id
       (resp/ok {:message "authenticated"})

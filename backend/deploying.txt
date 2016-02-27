@@ -15,13 +15,21 @@ Then, create an uberjar:
 The newly created uberjar should be ready at
 `target/backend-<VERSION>-standalone.jar`. Copy this file to syssci.
 
-Once it's copied to syssci in the /srv/www/ssm directory, ssh into syssci. The
-rest of these instructions will be from within the ssh session.
+Once it's copied to syssci, ssh into syssci. The rest of these instructions
+will be from within the ssh session.
 
-Change directory to /srv/www/ssm. Then point the
-`backend-current-standalone.jar` link to the new jar that you just uploaded:
+Copy the jar file to the /srv/www/ssm/ directory.
+
+`cd` to /srv/www/ssm. Then point the `backend-current-standalone.jar` link to
+the new jar that you just uploaded:
 
     ln -sf backend-<VERSION>-standalone.jar backend-current-standalone.jar
+
+Then, run any new migrations. Use this command, but don't just copy-and-paste.
+Instead, use the correct database connection info (see
+`/etc/init/ssm-backend.conf` if you don't know).
+
+    java -DDB_HOST=<host> -DDB_PORT=<port> -DDB_NAME=ssm -DDB_USER=<user> -DDB_PASS=<password> -cp backend-current-standalone.jar backend.migrate migrate
 
 Finally, restart the `ssm-backend` service:
 
