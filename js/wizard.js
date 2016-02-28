@@ -1,4 +1,8 @@
-var modUpdate = require('./update.js');
+var modEvents = require('./events.js'),
+    modSystemSupportMap = require('./system-support-map.js'),
+    modSvg = require('./svg.js'),
+    modText = require('./text.js'),
+    modUpdate = require('./update.js');
 
 var step = 0,
     stepHtml = [
@@ -132,18 +136,20 @@ This resource was:\
 <button class="finish">Finish</button>'
 ];
 
-var attachButtonHandlers = function() {
+var attachButtonHandlers = function(d3) {
   d3.select('#wizard button.next')
-    .on('click', exports.nextStep);
+    .on('click', function(){ exports.nextStep(d3); });
   d3.select('#wizard button.back')
-    .on('click', exports.prevStep);
+    .on('click', function(){ exports.prevStep(d3); });
   d3.select('#wizard button.finish')
     .on('click', exports.hideWizard);
 
   d3.select('#wizard button.add-role-next')
     .on('click', function() {
-      console.log('imagine that a role was just added');
-      exports.nextStep();
+      var role = d3.select('input[name=role]').node().value,
+          center = modSystemSupportMap.center;
+      modEvents.addNode(d3, center.x, center.y, role);
+      exports.nextStep(d3);
     });
   d3.select('#wizard button.add-responsibility')
     .on('click', function(){console.log('imagine that a responsibility was just added');});
@@ -155,7 +161,7 @@ var attachButtonHandlers = function() {
 
 exports.showWizard = function(d3) {
   document.getElementById('wizard').className = 'open';
-  exports.showStep();
+  exports.showStep(d3);
   modUpdate.updateWindow(d3);
 };
 
@@ -164,17 +170,17 @@ exports.hideWizard = function(d3) {
   modUpdate.updateWindow(d3);
 };
 
-exports.showStep = function() {
+exports.showStep = function(d3) {
   document.getElementById('wizard').innerHTML = stepHtml[step];
-  attachButtonHandlers();
+  attachButtonHandlers(d3);
 };
 
-exports.prevStep = function() {
+exports.prevStep = function(d3) {
   step -= 1;
-  exports.showStep();
+  exports.showStep(d3);
 };
 
-exports.nextStep = function() {
+exports.nextStep = function(d3) {
   step += 1;
-  exports.showStep();
+  exports.showStep(d3);
 };

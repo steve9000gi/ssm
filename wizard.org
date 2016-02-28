@@ -425,7 +425,8 @@ didn't work.
 ** TODO highlight wizard-active node in chart
 ** TODO add wizard to options menu
 ** TODO at each step, pull content from existing map if it exists
-** TODO statically place first role
+** DONE statically place first role
+CLOSED: [2016-02-28 Sun 15:16]
 ** TODO statically place first responsibility
 ** TODO place other responsibilities, moving earlier ones if necessary
 ** TODO place needs near their responsibility

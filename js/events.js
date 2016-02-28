@@ -115,23 +115,16 @@ var svgMouseUp = function(d3) {
   if (modZoom.justScaleTransGraph) { // Dragged not clicked
     modZoom.justScaleTransGraph = false;
   } else if (graphMouseDown && d3.event.shiftKey) { // Clicked not dragged from svg
-    var xycoords = d3.mouse(modSvg.svgG.node());
-
-    var d = {id: exports.shapeId,
-             name: defaultShapeText[modSelectedShape.shape] + " "
-                 + shapeNum[modSelectedShape.shape]++,
-             x: xycoords[0],
-             y: xycoords[1],
-             color: modSelectedColor.clr,
-             shape: modSelectedShape.shape};
-    modSvg.nodes.push(d);
-    exports.shapeId++;
-    modUpdate.updateGraph(d3);
+    var xycoords = d3.mouse(modSvg.svgG.node()),
+        text = defaultShapeText[modSelectedShape.shape] + " " +
+               shapeNum[modSelectedShape.shape]++,
+        d = exports.addNode(d3, xycoords[0], xycoords[1], text),
+        d3element = modSvg.shapeGroups.filter(function(dval) {
+          return dval.id === d.id;
+        });
 
     // Make text immediately editable
-    var d3txt = modText.changeElementText(d3, modSvg.shapeGroups.filter(function(dval) {
-      return dval.id === d.id;
-    }), d),
+    var d3txt = modText.changeElementText(d3, d3element, d),
         txtNode = d3txt.node();
     modText.selectText(txtNode);
     txtNode.focus();
@@ -146,6 +139,19 @@ var svgMouseUp = function(d3) {
     }
   }
   graphMouseDown = false;
+};
+
+exports.addNode = function(d3, x, y, text) {
+  var d = {id: exports.shapeId,
+           name: text,
+           x: x,
+           y: y,
+           color: modSelectedColor.clr,
+           shape: modSelectedShape.shape};
+  modSvg.nodes.push(d);
+  exports.shapeId++;
+  modUpdate.updateGraph(d3);
+  return d;
 };
 
 exports.setupEventListeners = function(d3) {

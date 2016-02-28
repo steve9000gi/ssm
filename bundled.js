@@ -1240,23 +1240,16 @@ var svgMouseUp = function(d3) {
   if (modZoom.justScaleTransGraph) { // Dragged not clicked
     modZoom.justScaleTransGraph = false;
   } else if (graphMouseDown && d3.event.shiftKey) { // Clicked not dragged from svg
-    var xycoords = d3.mouse(modSvg.svgG.node());
-
-    var d = {id: exports.shapeId,
-             name: defaultShapeText[modSelectedShape.shape] + " "
-                 + shapeNum[modSelectedShape.shape]++,
-             x: xycoords[0],
-             y: xycoords[1],
-             color: modSelectedColor.clr,
-             shape: modSelectedShape.shape};
-    modSvg.nodes.push(d);
-    exports.shapeId++;
-    modUpdate.updateGraph(d3);
+    var xycoords = d3.mouse(modSvg.svgG.node()),
+        text = defaultShapeText[modSelectedShape.shape] + " " +
+               shapeNum[modSelectedShape.shape]++,
+        d = exports.addNode(d3, xycoords[0], xycoords[1], text),
+        d3element = modSvg.shapeGroups.filter(function(dval) {
+          return dval.id === d.id;
+        });
 
     // Make text immediately editable
-    var d3txt = modText.changeElementText(d3, modSvg.shapeGroups.filter(function(dval) {
-      return dval.id === d.id;
-    }), d),
+    var d3txt = modText.changeElementText(d3, d3element, d),
         txtNode = d3txt.node();
     modText.selectText(txtNode);
     txtNode.focus();
@@ -1271,6 +1264,19 @@ var svgMouseUp = function(d3) {
     }
   }
   graphMouseDown = false;
+};
+
+exports.addNode = function(d3, x, y, text) {
+  var d = {id: exports.shapeId,
+           name: text,
+           x: x,
+           y: y,
+           color: modSelectedColor.clr,
+           shape: modSelectedShape.shape};
+  modSvg.nodes.push(d);
+  exports.shapeId++;
+  modUpdate.updateGraph(d3);
+  return d;
 };
 
 exports.setupEventListeners = function(d3) {
@@ -3395,7 +3401,11 @@ exports.computeRectangleBoundary = function(edge) {
 };
 
 },{}],30:[function(require,module,exports){
-var modUpdate = require('./update.js');
+var modEvents = require('./events.js'),
+    modSystemSupportMap = require('./system-support-map.js'),
+    modSvg = require('./svg.js'),
+    modText = require('./text.js'),
+    modUpdate = require('./update.js');
 
 var step = 0,
     stepHtml = [
@@ -3529,18 +3539,20 @@ This resource was:\
 <button class="finish">Finish</button>'
 ];
 
-var attachButtonHandlers = function() {
+var attachButtonHandlers = function(d3) {
   d3.select('#wizard button.next')
-    .on('click', exports.nextStep);
+    .on('click', function(){ exports.nextStep(d3); });
   d3.select('#wizard button.back')
-    .on('click', exports.prevStep);
+    .on('click', function(){ exports.prevStep(d3); });
   d3.select('#wizard button.finish')
     .on('click', exports.hideWizard);
 
   d3.select('#wizard button.add-role-next')
     .on('click', function() {
-      console.log('imagine that a role was just added');
-      exports.nextStep();
+      var role = d3.select('input[name=role]').node().value,
+          center = modSystemSupportMap.center;
+      modEvents.addNode(d3, center.x, center.y, role);
+      exports.nextStep(d3);
     });
   d3.select('#wizard button.add-responsibility')
     .on('click', function(){console.log('imagine that a responsibility was just added');});
@@ -3552,7 +3564,7 @@ var attachButtonHandlers = function() {
 
 exports.showWizard = function(d3) {
   document.getElementById('wizard').className = 'open';
-  exports.showStep();
+  exports.showStep(d3);
   modUpdate.updateWindow(d3);
 };
 
@@ -3561,22 +3573,22 @@ exports.hideWizard = function(d3) {
   modUpdate.updateWindow(d3);
 };
 
-exports.showStep = function() {
+exports.showStep = function(d3) {
   document.getElementById('wizard').innerHTML = stepHtml[step];
-  attachButtonHandlers();
+  attachButtonHandlers(d3);
 };
 
-exports.prevStep = function() {
+exports.prevStep = function(d3) {
   step -= 1;
-  exports.showStep();
+  exports.showStep(d3);
 };
 
-exports.nextStep = function() {
+exports.nextStep = function(d3) {
   step += 1;
-  exports.showStep();
+  exports.showStep(d3);
 };
 
-},{"./update.js":28}],31:[function(require,module,exports){
+},{"./events.js":9,"./svg.js":23,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],31:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modGridZoom = require('./grid-zoom.js'),
     modText = require('./text.js');
