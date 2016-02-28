@@ -21,4 +21,4 @@ exports.setup = function(d3) {
   exports.svgG = exports.svg.append("g")
     .classed("graph", true)
     .attr("id", "graphG");
-}
+};
