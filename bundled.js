@@ -1158,32 +1158,15 @@ var BACKSPACE_KEY = 8,
                 "star": 1,
                 "noBorder": 1};
 
-var createNewEdge = function(d3, d) {
-  var newEdge = {source: exports.mouseDownNode,
-                 target: d,
-                 style: modEdgeStyle.style,
-                 color: modSelectedColor.clr,
-                 thickness: modEdgeThickness.thickness,
-                 name: ""};
-  var filtRes = modSvg.edgeGroups.filter(function(d) {
-    if (d.source === newEdge.target && d.target === newEdge.source) {
-      modSvg.links.splice(modSvg.links.indexOf(d), 1);
-    }
-    return d.source === newEdge.source && d.target === newEdge.target;
-  });
-  if (!filtRes[0].length) {
-    modSvg.links.push(newEdge);
-    modUpdate.updateGraph(d3);
-    // Todo: finish adapting the following code block for edges for immediate text edit on create.
-    /*
-    var d3txt = modText.changeElementText(d3, modSvg.links.filter(function(dval) {
-      return dval.name === newEdge.name;
-    }), newEdge);
-    var txtNode = d3txt.node();
-    modText.selectText(txtNode);
-    txtNode.focus();
-    */
-  }
+var currentEdgeStyle = function(source, target) {
+  return {
+    source: source,
+    target: target,
+    style: modEdgeStyle.style,
+    color: modSelectedColor.clr,
+    thickness: modEdgeThickness.thickness,
+    name: ""
+  };
 };
 
 // Remove links associated with a node
@@ -1266,6 +1249,9 @@ var svgMouseUp = function(d3) {
   graphMouseDown = false;
 };
 
+// FIXME: this function and the next one should really live elsewhere, modSvg
+// probably.
+
 exports.addNode = function(d3, x, y, text) {
   var d = {id: exports.shapeId,
            name: text,
@@ -1277,6 +1263,28 @@ exports.addNode = function(d3, x, y, text) {
   exports.shapeId++;
   modUpdate.updateGraph(d3);
   return d;
+};
+
+exports.addEdge = function(d3, newEdge) {
+  var filtRes = modSvg.edgeGroups.filter(function(d) {
+    if (d.source === newEdge.target && d.target === newEdge.source) {
+      modSvg.links.splice(modSvg.links.indexOf(d), 1);
+    }
+    return d.source === newEdge.source && d.target === newEdge.target;
+  });
+  if (!filtRes[0].length) {
+    modSvg.links.push(newEdge);
+    modUpdate.updateGraph(d3);
+    // Todo: finish adapting the following code block for edges for immediate text edit on create.
+    /*
+     var d3txt = modText.changeElementText(d3, modSvg.links.filter(function(dval) {
+     return dval.name === newEdge.name;
+     }), newEdge);
+     var txtNode = d3txt.node();
+     modText.selectText(txtNode);
+     txtNode.focus();
+     */
+  }
 };
 
 exports.setupEventListeners = function(d3) {
@@ -1323,7 +1331,7 @@ exports.shapeMouseUp = function(d3, d3node, d) {
 
   if (!mouseDownNode.manualResize // We didn't start on a manually resized rectangle...
     && mouseDownNode !== d) { // ...& we're in a different node: create new edge and add to graph
-    createNewEdge(d3, d);
+    exports.addEdge(d3, currentEdgeStyle(exports.mouseDownNode, d));
   } else { // We're in the same node or the dragged edge started on a manually resized rectangle
     if (modDrag.justDragged) { // Dragged, not clicked
       modDrag.justDragged = false;
