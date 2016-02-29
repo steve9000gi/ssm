@@ -161,14 +161,17 @@ var attachButtonHandlers = function(d3) {
 
   d3.select('#wizard button.add-responsibility')
     .on('click', function(){
-      var text = d3.select('input[name=responsibility]').node().value;
-      var numResponsibilities = 0;
-      var newNode;
-      if (numResponsibilities === 0) {
+      var inputEl = d3.select('input[name=responsibility]').node(),
+          text = inputEl.value,
+          numResponsibilities = nodesByType.responsibility.length,
+          newNode;
+      inputEl.value = '';
+      if (numResponsibilities < 2) {
         var center = modSystemSupportMap.center,
             ringRadii = modSystemSupportMap.ringRadii,
             dx = (ringRadii[0] + ringRadii[1]) / 2,
-            x = center.x + dx,
+            // first goes right of center, second goes left
+            x = numResponsibilities == 0 ? center.x + dx : center.x - dx,
             y = center.y;
         newNode = modEvents.addNode(d3, x, y, text);
       }
