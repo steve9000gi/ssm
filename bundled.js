@@ -3420,7 +3420,13 @@ var modEvents = require('./events.js'),
     modText = require('./text.js'),
     modUpdate = require('./update.js');
 
-var step = 0,
+var nodesByType = {
+      'role': null,
+      'responsibility': [],
+      'need': [],
+      'resource': []
+    },
+    step = 0,
     stepHtml = [
   // step 1: introduction
   '\
@@ -3562,9 +3568,10 @@ var attachButtonHandlers = function(d3) {
 
   d3.select('#wizard button.add-role-next')
     .on('click', function() {
-      var role = d3.select('input[name=role]').node().value,
-          center = modSystemSupportMap.center;
-      modEvents.addNode(d3, center.x, center.y, role);
+      var text = d3.select('input[name=role]').node().value,
+          center = modSystemSupportMap.center,
+          node = modEvents.addNode(d3, center.x, center.y, text);
+      nodesByType.role = node;
       exports.nextStep(d3);
     });
   d3.select('#wizard button.add-responsibility')
