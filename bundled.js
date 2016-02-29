@@ -2685,6 +2685,7 @@ var modSelectedColor = require('./selected-color.js');
 exports.hideText = "Hide system support rings";
 exports.center = null;
 exports.visible = true;
+exports.ringRadii = [110, 275, 475, 675];
 
 // Center circles and text in window
 exports.show = function(d3) {
@@ -2725,14 +2726,18 @@ exports.hide = function(d3) {
 // Create four concentric rings and five labels (one for each rings and one for
 // the outside)
 exports.create = function(d3) {
-  var rings = [{"name": "Role/Identity", "radius": 110,
+  var rings = [{"name": "Role/Identity",
                 "color": "#" + modSelectedColor.colorChoices[6]},
-               {"name": "Most Important Responsibilities", "radius": 275,
+               {"name": "Most Important Responsibilities",
                 "color": "#" + modSelectedColor.colorChoices[5]},
-               {"name": "General Needs for Each Responsibility", "radius": 475,
+               {"name": "General Needs for Each Responsibility",
                 "color": "#" + modSelectedColor.colorChoices[4]},
-               {"name": "Available Resources", "radius": 675,
-                "color": "#" + modSelectedColor.colorChoices[7]} ];
+               {"name": "Available Resources",
+                "color": "#" + modSelectedColor.colorChoices[7]}
+              ].map(function(d,i) {
+                d.radius = exports.ringRadii[i];
+                return d;
+              });
   d3.select("#graphG").append("g")
     .classed({"ssmGroup": true, "ssmHidden": true, "ssmVisible": false});
   exports.visible = false;
