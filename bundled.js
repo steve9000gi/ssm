@@ -3558,76 +3558,85 @@ This resource was:\
 <button class="finish">Finish</button>'
 ];
 
+var addRoleThenNext = function(d3) {
+  var text = d3.select('input[name=role]').node().value,
+      center = modSystemSupportMap.center,
+      node = modEvents.addNode(d3, center.x, center.y, text);
+  nodesByType.role = node;
+  exports.nextStep(d3);
+};
+
+var addResponsibility = function(d3) {
+  var inputEl = d3.select('input[name=responsibility]').node(),
+      text = inputEl.value,
+      numResponsibilities = nodesByType.responsibility.length,
+      newNode,
+      center = modSystemSupportMap.center,
+      ringRadii = modSystemSupportMap.ringRadii,
+      distanceFromCenter = (ringRadii[0] + ringRadii[1]) / 2,
+      dx, dy, x, y;
+
+  inputEl.value = '';
+  if (numResponsibilities < 2) {
+    // first responsibility goes right of center, second goes left
+    dx = distanceFromCenter;
+    x = numResponsibilities == 0 ? center.x + dx : center.x - dx;
+    y = center.y;
+    newNode = modEvents.addNode(d3, x, y, text);
+  } else {
+    var positions = [];
+    numResponsibilities++;
+    for (var i=1; i < numResponsibilities; i++) {
+      var theta = -i * 2 * Math.PI / numResponsibilities;
+      dx = distanceFromCenter * Math.cos(theta);
+      dy = distanceFromCenter * Math.sin(theta);
+      x = center.x + dx;
+      y = center.y - dy; // remember that y is inverted in SVG
+      if (i == numResponsibilities - 1) {
+        newNode = modEvents.addNode(d3, x, y, text);
+      } else {
+        var node = nodesByType.responsibility[i];
+        node.x = x;
+        node.y = y;
+      }
+    }
+  }
+
+  var edge = {
+    source: nodesByType.role,
+    target: newNode,
+    style: 'solid',
+    color: '#000000',
+    thickness: 3,
+    name: ''
+  };
+  modEvents.addEdge(d3, edge);
+  nodesByType.responsibility.push(newNode);
+};
+
+var addNeed = function(d3) {
+  console.log('imagine that a need was just added');
+};
+
+var addResource = function(d3) {
+  console.log('imagine that a resource was just added');
+};
+
 var attachButtonHandlers = function(d3) {
   d3.select('#wizard button.next')
     .on('click', function(){ exports.nextStep(d3); });
   d3.select('#wizard button.back')
     .on('click', function(){ exports.prevStep(d3); });
   d3.select('#wizard button.finish')
-    .on('click', exports.hideWizard);
-
+    .on('click', function(){ exports.hideWizard(d3); });
   d3.select('#wizard button.add-role-next')
-    .on('click', function() {
-      var text = d3.select('input[name=role]').node().value,
-          center = modSystemSupportMap.center,
-          node = modEvents.addNode(d3, center.x, center.y, text);
-      nodesByType.role = node;
-      exports.nextStep(d3);
-    });
-
+    .on('click', function(){ addRoleThenNext(d3); });
   d3.select('#wizard button.add-responsibility')
-    .on('click', function(){
-      var inputEl = d3.select('input[name=responsibility]').node(),
-          text = inputEl.value,
-          numResponsibilities = nodesByType.responsibility.length,
-          newNode,
-          center = modSystemSupportMap.center,
-          ringRadii = modSystemSupportMap.ringRadii,
-          distanceFromCenter = (ringRadii[0] + ringRadii[1]) / 2,
-          dx, dy, x, y;
-
-      inputEl.value = '';
-      if (numResponsibilities < 2) {
-        // first responsibility goes right of center, second goes left
-        dx = distanceFromCenter;
-        x = numResponsibilities == 0 ? center.x + dx : center.x - dx;
-        y = center.y;
-        newNode = modEvents.addNode(d3, x, y, text);
-      } else {
-        var positions = [];
-        numResponsibilities++;
-        for (var i=1; i < numResponsibilities; i++) {
-          var theta = -i * 2 * Math.PI / numResponsibilities;
-          dx = distanceFromCenter * Math.cos(theta);
-          dy = distanceFromCenter * Math.sin(theta);
-          x = center.x + dx;
-          y = center.y - dy; // remember that y is inverted in SVG
-          if (i == numResponsibilities - 1) {
-            newNode = modEvents.addNode(d3, x, y, text);
-          } else {
-            var node = nodesByType.responsibility[i];
-            node.x = x;
-            node.y = y;
-          }
-        }
-      }
-
-      var edge = {
-        source: nodesByType.role,
-        target: newNode,
-        style: 'solid',
-        color: '#000000',
-        thickness: 3,
-        name: ''
-      };
-      modEvents.addEdge(d3, edge);
-      nodesByType.responsibility.push(newNode);
-    });
-
+    .on('click', function(){ addResponsibility(d3); });
   d3.select('#wizard button.add-need')
-    .on('click', function(){console.log('imagine that a need was just added');});
+    .on('click', function(){ addNeed(d3); });
   d3.select('#wizard button.add-resource')
-    .on('click', function(){console.log('imagine that a resource was just added');});
+    .on('click', function(){ addResource(d3); });
 };
 
 exports.showWizard = function(d3) {
