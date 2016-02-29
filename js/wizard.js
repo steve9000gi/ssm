@@ -164,18 +164,37 @@ var attachButtonHandlers = function(d3) {
       var inputEl = d3.select('input[name=responsibility]').node(),
           text = inputEl.value,
           numResponsibilities = nodesByType.responsibility.length,
-          newNode;
+          newNode,
+          center = modSystemSupportMap.center,
+          ringRadii = modSystemSupportMap.ringRadii,
+          distanceFromCenter = (ringRadii[0] + ringRadii[1]) / 2,
+          dx, dy, x, y;
+
       inputEl.value = '';
       if (numResponsibilities < 2) {
-        var center = modSystemSupportMap.center,
-            ringRadii = modSystemSupportMap.ringRadii,
-            dx = (ringRadii[0] + ringRadii[1]) / 2,
-            // first goes right of center, second goes left
-            x = numResponsibilities == 0 ? center.x + dx : center.x - dx,
-            y = center.y;
+        // first responsibility goes right of center, second goes left
+        dx = distanceFromCenter;
+        x = numResponsibilities == 0 ? center.x + dx : center.x - dx;
+        y = center.y;
         newNode = modEvents.addNode(d3, x, y, text);
+      } else {
+        var positions = [];
+        numResponsibilities++;
+        for (var i=1; i < numResponsibilities; i++) {
+          var theta = -i * 2 * Math.PI / numResponsibilities;
+          dx = distanceFromCenter * Math.cos(theta);
+          dy = distanceFromCenter * Math.sin(theta);
+          x = center.x + dx;
+          y = center.y - dy; // remember that y is inverted in SVG
+          if (i == numResponsibilities - 1) {
+            newNode = modEvents.addNode(d3, x, y, text);
+          } else {
+            var node = nodesByType.responsibility[i];
+            node.x = x;
+            node.y = y;
+          }
+        }
       }
-      // TODO: else case
 
       var edge = {
         source: nodesByType.role,

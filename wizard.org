@@ -430,9 +430,12 @@ didn't work.
 CLOSED: [2016-02-28 Sun 15:16]
 ** DONE statically place first responsibility
 CLOSED: [2016-02-28 Sun 22:05]
-** TODO place other responsibilities, moving earlier ones if necessary
+** DONE place other responsibilities, moving earlier ones if necessary
+CLOSED: [2016-02-28 Sun 23:21]
 ** TODO mark which nodes were placed by the wizard
+or maybe not, depending on design decision above...
 ** TODO save and retrieve the placed-by-wizard attribute for each node
+or maybe not, depending on design decision above...
 ** TODO place needs near their responsibility
 ** TODO depending on the node uniqueness question (see above), might need to position near two or more parents
 ** TODO reposition previously placed needs to make room for new one
