@@ -79,7 +79,7 @@ var nodesByType = {
 <p>So, in your role as <span id="wizard_role_text">_____</span>, what do you see as your main responsibilities? Identify the most important 4&ndash;8 responsibilities, and add them here.</p>\
 <p>When you click the &ldquo;Add&rdquo; button below, I will add it to the chart below. Then you can add another responsibility, or click the &ldquo;Next&rdquo; button to go to the next step.</p>\
 <label>I have a responsibility to:\
-  <input type="text" />\
+  <input type="text" name="responsibility" />\
 </label>\
 <button class="add-responsibility">Add</button>\
 <br/>\
@@ -158,8 +158,34 @@ var attachButtonHandlers = function(d3) {
       nodesByType.role = node;
       exports.nextStep(d3);
     });
+
   d3.select('#wizard button.add-responsibility')
-    .on('click', function(){console.log('imagine that a responsibility was just added');});
+    .on('click', function(){
+      var text = d3.select('input[name=responsibility]').node().value;
+      var numResponsibilities = 0;
+      var newNode;
+      if (numResponsibilities === 0) {
+        var center = modSystemSupportMap.center,
+            ringRadii = modSystemSupportMap.ringRadii,
+            dx = (ringRadii[0] + ringRadii[1]) / 2,
+            x = center.x + dx,
+            y = center.y;
+        newNode = modEvents.addNode(d3, x, y, text);
+      }
+      // TODO: else case
+
+      var edge = {
+        source: nodesByType.role,
+        target: newNode,
+        style: 'solid',
+        color: '#000000',
+        thickness: 3,
+        name: ''
+      };
+      modEvents.addEdge(d3, edge);
+      nodesByType.responsibility.push(newNode);
+    });
+
   d3.select('#wizard button.add-need')
     .on('click', function(){console.log('imagine that a need was just added');});
   d3.select('#wizard button.add-resource')

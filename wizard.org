@@ -411,6 +411,7 @@ e.g. time in my example.
 I feel like "yes" is the better answer.
 ** TODO [design] should we have different colors for resources depending on usefulness?
 ** TODO [design] should we have different colors or shapes for different types of nodes?
+** TODO [design] when placing a node, should we only move nodes if (all?) others were placed by wizard?
 ** TODO add all steps to DOM, and show/hide them at each step
 i.e. don't set innerHTML each time.
 This will likely clean up event handling, too.
@@ -427,8 +428,11 @@ didn't work.
 ** TODO at each step, pull content from existing map if it exists
 ** DONE statically place first role
 CLOSED: [2016-02-28 Sun 15:16]
-** TODO statically place first responsibility
+** DONE statically place first responsibility
+CLOSED: [2016-02-28 Sun 22:05]
 ** TODO place other responsibilities, moving earlier ones if necessary
+** TODO mark which nodes were placed by the wizard
+** TODO save and retrieve the placed-by-wizard attribute for each node
 ** TODO place needs near their responsibility
 ** TODO depending on the node uniqueness question (see above), might need to position near two or more parents
 ** TODO reposition previously placed needs to make room for new one
