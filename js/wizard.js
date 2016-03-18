@@ -146,6 +146,7 @@ var addRoleThenNext = function(d3) {
   var text = d3.select('input[name=role]').node().value,
       center = modSystemSupportMap.center,
       node = modEvents.addNode(d3, center.x, center.y, text);
+  node.type = 'role';
   nodesByType.role = node;
   exports.nextStep(d3);
 };
@@ -195,6 +196,8 @@ var addResponsibility = function(d3) {
     name: ''
   };
   modEvents.addEdge(d3, edge);
+  newNode.type = 'responsibility';
+  newNode.parent = nodesByType.role;
   nodesByType.responsibility.push(newNode);
 };
 
