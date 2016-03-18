@@ -115,9 +115,8 @@ exports.addControls = function(d3) {
     .attr("id", "edgeStyleSelectionSvg")
     .attr("width", "93px")
     .attr("height", "30px")
-  // Hack: double xmlns namespace so it stays in Chrome inspector's source;
     .attr({"xmlns": "http://www.w3.org/2000/svg",
-           "xmlns:xmlns:xlink": "http://www.w3.org/1999/xlink",
+           "xmlns:xlink": "http://www.w3.org/1999/xlink",
            version: "1.1"
           });
   addSelectionRects(d3);

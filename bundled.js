@@ -1066,9 +1066,8 @@ exports.addControls = function(d3) {
     .attr("id", "edgeStyleSelectionSvg")
     .attr("width", "93px")
     .attr("height", "30px")
-  // Hack: double xmlns namespace so it stays in Chrome inspector's source;
     .attr({"xmlns": "http://www.w3.org/2000/svg",
-           "xmlns:xmlns:xlink": "http://www.w3.org/1999/xlink",
+           "xmlns:xlink": "http://www.w3.org/1999/xlink",
            version: "1.1"
           });
   addSelectionRects(d3);
@@ -2304,9 +2303,8 @@ exports.addShapeSelection = function(d3) {
     .attr("id", "shapeSelectionSvg")
     .attr("width", exports.sssw)
     .attr("height", sssh)
-  // Hack: doubling xmlns: so it doesn't disappear once in the DOM
     .attr({"xmlns": "http://www.w3.org/2000/svg",
-           "xmlns:xmlns:xlink": "http://www.w3.org/1999/xlink",
+           "xmlns:xlink": "http://www.w3.org/1999/xlink",
            version: "1.1"
           });
   addShapeSelectionShapes(d3);
