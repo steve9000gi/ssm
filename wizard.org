@@ -440,3 +440,5 @@ or maybe not, depending on design decision above...
 ** TODO depending on the node uniqueness question (see above), might need to position near two or more parents
 ** TODO reposition previously placed needs to make room for new one
 ** TODO similarly, position resources
+** TODO wizard and toolbox collide if window small enough
+See screenshot.

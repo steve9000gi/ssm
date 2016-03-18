@@ -95,7 +95,7 @@ var nodesByType = {
 <p>I&rsquo;ll ask about each responsibility in turn, starting with the first one you told me about.</p>\
 <h3>Responsibility <span id="wizard_current_responsibility_number">_</span> of <span id="wizard_responsibility_count">_</span>: <span id="wizard_current_responsibility_text">____</span></h3>\
 <label>To fulfill this responsibility, I need:\
-  <input type="text" />\
+  <input type="text" name="need" />\
 </label>\
 <button class="add-need">Add</button>\
 <br/>\
@@ -140,7 +140,8 @@ This resource was:\
 <p>If you ever want to see me again, even for a map that you&rsquo;ve already finished, you can! Just click on the "Options" menu in the toolbox.</p>\
 <button class="back">Back</button>\
 <button class="finish">Finish</button>'
-];
+    ],
+    forceLayout;
 
 var addRoleThenNext = function(d3) {
   var text = d3.select('input[name=role]').node().value,
@@ -148,6 +149,7 @@ var addRoleThenNext = function(d3) {
       node = modEvents.addNode(d3, center.x, center.y, text);
   node.type = 'role';
   nodesByType.role = node;
+  node.fixed = 1;
   exports.nextStep(d3);
 };
 
@@ -202,7 +204,196 @@ var addResponsibility = function(d3) {
 };
 
 var addNeed = function(d3) {
-  console.log('imagine that a need was just added');
+  var inputEl = d3.select('input[name=need]').node(),
+      text = inputEl.value,
+      // FIXME: do it right (blocked by doing step handler right):
+      parentResponsibility = nodesByType.responsibility[0],
+      numNeeds = nodesByType.need.length,
+      newNode,
+      center = modSystemSupportMap.center,
+      ringRadii = modSystemSupportMap.ringRadii,
+      distanceFromCenter = (ringRadii[1] + ringRadii[2]) / 2,
+      dx, dy, x, y;
+
+  inputEl.value = '';
+  if (!numNeeds) {
+    // if no siblings yet, just drop it at theta = 0.
+    dx = distanceFromCenter;
+    x = numNeeds == 0 ? center.x + dx : center.x - dx;
+    y = center.y;
+    newNode = modEvents.addNode(d3, x, y, text);
+  } else {
+    // drop it at theta of last need plus a bit and force-layout.
+    var prevNode = nodesByType.need[numNeeds - 1],
+        theta = Math.atan2(prevNode.y - center.y, prevNode.x - center.x),
+        // FIXME: at some point we'll have to be more careful not to overlap.
+        // e.g. what if there are like 100 nodes in this ring already?
+        newTheta = Math.min(Math.PI * 31.9 / 32, theta + Math.PI / 160);
+    dx = distanceFromCenter * Math.cos(newTheta);
+    dy = distanceFromCenter * Math.sin(newTheta);
+    x = center.x + dx;
+    y = center.y + dy;
+    newNode = modEvents.addNode(d3, x, y, text);
+  }
+
+  var edge = {
+    source: parentResponsibility,
+    target: newNode,
+    style: 'solid',
+    color: '#000000',
+    thickness: 3,
+    name: ''
+  };
+  modEvents.addEdge(d3, edge);
+  newNode.type = 'need';
+  newNode.parent = parentResponsibility;
+  nodesByType.need.push(newNode);
+  console.log('starting force layout');
+  forceLayout.start();
+};
+
+var tickForceLayout = function(d3) {
+  console.log('ticking force layout');
+  var nodes = forceLayout.nodes(),
+      q = d3.geom.quadtree(nodes),
+      n = nodes.length,
+      i;
+  // console.log('beginning of tickForceLayout:');
+  // window.nodes();
+
+  for (i = 1; i < n; i++) {
+    // console.log('quadtree - forloop, i=' + i + ', name=' + nodes[i].name);
+    q.visit(collideWithNeighborNodes(nodes[i]));
+  }
+  // console.log('after collideWithNeighborNodes:');
+  // window.nodes();
+
+  for (i = 1; i < n; i++) {
+    attract(nodes[i]);
+  }
+  // console.log('after attract:');
+  // window.nodes();
+
+  for (i = 1; i < n; i++) {
+    collideWithRingBoundary(nodes[i]);
+  }
+  // console.log('after collideWithRingBoundary:');
+  // window.nodes();
+  window.updatePositions(d3);
+};
+
+var collideWithNeighborNodes = function(node1) {
+  var nr = +node1.r + 16,
+      nx1 = node1.x - nr,
+      nx2 = node1.x + nr,
+      ny1 = node1.y - nr,
+      ny2 = node1.y + nr;
+
+  // console.log('quadtree - outer, name=' + node1.name);
+  return function(quad, x1, y1, x2, y2) {
+    var node2 = quad.point;
+    // console.log('quadtree - inner, name=' + node1.name + ', name2=' + (node2 && node2.name));
+    if (node2 && (node2 !== node1)) {
+      var dx = node1.x - node2.x,
+          dy = node1.y - node2.y,
+          dist = Math.sqrt(dx * dx + dy * dy),
+          mindist = +node1.r + +node2.r,
+          overlap = mindist - dist;
+
+      if (overlap > 0) {
+        console.log('pre-collision, dist=' + dist.toFixed(2) + ', mindist=' + mindist.toFixed(2) + ', overlap=' + overlap.toFixed(2) + ', dx=' + dx.toFixed(2) + ', dy=' + dy.toFixed(2) + ', node1.name = ' + node1.name + '@(' + node1.x.toFixed(2) + ',' + node1.y.toFixed(2) + '), node2.name = ' + node2.name + '@(' + node2.x.toFixed(2) + ',' + node2.y.toFixed(2) + ')');
+        var halfOverlapProportion = overlap / dist * 0.5,
+            xOffset = dx * halfOverlapProportion,
+            yOffset = dy * halfOverlapProportion;
+
+        node1.x += xOffset;
+        node1.y += yOffset;
+        // Nullify momentum to prevent bouncing.
+        node1.px = node1.x;
+        node1.py = node1.y;
+        console.log('collision with neighbor node1 detected (r1=' + (+node1.r).toFixed(2) + ', r2=' + (+node2.r).toFixed(2) + ', dist2=' + dist.toFixed(2) + ', xOffset=' + xOffset.toFixed(2) + ', yOffset=' + yOffset.toFixed(2) + '), 2*mag=' + (2 * Math.sqrt(xOffset*xOffset + yOffset*yOffset)).toFixed(2));
+
+        node2.x -= xOffset;
+        node2.y -= yOffset;
+        node2.px = node2.x;
+        node2.py = node2.y;
+        console.log('post-collision, node1.name = ' + node1.name + '@(' + node1.x.toFixed(2) + ',' + node1.y.toFixed(2) + '), node2.name = ' + node2.name + '@(' + node2.x.toFixed(2) + ',' + node2.y.toFixed(2) + ')');
+      }
+    }
+
+    return x1 > nx2
+      || x2 < nx1
+      || y1 > ny2
+      || y2 < ny1;
+  };
+};
+
+var attract = function(node) {
+  if (!node.parent) { return; }
+  var parent = node.parent,
+      center = modSystemSupportMap.center,
+      dx = node.type === 'responsibility' ? node.x - center.x : parent.x - center.x,
+      dy = node.type === 'responsibility' ? node.y - center.y : parent.y - center.y,
+      ringRadii = modSystemSupportMap.ringRadii,
+      ringNum = node.type === 'responsibility' ? 1 :
+                node.type === 'need' ? 2 :
+                node.type === 'resource' ? 3 : null,
+      innerRingRadius = ringRadii[ringNum - 1],
+      outerRingRadius = ringRadii[ringNum],
+      targetRadius = (innerRingRadius + outerRingRadius) / 2,
+      theta = Math.atan2(dy, dx),
+      targetX = targetRadius * Math.cos(theta) + center.x,
+      targetY = targetRadius * Math.sin(theta) + center.y,
+      dirDx = targetX - node.x,
+      dirDy = targetY - node.y,
+      dirTheta = Math.atan2(dirDy, dirDx),
+      maxMagnitude = Math.sqrt(dirDx * dirDx + dirDy * dirDy),
+      moveMagnitude = Math.min(maxMagnitude, forceLayout.alpha() * 20),
+      moveX = moveMagnitude * Math.cos(dirTheta),
+      moveY = moveMagnitude * Math.sin(dirTheta);
+  // if (Math.abs(moveX) > 1 || Math.abs(moveY) > 1) {
+    console.log('attract(' + node.name + '): move by (' + moveX.toFixed(2) + ',' + moveY.toFixed(2) + ')');
+    node.x += moveX;
+    node.y += moveY;
+  // }
+};
+
+// ring 0 is "bullseye", i.e. innermost circle
+var collideWithRingBoundary = function(node) {
+  var center = modSystemSupportMap.center,
+      dx = node.x - center.x,
+      dy = node.y - center.y,
+      ringRadii = modSystemSupportMap.ringRadii,
+      ringNum = node.type === 'responsibility' ? 1 :
+        node.type === 'need' ? 2 :
+        node.type === 'resource' ? 3 : null,
+      innerRingRadius = ringRadii[ringNum - 1],
+      outerRingRadius = ringRadii[ringNum],
+      distFromCenter = Math.sqrt(dx * dx + dy * dy),
+      r = +node.r, // TODO: what if the node isn't a circle?
+      theta = Math.atan2(dy, dx),
+      overlap;
+
+  if (Math.abs(dx) < 1.0) {
+    console.log('in collideWithRingBoundary, dx very small (' + dx + '); node.text = ' + node.text);
+  }
+
+  // TODO: think about whether this also covers the case of the center being
+  // entirely outside the allowed ring.
+  if (distFromCenter - r < innerRingRadius) {
+    console.log('collision with inner ring detected; node.text = ' + node.text);
+    // push out from inner ring
+    overlap = innerRingRadius - distFromCenter + r;
+    // TODO: think about whether sign is correct here in all 4 quadrants (and below)
+    node.x += overlap * Math.cos(theta);
+    node.y += overlap * Math.sin(theta);
+  } else if (distFromCenter + r > outerRingRadius) {
+    console.log('collision with outer ring detected; node.text = ' + node.text);
+    // push in from outer ring
+    overlap = distFromCenter - outerRingRadius + r;
+    node.x -= overlap * Math.cos(theta);
+    node.y -= overlap * Math.sin(theta);
+  }
 };
 
 var addResource = function(d3) {
@@ -226,10 +417,33 @@ var attachButtonHandlers = function(d3) {
     .on('click', function(){ addResource(d3); });
 };
 
+window.updatePositions = function(d3) {
+  modSvg.shapeGroups
+    .attr('transform', function(d,i) {
+      return 'translate(' + d.x + ',' + d.y + ')';
+    });
+  modUpdate.updateGraph(d3);
+};
+
+var setupForceLayout = function(d3) {
+  var w = modSvg.width,
+      h = modSvg.height,
+      nodes = modSvg.nodes;
+  forceLayout = d3.layout.force()
+    .gravity(0)
+    // .charge(function(d, i) { return i ? -30 : 0; })
+    .charge(-30)
+    .nodes(nodes)
+    .size([w, h]);
+  forceLayout.on("tick",  function() { tickForceLayout(d3); });
+  // forceLayout.on("end",  function() {window.updatePositions(d3);});
+};
+
 exports.showWizard = function(d3) {
   document.getElementById('wizard').className = 'open';
   exports.showStep(d3);
   modUpdate.updateWindow(d3);
+  setupForceLayout(d3);
 };
 
 exports.hideWizard = function(d3) {
