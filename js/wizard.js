@@ -256,37 +256,23 @@ var addNeed = function(d3) {
   newNode.type = 'need';
   newNode.parent = parentResponsibility;
   nodesByType.need.push(newNode);
-  console.log('starting force layout');
   forceLayout.start();
 };
 
 var tickForceLayout = function(d3) {
-  console.log('ticking force layout');
   var nodes = forceLayout.nodes(),
       q = d3.geom.quadtree(nodes),
       n = nodes.length,
       i;
-  // console.log('beginning of tickForceLayout:');
-  // window.nodes();
-
   for (i = 1; i < n; i++) {
-    // console.log('quadtree - forloop, i=' + i + ', name=' + nodes[i].name);
     q.visit(collideWithNeighborNodes(nodes[i]));
   }
-  // console.log('after collideWithNeighborNodes:');
-  // window.nodes();
-
   for (i = 1; i < n; i++) {
     attract(nodes[i]);
   }
-  // console.log('after attract:');
-  // window.nodes();
-
   for (i = 1; i < n; i++) {
     collideWithRingBoundary(nodes[i]);
   }
-  // console.log('after collideWithRingBoundary:');
-  // window.nodes();
   if (drawForceLayoutTransition) {
     updatePositions(d3);
   }
@@ -299,10 +285,8 @@ var collideWithNeighborNodes = function(node1) {
       ny1 = node1.y - nr,
       ny2 = node1.y + nr;
 
-  // console.log('quadtree - outer, name=' + node1.name);
   return function(quad, x1, y1, x2, y2) {
     var node2 = quad.point;
-    // console.log('quadtree - inner, name=' + node1.name + ', name2=' + (node2 && node2.name));
     if (node2 && (node2 !== node1)) {
       var dx = node1.x - node2.x,
           dy = node1.y - node2.y,
@@ -311,7 +295,6 @@ var collideWithNeighborNodes = function(node1) {
           overlap = mindist - dist;
 
       if (overlap > 0) {
-        console.log('pre-collision, dist=' + dist.toFixed(2) + ', mindist=' + mindist.toFixed(2) + ', overlap=' + overlap.toFixed(2) + ', dx=' + dx.toFixed(2) + ', dy=' + dy.toFixed(2) + ', node1.name = ' + node1.name + '@(' + node1.x.toFixed(2) + ',' + node1.y.toFixed(2) + '), node2.name = ' + node2.name + '@(' + node2.x.toFixed(2) + ',' + node2.y.toFixed(2) + ')');
         var halfOverlapProportion = overlap / dist * 0.5,
             xOffset = dx * halfOverlapProportion,
             yOffset = dy * halfOverlapProportion;
@@ -321,13 +304,11 @@ var collideWithNeighborNodes = function(node1) {
         // Nullify momentum to prevent bouncing.
         node1.px = node1.x;
         node1.py = node1.y;
-        console.log('collision with neighbor node1 detected (r1=' + (+node1.r).toFixed(2) + ', r2=' + (+node2.r).toFixed(2) + ', dist2=' + dist.toFixed(2) + ', xOffset=' + xOffset.toFixed(2) + ', yOffset=' + yOffset.toFixed(2) + '), 2*mag=' + (2 * Math.sqrt(xOffset*xOffset + yOffset*yOffset)).toFixed(2));
 
         node2.x -= xOffset;
         node2.y -= yOffset;
         node2.px = node2.x;
         node2.py = node2.y;
-        console.log('post-collision, node1.name = ' + node1.name + '@(' + node1.x.toFixed(2) + ',' + node1.y.toFixed(2) + '), node2.name = ' + node2.name + '@(' + node2.x.toFixed(2) + ',' + node2.y.toFixed(2) + ')');
       }
     }
 
@@ -361,11 +342,8 @@ var attract = function(node) {
       moveMagnitude = Math.min(maxMagnitude, forceLayout.alpha() * 20),
       moveX = moveMagnitude * Math.cos(dirTheta),
       moveY = moveMagnitude * Math.sin(dirTheta);
-  // if (Math.abs(moveX) > 1 || Math.abs(moveY) > 1) {
-    console.log('attract(' + node.name + '): move by (' + moveX.toFixed(2) + ',' + moveY.toFixed(2) + ')');
-    node.x += moveX;
-    node.y += moveY;
-  // }
+  node.x += moveX;
+  node.y += moveY;
 };
 
 // ring 0 is "bullseye", i.e. innermost circle
@@ -384,21 +362,15 @@ var collideWithRingBoundary = function(node) {
       theta = Math.atan2(dy, dx),
       overlap;
 
-  if (Math.abs(dx) < 1.0) {
-    console.log('in collideWithRingBoundary, dx very small (' + dx + '); node.text = ' + node.text);
-  }
-
   // TODO: think about whether this also covers the case of the center being
   // entirely outside the allowed ring.
   if (distFromCenter - r < innerRingRadius) {
-    console.log('collision with inner ring detected; node.text = ' + node.text);
     // push out from inner ring
     overlap = innerRingRadius - distFromCenter + r;
     // TODO: think about whether sign is correct here in all 4 quadrants (and below)
     node.x += overlap * Math.cos(theta);
     node.y += overlap * Math.sin(theta);
   } else if (distFromCenter + r > outerRingRadius) {
-    console.log('collision with outer ring detected; node.text = ' + node.text);
     // push in from outer ring
     overlap = distFromCenter - outerRingRadius + r;
     node.x -= overlap * Math.cos(theta);
