@@ -13,6 +13,7 @@ var nodesByType = {
     },
     step = 0,
     curResponsibility,
+    curNeed,
     stepHtml = [
   // step 1: introduction
   '\
@@ -112,21 +113,21 @@ var nodesByType = {
 <p>I&rsquo;ll ask about each need in turn, starting with the first one you told me about.</p>\
 <h3>Need <span id="wizard_current_need_number">_</span> of <span id="wizard_need_count">_</span>: <span id="wizard_current_need_text">____</span></h3>\
 <label>A resources that will help meet this need is:\
-  <input type="text" />\
+  <input type="text" name="resource" />\
 </label>\
 <br/>\
 This resource was:\
 <br/>\
 <label>\
-  <input type="radio" name="helpfulness" /> Helpful\
+  <input type="radio" name="helpfulness" value="helpful" /> Helpful\
 </label>\
 <br/>\
 <label>\
-  <input type="radio" name="helpfulness" /> Somewhat helpful\
+  <input type="radio" name="helpfulness" value="somewhat-helpful" /> Somewhat helpful\
 </label>\
 <br/>\
 <label>\
-  <input type="radio" name="helpfulness" /> Not helpful\
+  <input type="radio" name="helpfulness" value="not-helpful" /> Not helpful\
 </label>\
 <br/>\
 <button class="add-resource">Add</button>\
@@ -379,7 +380,61 @@ var collideWithRingBoundary = function(node) {
 };
 
 var addResource = function(d3) {
-  console.log('imagine that a resource was just added');
+  // TODO: DRY up with addNeed()
+  var inputEl = d3.select('input[name=resource]').node(),
+      text = inputEl.value,
+      helpfulness = d3.select('input[name=helpfulness]:checked').node().value,
+      parentNeed = nodesByType.need[curNeed],
+      numResources = nodesByType.resource.length,
+      newNode,
+      center = modSystemSupportMap.center,
+      ringRadii = modSystemSupportMap.ringRadii,
+      distanceFromCenter = (ringRadii[1] + ringRadii[2]) / 2,
+      dx, dy, x, y;
+
+  inputEl.value = '';
+  d3.selectAll('input[name=helpfulness]').property('checked', false);
+  if (!numResources) {
+    // if no siblings yet, just drop it at theta = 0.
+    dx = distanceFromCenter;
+    x = numResources == 0 ? center.x + dx : center.x - dx;
+    y = center.y;
+    newNode = modEvents.addNode(d3, x, y, text);
+  } else {
+
+    var prevResource = nodesByType.resource[numResources - 1],
+        theta;
+    if (prevResource.parent === parentNeed) {
+      // drop it at theta of last resource plus a bit and force-layout.
+      var oldTheta = Math.atan2(prevResource.y - center.y, prevResource.x - center.x);
+      // FIXME: at some point we'll have to be more careful not to overlap. e.g.
+      // what if there are like 100 nodes in this ring already?
+      theta = Math.min(Math.PI * 31.9 / 32, oldTheta + Math.PI / 160);
+    } else {
+      theta = Math.atan2(parentNeed.y - center.y, parentNeed.x - center.x);
+    }
+    dx = distanceFromCenter * Math.cos(theta);
+    dy = distanceFromCenter * Math.sin(theta);
+    x = center.x + dx;
+    y = center.y + dy;
+    newNode = modEvents.addNode(d3, x, y, text);
+  }
+
+  var edge = {
+    source: parentNeed,
+    target: newNode,
+    style: 'solid',
+    color: '#000000',
+    thickness: 3,
+    name: ''
+  };
+  modEvents.addEdge(d3, edge);
+  newNode.type = 'resource';
+  newNode.parent = parentNeed;
+  console.log('helpfulness: ' + helpfulness);
+  newNode.helpfulness = helpfulness;
+  nodesByType.resource.push(newNode);
+  forceLayout.start();
 };
 
 var attachButtonHandlers = function(d3) {
@@ -432,6 +487,18 @@ var highlightResponsibility = function(d3, responsibilityNumber) {
   modSelection.selectNode(d3node, node);
 };
 
+var highlightNeed = function(d3, needNumber) {
+  var node = nodesByType.need[needNumber],
+      d3node = d3.select('#shapeG' + node.id);
+  d3.select('#wizard_need_count')
+    .text(nodesByType.need.length);
+  d3.select('#wizard_current_need_number')
+    .text(needNumber + 1);
+  d3.select('#wizard_current_need_text')
+    .text(node.name);
+  modSelection.selectNode(d3node, node);
+};
+
 exports.showWizard = function(d3) {
   document.getElementById('wizard').className = 'open';
   exports.showStep(d3);
@@ -457,19 +524,21 @@ exports.prevStep = function(d3) {
 
 exports.nextStep = function(d3) {
   // TODO: clean this up. State machine?
-  if (step === 5) {  // adding needs
-    if (++curResponsibility === nodesByType.responsibility.length) {
-      step += 1;
-      exports.showStep(d3);
-    } else {
-      highlightResponsibility(d3, curResponsibility);
-    }
-  } else {
-    step += 1;
-    exports.showStep(d3);
-    if (step === 5) {
-      curResponsibility = 0;
-      highlightResponsibility(d3, curResponsibility);
-    }
+  if (step === 5 && ++curResponsibility !== nodesByType.responsibility.length) {  // adding needs
+    highlightResponsibility(d3, curResponsibility);
+    return;
+  }
+  if (step === 6 && ++curNeed !== nodesByType.need.length) {
+    highlightNeed(d3, curNeed);
+    return;
+  }
+  step += 1;
+  exports.showStep(d3);
+  if (step === 5) {
+    curResponsibility = 0;
+    highlightResponsibility(d3, curResponsibility);
+  } else if (step === 6) {
+    curNeed = 0;
+    highlightNeed(d3, curNeed);
   }
 };
