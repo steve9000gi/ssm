@@ -224,14 +224,20 @@ var addNeed = function(d3) {
     y = center.y;
     newNode = modEvents.addNode(d3, x, y, text);
   } else {
-    // drop it at theta of last need plus a bit and force-layout.
-    var prevNode = nodesByType.need[numNeeds - 1],
-        theta = Math.atan2(prevNode.y - center.y, prevNode.x - center.x),
-        // FIXME: at some point we'll have to be more careful not to overlap.
-        // e.g. what if there are like 100 nodes in this ring already?
-        newTheta = Math.min(Math.PI * 31.9 / 32, theta + Math.PI / 160);
-    dx = distanceFromCenter * Math.cos(newTheta);
-    dy = distanceFromCenter * Math.sin(newTheta);
+
+    var prevNeed = nodesByType.need[numNeeds - 1],
+        theta;
+    if (prevNeed.parent === parentResponsibility) {
+      // drop it at theta of last need plus a bit and force-layout.
+      var oldTheta = Math.atan2(prevNeed.y - center.y, prevNeed.x - center.x);
+      // FIXME: at some point we'll have to be more careful not to overlap. e.g.
+      // what if there are like 100 nodes in this ring already?
+      theta = Math.min(Math.PI * 31.9 / 32, oldTheta + Math.PI / 160);
+    } else {
+      theta = Math.atan2(parentResponsibility.y - center.y, parentResponsibility.x - center.x);
+    }
+    dx = distanceFromCenter * Math.cos(theta);
+    dy = distanceFromCenter * Math.sin(theta);
     x = center.x + dx;
     y = center.y + dy;
     newNode = modEvents.addNode(d3, x, y, text);
