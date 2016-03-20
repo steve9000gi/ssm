@@ -143,7 +143,8 @@ This resource was:\
 <button class="back">Back</button>\
 <button class="finish">Finish</button>'
     ],
-    forceLayout;
+    forceLayout,
+    drawForceLayoutTransition = true;
 
 var addRoleThenNext = function(d3) {
   var text = d3.select('input[name=role]').node().value,
@@ -286,7 +287,9 @@ var tickForceLayout = function(d3) {
   }
   // console.log('after collideWithRingBoundary:');
   // window.nodes();
-  window.updatePositions(d3);
+  if (drawForceLayoutTransition) {
+    updatePositions(d3);
+  }
 };
 
 var collideWithNeighborNodes = function(node1) {
@@ -424,7 +427,7 @@ var attachButtonHandlers = function(d3) {
     .on('click', function(){ addResource(d3); });
 };
 
-window.updatePositions = function(d3) {
+var updatePositions = function(d3) {
   modSvg.shapeGroups
     .attr('transform', function(d,i) {
       return 'translate(' + d.x + ',' + d.y + ')';
@@ -438,12 +441,11 @@ var setupForceLayout = function(d3) {
       nodes = modSvg.nodes;
   forceLayout = d3.layout.force()
     .gravity(0)
-    // .charge(function(d, i) { return i ? -30 : 0; })
     .charge(-30)
     .nodes(nodes)
     .size([w, h]);
   forceLayout.on("tick",  function() { tickForceLayout(d3); });
-  // forceLayout.on("end",  function() {window.updatePositions(d3);});
+  forceLayout.on("end",  function() { updatePositions(d3); });
 };
 
 var highlightResponsibility = function(d3, responsibilityNumber) {
