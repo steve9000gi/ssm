@@ -19,7 +19,7 @@
 <tr>
 	<td>type</td>
 	<td>name=need</td>
-	<td>need1</td>
+	<td>need1.1</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -29,7 +29,7 @@
 <tr>
 	<td>type</td>
 	<td>name=need</td>
-	<td>need2</td>
+	<td>need1.2</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -39,14 +39,83 @@
 <tr>
 	<td>type</td>
 	<td>name=need</td>
-	<td>need3</td>
+	<td>need1.3</td>
 </tr>
 <tr>
 	<td>click</td>
 	<td>css=button.add-need</td>
 	<td></td>
 </tr>
-
+<tr>
+	<td>click</td>
+	<td>css=button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need2.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need2.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need2.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need3.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need3.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need3.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
 </tbody></table>
 </body>
 </html>

@@ -3415,6 +3415,7 @@ exports.computeRectangleBoundary = function(edge) {
 
 },{}],30:[function(require,module,exports){
 var modEvents = require('./events.js'),
+    modSelection = require('./selection.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modSvg = require('./svg.js'),
     modText = require('./text.js'),
@@ -3427,6 +3428,7 @@ var nodesByType = {
       'resource': []
     },
     step = 0,
+    curResponsibility,
     stepHtml = [
   // step 1: introduction
   '\
@@ -3622,8 +3624,7 @@ var addResponsibility = function(d3) {
 var addNeed = function(d3) {
   var inputEl = d3.select('input[name=need]').node(),
       text = inputEl.value,
-      // FIXME: do it right (blocked by doing step handler right):
-      parentResponsibility = nodesByType.responsibility[0],
+      parentResponsibility = nodesByType.responsibility[curResponsibility],
       numNeeds = nodesByType.need.length,
       newNode,
       center = modSystemSupportMap.center,
@@ -3855,6 +3856,18 @@ var setupForceLayout = function(d3) {
   // forceLayout.on("end",  function() {window.updatePositions(d3);});
 };
 
+var highlightResponsibility = function(d3, responsibilityNumber) {
+  var node = nodesByType.responsibility[responsibilityNumber],
+      d3node = d3.select('#shapeG' + node.id);
+  d3.select('#wizard_responsibility_count')
+    .text(nodesByType.responsibility.length);
+  d3.select('#wizard_current_responsibility_number')
+    .text(responsibilityNumber + 1);
+  d3.select('#wizard_current_responsibility_text')
+    .text(node.name);
+  modSelection.selectNode(d3node, node);
+};
+
 exports.showWizard = function(d3) {
   document.getElementById('wizard').className = 'open';
   exports.showStep(d3);
@@ -3873,13 +3886,28 @@ exports.showStep = function(d3) {
 };
 
 exports.prevStep = function(d3) {
+  // TODO: implement reverse logic as nextStep()
   step -= 1;
   exports.showStep(d3);
 };
 
 exports.nextStep = function(d3) {
-  step += 1;
-  exports.showStep(d3);
+  // TODO: clean this up. State machine?
+  if (step === 5) {  // adding needs
+    if (++curResponsibility === nodesByType.responsibility.length) {
+      step += 1;
+      exports.showStep(d3);
+    } else {
+      highlightResponsibility(d3, curResponsibility);
+    }
+  } else {
+    step += 1;
+    exports.showStep(d3);
+    if (step === 5) {
+      curResponsibility = 0;
+      highlightResponsibility(d3, curResponsibility);
+    }
+  }
 };
 
 },{"./events.js":9,"./svg.js":23,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],31:[function(require,module,exports){
