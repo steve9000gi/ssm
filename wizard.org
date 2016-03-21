@@ -409,7 +409,8 @@ same place every time.
 ** TODO [design] should a need with the same name be the same node?
 e.g. time in my example.
 I feel like "yes" is the better answer.
-** TODO [design] should we have different colors for resources depending on usefulness?
+But it's harder to position reasonably.
+** TODO [design] should we have different colors for resources depending on helpfulness?
 ** TODO [design] should we have different colors or shapes for different types of nodes?
 ** TODO [design] when placing a node, should we only move nodes if (all?) others were placed by wizard?
 ** TODO add all steps to DOM, and show/hide them at each step
@@ -423,7 +424,8 @@ This will likely clean up event handling, too.
 screen. Middle click started dragging, left click finished it. But left drag
 didn't work.
 ** TODO save wizard state as part of map state
-** TODO highlight wizard-active node in chart
+** DONE highlight wizard-active node in chart
+CLOSED: [2016-03-20 Sun 19:41]
 ** TODO add wizard to options menu
 ** TODO at each step, pull content from existing map if it exists
 ** DONE statically place first role
@@ -436,9 +438,12 @@ CLOSED: [2016-02-28 Sun 23:21]
 or maybe not, depending on design decision above...
 ** TODO save and retrieve the placed-by-wizard attribute for each node
 or maybe not, depending on design decision above...
-** TODO place needs near their responsibility
+** DONE place needs near their responsibility
+CLOSED: [2016-03-20 Sun 19:42]
 ** TODO depending on the node uniqueness question (see above), might need to position near two or more parents
-** TODO reposition previously placed needs to make room for new one
-** TODO similarly, position resources
+** DONE reposition previously placed needs to make room for new one
+CLOSED: [2016-03-20 Sun 19:43]
+** DONE similarly, position resources
+CLOSED: [2016-03-20 Sun 19:43]
 ** TODO wizard and toolbox collide if window small enough
 See screenshot.
