@@ -3678,20 +3678,26 @@ var addNeed = function(d3) {
 
 var tickForceLayout = function(d3) {
   var nodes = forceLayout.nodes(),
-      q = d3.geom.quadtree(nodes),
-      n = nodes.length,
-      i;
-  for (i = 1; i < n; i++) {
-    q.visit(collideWithNeighborNodes(nodes[i]));
-  }
+      i, n = nodes.length;
+  uncollideNodes(d3);
   for (i = 1; i < n; i++) {
     attract(nodes[i]);
   }
-  for (i = 1; i < n; i++) {
-    collideWithRingBoundary(nodes[i]);
-  }
   if (drawForceLayoutTransition) {
     renderPositions(d3);
+  }
+};
+
+var uncollideNodes = function(d3) {
+  var nodes = forceLayout.nodes(),
+      q = d3.geom.quadtree(nodes),
+      i, n = nodes.length;
+  for (i = 1; i < n; i++) {
+    var node = nodes[i];
+    q.visit(collideWithNeighborNodes(node));
+    collideWithRingBoundary(node);
+    node.px = node.x;
+    node.py = node.y;
   }
 };
 
