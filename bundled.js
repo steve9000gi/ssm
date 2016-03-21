@@ -3691,7 +3691,7 @@ var tickForceLayout = function(d3) {
     collideWithRingBoundary(nodes[i]);
   }
   if (drawForceLayoutTransition) {
-    updatePositions(d3);
+    renderPositions(d3);
   }
 };
 
@@ -3870,7 +3870,7 @@ var attachButtonHandlers = function(d3) {
     .on('click', function(){ addResource(d3); });
 };
 
-var updatePositions = function(d3) {
+var renderPositions = function(d3) {
   modSvg.shapeGroups
     .attr('transform', function(d,i) {
       return 'translate(' + d.x + ',' + d.y + ')';
@@ -3888,7 +3888,7 @@ var setupForceLayout = function(d3) {
     .nodes(nodes)
     .size([w, h]);
   forceLayout.on("tick",  function() { tickForceLayout(d3); });
-  forceLayout.on("end",  function() { updatePositions(d3); });
+  forceLayout.on("end",  function() { renderPositions(d3); });
 };
 
 var highlightResponsibility = function(d3, responsibilityNumber) {
