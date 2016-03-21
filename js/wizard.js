@@ -260,6 +260,64 @@ var addNeed = function(d3) {
   forceLayout.start();
 };
 
+var addResource = function(d3) {
+  // TODO: DRY up with addNeed()
+  var inputEl = d3.select('input[name=resource]').node(),
+      text = inputEl.value,
+      helpfulness = d3.select('input[name=helpfulness]:checked').node().value,
+      parentNeed = nodesByType.need[curNeed],
+      numResources = nodesByType.resource.length,
+      newNode,
+      center = modSystemSupportMap.center,
+      ringRadii = modSystemSupportMap.ringRadii,
+      distanceFromCenter = (ringRadii[1] + ringRadii[2]) / 2,
+      dx, dy, x, y;
+
+  inputEl.value = '';
+  d3.selectAll('input[name=helpfulness]').property('checked', false);
+  if (!numResources) {
+    // if no siblings yet, just drop it at theta = 0.
+    dx = distanceFromCenter;
+    x = numResources == 0 ? center.x + dx : center.x - dx;
+    y = center.y;
+    newNode = modEvents.addNode(d3, x, y, text);
+  } else {
+
+    var prevResource = nodesByType.resource[numResources - 1],
+        theta;
+    if (prevResource.parent === parentNeed) {
+      // drop it at theta of last resource plus a bit and force-layout.
+      var oldTheta = Math.atan2(prevResource.y - center.y, prevResource.x - center.x);
+      // FIXME: at some point we'll have to be more careful not to overlap. e.g.
+      // what if there are like 100 nodes in this ring already?
+      theta = Math.min(Math.PI * 31.9 / 32, oldTheta + Math.PI / 160);
+    } else {
+      theta = Math.atan2(parentNeed.y - center.y, parentNeed.x - center.x);
+    }
+    dx = distanceFromCenter * Math.cos(theta);
+    dy = distanceFromCenter * Math.sin(theta);
+    x = center.x + dx;
+    y = center.y + dy;
+    newNode = modEvents.addNode(d3, x, y, text);
+  }
+
+  var edge = {
+    source: parentNeed,
+    target: newNode,
+    style: 'solid',
+    color: '#000000',
+    thickness: 3,
+    name: ''
+  };
+  modEvents.addEdge(d3, edge);
+  newNode.type = 'resource';
+  newNode.parent = parentNeed;
+  console.log('helpfulness: ' + helpfulness);
+  newNode.helpfulness = helpfulness;
+  nodesByType.resource.push(newNode);
+  forceLayout.start();
+};
+
 var tickForceLayout = function(d3) {
   var nodes = forceLayout.nodes(),
       i, n = nodes.length;
@@ -326,33 +384,6 @@ var collideWithNeighborNodes = function(node1) {
   };
 };
 
-var attract = function(node) {
-  if (!node.parent) { return; }
-  var parent = node.parent,
-      center = modSystemSupportMap.center,
-      dx = node.type === 'responsibility' ? node.x - center.x : parent.x - center.x,
-      dy = node.type === 'responsibility' ? node.y - center.y : parent.y - center.y,
-      ringRadii = modSystemSupportMap.ringRadii,
-      ringNum = node.type === 'responsibility' ? 1 :
-                node.type === 'need' ? 2 :
-                node.type === 'resource' ? 3 : null,
-      innerRingRadius = ringRadii[ringNum - 1],
-      outerRingRadius = ringRadii[ringNum],
-      targetRadius = (innerRingRadius + outerRingRadius) / 2,
-      theta = Math.atan2(dy, dx),
-      targetX = targetRadius * Math.cos(theta) + center.x,
-      targetY = targetRadius * Math.sin(theta) + center.y,
-      dirDx = targetX - node.x,
-      dirDy = targetY - node.y,
-      dirTheta = Math.atan2(dirDy, dirDx),
-      maxMagnitude = Math.sqrt(dirDx * dirDx + dirDy * dirDy),
-      moveMagnitude = Math.min(maxMagnitude, forceLayout.alpha() * 20),
-      moveX = moveMagnitude * Math.cos(dirTheta),
-      moveY = moveMagnitude * Math.sin(dirTheta);
-  node.x += moveX;
-  node.y += moveY;
-};
-
 // ring 0 is "bullseye", i.e. innermost circle
 var collideWithRingBoundary = function(node) {
   var center = modSystemSupportMap.center,
@@ -385,62 +416,31 @@ var collideWithRingBoundary = function(node) {
   }
 };
 
-var addResource = function(d3) {
-  // TODO: DRY up with addNeed()
-  var inputEl = d3.select('input[name=resource]').node(),
-      text = inputEl.value,
-      helpfulness = d3.select('input[name=helpfulness]:checked').node().value,
-      parentNeed = nodesByType.need[curNeed],
-      numResources = nodesByType.resource.length,
-      newNode,
+var attract = function(node) {
+  if (!node.parent) { return; }
+  var parent = node.parent,
       center = modSystemSupportMap.center,
+      dx = node.type === 'responsibility' ? node.x - center.x : parent.x - center.x,
+      dy = node.type === 'responsibility' ? node.y - center.y : parent.y - center.y,
       ringRadii = modSystemSupportMap.ringRadii,
-      distanceFromCenter = (ringRadii[1] + ringRadii[2]) / 2,
-      dx, dy, x, y;
-
-  inputEl.value = '';
-  d3.selectAll('input[name=helpfulness]').property('checked', false);
-  if (!numResources) {
-    // if no siblings yet, just drop it at theta = 0.
-    dx = distanceFromCenter;
-    x = numResources == 0 ? center.x + dx : center.x - dx;
-    y = center.y;
-    newNode = modEvents.addNode(d3, x, y, text);
-  } else {
-
-    var prevResource = nodesByType.resource[numResources - 1],
-        theta;
-    if (prevResource.parent === parentNeed) {
-      // drop it at theta of last resource plus a bit and force-layout.
-      var oldTheta = Math.atan2(prevResource.y - center.y, prevResource.x - center.x);
-      // FIXME: at some point we'll have to be more careful not to overlap. e.g.
-      // what if there are like 100 nodes in this ring already?
-      theta = Math.min(Math.PI * 31.9 / 32, oldTheta + Math.PI / 160);
-    } else {
-      theta = Math.atan2(parentNeed.y - center.y, parentNeed.x - center.x);
-    }
-    dx = distanceFromCenter * Math.cos(theta);
-    dy = distanceFromCenter * Math.sin(theta);
-    x = center.x + dx;
-    y = center.y + dy;
-    newNode = modEvents.addNode(d3, x, y, text);
-  }
-
-  var edge = {
-    source: parentNeed,
-    target: newNode,
-    style: 'solid',
-    color: '#000000',
-    thickness: 3,
-    name: ''
-  };
-  modEvents.addEdge(d3, edge);
-  newNode.type = 'resource';
-  newNode.parent = parentNeed;
-  console.log('helpfulness: ' + helpfulness);
-  newNode.helpfulness = helpfulness;
-  nodesByType.resource.push(newNode);
-  forceLayout.start();
+      ringNum = node.type === 'responsibility' ? 1 :
+                node.type === 'need' ? 2 :
+                node.type === 'resource' ? 3 : null,
+      innerRingRadius = ringRadii[ringNum - 1],
+      outerRingRadius = ringRadii[ringNum],
+      targetRadius = (innerRingRadius + outerRingRadius) / 2,
+      theta = Math.atan2(dy, dx),
+      targetX = targetRadius * Math.cos(theta) + center.x,
+      targetY = targetRadius * Math.sin(theta) + center.y,
+      dirDx = targetX - node.x,
+      dirDy = targetY - node.y,
+      dirTheta = Math.atan2(dirDy, dirDx),
+      maxMagnitude = Math.sqrt(dirDx * dirDx + dirDy * dirDy),
+      moveMagnitude = Math.min(maxMagnitude, forceLayout.alpha() * 20),
+      moveX = moveMagnitude * Math.cos(dirTheta),
+      moveY = moveMagnitude * Math.sin(dirTheta);
+  node.x += moveX;
+  node.y += moveY;
 };
 
 var attachButtonHandlers = function(d3) {
