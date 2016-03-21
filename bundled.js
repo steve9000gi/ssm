@@ -3620,6 +3620,7 @@ var addResponsibility = function(d3) {
   modEvents.addEdge(d3, edge);
   newNode.type = 'responsibility';
   newNode.parent = nodesByType.role;
+  newNode.children = [];
   nodesByType.responsibility.push(newNode);
 };
 
@@ -3672,6 +3673,8 @@ var addNeed = function(d3) {
   modEvents.addEdge(d3, edge);
   newNode.type = 'need';
   newNode.parent = parentResponsibility;
+  newNode.children = [];
+  newNode.parent.children.push(newNode);
   nodesByType.need.push(newNode);
   forceLayout.start();
 };
@@ -3728,7 +3731,8 @@ var addResource = function(d3) {
   modEvents.addEdge(d3, edge);
   newNode.type = 'resource';
   newNode.parent = parentNeed;
-  console.log('helpfulness: ' + helpfulness);
+  newNode.children = [];
+  newNode.parent.children.push(newNode);
   newNode.helpfulness = helpfulness;
   nodesByType.resource.push(newNode);
   forceLayout.start();
@@ -3739,7 +3743,7 @@ var tickForceLayout = function(d3) {
       i, n = nodes.length;
   uncollideNodes(d3);
   for (i = 1; i < n; i++) {
-    attract(nodes[i]);
+    attract(d3, nodes[i]);
   }
   if (drawForceLayoutTransition) {
     renderPositions(d3);
@@ -3832,31 +3836,22 @@ var collideWithRingBoundary = function(node) {
   }
 };
 
-var attract = function(node) {
-  if (!node.parent) { return; }
-  var parent = node.parent,
-      center = modSystemSupportMap.center,
-      dx = node.type === 'responsibility' ? node.x - center.x : parent.x - center.x,
-      dy = node.type === 'responsibility' ? node.y - center.y : parent.y - center.y,
-      ringRadii = modSystemSupportMap.ringRadii,
-      ringNum = node.type === 'responsibility' ? 1 :
-                node.type === 'need' ? 2 :
-                node.type === 'resource' ? 3 : null,
-      innerRingRadius = ringRadii[ringNum - 1],
-      outerRingRadius = ringRadii[ringNum],
-      targetRadius = (innerRingRadius + outerRingRadius) / 2,
-      theta = Math.atan2(dy, dx),
-      targetX = targetRadius * Math.cos(theta) + center.x,
-      targetY = targetRadius * Math.sin(theta) + center.y,
-      dirDx = targetX - node.x,
-      dirDy = targetY - node.y,
-      dirTheta = Math.atan2(dirDy, dirDx),
-      maxMagnitude = Math.sqrt(dirDx * dirDx + dirDy * dirDy),
-      moveMagnitude = Math.min(maxMagnitude, forceLayout.alpha() * 20),
-      moveX = moveMagnitude * Math.cos(dirTheta),
-      moveY = moveMagnitude * Math.sin(dirTheta);
-  node.x += moveX;
-  node.y += moveY;
+var attract = function(d3, node) {
+  if (!node.parent) return;
+  if (node.type === 'responsibility' && node.children.length === 0) return;
+  var parentTheta = nodeTheta(node.parent),
+      childrenThetas = node.children.map(nodeTheta),
+      avgChildTheta = d3.mean(childrenThetas) || parentTheta,
+      targetTheta = node.type === 'responsibility'
+        ? avgChildTheta
+        : (parentTheta + avgChildTheta) / 2,
+      targetRad = targetRadius(node),
+      targetPos = addPos(polar2rect(targetRad, targetTheta),
+                         modSystemSupportMap.center),
+      distToTarget = distance(targetPos, node),
+      maxMoveDist = Math.min(10, 0.9 * +node.r),
+      moveDist = Math.min(maxMoveDist, distToTarget);
+  moveTowardPos(node, targetPos, moveDist);
 };
 
 var attachButtonHandlers = function(d3) {
@@ -3919,6 +3914,55 @@ var highlightNeed = function(d3, needNumber) {
   d3.select('#wizard_current_need_text')
     .text(node.name);
   modSelection.selectNode(d3node, node);
+};
+
+var angle = function(fromObj, toObj) {
+  var dx = toObj.x - fromObj.x,
+      dy = toObj.y - fromObj.y;
+  return Math.atan2(dy, dx);
+};
+
+var nodeTheta = function(node) {
+  return angle(modSystemSupportMap.center, node);
+};
+
+var polar2rect = function(r, theta) {
+  return {
+    x: r * Math.cos(theta),
+    y: r * Math.sin(theta)
+   };
+};
+
+var distance = function(obj1, obj2) {
+  var dx = obj2.x - obj1.x,
+      dy = obj2.y - obj1.y;
+  return Math.sqrt(dx * dx + dy * dy);
+};
+
+var addPos = function(obj1, obj2) {
+  return {
+    x: obj1.x + obj2.x,
+    y: obj1.y + obj2.y
+  };
+};
+
+var moveTowardPos = function(obj, targetPosition, moveDistance) {
+  var angl = angle(obj, targetPosition),
+      deltaPos = polar2rect(moveDistance, angl);
+  obj.x += deltaPos.x;
+  obj.y += deltaPos.y;
+};
+
+var targetRadius = function(node) {
+  var ringNum = {
+        'responsibility': 1,
+        'need': 2,
+        'resource': 3
+      }[node.type];
+  var ringRadii = modSystemSupportMap.ringRadii,
+      innerRingRadius = ringRadii[ringNum - 1],
+      outerRingRadius = ringRadii[ringNum];
+  return (innerRingRadius + outerRingRadius) / 2;
 };
 
 exports.showWizard = function(d3) {
