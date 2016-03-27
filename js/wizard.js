@@ -1,3 +1,4 @@
+var debugName = 'need1.3';
 var modEvents = require('./events.js'),
     modSelection = require('./selection.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -423,7 +424,22 @@ var attract = function(d3, node) {
       distToTarget = distance(targetPos, node),
       maxMoveDist = Math.min(10, 0.9 * +node.r),
       moveDist = Math.min(maxMoveDist, distToTarget);
+  if (node.name === debugName) {
+    console.log('attract - parentTheta - ' + parentTheta.toFixed(2));
+    console.log('attract - avgChildTheta - ' + (avgChildTheta * 180 / Math.PI).toFixed(2));
+    console.log('attract - targetTheta - ' + (targetTheta * 180 / Math.PI).toFixed(2));
+    console.log('attract - targetRad - ' + targetRad.toFixed(2));
+    console.log('attract - targetPos - {' + targetPos.x.toFixed(2) + ',' + targetPos.y.toFixed(2) + '}');
+    console.log('attract - distToTarget - ' + distToTarget.toFixed(2));
+    console.log('attract - maxMoveDist - ' + maxMoveDist.toFixed(2));
+    console.log('attract - moveDist - ' + moveDist.toFixed(2));
+    console.log('attract - node start position - {' + node.x.toFixed(2) + ',' + node.y.toFixed(2) + '}');
+  }
   moveTowardPos(node, targetPos, moveDist);
+  if (node.name === debugName) {
+    console.log('attract - moveDist - ' + moveDist.toFixed(2));
+    console.log('attract - node finish position - {' + node.x.toFixed(2) + ',' + node.y.toFixed(2) + '}');
+  }
 };
 
 var attachButtonHandlers = function(d3) {
@@ -523,6 +539,10 @@ var moveTowardPos = function(obj, targetPosition, moveDistance) {
       deltaPos = polar2rect(moveDistance, angl);
   obj.x += deltaPos.x;
   obj.y += deltaPos.y;
+  if (obj.name === debugName) {
+    console.log('moveTowardPos - angl = ' + (angl * 180 / Math.PI).toFixed(2));
+    console.log('moveTowardPos - deltaPos = {' + deltaPos.x.toFixed(2) + ',' + deltaPos.y.toFixed(2) + '}');
+  }
 };
 
 var boundingRadii = function(node) {
