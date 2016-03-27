@@ -3804,33 +3804,21 @@ var collideWithNeighborNodes = function(node1) {
   };
 };
 
-// ring 0 is "bullseye", i.e. innermost circle
 var collideWithRingBoundary = function(node) {
-  var center = modSystemSupportMap.center,
-      dx = node.x - center.x,
-      dy = node.y - center.y,
-      ringRadii = modSystemSupportMap.ringRadii,
-      ringNum = node.type === 'responsibility' ? 1 :
-        node.type === 'need' ? 2 :
-        node.type === 'resource' ? 3 : null,
-      innerRingRadius = ringRadii[ringNum - 1],
-      outerRingRadius = ringRadii[ringNum],
-      distFromCenter = Math.sqrt(dx * dx + dy * dy),
+  var distFromCenter = distance(modSystemSupportMap.center, node),
+      theta = nodeTheta(node),
+      radii = boundingRadii(node),
       r = +node.r, // TODO: what if the node isn't a circle?
-      theta = Math.atan2(dy, dx),
       overlap;
 
-  // TODO: think about whether this also covers the case of the center being
-  // entirely outside the allowed ring.
-  if (distFromCenter - r < innerRingRadius) {
+  if (distFromCenter - r < radii[0]) {
     // push out from inner ring
-    overlap = innerRingRadius - distFromCenter + r;
-    // TODO: think about whether sign is correct here in all 4 quadrants (and below)
+    overlap = radii[0] - distFromCenter + r;
     node.x += overlap * Math.cos(theta);
     node.y += overlap * Math.sin(theta);
-  } else if (distFromCenter + r > outerRingRadius) {
+  } else if (distFromCenter + r > radii[1]) {
     // push in from outer ring
-    overlap = distFromCenter - outerRingRadius + r;
+    overlap = distFromCenter - radii[1] + r;
     node.x -= overlap * Math.cos(theta);
     node.y -= overlap * Math.sin(theta);
   }
@@ -3953,16 +3941,21 @@ var moveTowardPos = function(obj, targetPosition, moveDistance) {
   obj.y += deltaPos.y;
 };
 
-var targetRadius = function(node) {
+var boundingRadii = function(node) {
   var ringNum = {
-        'responsibility': 1,
-        'need': 2,
-        'resource': 3
-      }[node.type];
+    'responsibility': 1,
+    'need': 2,
+    'resource': 3
+  }[node.type];
   var ringRadii = modSystemSupportMap.ringRadii,
       innerRingRadius = ringRadii[ringNum - 1],
       outerRingRadius = ringRadii[ringNum];
-  return (innerRingRadius + outerRingRadius) / 2;
+  return [innerRingRadius, outerRingRadius];
+};
+
+var targetRadius = function(node) {
+  var radii = boundingRadii(node);
+  return (radii[0] + radii[1]) / 2;
 };
 
 exports.showWizard = function(d3) {
