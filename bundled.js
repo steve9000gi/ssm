@@ -3742,6 +3742,18 @@ var addResource = function(d3) {
 var tickForceLayout = function(d3) {
   var nodes = forceLayout.nodes(),
       i, n = nodes.length;
+  if (debugName) {
+    var debugIdx = nodes.findIndex(function(n){return n.name === debugName;}),
+        debugNode = nodes[debugIdx];
+    if (debugNode) {
+      console.log('debugIdx = ' + debugIdx + ', debugNode = ' + debugNode);
+      console.log('node ' + debugName + ' is at position (' +
+                  debugNode.x.toFixed(2) + ',' +
+                  debugNode.y.toFixed(2) + '), previous position (' +
+                  debugNode.px.toFixed(2) + ',' +
+                  debugNode.py.toFixed(2) + ')');
+    }
+  }
   uncollideNodes(d3);
   for (i = 1; i < n; i++) {
     attract(d3, nodes[i]);
@@ -3753,6 +3765,7 @@ var tickForceLayout = function(d3) {
 
 var uncollideNodes = function(d3) {
   var nodes = forceLayout.nodes(),
+      // TODO: sure we don't need to recalculate the quadtree every iteration?
       q = d3.geom.quadtree(nodes),
       i, n = nodes.length;
   for (i = 1; i < n; i++) {
@@ -3795,6 +3808,16 @@ var collideWithNeighborNodes = function(node1) {
         node2.y -= yOffset;
         node2.px = node2.x;
         node2.py = node2.y;
+        if (node1.name === debugName) {
+          console.log('decolliding with node ' + node2.name +
+                      '; px -= ' + xOffset.toFixed(2) +
+                      ', py -= ' + yOffset.toFixed(2));
+        } else if (node2.name === debugName) {
+          console.log('decolliding with node ' + node1.name +
+                      '; px += ' + xOffset.toFixed(2) +
+                      ', py += ' + yOffset.toFixed(2));
+        }
+
       }
     }
 
@@ -3817,11 +3840,21 @@ var collideWithRingBoundary = function(node) {
     overlap = radii[0] - distFromCenter + r;
     node.x += overlap * Math.cos(theta);
     node.y += overlap * Math.sin(theta);
+    if (node.name === debugName) {
+      console.log('decolliding with inner ring' +
+                  '; px -= ' + (overlap * Math.cos(theta)).toFixed(2) +
+                  ', py -= ' + (overlap * Math.sin(theta)).toFixed(2));
+    }
   } else if (distFromCenter + r > radii[1]) {
     // push in from outer ring
     overlap = distFromCenter - radii[1] + r;
     node.x -= overlap * Math.cos(theta);
     node.y -= overlap * Math.sin(theta);
+    if (node.name === debugName) {
+      console.log('decolliding with outer ring' +
+                  '; px += ' + (overlap * Math.cos(theta)).toFixed(2) +
+                  ', py += ' + (overlap * Math.sin(theta)).toFixed(2));
+    }
   }
 };
 
