@@ -3569,41 +3569,48 @@ var addRoleThenNext = function(d3) {
       center = modSystemSupportMap.center,
       node = modEvents.addNode(d3, center.x, center.y, text);
   node.type = 'role';
+  node.children = [];
   nodesByType.role = node;
-  node.fixed = 1;
   exports.nextStep(d3);
 };
 
-var addResponsibility = function(d3) {
-  var inputEl = d3.select('input[name=responsibility]').node(),
-      text = inputEl.value,
-      numResponsibilities = nodesByType.responsibility.length,
-      newNode,
+var targetRadius = function(nodeType) {
+  var ringNum = {
+    'responsibility': 1,
+    'need': 2,
+    'resource': 3
+  }[nodeType];
+  var ringRadii = modSystemSupportMap.ringRadii,
+      innerRingRadius = ringRadii[ringNum - 1],
+      outerRingRadius = ringRadii[ringNum];
+  return (innerRingRadius + outerRingRadius) / 2;
+};
+
+var addNode = function(d3, type, parent, text) {
+  var newNode,
+      numSiblings = nodesByType[type].length,
       center = modSystemSupportMap.center,
-      ringRadii = modSystemSupportMap.ringRadii,
-      distanceFromCenter = (ringRadii[0] + ringRadii[1]) / 2,
+      cx = center.x,
+      cy = center.y,
+      cr = targetRadius(type), // a.k.a. distance from center point
       dx, dy, x, y;
 
-  inputEl.value = '';
-  if (numResponsibilities < 2) {
-    // first responsibility goes right of center, second goes left
-    dx = distanceFromCenter;
-    x = numResponsibilities == 0 ? center.x + dx : center.x - dx;
-    y = center.y;
-    newNode = modEvents.addNode(d3, x, y, text);
+  if (numSiblings === 0) {
+    newNode = modEvents.addNode(d3, cx + cr, cy, text);
+  } else if (numSiblings === 1) {
+    newNode = modEvents.addNode(d3, cx - cr, cy, text);
   } else {
-    var positions = [];
-    numResponsibilities++;
-    for (var i=1; i < numResponsibilities; i++) {
-      var theta = -i * 2 * Math.PI / numResponsibilities;
-      dx = distanceFromCenter * Math.cos(theta);
-      dy = distanceFromCenter * Math.sin(theta);
-      x = center.x + dx;
-      y = center.y - dy; // remember that y is inverted in SVG
-      if (i == numResponsibilities - 1) {
+    numSiblings++;
+    for (var i=1; i < numSiblings; i++) {
+      var theta = -i * 2 * Math.PI / numSiblings;
+      dx = cr * Math.cos(theta);
+      dy = cr * Math.sin(theta);
+      x = cx + dx;
+      y = cy - dy; // remember that y is inverted in SVG
+      if (i == numSiblings - 1) {
         newNode = modEvents.addNode(d3, x, y, text);
       } else {
-        var node = nodesByType.responsibility[i];
+        var node = nodesByType[type][i];
         node.x = x;
         node.y = y;
       }
@@ -3611,7 +3618,7 @@ var addResponsibility = function(d3) {
   }
 
   var edge = {
-    source: nodesByType.role,
+    source: parent,
     target: newNode,
     style: 'solid',
     color: '#000000',
@@ -3619,314 +3626,35 @@ var addResponsibility = function(d3) {
     name: ''
   };
   modEvents.addEdge(d3, edge);
-  newNode.type = 'responsibility';
-  newNode.parent = nodesByType.role;
+  newNode.type = type;
+  newNode.parent = parent;
+  newNode.parent.children.push(newNode);
   newNode.children = [];
-  nodesByType.responsibility.push(newNode);
+  nodesByType[type].push(newNode);
+  return newNode;
+};
+
+var addResponsibility = function(d3) {
+  var inputEl = d3.select('input[name=responsibility]').node();
+  addNode(d3, 'responsibility', nodesByType.role, inputEl.value);
+  inputEl.value = '';
 };
 
 var addNeed = function(d3) {
   var inputEl = d3.select('input[name=need]').node(),
-      text = inputEl.value,
-      parentResponsibility = nodesByType.responsibility[curResponsibility],
-      numNeeds = nodesByType.need.length,
-      newNode,
-      center = modSystemSupportMap.center,
-      ringRadii = modSystemSupportMap.ringRadii,
-      distanceFromCenter = (ringRadii[1] + ringRadii[2]) / 2,
-      dx, dy, x, y;
-
+      parent = nodesByType.responsibility[curResponsibility];
+  addNode(d3, 'need', parent, inputEl.value);
   inputEl.value = '';
-  if (!numNeeds) {
-    // if no siblings yet, just drop it at theta = 0.
-    dx = distanceFromCenter;
-    x = numNeeds == 0 ? center.x + dx : center.x - dx;
-    y = center.y;
-    newNode = modEvents.addNode(d3, x, y, text);
-  } else {
-
-    var prevNeed = nodesByType.need[numNeeds - 1],
-        theta;
-    if (prevNeed.parent === parentResponsibility) {
-      // drop it at theta of last need plus a bit and force-layout.
-      var oldTheta = Math.atan2(prevNeed.y - center.y, prevNeed.x - center.x);
-      // FIXME: at some point we'll have to be more careful not to overlap. e.g.
-      // what if there are like 100 nodes in this ring already?
-      theta = Math.min(Math.PI * 31.9 / 32, oldTheta + Math.PI / 160);
-    } else {
-      theta = Math.atan2(parentResponsibility.y - center.y, parentResponsibility.x - center.x);
-    }
-    dx = distanceFromCenter * Math.cos(theta);
-    dy = distanceFromCenter * Math.sin(theta);
-    x = center.x + dx;
-    y = center.y + dy;
-    newNode = modEvents.addNode(d3, x, y, text);
-  }
-
-  var edge = {
-    source: parentResponsibility,
-    target: newNode,
-    style: 'solid',
-    color: '#000000',
-    thickness: 3,
-    name: ''
-  };
-  modEvents.addEdge(d3, edge);
-  newNode.type = 'need';
-  newNode.parent = parentResponsibility;
-  newNode.children = [];
-  newNode.parent.children.push(newNode);
-  nodesByType.need.push(newNode);
-  forceLayout.start();
 };
 
 var addResource = function(d3) {
-  // TODO: DRY up with addNeed()
   var inputEl = d3.select('input[name=resource]').node(),
-      text = inputEl.value,
       helpfulness = d3.select('input[name=helpfulness]:checked').node().value,
-      parentNeed = nodesByType.need[curNeed],
-      numResources = nodesByType.resource.length,
-      newNode,
-      center = modSystemSupportMap.center,
-      ringRadii = modSystemSupportMap.ringRadii,
-      distanceFromCenter = (ringRadii[1] + ringRadii[2]) / 2,
-      dx, dy, x, y;
-
+      parent = nodesByType.need[curNeed],
+      newNode = addNode(d3, 'resource', parent, inputEl.value);
   inputEl.value = '';
   d3.selectAll('input[name=helpfulness]').property('checked', false);
-  if (!numResources) {
-    // if no siblings yet, just drop it at theta = 0.
-    dx = distanceFromCenter;
-    x = numResources == 0 ? center.x + dx : center.x - dx;
-    y = center.y;
-    newNode = modEvents.addNode(d3, x, y, text);
-  } else {
-
-    var prevResource = nodesByType.resource[numResources - 1],
-        theta;
-    if (prevResource.parent === parentNeed) {
-      // drop it at theta of last resource plus a bit and force-layout.
-      var oldTheta = Math.atan2(prevResource.y - center.y, prevResource.x - center.x);
-      // FIXME: at some point we'll have to be more careful not to overlap. e.g.
-      // what if there are like 100 nodes in this ring already?
-      theta = Math.min(Math.PI * 31.9 / 32, oldTheta + Math.PI / 160);
-    } else {
-      theta = Math.atan2(parentNeed.y - center.y, parentNeed.x - center.x);
-    }
-    dx = distanceFromCenter * Math.cos(theta);
-    dy = distanceFromCenter * Math.sin(theta);
-    x = center.x + dx;
-    y = center.y + dy;
-    newNode = modEvents.addNode(d3, x, y, text);
-  }
-
-  var edge = {
-    source: parentNeed,
-    target: newNode,
-    style: 'solid',
-    color: '#000000',
-    thickness: 3,
-    name: ''
-  };
-  modEvents.addEdge(d3, edge);
-  newNode.type = 'resource';
-  newNode.parent = parentNeed;
-  newNode.children = [];
-  newNode.parent.children.push(newNode);
   newNode.helpfulness = helpfulness;
-  nodesByType.resource.push(newNode);
-  forceLayout.start();
-};
-
-var tickForceLayout = function(d3) {
-  var nodes = forceLayout.nodes(),
-      i, n = nodes.length;
-  if (debugName) {
-    var debugIdx = nodes.findIndex(function(n){return n.name === debugName;}),
-        debugNode = nodes[debugIdx];
-    if (debugNode) {
-      console.log('debugIdx = ' + debugIdx + ', debugNode = ' + debugNode);
-      console.log('node ' + debugName + ' is at position (' +
-                  debugNode.x.toFixed(2) + ',' +
-                  debugNode.y.toFixed(2) + '), previous position (' +
-                  debugNode.px.toFixed(2) + ',' +
-                  debugNode.py.toFixed(2) + ')');
-    }
-  }
-  uncollideNodes(d3);
-  for (i = 1; i < n; i++) {
-    attract(d3, nodes[i]);
-  }
-  if (drawForceLayoutTransition) {
-    renderPositions(d3);
-  }
-};
-
-var uncollideNodes = function(d3) {
-  var nodes = forceLayout.nodes(),
-      // TODO: sure we don't need to recalculate the quadtree every iteration?
-      q = d3.geom.quadtree(nodes),
-      i, n = nodes.length;
-  for (i = 1; i < n; i++) {
-    var node = nodes[i];
-    q.visit(collideWithNeighborNodes(node));
-    collideWithRingBoundary(node);
-    node.px = node.x;
-    node.py = node.y;
-  }
-};
-
-var collideWithNeighborNodes = function(node1) {
-  var nr = +node1.r + 16,
-      nx1 = node1.x - nr,
-      nx2 = node1.x + nr,
-      ny1 = node1.y - nr,
-      ny2 = node1.y + nr;
-
-  return function(quad, x1, y1, x2, y2) {
-    var node2 = quad.point;
-    if (node2 && (node2 !== node1)) {
-      var dx = node1.x - node2.x,
-          dy = node1.y - node2.y,
-          dist = Math.sqrt(dx * dx + dy * dy),
-          mindist = +node1.r + +node2.r,
-          overlap = mindist - dist;
-
-      if (overlap > 0) {
-        var halfOverlapProportion = overlap / dist * 0.5,
-            xOffset = dx * halfOverlapProportion,
-            yOffset = dy * halfOverlapProportion;
-
-        node1.x += xOffset;
-        node1.y += yOffset;
-        // Nullify momentum to prevent bouncing.
-        node1.px = node1.x;
-        node1.py = node1.y;
-
-        node2.x -= xOffset;
-        node2.y -= yOffset;
-        node2.px = node2.x;
-        node2.py = node2.y;
-        if (node1.name === debugName) {
-          console.log('decolliding with node ' + node2.name +
-                      '; px -= ' + xOffset.toFixed(2) +
-                      ', py -= ' + yOffset.toFixed(2));
-        } else if (node2.name === debugName) {
-          console.log('decolliding with node ' + node1.name +
-                      '; px += ' + xOffset.toFixed(2) +
-                      ', py += ' + yOffset.toFixed(2));
-        }
-
-      }
-    }
-
-    return x1 > nx2
-      || x2 < nx1
-      || y1 > ny2
-      || y2 < ny1;
-  };
-};
-
-var collideWithRingBoundary = function(node) {
-  var distFromCenter = distance(modSystemSupportMap.center, node),
-      theta = nodeTheta(node),
-      radii = boundingRadii(node),
-      r = +node.r, // TODO: what if the node isn't a circle?
-      overlap;
-
-  if (distFromCenter - r < radii[0]) {
-    // push out from inner ring
-    overlap = radii[0] - distFromCenter + r;
-    node.x += overlap * Math.cos(theta);
-    node.y += overlap * Math.sin(theta);
-    if (node.name === debugName) {
-      console.log('decolliding with inner ring' +
-                  '; px -= ' + (overlap * Math.cos(theta)).toFixed(2) +
-                  ', py -= ' + (overlap * Math.sin(theta)).toFixed(2));
-    }
-  } else if (distFromCenter + r > radii[1]) {
-    // push in from outer ring
-    overlap = distFromCenter - radii[1] + r;
-    node.x -= overlap * Math.cos(theta);
-    node.y -= overlap * Math.sin(theta);
-    if (node.name === debugName) {
-      console.log('decolliding with outer ring' +
-                  '; px += ' + (overlap * Math.cos(theta)).toFixed(2) +
-                  ', py += ' + (overlap * Math.sin(theta)).toFixed(2));
-    }
-  }
-};
-
-var attract = function(d3, node) {
-  if (!node.parent) return;
-  if (node.type === 'responsibility' && node.children.length === 0) return;
-  var parentTheta = nodeTheta(node.parent),
-      childrenThetas = node.children.map(nodeTheta),
-      avgChildTheta = d3.mean(childrenThetas) || parentTheta,
-      targetTheta = node.type === 'responsibility'
-        ? avgChildTheta
-        : (parentTheta + avgChildTheta) / 2,
-      targetRad = targetRadius(node),
-      targetPos = addPos(polar2rect(targetRad, targetTheta),
-                         modSystemSupportMap.center),
-      distToTarget = distance(targetPos, node),
-      maxMoveDist = Math.min(10, 0.9 * +node.r),
-      moveDist = Math.min(maxMoveDist, distToTarget);
-  if (node.name === debugName) {
-    console.log('attract - parentTheta - ' + parentTheta.toFixed(2));
-    console.log('attract - avgChildTheta - ' + (avgChildTheta * 180 / Math.PI).toFixed(2));
-    console.log('attract - targetTheta - ' + (targetTheta * 180 / Math.PI).toFixed(2));
-    console.log('attract - targetRad - ' + targetRad.toFixed(2));
-    console.log('attract - targetPos - {' + targetPos.x.toFixed(2) + ',' + targetPos.y.toFixed(2) + '}');
-    console.log('attract - distToTarget - ' + distToTarget.toFixed(2));
-    console.log('attract - maxMoveDist - ' + maxMoveDist.toFixed(2));
-    console.log('attract - moveDist - ' + moveDist.toFixed(2));
-    console.log('attract - node start position - {' + node.x.toFixed(2) + ',' + node.y.toFixed(2) + '}');
-  }
-  moveTowardPos(node, targetPos, moveDist);
-  if (node.name === debugName) {
-    console.log('attract - moveDist - ' + moveDist.toFixed(2));
-    console.log('attract - node finish position - {' + node.x.toFixed(2) + ',' + node.y.toFixed(2) + '}');
-  }
-};
-
-var attachButtonHandlers = function(d3) {
-  d3.select('#wizard button.next')
-    .on('click', function(){ exports.nextStep(d3); });
-  d3.select('#wizard button.back')
-    .on('click', function(){ exports.prevStep(d3); });
-  d3.select('#wizard button.finish')
-    .on('click', function(){ exports.hideWizard(d3); });
-  d3.select('#wizard button.add-role-next')
-    .on('click', function(){ addRoleThenNext(d3); });
-  d3.select('#wizard button.add-responsibility')
-    .on('click', function(){ addResponsibility(d3); });
-  d3.select('#wizard button.add-need')
-    .on('click', function(){ addNeed(d3); });
-  d3.select('#wizard button.add-resource')
-    .on('click', function(){ addResource(d3); });
-};
-
-var renderPositions = function(d3) {
-  modSvg.shapeGroups
-    .attr('transform', function(d,i) {
-      return 'translate(' + d.x + ',' + d.y + ')';
-    });
-  modUpdate.updateGraph(d3);
-};
-
-var setupForceLayout = function(d3) {
-  var w = modSvg.width,
-      h = modSvg.height,
-      nodes = modSvg.nodes;
-  forceLayout = d3.layout.force()
-    .gravity(0)
-    .charge(-30)
-    .nodes(nodes)
-    .size([w, h]);
-  forceLayout.on("tick",  function() { tickForceLayout(d3); });
-  forceLayout.on("end",  function() { renderPositions(d3); });
 };
 
 var highlightResponsibility = function(d3, responsibilityNumber) {
@@ -3953,69 +3681,27 @@ var highlightNeed = function(d3, needNumber) {
   modSelection.selectNode(d3node, node);
 };
 
-var angle = function(fromObj, toObj) {
-  var dx = toObj.x - fromObj.x,
-      dy = toObj.y - fromObj.y;
-  return Math.atan2(dy, dx);
-};
-
-var nodeTheta = function(node) {
-  return angle(modSystemSupportMap.center, node);
-};
-
-var polar2rect = function(r, theta) {
-  return {
-    x: r * Math.cos(theta),
-    y: r * Math.sin(theta)
-   };
-};
-
-var distance = function(obj1, obj2) {
-  var dx = obj2.x - obj1.x,
-      dy = obj2.y - obj1.y;
-  return Math.sqrt(dx * dx + dy * dy);
-};
-
-var addPos = function(obj1, obj2) {
-  return {
-    x: obj1.x + obj2.x,
-    y: obj1.y + obj2.y
-  };
-};
-
-var moveTowardPos = function(obj, targetPosition, moveDistance) {
-  var angl = angle(obj, targetPosition),
-      deltaPos = polar2rect(moveDistance, angl);
-  obj.x += deltaPos.x;
-  obj.y += deltaPos.y;
-  if (obj.name === debugName) {
-    console.log('moveTowardPos - angl = ' + (angl * 180 / Math.PI).toFixed(2));
-    console.log('moveTowardPos - deltaPos = {' + deltaPos.x.toFixed(2) + ',' + deltaPos.y.toFixed(2) + '}');
-  }
-};
-
-var boundingRadii = function(node) {
-  var ringNum = {
-    'responsibility': 1,
-    'need': 2,
-    'resource': 3
-  }[node.type];
-  var ringRadii = modSystemSupportMap.ringRadii,
-      innerRingRadius = ringRadii[ringNum - 1],
-      outerRingRadius = ringRadii[ringNum];
-  return [innerRingRadius, outerRingRadius];
-};
-
-var targetRadius = function(node) {
-  var radii = boundingRadii(node);
-  return (radii[0] + radii[1]) / 2;
+var attachButtonHandlers = function(d3) {
+  d3.select('#wizard button.next')
+    .on('click', function(){ exports.nextStep(d3); });
+  d3.select('#wizard button.back')
+    .on('click', function(){ exports.prevStep(d3); });
+  d3.select('#wizard button.finish')
+    .on('click', function(){ exports.hideWizard(d3); });
+  d3.select('#wizard button.add-role-next')
+    .on('click', function(){ addRoleThenNext(d3); });
+  d3.select('#wizard button.add-responsibility')
+    .on('click', function(){ addResponsibility(d3); });
+  d3.select('#wizard button.add-need')
+    .on('click', function(){ addNeed(d3); });
+  d3.select('#wizard button.add-resource')
+    .on('click', function(){ addResource(d3); });
 };
 
 exports.showWizard = function(d3) {
   document.getElementById('wizard').className = 'open';
   exports.showStep(d3);
   modUpdate.updateWindow(d3);
-  setupForceLayout(d3);
 };
 
 exports.hideWizard = function(d3) {
