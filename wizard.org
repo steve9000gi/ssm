@@ -447,3 +447,86 @@ CLOSED: [2016-03-20 Sun 19:43]
 CLOSED: [2016-03-20 Sun 19:43]
 ** TODO wizard and toolbox collide if window small enough
 See screenshot.
+* Force-balancing thoughts, Sun Mar 27
+Three forces that we need to balance:
+1. decollision against rings
+2. decollision against nodes
+3. attraction to parent and children
+
+I'm running into problems getting all of these to balance appropriately.
+Balancing 1 and 2 is possible, I just would rather not do it.
+It involves solving the quadratic equation and some fiddly bits.
+But the real problem is in balancing decollision forces with attractive forces.
+These seem to be a little different in nature.
+Decollision forces should bump nodes away from a collision.
+I've even been setting the position to be exactly what it should be.
+But that's problematic because I don't know how to balance it with attraction.
+
+Maybe what I could do is make decollision forces affect the previous position.
+The futher past the collision point we are,
+the farther beyond it we move the previous position.
+The attractive force moves a bounded distance towards the attraction point.
+If we move a bounded distance,
+that limits how far beyond a collision we can be on the next step.
+
+In fact, if we do the decollision force that way,
+I think that would avoid the problem of balancing the two decollision forces.
+If the node collided with both a ring and another node,
+each one would move the previous position in a certain direction.
+But there's no reason why both couldn't move the previous position.
+This would (maybe) be a natural movement away from both collisions.
+
+Let's try it and see what happens.
+* Layout thoughts, Sat Apr 2
+** Abandoning force-layout
+The force layout approach really isn't working out.
+I think that the approach just isn't a good fit for this problem.
+I'm still in search of the fundamental reason why,
+but I think it has something to do with one or more of:
+- collisions are hard to cast as forces
+- if they're not forces (e.g. static placement outside of collision),
+  then they are difficult to reconcile with other forces.
+- this problem is strongly region-based,
+  which seems to be an uncommon constraint on force layouts.
+** Basis for alternative layout: polar coordinates
+Let's agree to hold the radius constant for a given node type.
+The lone variable, then, for each node, is "what's my theta?"
+This simplifies the problem greatly.
+The downside?
+We have nowhere to go if there are too many nodes to fit into a ring.
+We can mitigate this by simply overlapping.
+Ideally, we could spread nodes around within the ring,
+putting some closer and some farther from the center.
+But getting this right without force layout would be really tricky.
+And getting it right _with_ force layout is also tricky.
+So we will need to support the degenerate case:
+if there are too many nodes to fit in a ring,
+give them equally spaced thetas and let them overlap.
+(Alternate idea: make overlaps ~equal, so that biggest nodes take more room.)
+** Simple approach: equal spacing for all rings
+I already use this approach for the responsibilities.
+We could space other nodes equally in all further rings.
+This allows for _skew_:
+where a significantly different number of edges
+point clockwise vs. counterclockwise.
+But that's not a terrible thing.
+** Better approach: balanced spacing
+This approach avoids skew.
+Major concept: a sibling group, i.e. all the children of a single parent.
+*** Case 1: enough space for all nodes in all rings
+If a sibling group has no children,
+- "link arms", i.e. remove any space between them
+- place the group such that the midpoint-theta is equal to parent's theta
+- if that's not possible, place them as close to that as possible,
+  and move the parent to the midpoint-theta if possible.
+- in some cases, might need to ask a neighboring cousin group to move over and make room,
+  and that might need to happen recursively.
+  When it does happen, remember to move parents accordingly, if possible.
+- At some point, we'll be out of room and need to bump to case 2.
+If a sibling group has children, not really sure, but I think they're not really
+a "group" anymore and don't move together.
+*** Case 2: not enough space; we'll consider this later
+- Just place nodes at equal spacing, and move parent nodes to their spots (if possible).
+** Conclusion
+Let's go with the simplest approach for now.
+If we have time, we'll do the balanced approach.
