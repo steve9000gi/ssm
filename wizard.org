@@ -413,7 +413,8 @@ But it's harder to position reasonably.
 ** TODO [design] should we have different colors for resources depending on helpfulness?
 ** TODO [design] should we have different colors or shapes for different types of nodes?
 ** TODO [design] when placing a node, should we only move nodes if (all?) others were placed by wizard?
-** TODO add all steps to DOM, and show/hide them at each step
+** DONE add all steps to DOM, and show/hide them at each step
+CLOSED: [2016-04-05 Tue 21:24]
 i.e. don't set innerHTML each time.
 This will likely clean up event handling, too.
 ** TODO zoom out map when wizard opened, so that the full circles are shown
