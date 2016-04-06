@@ -3569,12 +3569,14 @@ var attachButtonHandlers = function(d3) {
 
 exports.showWizard = function(d3) {
   document.getElementById('wizard').className = 'open';
+  document.getElementById('toolbox').style.visibility = 'hidden';
   exports.showStep(d3);
   modUpdate.updateWindow(d3);
 };
 
 exports.hideWizard = function(d3) {
   document.getElementById('wizard').className = 'closed';
+  document.getElementById('toolbox').style.visibility = 'visible';
   modUpdate.updateWindow(d3);
 };
 
