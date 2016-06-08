@@ -5,12 +5,15 @@
                  [com.stuartsierra/component "0.3.1"]
                  [reloaded.repl "0.2.1"]
                  [http-kit "2.1.19"]
-                 [compojure "1.4.0"]
+                 [compojure "1.5.0"
+                  :exclusions [commons-codec]]
                  [metosin/ring-http-response "0.6.5"]
-                 [ring-middleware-format "0.7.0"]
+                 [ring-middleware-format "0.7.0"
+                  :exclusions [org.clojure/tools.reader]]
                  [ring-cors "0.1.7"]
                  [com.cemerick/friend "0.2.1"
-                  :exclusions [org.clojure/core.cache]]
+                  :exclusions [org.clojure/core.cache
+                               commons-codec]]
                  [org.postgresql/postgresql "9.4.1208"]
                  [org.clojure/java.jdbc "0.4.2"]
                  [com.jolbox/bonecp "0.8.0.RELEASE"]
