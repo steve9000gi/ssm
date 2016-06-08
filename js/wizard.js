@@ -189,20 +189,20 @@ exports.prevStep = function(d3) {
 
 exports.nextStep = function(d3) {
   // TODO: clean this up. State machine?
-  if (step === 5 && ++curResponsibility !== nodesByType.responsibility.length) {  // adding needs
+  if (step === 6 && ++curResponsibility !== nodesByType.responsibility.length) {  // adding needs
     highlightResponsibility(d3, curResponsibility);
     return;
   }
-  if (step === 6 && ++curNeed !== nodesByType.need.length) {
+  if (step === 7 && ++curNeed !== nodesByType.need.length) {
     highlightNeed(d3, curNeed);
     return;
   }
   step += 1;
   exports.showStep(d3);
-  if (step === 5) {
+  if (step === 6) {
     curResponsibility = 0;
     highlightResponsibility(d3, curResponsibility);
-  } else if (step === 6) {
+  } else if (step === 7) {
     curNeed = 0;
     highlightNeed(d3, curNeed);
   }
