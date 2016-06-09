@@ -3551,19 +3551,19 @@ var highlightNeed = function(d3, needNumber) {
 };
 
 var attachButtonHandlers = function(d3) {
-  d3.select('#wizard button.next')
+  d3.selectAll('#wizard button.next')
     .on('click', function(){ exports.nextStep(d3); });
-  d3.select('#wizard button.back')
+  d3.selectAll('#wizard button.back')
     .on('click', function(){ exports.prevStep(d3); });
-  d3.select('#wizard button.finish')
+  d3.selectAll('#wizard button.finish')
     .on('click', function(){ exports.hideWizard(d3); });
-  d3.select('#wizard button.add-role-next')
+  d3.selectAll('#wizard button.add-role-next')
     .on('click', function(){ addRoleThenNext(d3); });
-  d3.select('#wizard button.add-responsibility')
+  d3.selectAll('#wizard button.add-responsibility')
     .on('click', function(){ addResponsibility(d3); });
-  d3.select('#wizard button.add-need')
+  d3.selectAll('#wizard button.add-need')
     .on('click', function(){ addNeed(d3); });
-  d3.select('#wizard button.add-resource')
+  d3.selectAll('#wizard button.add-resource')
     .on('click', function(){ addResource(d3); });
 };
 
