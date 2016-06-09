@@ -9,6 +9,19 @@ The goals of the development workflow are:
 
 We will discuss each topic in turn.
 
+## Quick Start
+
+Prerequisites (see following sections for more details):
+
+1. Install Leiningen.
+2. Install the `lein simpleton` plugin in your Leiningen profile.
+3. Install the `watchify` npm package (globally).
+4. Install PostgreSQL and initialize a database at `backend/db`.
+5. Create the schema in the database, and point `backend/project.clj` at it.
+6. bash, the Bourne-again shell
+
+Then, you can just run `launch.js`.
+
 ## Isolation of persistent changes
 
 As a developer, you need to be confident that your development work will not
