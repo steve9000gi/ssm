@@ -393,61 +393,81 @@ No revisions
 <p>If you ever want to see me again, even for a map that you&rsquo;ve already finished, you can! Just click on the "Options" menu in the toolbox.</p>
 <button>Finish</button>
 * Tasks
-** TODO [design] think about wizard workflow for an already-existent map
+** Design questions
+*** DONE should a need with the same name be the same node?
+CLOSED: [2016-06-09 Thu 20:07]
+e.g. time in my example.
+I feel like "yes" is the better answer.
+But it's harder to position reasonably.
+I'm going with no for now. (2016-06-09)
+*** DONE should we have different colors for resources depending on helpfulness?
+CLOSED: [2016-06-09 Thu 20:11]
+I'm gonna say yes, at least as a nice-to-have.
+*** DONE should we have different colors or shapes for different types of nodes?
+CLOSED: [2016-06-09 Thu 20:12]
+Gonna say no for now, though it shouldn't be hard to add later.
+*** TODO think about wizard workflow for an already-existent map
 One thing in particular bothers me: on steps with multiple nodes added, the
 resume feels weird as-is. Like, say we want to edit the text of a node on the
 map, but only with the wizard. How do we get to, say, resource #8? Do we have to
 click next on the resource step 7 times, or what?
-
 A potentially better way would be to list all the nodes added in a given step.
 The problem with that is screen real-estate.
-** TODO [design] what happens to the wizard at smaller screen resolutions?
+*** TODO when placing a node, should we only move nodes if (all?) others were placed by wizard?
+*** TODO what happens to the wizard at smaller screen resolutions?
 Should probably at least say overflow: scroll for the wizard.
-** TODO [design] prettify things with better styles
-One thing I definitely want is for the back and next buttons to show up at the
-same place every time.
-** TODO [design] should a need with the same name be the same node?
-e.g. time in my example.
-I feel like "yes" is the better answer.
-But it's harder to position reasonably.
-** TODO [design] should we have different colors for resources depending on helpfulness?
-** TODO [design] should we have different colors or shapes for different types of nodes?
-** TODO [design] when placing a node, should we only move nodes if (all?) others were placed by wizard?
-** DONE add all steps to DOM, and show/hide them at each step
+** Done before hiatus
+*** DONE add all steps to DOM, and show/hide them at each step
 CLOSED: [2016-04-05 Tue 21:24]
 i.e. don't set innerHTML each time.
 This will likely clean up event handling, too.
-** TODO zoom out map when wizard opened, so that the full circles are shown
-** TODO some things drawn wrong when wizard opened
+*** DONE highlight wizard-active node in chart
+CLOSED: [2016-03-20 Sun 19:41]
+*** DONE statically place first role
+CLOSED: [2016-02-28 Sun 15:16]
+*** DONE statically place first responsibility
+CLOSED: [2016-02-28 Sun 22:05]
+*** DONE place other responsibilities, moving earlier ones if necessary
+CLOSED: [2016-02-28 Sun 23:21]
+*** DONE place needs near their responsibility
+CLOSED: [2016-03-20 Sun 19:42]
+*** DONE depending on the node uniqueness question (see above), might need to position near two or more parents
+CLOSED: [2016-06-09 Thu 20:06]
+*** DONE reposition previously placed needs to make room for new one
+CLOSED: [2016-03-20 Sun 19:43]
+*** DONE similarly, position resources
+CLOSED: [2016-03-20 Sun 19:43]
+** Essentials
+*** TODO close button for wizard (on all steps)
+*** TODO update text according to Word doc
+*** TODO functional back button to revise anything
+Probably best to just do an actual state machine and be done with it.
+*** TODO save wizard-created info on backend
+This includes whether map was created by the wizard.
+*** TODO deploy
+** Nice-to-haves
+*** TODO enable wizard for maps with preexisting info
+This would require some design to figure out how the wizard works with preexisting info.
+Would it move nodes that it didn't place?
+Would it refuse to operate on maps that weren't well-formed?
+(And if so, how would the error show up in the UI?)
+This would also need the wizard added to the options menu.
+*** TODO prettify things with better styles
+One thing I definitely want is for the back and next buttons to show up at the
+same place every time.
+*** TODO zoom out map when wizard opened, so that the full circles are shown
+*** TODO some things drawn wrong when wizard opened
 - This includes captions for nodes.
 - Probably includes some other things too--worth testing.
 - I also ran into some issue with dragging nodes at the bottom (right) of the
 screen. Middle click started dragging, left click finished it. But left drag
 didn't work.
-** TODO save wizard state as part of map state
-** DONE highlight wizard-active node in chart
-CLOSED: [2016-03-20 Sun 19:41]
-** TODO add wizard to options menu
-** TODO at each step, pull content from existing map if it exists
-** DONE statically place first role
-CLOSED: [2016-02-28 Sun 15:16]
-** DONE statically place first responsibility
-CLOSED: [2016-02-28 Sun 22:05]
-** DONE place other responsibilities, moving earlier ones if necessary
-CLOSED: [2016-02-28 Sun 23:21]
-** TODO mark which nodes were placed by the wizard
-or maybe not, depending on design decision above...
-** TODO save and retrieve the placed-by-wizard attribute for each node
-or maybe not, depending on design decision above...
-** DONE place needs near their responsibility
-CLOSED: [2016-03-20 Sun 19:42]
-** TODO depending on the node uniqueness question (see above), might need to position near two or more parents
-** DONE reposition previously placed needs to make room for new one
-CLOSED: [2016-03-20 Sun 19:43]
-** DONE similarly, position resources
-CLOSED: [2016-03-20 Sun 19:43]
-** TODO wizard and toolbox collide if window small enough
+*** TODO wizard and toolbox collide if window small enough
 See screenshot.
+*** TODO color resources based on helpfulness
+*** TODO edit child nodes of a parent all at once (10 hours)
+*** TODO enable swapping out of text (3-5 hours)
+*** TODO drop-down completion of common answers at each step
 * Force-balancing thoughts, Sun Mar 27
 Three forces that we need to balance:
 1. decollision against rings
