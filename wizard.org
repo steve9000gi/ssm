@@ -45,14 +45,17 @@ CLOSED: [2016-03-20 Sun 19:43]
 CLOSED: [2016-03-20 Sun 19:43]
 ** Essentials
 *** TODO close button for wizard (on all steps)
-*** TODO update text according to Word doc
+*** DONE update text according to Word doc
+CLOSED: [2016-06-10 Fri 21:44]
 *** TODO functional back button to revise anything
 Probably best to just do an actual state machine and be done with it.
 *** TODO save wizard-created info on backend
 This includes whether map was created by the wizard.
 Also, which step (and substep) the wizard is currently on, if any.
 Should probably auto-save after each substep.
-*** TODO deploy
+*** TODO populate span#step5-role-text element
+*** TODO color resources based on helpfulness
+*** TODO deploy (goal: by Fri June 24)
 ** Nice-to-haves
 *** TODO enable wizard for maps with preexisting info
 This would require some design to figure out how the wizard works with preexisting info.
@@ -72,10 +75,19 @@ screen. Middle click started dragging, left click finished it. But left drag
 didn't work.
 *** TODO wizard and toolbox collide if window small enough
 See screenshot.
-*** TODO color resources based on helpfulness
 *** TODO edit child nodes of a parent all at once (10 hours)
 *** TODO enable swapping out of text (3-5 hours)
 *** TODO drop-down completion of common answers at each step
+Example markup:
+<input type="text" placeholder="enter a fruit" list="dl" />
+<datalist id="dl"">
+  <option value="apple"></option>
+  <option value="banana"></option>
+  <option value="strawberry"></option>
+  <option value="cherry"></option>
+  <option value="pear"></option>
+  <option value="kiwi"></option>
+</datalist>
 * Notes from call with Steve and Kristen, Friday, June 10, 2016
 ** Wizard only applicable if started with blank state
 Don't have to handle preexisting maps, at least for now.

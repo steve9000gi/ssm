@@ -8,16 +8,13 @@
   <body>
     <div id="wizard">
       <div id="wizard-step1">
-        <h1>Welcome to the SSM wizard</h1>
-        <p>Hi, I&rsquo;m the SSM wizard. I&rsquo;m here to help. I will guide you through the process of creating a system support map. When you answer my questions, I will create your map for you.</p>
-        <p>What is a system support map, you ask? It&rsquo;s a way of visualizing a system of support. For example, a map for a parent of a special needs child would include their responsibilities for their child, the needs they have to fulfill those responsibilities, and the resources that help them meet those needs.</p>
-        <p>Note: it can take a while to create a map, even with my help! You should expect to take between 30 and 60 minutes for this. If you need to take a break, you can save your work and come back to it later.</p>
-        <p>Sound complicated? Don&rsquo;t worry. I&rsquo;ll guide you through the process, step by step.</p>
+        <h1>Welcome to the System Support Map (SSM) wizard</h1>
+        <p>A System Support Map (SSM) is a way of visualizing the different kinds of support you might use to work on a complicated challenge.</p>
+        <p>For example, a map for a mother of a child with special healthcare needs would include her responsibilities to her child, what she needs to do to fulfill those responsibilities, and the resources that help her meet those needs. Check the sidebar for some more examples of systems mapped by others.</p>
+        <p>This wizard will ask you questions and then build the System Support Map for you based on your answers.</p>
         <p>Hit the &ldquo;Next&rdquo; button to continue.</p>
         <button class="next">Next</button>
-      </div>
 
-      <div id="wizard-step2">
         <aside>
           <h3>Examples of systems mapped by SSM</h3>
           <ul>
@@ -32,46 +29,47 @@
             <li>And, efforts to reconnect with one’s landscape/environment.</li>
           </ul>
         </aside>
-        <h1>Prerequisites</h1>
-        <p>Before we begin, you should have a clear idea of the system you want to describe.</p>
-        <p>This is important! If you don&rsquo;t have a solid understanding of the system, this exercise will most likely be unclear, unhelpful, overwhelming, and even frustrating.</p>
-        <p>If you have multiple roles that you want to study, pick one. Each map is for one role, and one role only. You can come back and fill out other maps for other roles later, if you want.</p>
-        <p>If you need inspiration, check the sidebar for some examples of systems mapped by people.</p>
+      </div>
+
+      <div id="wizard-step2">
+        <h1>Overview</h1>
+        <p>Here&rsquo;s a quick overview of the process.</p>
+        <p>Notice the rings in the chart below and the labels for each ring.</p>
+        <p>You will build your SSM step-by-step, starting inside the innermost ring and working your way outwards.</p>
+        <p>The controls in the lower left corner may be used to build a System Support Map directly, but this wizard is intended to do the building for you.</p>
         <p>Hit the &ldquo;Next&rdquo; button to continue.</p>
         <button class="back">Back</button>
         <button class="next">Next</button>
       </div>
 
       <div id="wizard-step3">
-        <h1>Overview</h1>
-        <p>What will we be doing? Here&rsquo;s a quick overview of the process.</p>
-        <p>Take a look at the chart below. Notice the concentric rings, and the labels for each ring.</p>
-        <p>We&rsquo;re going to be building your system support map step-by-step, starting at the innermost ring and working our way outwards.</p>
-        <p>Intimidated by the complicated-looking controls at the bottom left? Don&rsquo;t worry. You don&rsquo;t have to know anything about them. Those controls are for advanced users who want to create their map themselves. You won&rsquo;t need to use them if you stick with me.</p>
+        <h1>Prerequisites</h1>
+        <p>Before starting to build your SSM, you should have a clear idea of the challenge you are attempting to map and your role in it.</p>
+        <p>This is important! If you don&rsquo;t have a solid understanding of your role in this challenge, this exercise could be unclear and unhelpful.</p>
         <p>Hit the &ldquo;Next&rdquo; button to continue.</p>
         <button class="back">Back</button>
         <button class="next">Next</button>
       </div>
 
       <div id="wizard-step4">
-        <h1>Identifying your role</h1>
-        <p>What role do you play in this system? Are you a patient, a family member, a teacher, an organizational leader, a legislator, a community member, or what?</p>
-        <p>Remember, each map is intended to describe one role. If you have multiple roles you would like to map, please pick one. You can study the other ones later, after you finish the map for this one. I&rsquo;ll be ready for you.</p>
+        <h1>Ring #1: Identifying Your Role</h1>
+        <p>What role do you play in the system producing this challenge? Some possible roles are: patient, family member, teacher, organizational leader, legislator, or community member.</p>
+        <p>If you have multiple roles that you want to study, pick one. Each map is for one role, and one role only. You can come back and fill out other maps for other roles later, if you want.</p>
         <label>My role is:
           <input type="text" name="role" />
         </label>
-        <p>When you hit &ldquo;Next&rdquo;, pay attention to the chart below. I will create your role in the chart for you. You&rsquo;re welcome.</p>
+        <p>When you hit &ldquo;Next,&rdquo; your role will be inserted into the chart below for you.</p>
         <p>Hit the &ldquo;Next&rdquo; button to continue.</p>
         <button class="back">Back</button>
         <button class="add-role-next">Next</button>
       </div>
 
       <div id="wizard-step5">
-        <aside>Pro-tip: some people find it useful to describe objectives or goals instead of responsibilities in the second ring. You can do that if you want. Just remember that you did, so that you&rsquo;re not confused when I talk about responsibilities in the next steps!</aside>
-        <h1>Responsibilities</h1>
-        <p>Now let&rsquo;s look at the second ring, which will contain the responsibilities that you have in this role.</p>
-        <p>So, in your role as <span id="wizard_role_text">_____</span>, what do you see as your main responsibilities? Identify the most important 4&ndash;8 responsibilities, and add them here.</p>
-        <p>When you click the &ldquo;Add&rdquo; button below, I will add it to the chart below. Then you can add another responsibility, or click the &ldquo;Next&rdquo; button to go to the next step.</p>
+        <aside>Tip: For some people it makes more sense to describe objectives or goals instead of responsibilities in the second ring.</aside>
+        <h1>Ring #2: Responsibilities</h1>
+        <p>The second ring contains the responsibilities that you have in your role as a(n) <span id="step5-role-text"></span>.</p>
+        <p>Identify the four to eight most important responsibilities and add them here.</p>
+        <p>When you click the &ldquo;Add&rdquo; button below, the responsibilities you&rsquo;ve entered will be added to the chart below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to go to the next step.</p>
         <label>I have a responsibility to:
           <input type="text" name="responsibility" />
         </label>
@@ -82,11 +80,9 @@
       </div>
 
       <div id="wizard-step6">
-        <h1>Needs</h1>
-        <p>The third ring is for needs. What do you need to meet each responsibility? Think about this as a recipe. To meet one of these responsibilities, what ingredients would you need? Common responses include time, money, reimbursement, buy-in from my organization, information, etc. Please be creative here! It helps if this list is complete. Also consider internal needs, like patience, empathy, energy, creativity, etc.</p>
-        <p>Note that these should be general needs. I don&rsquo;t need to know that you need to do laundry tomorrow!</p>
-        <p>Here is an example for a parent of a child with special health care needs supporting the physical health of their child: a doctor who &ldquo;gets&rdquo; us (my daughter and our family) and who is open in the evenings or weekends, child care for my other kids, transportation, and money for the copayment.</p>
-        <p>I&rsquo;ll ask about each responsibility in turn, starting with the first one you told me about.</p>
+        <h1>Ring #3: Needs</h1>
+        <p>The third ring identifies exactly what is needed to meet each responsibility. Common responses include time, money, reimbursement, buy-in from my organization, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, energy, and creativity.</p>
+        <p>You&rsquo;ll be asked about each responsibility in turn, starting with the first one you entered.</p>
         <h3>Responsibility <span id="wizard_current_responsibility_number">_</span> of <span id="wizard_responsibility_count">_</span>: <span id="wizard_current_responsibility_text">____</span></h3>
         <label>To fulfill this responsibility, I need:
           <input type="text" name="need" />
@@ -98,10 +94,10 @@
       </div>
 
       <div id="wizard-step7">
-        <h1>Resources</h1>
-        <p>The next step is to think about the needs you listed. Are there any specific resources that you have tried (whether or not they have helped you) to get that need met? What supports you? If needs were ingredients in a recipe, resources might include things like a favorite recipe, particular brands of an ingredient, a store that sells many ingredients on your list, etc. Resources for your map might include websites, brochures, training programs and classes, organizations in your community, providers, books you read to build a skill in yourself (e.g., communication skills, mindfulness, the ability to relax).</p>
-        <p>I also want to know about your experience with each resource. Did it help you? Why or why not&mdash;what about the resource worked or didn’t work? I will color-code your resources based on their helpfulness to you.</p>
-        <p>I&rsquo;ll ask about each need in turn, starting with the first one you told me about.</p>
+        <h1>Ring #4: Resources</h1>
+        <p>The next ring identifies the resources you use to meet your needs from Ring #3. Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you tried (whether or not they have helped you) to get that need met? Resources for your map might include websites, brochures, training programs, buses, providers, a case manager, organizations in your community, or books you read to build a skill in yourself.</p>
+        <p>The resources on Ring #4 will be color-coded to indicate their level of helpfulness.</p>
+        <p>You&rsquo;ll be asked about each need in turn, starting with the first one you entered.</p>
         <h3>Need <span id="wizard_current_need_number">_</span> of <span id="wizard_need_count">_</span>: <span id="wizard_current_need_text">____</span></h3>
         <label>A resources that will help meet this need is:
           <input type="text" name="resource" />
@@ -125,15 +121,20 @@
         <br/>
         <button class="back">Back</button>
         <button class="next">Next</button>
+        <aside>
+          Tip: If needs were ingredients in a recipe, resources might include things like a favorite recipe, particular brands of an ingredient, or a store that sells many ingredients on your list.
+        </aside>
       </div>
 
       <div id="wizard-step8">
-        <h1>Review</h1>
-        <p>We&rsquo;re done! When you click the &ldquo;Finish&rdquo; button, I&rsquo;ll go away and let you view or print your fancy new map.</p>
-        <p>If you&rsquo;re feeling ambitious, you can try to add wishes on the outside of the rings, connecting them with whatever makes sense.</p>
-        <p>If you ever want to see me again, even for a map that you&rsquo;ve already finished, you can! Just click on the "Options" menu in the toolbox.</p>
+        <h1>Review and Next Steps</h1>
+        <p>You&rsquo;re done! When you click the &ldquo;Finish&rdquo; button, this guide will go away and you can view or print your map.</p>
         <button class="back">Back</button>
         <button class="finish">Finish</button>
+        <aside>
+          <h5>Wondering what to do next?</h5>
+          <p>Now that you have a clear picture of the challenge and your role in it, many people find it helpful to use the map to think about how they could work on the challenge. What could you do to change your role, responsibilities, resources, and needs for the better? You can add these wishes on the outside of the rings, connecting them with the responsibilities, needs, or resources they would change.</p>
+        </aside>
       </div>
     </div>
 
