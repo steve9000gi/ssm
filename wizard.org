@@ -551,3 +551,24 @@ a "group" anymore and don't move together.
 ** Conclusion
 Let's go with the simplest approach for now.
 If we have time, we'll do the balanced approach.
+* Notes from call with Steve and Kristen, Friday, June 10, 2016
+** Wizard only applicable if started with blank state
+Don't have to handle preexisting maps, at least for now.
+However, be sure to allow users to go away and resume the wizard later.
+** Nice-to-have feature for resource placement
+For each responsibility R_i:
+  - get N_i*, the set of all needs under R_i
+  - present multiple text inputs for user for new resources
+  - for each text input, retain helpfulness radios
+  - also add a select box for which need to associate with
+No need to implement this yet.
+Before I do, open questions include:
+- UI might be overfull, with resource text, helpfulness level, associated need,
+  and reason, for each resource under a grandparent responsibility...
+** Adding wishes
+- For now, add a step for wishes.
+- Always give exactly 3 options for wishes.
+- For each wish, include a text window and a two-level dropdown for what to
+  associate with (e.g. "resource" -> "babysitting").
+- Also include an optional text area for why this is here.
+** We'll call again Monday to discuss priorities
