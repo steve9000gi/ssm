@@ -47,8 +47,8 @@ CLOSED: [2016-03-20 Sun 19:43]
 *** TODO close button for wizard (on all steps)
 *** DONE update text according to Word doc
 CLOSED: [2016-06-10 Fri 21:44]
-*** TODO functional back button to revise anything
-Probably best to just do an actual state machine and be done with it.
+*** DONE functional back button to revise anything
+CLOSED: [2016-06-11 Sat 21:26]
 *** TODO save wizard-created info on backend
 This includes whether map was created by the wizard.
 Also, which step (and substep) the wizard is currently on, if any.

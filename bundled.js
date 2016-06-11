@@ -3526,7 +3526,12 @@ var addResource = function(d3) {
   newNode.helpfulness = helpfulness;
 };
 
+// TODO: gracefully handle when there are no responsibilities
 var highlightResponsibility = function(d3, responsibilityNumber) {
+  if (responsibilityNumber === null) {
+    modSelection.removeSelectFromNode();
+    return;
+  }
   var node = nodesByType.responsibility[responsibilityNumber],
       d3node = d3.select('#shapeG' + node.id);
   d3.select('#wizard_responsibility_count')
@@ -3538,7 +3543,12 @@ var highlightResponsibility = function(d3, responsibilityNumber) {
   modSelection.selectNode(d3node, node);
 };
 
+// TODO: gracefully handle when there are no needs
 var highlightNeed = function(d3, needNumber) {
+  if (needNumber === null) {
+    modSelection.removeSelectFromNode();
+    return;
+  }
   var node = nodesByType.need[needNumber],
       d3node = d3.select('#shapeG' + node.id);
   d3.select('#wizard_need_count')
@@ -3597,31 +3607,83 @@ exports.showStep = function(d3) {
   attachButtonHandlers(d3);
 };
 
-exports.prevStep = function(d3) {
-  // TODO: implement reverse logic as nextStep()
-  step -= 1;
-  exports.showStep(d3);
+var steps = {
+  // Note: uninteresting steps are omitted here.
+  6: {
+    enter: function(d3, direction) {
+      curResponsibility =
+        (direction === 1 ? 0 : nodesByType.responsibility.length - 1);
+      highlightResponsibility(d3, curResponsibility);
+    },
+    exit: function(d3) {
+      highlightResponsibility(d3, null);
+    },
+    subStepAdvance: function(d3) {
+      if (++curResponsibility !== nodesByType.responsibility.length) {
+        highlightResponsibility(d3, curResponsibility);
+        return true;
+      }
+      return false;
+    },
+    subStepRetreat: function(d3) {
+      if (--curResponsibility >= 0) {
+        highlightResponsibility(d3, curResponsibility);
+        return true;
+      }
+      return false;
+    }
+  },
+
+  7: {
+    enter: function(d3, direction) {
+      curNeed = (direction === 1 ? 0 : nodesByType.need.length - 1);
+      highlightNeed(d3, curNeed);
+    },
+    exit: function(d3) {
+      highlightNeed(d3, null);
+    },
+    subStepAdvance: function(d3) {
+      if (++curNeed !== nodesByType.need.length) {
+        highlightNeed(d3, curNeed);
+        return true;
+      }
+      return false;
+    },
+    subStepRetreat: function(d3) {
+      if (--curNeed >= 0) {
+        highlightNeed(d3, curNeed);
+        return true;
+      }
+      return false;
+    }
+  }
 };
 
 exports.nextStep = function(d3) {
-  // TODO: clean this up. State machine?
-  if (step === 6 && ++curResponsibility !== nodesByType.responsibility.length) {  // adding needs
-    highlightResponsibility(d3, curResponsibility);
+  var stepObj = steps[step] || {};
+  // TODO: persist map state
+  if (stepObj.subStepAdvance && stepObj.subStepAdvance(d3)) {
+    // The current step isn't ready to move on to the next step.
     return;
   }
-  if (step === 7 && ++curNeed !== nodesByType.need.length) {
-    highlightNeed(d3, curNeed);
-    return;
-  }
-  step += 1;
+  stepObj.exit && stepObj.exit(d3);
+  step++;
+  stepObj = steps[step] || {};
+  stepObj.enter && stepObj.enter(d3, 1);
   exports.showStep(d3);
-  if (step === 6) {
-    curResponsibility = 0;
-    highlightResponsibility(d3, curResponsibility);
-  } else if (step === 7) {
-    curNeed = 0;
-    highlightNeed(d3, curNeed);
+};
+
+exports.prevStep = function(d3) {
+  var stepObj = steps[step] || {};
+  if (stepObj.subStepRetreat && stepObj.subStepRetreat(d3)) {
+    // The current step isn't ready to move on to the previous step.
+    return;
   }
+  stepObj.exit && stepObj.exit(d3);
+  step--;
+  stepObj = steps[step] || {};
+  stepObj.enter && stepObj.enter(d3, -1);
+  exports.showStep(d3);
 };
 
 },{"./events.js":9,"./selection.js":21,"./svg.js":23,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],31:[function(require,module,exports){
