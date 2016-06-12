@@ -3440,6 +3440,7 @@ var addRoleThenNext = function(d3) {
   node.type = 'role';
   node.children = [];
   nodesByType.role = node;
+  d3.select('#wizard_role_text').text(text);
   exports.nextStep(d3);
 };
 

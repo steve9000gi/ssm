@@ -53,7 +53,8 @@ CLOSED: [2016-06-11 Sat 21:26]
 This includes whether map was created by the wizard.
 Also, which step (and substep) the wizard is currently on, if any.
 Should probably auto-save after each substep.
-*** TODO populate span#step5-role-text element
+*** DONE populate span#wizard_role_text element
+CLOSED: [2016-06-11 Sat 21:35]
 *** TODO color resources based on helpfulness
 *** TODO deploy (goal: by Fri June 24)
 ** Nice-to-haves
