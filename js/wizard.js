@@ -111,10 +111,12 @@ var addResource = function(d3) {
   newNode.helpfulness = helpfulness;
 };
 
-// TODO: gracefully handle when there are no responsibilities
 var highlightResponsibility = function(d3, responsibilityNumber) {
   if (responsibilityNumber === null) {
     modSelection.removeSelectFromNode();
+    return;
+  }
+  if (responsibilityNumber >= nodesByType.responsibility.length) {
     return;
   }
   var node = nodesByType.responsibility[responsibilityNumber],
@@ -128,10 +130,12 @@ var highlightResponsibility = function(d3, responsibilityNumber) {
   modSelection.selectNode(d3node, node);
 };
 
-// TODO: gracefully handle when there are no needs
 var highlightNeed = function(d3, needNumber) {
   if (needNumber === null) {
     modSelection.removeSelectFromNode();
+    return;
+  }
+  if (needNumber >= nodesByType.need.length) {
     return;
   }
   var node = nodesByType.need[needNumber],
