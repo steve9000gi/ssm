@@ -289,54 +289,62 @@ exports.loadMapFromLocation = function(d3) {
   }
 };
 
-exports.setupWriteMapToDatabase = function(d3) {
-  d3.select("#write-to-db").on("click", function() {
-    modAuth.afterAuthentication(d3, function() {
-      var m  = window.location.hash.match(/\/map\/(\d+)/);
-      if (m) {
-        // update existing map
-        var id = m[1];
-        d3.xhr(modBackend.backendBase + '/map/' + id)
-          .header('Content-Type', 'application/json')
-          .on('beforesend', function(request) {
-            request.withCredentials = true;
-          })
-          .on('error', function(req) {
-            var resp = req.response && JSON.parse(req.response);
-            if (resp
-                && resp.message == 'map not owned by authenticated user') {
-              alert("Can't save: you have read-only access to this map.");
-            } else {
-              console.error('Failed to save map. Request was:', req);
-              alert('Failed to save map # ' + id);
-            }
-          })
-          .on('load', function(data) {
+exports.writeMapToDatabase = function(d3, skipSuccessAlert) {
+  modAuth.afterAuthentication(d3, function() {
+    var m  = window.location.hash.match(/\/map\/(\d+)/);
+    if (m) {
+      // update existing map
+      var id = m[1];
+      d3.xhr(modBackend.backendBase + '/map/' + id)
+        .header('Content-Type', 'application/json')
+        .on('beforesend', function(request) {
+          request.withCredentials = true;
+        })
+        .on('error', function(req) {
+          var resp = req.response && JSON.parse(req.response);
+          if (resp
+              && resp.message == 'map not owned by authenticated user') {
+            alert("Can't save: you have read-only access to this map.");
+          } else {
+            console.error('Failed to save map. Request was:', req);
+            alert('Failed to save map # ' + id);
+          }
+        })
+        .on('load', function(data) {
+          if (!skipSuccessAlert) {
             alert('Saved map #' + id + '.');
-          })
-          .send('PUT', JSON.stringify(modSerialize.getMapObject(d3)));
+          }
+        })
+        .send('PUT', JSON.stringify(modSerialize.getMapObject(d3)));
 
-      } else {
-        // create new map
-        d3.xhr(modBackend.backendBase + '/map')
-          .header('Content-Type', 'application/json')
-          .on('beforesend', function(request) {
-            request.withCredentials = true;
-          })
-          .on('error', function(req) {
-            console.error('Failed to save new map. Request was:', req);
-            alert('Failed to save new map ');
-          })
-          .on('load', function(request) {
-            var data = JSON.parse(request.response);
+    } else {
+      // create new map
+      d3.xhr(modBackend.backendBase + '/map')
+        .header('Content-Type', 'application/json')
+        .on('beforesend', function(request) {
+          request.withCredentials = true;
+        })
+        .on('error', function(req) {
+          console.error('Failed to save new map. Request was:', req);
+          alert('Failed to save new map ');
+        })
+        .on('load', function(request) {
+          var data = JSON.parse(request.response);
+          if (!skipSuccessAlert) {
             var text = 'Saved new map #' + data.id + ' with default name. ' +
                   'To change the name, click the "Read map from database" ' +
                   'button in the toolbox, then click "Rename".';
             alert(text);
-            window.location.hash = '/map/' + data.id;
-          })
-          .send('POST', JSON.stringify(modSerialize.getMapObject(d3)));
-      }
-    });
+          }
+          window.location.hash = '/map/' + data.id;
+        })
+        .send('POST', JSON.stringify(modSerialize.getMapObject(d3)));
+    }
+  });
+};
+
+exports.setupWriteMapToDatabase = function(d3) {
+  d3.select("#write-to-db").on("click", function() {
+    exports.writeMapToDatabase(d3);
   });
 };
