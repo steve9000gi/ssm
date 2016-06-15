@@ -257,7 +257,8 @@ exports.setupReadMapFromDatabase = function(d3) {
 
 // Look in the location's 'hash' property (i.e. everything after the '#') for
 // a map ID. If the hash property is of the form '/map/<id>', where '<id>' is
-// an integer, try to load the map from the server.
+// an integer, try to load the map from the server. Return whether we tried to
+// load a map.
 exports.loadMapFromLocation = function(d3) {
   var m  = window.location.hash.match(/\/map\/(\d+)/);
   if (m) {
@@ -287,6 +288,7 @@ exports.loadMapFromLocation = function(d3) {
       })
       .send('GET');
   }
+  return !!m;
 };
 
 exports.writeMapToDatabase = function(d3, skipSuccessAlert) {

@@ -1,9 +1,12 @@
-var modEvents = require('./events.js'),
+var modDatabase = require('./database.js'),
+    modEvents = require('./events.js'),
     modSelection = require('./selection.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modSvg = require('./svg.js'),
     modText = require('./text.js'),
     modUpdate = require('./update.js');
+
+exports.wizardActive = undefined;
 
 var nodesByType = {
       'role': null,
@@ -22,9 +25,10 @@ var addRoleThenNext = function(d3) {
       center = modSystemSupportMap.center,
       node = modEvents.addNode(d3, center.x, center.y, text);
   node.type = 'role';
-  node.children = [];
+  node.__children = [];
   nodesByType.role = node;
   d3.select('#wizard_role_text').text(text);
+  modDatabase.writeMapToDatabase(d3, true);
   exports.nextStep(d3);
 };
 
@@ -81,9 +85,9 @@ var addNode = function(d3, type, parent, text) {
   };
   modEvents.addEdge(d3, edge);
   newNode.type = type;
-  newNode.parent = parent;
-  newNode.parent.children.push(newNode);
-  newNode.children = [];
+  newNode.__parent = parent;
+  newNode.__parent.__children.push(newNode);
+  newNode.__children = [];
   nodesByType[type].push(newNode);
   return newNode;
 };
@@ -92,6 +96,7 @@ var addResponsibility = function(d3) {
   var inputEl = d3.select('input[name=responsibility]').node();
   addNode(d3, 'responsibility', nodesByType.role, inputEl.value);
   inputEl.value = '';
+  modDatabase.writeMapToDatabase(d3, true);
 };
 
 var addNeed = function(d3) {
@@ -99,6 +104,7 @@ var addNeed = function(d3) {
       parent = nodesByType.responsibility[curResponsibility];
   addNode(d3, 'need', parent, inputEl.value);
   inputEl.value = '';
+  modDatabase.writeMapToDatabase(d3, true);
 };
 
 var addResource = function(d3) {
@@ -109,6 +115,7 @@ var addResource = function(d3) {
   inputEl.value = '';
   d3.selectAll('input[name=helpfulness]').property('checked', false);
   newNode.helpfulness = helpfulness;
+  modDatabase.writeMapToDatabase(d3, true);
 };
 
 var highlightResponsibility = function(d3, responsibilityNumber) {
@@ -169,6 +176,7 @@ var attachButtonHandlers = function(d3) {
 exports.showWizard = function(d3) {
   document.getElementById('wizard').className = 'open';
   document.getElementById('toolbox').style.visibility = 'hidden';
+  exports.wizardActive = true;
   exports.showStep(d3);
   modUpdate.updateWindow(d3);
 };
@@ -176,6 +184,8 @@ exports.showWizard = function(d3) {
 exports.hideWizard = function(d3) {
   document.getElementById('wizard').className = 'closed';
   document.getElementById('toolbox').style.visibility = 'visible';
+  exports.wizardActive = false;
+  modDatabase.writeMapToDatabase(d3);
   modUpdate.updateWindow(d3);
 };
 

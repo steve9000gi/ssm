@@ -43,8 +43,10 @@ document.onload = (function(d3) {
     modGraph.create(d3);
     modEvents.shapeId = 0;
     modUpdate.updateGraph(d3);
-    modDatabase.loadMapFromLocation(d3);
-    modWizard.showWizard(d3);
+    if (!modDatabase.loadMapFromLocation(d3)) {
+      // blank slate; open wizard
+      modWizard.showWizard(d3);
+    }
     window.showWizard = function() { modWizard.showWizard(d3); };
     window.hideWizard = function() { modWizard.hideWizard(d3); };
   });

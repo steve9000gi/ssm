@@ -777,7 +777,8 @@ exports.setupReadMapFromDatabase = function(d3) {
 
 // Look in the location's 'hash' property (i.e. everything after the '#') for
 // a map ID. If the hash property is of the form '/map/<id>', where '<id>' is
-// an integer, try to load the map from the server.
+// an integer, try to load the map from the server. Return whether we tried to
+// load a map.
 exports.loadMapFromLocation = function(d3) {
   var m  = window.location.hash.match(/\/map\/(\d+)/);
   if (m) {
@@ -807,6 +808,7 @@ exports.loadMapFromLocation = function(d3) {
       })
       .send('GET');
   }
+  return !!m;
 };
 
 exports.writeMapToDatabase = function(d3, skipSuccessAlert) {
@@ -1856,8 +1858,10 @@ document.onload = (function(d3) {
     modGraph.create(d3);
     modEvents.shapeId = 0;
     modUpdate.updateGraph(d3);
-    modDatabase.loadMapFromLocation(d3);
-    modWizard.showWizard(d3);
+    if (!modDatabase.loadMapFromLocation(d3)) {
+      // blank slate; open wizard
+      modWizard.showWizard(d3);
+    }
     window.showWizard = function() { modWizard.showWizard(d3); };
     window.hideWizard = function() { modWizard.hideWizard(d3); };
   });
@@ -2577,6 +2581,7 @@ var modCirclesOfCare = require('./circles-of-care.js'),
     modSvg = require('./svg.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modUpdate = require('./update.js'),
+    modWizard = require('./wizard.js'),
     modZoom = require('./zoom.js');
 
 var getBiggestShapeId = function() {
@@ -2590,8 +2595,7 @@ var getBiggestShapeId = function() {
   return currMax;
 };
 
-// Return the current map as an JS object.
-exports.getMapObject = function(d3) {
+var getEdges = function() {
   var saveEdges = [];
   modSvg.links.forEach(function(val) {
     saveEdges.push({source: val.source.id,
@@ -2605,12 +2609,36 @@ exports.getMapObject = function(d3) {
                     manualResize: val.manualResize || false
                    });
   });
+  return saveEdges;
+};
+
+var getNodes = function() {
+  // This, except we need to filter out "private" properties that begin with '__':
+  var rawNodes = modSvg.nodes;
+  var i, prop;
+  var ret = [];
+  for (i=0; i<rawNodes.length; i++) {
+    ret[i] = {};
+    for (prop in rawNodes[i]) {
+      if (rawNodes[i].hasOwnProperty(prop)) {
+        if (!prop.startsWith('__')) {
+          ret[i][prop] = rawNodes[i][prop];
+        }
+      }
+    }
+  }
+  return ret;
+};
+
+// Return the current map as an JS object.
+exports.getMapObject = function(d3) {
   return {
-    "nodes": modSvg.nodes,
-    "links": saveEdges,
+    "nodes": getNodes(),
+    "links": getEdges(),
     "graphGTransform": d3.select("#graphG").attr("transform"),
     "systemSupportMapCenter": modSystemSupportMap.center,
-    "circlesOfCareCenter": modCirclesOfCare.center
+    "circlesOfCareCenter": modCirclesOfCare.center,
+    "wizardActive": modWizard.wizardActive
   };
 };
 
@@ -2661,13 +2689,17 @@ exports.importMap = function(d3, jsonObj, id) {
     if (typeof id === 'number') {
       window.location.hash = '/map/' + id;
     }
+
+    if (jsonObj.wizardActive) {
+      modWizard.showWizard(d3);
+    }
   } catch(err) {
     window.alert("Error parsing uploaded file\nerror message: " + err.message);
     return;
   }
 };
 
-},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./svg.js":23,"./system-support-map.js":24,"./update.js":28,"./zoom.js":31}],23:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./svg.js":23,"./system-support-map.js":24,"./update.js":28,"./wizard.js":30,"./zoom.js":31}],23:[function(require,module,exports){
 exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
@@ -3422,12 +3454,15 @@ exports.computeRectangleBoundary = function(edge) {
 };
 
 },{}],30:[function(require,module,exports){
-var modEvents = require('./events.js'),
+var modDatabase = require('./database.js'),
+    modEvents = require('./events.js'),
     modSelection = require('./selection.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modSvg = require('./svg.js'),
     modText = require('./text.js'),
     modUpdate = require('./update.js');
+
+exports.wizardActive = undefined;
 
 var nodesByType = {
       'role': null,
@@ -3446,9 +3481,10 @@ var addRoleThenNext = function(d3) {
       center = modSystemSupportMap.center,
       node = modEvents.addNode(d3, center.x, center.y, text);
   node.type = 'role';
-  node.children = [];
+  node.__children = [];
   nodesByType.role = node;
   d3.select('#wizard_role_text').text(text);
+  modDatabase.writeMapToDatabase(d3, true);
   exports.nextStep(d3);
 };
 
@@ -3505,9 +3541,9 @@ var addNode = function(d3, type, parent, text) {
   };
   modEvents.addEdge(d3, edge);
   newNode.type = type;
-  newNode.parent = parent;
-  newNode.parent.children.push(newNode);
-  newNode.children = [];
+  newNode.__parent = parent;
+  newNode.__parent.__children.push(newNode);
+  newNode.__children = [];
   nodesByType[type].push(newNode);
   return newNode;
 };
@@ -3516,6 +3552,7 @@ var addResponsibility = function(d3) {
   var inputEl = d3.select('input[name=responsibility]').node();
   addNode(d3, 'responsibility', nodesByType.role, inputEl.value);
   inputEl.value = '';
+  modDatabase.writeMapToDatabase(d3, true);
 };
 
 var addNeed = function(d3) {
@@ -3523,6 +3560,7 @@ var addNeed = function(d3) {
       parent = nodesByType.responsibility[curResponsibility];
   addNode(d3, 'need', parent, inputEl.value);
   inputEl.value = '';
+  modDatabase.writeMapToDatabase(d3, true);
 };
 
 var addResource = function(d3) {
@@ -3533,6 +3571,7 @@ var addResource = function(d3) {
   inputEl.value = '';
   d3.selectAll('input[name=helpfulness]').property('checked', false);
   newNode.helpfulness = helpfulness;
+  modDatabase.writeMapToDatabase(d3, true);
 };
 
 var highlightResponsibility = function(d3, responsibilityNumber) {
@@ -3593,6 +3632,7 @@ var attachButtonHandlers = function(d3) {
 exports.showWizard = function(d3) {
   document.getElementById('wizard').className = 'open';
   document.getElementById('toolbox').style.visibility = 'hidden';
+  exports.wizardActive = true;
   exports.showStep(d3);
   modUpdate.updateWindow(d3);
 };
@@ -3600,6 +3640,8 @@ exports.showWizard = function(d3) {
 exports.hideWizard = function(d3) {
   document.getElementById('wizard').className = 'closed';
   document.getElementById('toolbox').style.visibility = 'visible';
+  exports.wizardActive = false;
+  modDatabase.writeMapToDatabase(d3);
   modUpdate.updateWindow(d3);
 };
 
@@ -3699,7 +3741,7 @@ exports.prevStep = function(d3) {
   exports.showStep(d3);
 };
 
-},{"./events.js":9,"./selection.js":21,"./svg.js":23,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],31:[function(require,module,exports){
+},{"./database.js":5,"./events.js":9,"./selection.js":21,"./svg.js":23,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],31:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modGridZoom = require('./grid-zoom.js'),
     modText = require('./text.js');

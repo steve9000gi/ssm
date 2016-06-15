@@ -4,6 +4,7 @@ var modCirclesOfCare = require('./circles-of-care.js'),
     modSvg = require('./svg.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modUpdate = require('./update.js'),
+    modWizard = require('./wizard.js'),
     modZoom = require('./zoom.js');
 
 var getBiggestShapeId = function() {
@@ -17,8 +18,7 @@ var getBiggestShapeId = function() {
   return currMax;
 };
 
-// Return the current map as an JS object.
-exports.getMapObject = function(d3) {
+var getEdges = function() {
   var saveEdges = [];
   modSvg.links.forEach(function(val) {
     saveEdges.push({source: val.source.id,
@@ -32,12 +32,36 @@ exports.getMapObject = function(d3) {
                     manualResize: val.manualResize || false
                    });
   });
+  return saveEdges;
+};
+
+var getNodes = function() {
+  // This, except we need to filter out "private" properties that begin with '__':
+  var rawNodes = modSvg.nodes;
+  var i, prop;
+  var ret = [];
+  for (i=0; i<rawNodes.length; i++) {
+    ret[i] = {};
+    for (prop in rawNodes[i]) {
+      if (rawNodes[i].hasOwnProperty(prop)) {
+        if (!prop.startsWith('__')) {
+          ret[i][prop] = rawNodes[i][prop];
+        }
+      }
+    }
+  }
+  return ret;
+};
+
+// Return the current map as an JS object.
+exports.getMapObject = function(d3) {
   return {
-    "nodes": modSvg.nodes,
-    "links": saveEdges,
+    "nodes": getNodes(),
+    "links": getEdges(),
     "graphGTransform": d3.select("#graphG").attr("transform"),
     "systemSupportMapCenter": modSystemSupportMap.center,
-    "circlesOfCareCenter": modCirclesOfCare.center
+    "circlesOfCareCenter": modCirclesOfCare.center,
+    "wizardActive": modWizard.wizardActive
   };
 };
 
@@ -87,6 +111,10 @@ exports.importMap = function(d3, jsonObj, id) {
     modUpdate.updateGraph(d3);
     if (typeof id === 'number') {
       window.location.hash = '/map/' + id;
+    }
+
+    if (jsonObj.wizardActive) {
+      modWizard.showWizard(d3);
     }
   } catch(err) {
     window.alert("Error parsing uploaded file\nerror message: " + err.message);
