@@ -49,10 +49,14 @@ CLOSED: [2016-03-20 Sun 19:43]
 CLOSED: [2016-06-10 Fri 21:44]
 *** DONE functional back button to revise anything
 CLOSED: [2016-06-11 Sat 21:26]
-*** TODO save wizard-created info on backend
+*** DONE save wizard-created info on backend
+CLOSED: [2016-06-14 Tue 22:38]
 This includes whether map was created by the wizard.
 Also, which step (and substep) the wizard is currently on, if any.
 Should probably auto-save after each substep.
+*** TODO when resuming wizard, resume at correct step
+Also, ideally, populate form data with whatever is currently in the map.
+This might not be possible until the list feature is implemented.
 *** DONE populate span#wizard_role_text element
 CLOSED: [2016-06-11 Sat 21:35]
 *** TODO color resources based on helpfulness
