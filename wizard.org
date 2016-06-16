@@ -44,7 +44,8 @@ CLOSED: [2016-03-20 Sun 19:43]
 *** DONE similarly, position resources
 CLOSED: [2016-03-20 Sun 19:43]
 ** Essentials
-*** TODO close button for wizard (on all steps)
+*** DONE close button for wizard (on all steps)
+CLOSED: [2016-06-15 Wed 22:01]
 *** DONE update text according to Word doc
 CLOSED: [2016-06-10 Fri 21:44]
 *** DONE functional back button to revise anything
@@ -61,6 +62,7 @@ This might not be possible until the list feature is implemented.
 *** DONE populate span#wizard_role_text element
 CLOSED: [2016-06-11 Sat 21:35]
 *** TODO color edges to resources based on helpfulness
+*** TODO prevent step advancement when data entry incomplete
 *** TODO deploy (goal: by Fri June 24)
 ** Nice-to-haves
 *** TODO enable wizard for maps with preexisting info

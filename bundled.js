@@ -3620,7 +3620,17 @@ var highlightNeed = function(d3, needNumber) {
   modSelection.selectNode(d3node, node);
 };
 
+var guardedClose = function(d3) {
+  var confirmText = 'Are you sure you want to close the wizard? ' +
+        '(This action cannot be undone.)';
+  if (window.confirm(confirmText)) {
+    exports.hideWizard(d3);
+  }
+};
+
 var attachButtonHandlers = function(d3) {
+  d3.selectAll('#wizard div.close span')
+    .on('click', function(){ guardedClose(d3); });
   d3.selectAll('#wizard button.next')
     .on('click', function(){ exports.nextStep(d3); });
   d3.selectAll('#wizard button.back')
@@ -3671,7 +3681,6 @@ exports.hideWizard = function(d3) {
   document.getElementById('wizard').className = 'closed';
   document.getElementById('toolbox').style.visibility = 'visible';
   exports.wizardActive = false;
-  modDatabase.writeMapToDatabase(d3);
   modUpdate.updateWindow(d3);
 };
 
