@@ -61,7 +61,8 @@ Also, ideally, populate form data with whatever is currently in the map.
 This might not be possible until the list feature is implemented.
 *** DONE populate span#wizard_role_text element
 CLOSED: [2016-06-11 Sat 21:35]
-*** TODO color edges to resources based on helpfulness
+*** DONE color edges to resources based on helpfulness
+CLOSED: [2016-06-15 Wed 22:17]
 *** TODO prevent step advancement when data entry incomplete
 *** TODO deploy (goal: by Fri June 24)
 ** Nice-to-haves

@@ -42,7 +42,7 @@ var targetRadius = function(nodeType) {
   return (innerRingRadius + outerRingRadius) / 2;
 };
 
-var addNode = function(d3, type, parent, text) {
+var addNode = function(d3, type, parent, text, edgeColor) {
   var newNode,
       numSiblings = nodesByType[type].length,
       center = modSystemSupportMap.center,
@@ -77,7 +77,7 @@ var addNode = function(d3, type, parent, text) {
     source: parent,
     target: newNode,
     style: 'solid',
-    color: '#000000',
+    color: edgeColor || 'black',
     thickness: 3,
     name: ''
   };
@@ -109,7 +109,10 @@ var addResource = function(d3) {
   var inputEl = d3.select('input[name=resource]').node(),
       helpfulness = d3.select('input[name=helpfulness]:checked').node().value,
       parent = nodesByType.need[exports.currentNeed],
-      newNode = addNode(d3, 'resource', parent, inputEl.value);
+      edgeColor = helpfulness === 'helpful' ? 'green'
+                : helpfulness === 'not-helpful' ? 'red'
+                : 'black';
+  newNode = addNode(d3, 'resource', parent, inputEl.value, edgeColor);
   inputEl.value = '';
   d3.selectAll('input[name=helpfulness]').property('checked', false);
   newNode.helpfulness = helpfulness;
