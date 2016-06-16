@@ -55,7 +55,7 @@ var getNodes = function() {
 
 // Return the current map as an JS object.
 exports.getMapObject = function(d3) {
-  return {
+  var ret = {
     "nodes": getNodes(),
     "links": getEdges(),
     "graphGTransform": d3.select("#graphG").attr("transform"),
@@ -63,6 +63,12 @@ exports.getMapObject = function(d3) {
     "circlesOfCareCenter": modCirclesOfCare.center,
     "wizardActive": modWizard.wizardActive
   };
+  if (modWizard.wizardActive) {
+    ret.wizardCurrentStep = modWizard.currentStep;
+    ret.wizardCurrentResponsibility = modWizard.currentResponsibility;
+    ret.wizardCurrentNeed = modWizard.currentNeed;
+  }
+  return ret;
 };
 
 // Import a JSON document into the editing area
@@ -114,6 +120,10 @@ exports.importMap = function(d3, jsonObj, id) {
     }
 
     if (jsonObj.wizardActive) {
+      modWizard.currentStep = jsonObj.wizardCurrentStep;
+      modWizard.currentResponsibility = jsonObj.wizardCurrentResponsibility;
+      modWizard.currentNeed = jsonObj.wizardCurrentNeed;
+      modWizard.inferParentChildRelationships(d3);
       modWizard.showWizard(d3);
     }
   } catch(err) {

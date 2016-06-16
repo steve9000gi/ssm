@@ -7,18 +7,16 @@ var modDatabase = require('./database.js'),
     modUpdate = require('./update.js');
 
 exports.wizardActive = undefined;
+exports.currentStep = 1;
+exports.currentResponsibility = undefined;
+exports.currentNeed = undefined;
 
 var nodesByType = {
       'role': null,
       'responsibility': [],
       'need': [],
       'resource': []
-    },
-    step = 1,
-    curResponsibility,
-    curNeed,
-    forceLayout,
-    drawForceLayoutTransition = true;
+    };
 
 var addRoleThenNext = function(d3) {
   var text = d3.select('input[name=role]').node().value,
@@ -101,7 +99,7 @@ var addResponsibility = function(d3) {
 
 var addNeed = function(d3) {
   var inputEl = d3.select('input[name=need]').node(),
-      parent = nodesByType.responsibility[curResponsibility];
+      parent = nodesByType.responsibility[exports.currentResponsibility];
   addNode(d3, 'need', parent, inputEl.value);
   inputEl.value = '';
   modDatabase.writeMapToDatabase(d3, true);
@@ -110,7 +108,7 @@ var addNeed = function(d3) {
 var addResource = function(d3) {
   var inputEl = d3.select('input[name=resource]').node(),
       helpfulness = d3.select('input[name=helpfulness]:checked').node().value,
-      parent = nodesByType.need[curNeed],
+      parent = nodesByType.need[exports.currentNeed],
       newNode = addNode(d3, 'resource', parent, inputEl.value);
   inputEl.value = '';
   d3.selectAll('input[name=helpfulness]').property('checked', false);
@@ -173,11 +171,33 @@ var attachButtonHandlers = function(d3) {
     .on('click', function(){ addResource(d3); });
 };
 
+exports.inferParentChildRelationships = function(d3) {
+  var nodes = modSvg.nodes,
+      edges = modSvg.links,
+      i;
+  for (i=0; i<nodes.length; i++) {
+    var node = nodes[i],
+        type = node.type;
+    node.__children__ = [];
+    if (type === 'role') {
+      nodesByType[type] = node;
+    } else {
+      nodesByType[type].push(node);
+    }
+  }
+  for (i=0; i<edges.length; i++) {
+    var source = edges[i].source,
+        target = edges[i].target;
+    source.__children__.push(target);
+    target.__parent__ = source;
+  }
+};
+
 exports.showWizard = function(d3) {
   document.getElementById('wizard').className = 'open';
   document.getElementById('toolbox').style.visibility = 'hidden';
   exports.wizardActive = true;
-  exports.showStep(d3);
+  exports.initializeAtStep(d3);
   modUpdate.updateWindow(d3);
 };
 
@@ -193,7 +213,7 @@ exports.showStep = function(d3) {
   var i, id, el;
   for (i=1; i <= 8; i++) {
     id = 'wizard-step' + i;
-    if (i === step) {
+    if (i === exports.currentStep) {
       if ((el = document.getElementById(id))) {
         el.style.display = 'block';
       }
@@ -210,23 +230,26 @@ var steps = {
   // Note: uninteresting steps are omitted here.
   6: {
     enter: function(d3, direction) {
-      curResponsibility =
-        (direction === 1 ? 0 : nodesByType.responsibility.length - 1);
-      highlightResponsibility(d3, curResponsibility);
+      if (direction === 1) {
+        exports.currentResponsibility = 0;
+      } else if (direction === -1) {
+        exports.currentResponsibility = nodesByType.responsibility.length - 1;
+      }
+      highlightResponsibility(d3, exports.currentResponsibility);
     },
     exit: function(d3) {
       highlightResponsibility(d3, null);
     },
     subStepAdvance: function(d3) {
-      if (++curResponsibility !== nodesByType.responsibility.length) {
-        highlightResponsibility(d3, curResponsibility);
+      if (++exports.currentResponsibility !== nodesByType.responsibility.length){
+        highlightResponsibility(d3, exports.currentResponsibility);
         return true;
       }
       return false;
     },
     subStepRetreat: function(d3) {
-      if (--curResponsibility >= 0) {
-        highlightResponsibility(d3, curResponsibility);
+      if (--exports.currentResponsibility >= 0) {
+        highlightResponsibility(d3, exports.currentResponsibility);
         return true;
       }
       return false;
@@ -235,22 +258,26 @@ var steps = {
 
   7: {
     enter: function(d3, direction) {
-      curNeed = (direction === 1 ? 0 : nodesByType.need.length - 1);
-      highlightNeed(d3, curNeed);
+      if (direction === 1) {
+        exports.currentNeed = 0;
+      } else if (direction === -1) {
+        exports.currentNeed = nodesByType.need.length - 1;
+      }
+      highlightNeed(d3, exports.currentNeed);
     },
     exit: function(d3) {
       highlightNeed(d3, null);
     },
     subStepAdvance: function(d3) {
-      if (++curNeed !== nodesByType.need.length) {
-        highlightNeed(d3, curNeed);
+      if (++exports.currentNeed !== nodesByType.need.length) {
+        highlightNeed(d3, exports.currentNeed);
         return true;
       }
       return false;
     },
     subStepRetreat: function(d3) {
-      if (--curNeed >= 0) {
-        highlightNeed(d3, curNeed);
+      if (--exports.currentNeed >= 0) {
+        highlightNeed(d3, exports.currentNeed);
         return true;
       }
       return false;
@@ -258,29 +285,34 @@ var steps = {
   }
 };
 
+exports.initializeAtStep = function(d3) {
+  var stepObj = steps[exports.currentStep] || {};
+  stepObj.enter && stepObj.enter(d3, 0);
+  exports.showStep(d3);
+};
+
 exports.nextStep = function(d3) {
-  var stepObj = steps[step] || {};
-  // TODO: persist map state
+  var stepObj = steps[exports.currentStep] || {};
   if (stepObj.subStepAdvance && stepObj.subStepAdvance(d3)) {
     // The current step isn't ready to move on to the next step.
     return;
   }
   stepObj.exit && stepObj.exit(d3);
-  step++;
-  stepObj = steps[step] || {};
+  exports.currentStep++;
+  stepObj = steps[exports.currentStep] || {};
   stepObj.enter && stepObj.enter(d3, 1);
   exports.showStep(d3);
 };
 
 exports.prevStep = function(d3) {
-  var stepObj = steps[step] || {};
+  var stepObj = steps[exports.currentStep] || {};
   if (stepObj.subStepRetreat && stepObj.subStepRetreat(d3)) {
     // The current step isn't ready to move on to the previous step.
     return;
   }
   stepObj.exit && stepObj.exit(d3);
-  step--;
-  stepObj = steps[step] || {};
+  exports.currentStep--;
+  stepObj = steps[exports.currentStep] || {};
   stepObj.enter && stepObj.enter(d3, -1);
   exports.showStep(d3);
 };
