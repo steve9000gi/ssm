@@ -182,6 +182,13 @@ var attachButtonHandlers = function(d3) {
     .on('click', function(){ addNeed(d3); });
   d3.selectAll('#wizard button.add-resource')
     .on('click', function(){ addResource(d3); });
+  // Stop propagation of keydown events, so that the handlers elsewhere in this
+  // code don't prevent default. I need to do this to allow users to hit
+  // 'backspace' in these fields.
+  d3.selectAll('#wizard input[type=text]')
+    .on('keydown', function(elt) { d3.event.stopPropagation(); });
+  d3.selectAll('#wizard textarea')
+    .on('keydown', function(elt) { d3.event.stopPropagation(); });
 };
 
 exports.inferParentChildRelationships = function(d3) {
