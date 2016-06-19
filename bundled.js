@@ -3489,7 +3489,7 @@ var addRoleThenNext = function(d3) {
       center = modSystemSupportMap.center,
       node = modEvents.addNode(d3, center.x, center.y, text);
   node.type = 'role';
-  node.__children = [];
+  node.__children__ = [];
   nodesByType.role = node;
   d3.select('#wizard_role_text').text(text);
   modDatabase.writeMapToDatabase(d3, true);
@@ -3549,9 +3549,9 @@ var addNode = function(d3, type, parent, text, edgeColor) {
   };
   modEvents.addEdge(d3, edge);
   newNode.type = type;
-  newNode.__parent = parent;
-  newNode.__parent.__children.push(newNode);
-  newNode.__children = [];
+  newNode.__parent__ = parent;
+  newNode.__parent__.__children__.push(newNode);
+  newNode.__children__ = [];
   nodesByType[type].push(newNode);
   return newNode;
 };
