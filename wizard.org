@@ -68,6 +68,12 @@ CLOSED: [2016-06-16 Thu 21:02]
 *** TODO prevent step advancement when data entry incomplete
 *** TODO deploy (goal: by Fri June 24)
 ** Nice-to-haves
+*** TODO display responsibilities as editable list
+- remove button and functionality
+- get update (with re-render) working
+  - re-render does work, somehow, when editing node text with shift-click
+- update walkthrough to match new layout
+*** TODO foreach responsibility, display needs as editable list
 *** TODO enable wizard for maps with preexisting info
 This would require some design to figure out how the wizard works with preexisting info.
 Would it move nodes that it didn't place?
@@ -99,6 +105,7 @@ Example markup:
   <option value="pear"></option>
   <option value="kiwi"></option>
 </datalist>
+*** TODO enable text selection in wizard area
 * Notes from call with Steve and Kristen, Friday, June 10, 2016
 ** Wizard only applicable if started with blank state
 Don't have to handle preexisting maps, at least for now.

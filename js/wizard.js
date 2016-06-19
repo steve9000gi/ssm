@@ -1,4 +1,5 @@
 var modDatabase = require('./database.js'),
+    modEntryList = require('./entry-list.js'),
     modEvents = require('./events.js'),
     modSelection = require('./selection.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -90,13 +91,6 @@ var addNode = function(d3, type, parent, text, edgeColor) {
   return newNode;
 };
 
-var addResponsibility = function(d3) {
-  var inputEl = d3.select('input[name=responsibility]').node();
-  addNode(d3, 'responsibility', nodesByType.role, inputEl.value);
-  inputEl.value = '';
-  modDatabase.writeMapToDatabase(d3, true);
-};
-
 var addNeed = function(d3) {
   var inputEl = d3.select('input[name=need]').node(),
       parent = nodesByType.responsibility[exports.currentResponsibility];
@@ -176,8 +170,6 @@ var attachButtonHandlers = function(d3) {
     .on('click', function(){ exports.hideWizard(d3); });
   d3.selectAll('#wizard button.add-role-next')
     .on('click', function(){ addRoleThenNext(d3); });
-  d3.selectAll('#wizard button.add-responsibility')
-    .on('click', function(){ addResponsibility(d3); });
   d3.selectAll('#wizard button.add-need')
     .on('click', function(){ addNeed(d3); });
   d3.selectAll('#wizard button.add-resource')
@@ -247,6 +239,25 @@ exports.showStep = function(d3) {
 
 var steps = {
   // Note: uninteresting steps are omitted here.
+  5: {
+    enter: function(d3) {
+      var uponAdd = function(i, text) {
+        addNode(d3, 'responsibility', nodesByType.role, text);
+        modDatabase.writeMapToDatabase(d3, true);
+      };
+      var uponUpdate = function(i, text) {
+        nodesByType.responsibility[i].name = text;
+        modDatabase.writeMapToDatabase(d3, true);
+        modUpdate.updateGraph(d3);
+      };
+      var selector = '#wizard-responsibility-list';
+      var existingTexts = nodesByType.responsibility.map(function(d) {
+        return d.name;
+      });
+      modEntryList.setup(d3, selector, existingTexts, uponAdd, uponUpdate);
+    }
+  },
+
   6: {
     enter: function(d3, direction) {
       if (direction === 1) {
