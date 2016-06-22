@@ -3059,6 +3059,17 @@ exports.changeElementText = function(d3, d3element, d) {
   return d3txt;
 };
 
+// Instead of entering a mode where the user can edit the text of the node, just
+// change it immediately to the given text. Also sets node.name to that text.
+exports.changeElementTextImmediately = function(d3, d3element, node, text) {
+  node.name = text.trim();
+  d3element.selectAll("text").remove();
+  // Force shape shrinkwrap:
+  var d = node;
+  d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
+  exports.formatText(d3, d3element, node);
+};
+
 },{"./drag.js":6,"./selected-color.js":20,"./selected-shape.js":21,"./svg.js":24,"./update.js":29}],27:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modEdgeStyle = require('./edge-style.js'),
@@ -3769,14 +3780,7 @@ var steps = {
             d3element = modSvg.shapeGroups.filter(function(dval) {
               return dval.id === node.id;
             });
-        node.name = text.trim();
-        d3element.selectAll("text").remove();
-        // Force shape shrinkwrap:
-        // TODO: this is a kludge. Should be a function to call, or at least an
-        // argument to an existing function, whether to do "shrinkwrap"
-        var d = node;
-        d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
-        modText.formatText(d3, d3element, node);
+        modText.changeElementTextImmediately(d3, d3element, node, text);
         modDatabase.writeMapToDatabase(d3, true);
         modUpdate.updateGraph(d3);
       };

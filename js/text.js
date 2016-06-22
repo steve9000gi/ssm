@@ -184,3 +184,14 @@ exports.changeElementText = function(d3, d3element, d) {
     });
   return d3txt;
 };
+
+// Instead of entering a mode where the user can edit the text of the node, just
+// change it immediately to the given text. Also sets node.name to that text.
+exports.changeElementTextImmediately = function(d3, d3element, node, text) {
+  node.name = text.trim();
+  d3element.selectAll("text").remove();
+  // Force shape shrinkwrap:
+  var d = node;
+  d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
+  exports.formatText(d3, d3element, node);
+};

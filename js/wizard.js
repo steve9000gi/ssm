@@ -250,14 +250,7 @@ var steps = {
             d3element = modSvg.shapeGroups.filter(function(dval) {
               return dval.id === node.id;
             });
-        node.name = text.trim();
-        d3element.selectAll("text").remove();
-        // Force shape shrinkwrap:
-        // TODO: this is a kludge. Should be a function to call, or at least an
-        // argument to an existing function, whether to do "shrinkwrap"
-        var d = node;
-        d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
-        modText.formatText(d3, d3element, node);
+        modText.changeElementTextImmediately(d3, d3element, node, text);
         modDatabase.writeMapToDatabase(d3, true);
         modUpdate.updateGraph(d3);
       };
