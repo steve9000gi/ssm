@@ -11,7 +11,6 @@ exports.activeEditId = 'active-editing';
 
 var ENTER_KEY = 13;
 
-// FIXME: seems to be unused anywhere.
 var appendText = function(gEl, phrases, yShift) {
   var nPhrases = phrases.length;
   var el = gEl.append("text")

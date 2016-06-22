@@ -1139,10 +1139,15 @@ var appendInput = function(d3, root, i, uponAdd, uponUpdate) {
         .text('Add'),
       onClick = function() {
         if (!input.node().value) return;
-        button.text('Update');
-        button.on('click', function() {
+        var newOnClick = function() {
           if (!input.node().value) return;
           uponUpdate(i, input.node().value);
+        };
+        button.text('Update');
+        button.on('click', newOnClick);
+        input.on('keyup', function() {
+          d3.event.stopPropagation();
+          if (d3.event.key === 'Enter') newOnClick();
         });
         appendInput(d3, root, i+1, uponAdd, uponUpdate);
         uponAdd(i, input.node().value);
@@ -1151,9 +1156,7 @@ var appendInput = function(d3, root, i, uponAdd, uponUpdate) {
   root.append('br');
   input.on('keyup', function() {
     d3.event.stopPropagation();
-    if (d3.event.key === 'Enter') {
-      onClick();
-    }
+    if (d3.event.key === 'Enter') onClick();
   });
   input.node().focus();
 };
@@ -2882,7 +2885,6 @@ exports.activeEditId = 'active-editing';
 
 var ENTER_KEY = 13;
 
-// FIXME: seems to be unused anywhere.
 var appendText = function(gEl, phrases, yShift) {
   var nPhrases = phrases.length;
   var el = gEl.append("text")
@@ -3763,7 +3765,18 @@ var steps = {
         modDatabase.writeMapToDatabase(d3, true);
       };
       var uponUpdate = function(i, text) {
-        nodesByType.responsibility[i].name = text;
+        var node = nodesByType.responsibility[i],
+            d3element = modSvg.shapeGroups.filter(function(dval) {
+              return dval.id === node.id;
+            });
+        node.name = text.trim();
+        d3element.selectAll("text").remove();
+        // Force shape shrinkwrap:
+        // TODO: this is a kludge. Should be a function to call, or at least an
+        // argument to an existing function, whether to do "shrinkwrap"
+        var d = node;
+        d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
+        modText.formatText(d3, d3element, node);
         modDatabase.writeMapToDatabase(d3, true);
         modUpdate.updateGraph(d3);
       };

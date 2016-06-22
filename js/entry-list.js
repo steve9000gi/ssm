@@ -5,10 +5,15 @@ var appendInput = function(d3, root, i, uponAdd, uponUpdate) {
         .text('Add'),
       onClick = function() {
         if (!input.node().value) return;
-        button.text('Update');
-        button.on('click', function() {
+        var newOnClick = function() {
           if (!input.node().value) return;
           uponUpdate(i, input.node().value);
+        };
+        button.text('Update');
+        button.on('click', newOnClick);
+        input.on('keyup', function() {
+          d3.event.stopPropagation();
+          if (d3.event.key === 'Enter') newOnClick();
         });
         appendInput(d3, root, i+1, uponAdd, uponUpdate);
         uponAdd(i, input.node().value);
@@ -17,9 +22,7 @@ var appendInput = function(d3, root, i, uponAdd, uponUpdate) {
   root.append('br');
   input.on('keyup', function() {
     d3.event.stopPropagation();
-    if (d3.event.key === 'Enter') {
-      onClick();
-    }
+    if (d3.event.key === 'Enter') onClick();
   });
   input.node().focus();
 };

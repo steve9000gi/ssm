@@ -70,8 +70,6 @@ CLOSED: [2016-06-16 Thu 21:02]
 ** Nice-to-haves
 *** TODO display responsibilities as editable list
 - remove button and functionality
-- get update (with re-render) working
-  - re-render does work, somehow, when editing node text with shift-click
 - update walkthrough to match new layout
 *** TODO foreach responsibility, display needs as editable list
 *** TODO enable wizard for maps with preexisting info
