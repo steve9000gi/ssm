@@ -259,6 +259,9 @@ var steps = {
         return d.name;
       });
       modEntryList.setup(d3, selector, existingTexts, uponAdd, uponUpdate);
+    },
+    exit: function(d3) {
+      modEntryList.teardown(d3, '#wizard-responsibility-list');
     }
   },
 

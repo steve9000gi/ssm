@@ -50,3 +50,7 @@ exports.setup = function(d3, selector, existingTexts, uponAdd, uponUpdate) {
   addExistingInputs(d3, root, existingTexts, uponUpdate);
   appendInput(d3, root, existingTexts.length, uponAdd, uponUpdate);
 };
+
+exports.teardown = function(d3, selector) {
+  d3.select(selector).selectAll('*').remove();
+};

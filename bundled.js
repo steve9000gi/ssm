@@ -1185,6 +1185,10 @@ exports.setup = function(d3, selector, existingTexts, uponAdd, uponUpdate) {
   appendInput(d3, root, existingTexts.length, uponAdd, uponUpdate);
 };
 
+exports.teardown = function(d3, selector) {
+  d3.select(selector).selectAll('*').remove();
+};
+
 },{}],10:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modEdgeStyle = require('./edge-style.js'),
@@ -3789,6 +3793,9 @@ var steps = {
         return d.name;
       });
       modEntryList.setup(d3, selector, existingTexts, uponAdd, uponUpdate);
+    },
+    exit: function(d3) {
+      modEntryList.teardown(d3, '#wizard-responsibility-list');
     }
   },
 
