@@ -254,11 +254,30 @@ var steps = {
         modDatabase.writeMapToDatabase(d3, true);
         modUpdate.updateGraph(d3);
       };
+      var uponRemove = function(i) {
+        var node = nodesByType.responsibility[i];
+        var confirmTxt = 'Are you sure you want to remove this responsibility? '+
+              'All connected needs and resources will be removed too!',
+            confirmed = window.confirm(confirmTxt);
+        if (!confirmed) return false;
+        modSvg.nodes.splice(modSvg.nodes.indexOf(node), 1);
+        modSvg.links.filter(function(l){
+          return l.source === nodesByType.role && l.target === node;
+        }).map(function(l){
+          modSvg.links.splice(modSvg.links.indexOf(l), 1);
+        });
+        // TODO: re-balance the nodes
+        // TODO: Remove all descendants of this node.
+        modDatabase.writeMapToDatabase(d3, true);
+        modUpdate.updateGraph(d3);
+        return true;
+      };
       var selector = '#wizard-responsibility-list';
       var existingTexts = nodesByType.responsibility.map(function(d) {
         return d.name;
       });
-      modEntryList.setup(d3, selector, existingTexts, uponAdd, uponUpdate);
+      modEntryList.setup(d3, selector, existingTexts,
+                         uponAdd, uponUpdate, uponRemove);
     },
     exit: function(d3) {
       modEntryList.teardown(d3, '#wizard-responsibility-list');

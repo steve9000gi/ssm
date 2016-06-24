@@ -69,7 +69,8 @@ CLOSED: [2016-06-16 Thu 21:02]
 *** TODO deploy (goal: by Fri June 24)
 ** Nice-to-haves
 *** TODO display responsibilities as editable list
-- remove button and functionality
+- re-balance the nodes after removing a responsibility
+- remove all descendants along with a removed responsibility
 - update walkthrough to match new layout
 *** TODO foreach responsibility, display needs as editable list
 *** TODO enable wizard for maps with preexisting info
