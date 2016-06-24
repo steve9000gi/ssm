@@ -43,51 +43,49 @@ var targetRadius = function(nodeType) {
   return (innerRingRadius + outerRingRadius) / 2;
 };
 
-var addNode = function(d3, type, parent, text, edgeColor) {
-  var newNode,
-      numSiblings = nodesByType[type].length,
-      center = modSystemSupportMap.center,
+var setPosition = function(node, x, y) {
+  node.x = x;
+  node.y = y;
+};
+
+var rebalanceNodes = function(d3) {
+  var center = modSystemSupportMap.center,
       cx = center.x,
       cy = center.y,
-      cr = targetRadius(type), // a.k.a. distance from center point
-      dx, dy, x, y;
-
-  if (numSiblings === 0) {
-    newNode = modEvents.addNode(d3, cx + cr, cy, text);
-  } else if (numSiblings === 1) {
-    newNode = modEvents.addNode(d3, cx - cr, cy, text);
-  } else {
-    numSiblings++;
-    for (var i=1; i < numSiblings; i++) {
-      var theta = -i * 2 * Math.PI / numSiblings;
-      dx = cr * Math.cos(theta);
-      dy = cr * Math.sin(theta);
-      x = cx + dx;
-      y = cy - dy; // remember that y is inverted in SVG
-      if (i == numSiblings - 1) {
-        newNode = modEvents.addNode(d3, x, y, text);
-      } else {
-        var node = nodesByType[type][i];
-        node.x = x;
-        node.y = y;
-      }
+      nodeTypes = ['responsibility', 'need', 'resource'];
+  setPosition(nodesByType.role, cx, cy);
+  for (var typeNum = 0; typeNum < nodeTypes.length; typeNum++) {
+    var type = nodeTypes[typeNum],
+        nodes = nodesByType[type],
+        radius = targetRadius(type),
+        i, theta, x, y ;
+    for (i=0; i < nodes.length; i++) {
+      theta = -i * 2 * Math.PI / nodes.length;
+      x = cx + radius * Math.cos(theta);
+      y = cy - radius * Math.sin(theta); // remember that y is inverted in SVG
+      setPosition(nodes[i], x, y);
     }
   }
+  modUpdate.updateGraph(d3);
+};
 
-  var edge = {
-    source: parent,
-    target: newNode,
-    style: 'solid',
-    color: edgeColor || 'black',
-    thickness: 3,
-    name: ''
-  };
+var addNode = function(d3, type, parent, text, edgeColor) {
+  var newNode = modEvents.addNode(d3, 0, 0, text),
+      edge = {
+        source: parent,
+        target: newNode,
+        style: 'solid',
+        color: edgeColor || 'black',
+        thickness: 3,
+        name: ''
+      };
   modEvents.addEdge(d3, edge);
   newNode.type = type;
   newNode.__parent__ = parent;
   newNode.__parent__.__children__.push(newNode);
   newNode.__children__ = [];
   nodesByType[type].push(newNode);
+  rebalanceNodes(d3);
   return newNode;
 };
 
@@ -266,7 +264,10 @@ var steps = {
         }).map(function(l){
           modSvg.links.splice(modSvg.links.indexOf(l), 1);
         });
-        // TODO: re-balance the nodes
+        var arr = nodesByType.role.__children__;
+        arr.splice(arr.indexOf(node), 1);
+        nodesByType.responsibility.splice(i, 1);
+        rebalanceNodes(d3);
         // TODO: Remove all descendants of this node.
         modDatabase.writeMapToDatabase(d3, true);
         modUpdate.updateGraph(d3);

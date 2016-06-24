@@ -42,7 +42,6 @@ var update = function(d3, selector, data, uponAdd, uponUpdate, uponRemove) {
   d3.select(selector).selectAll('span.entry button.add').each(function(d,i){
     var parentSel = d3.select(this.parentElement);
     if (parentSel.select('input').property('value') === '') {
-      console.log('Removing empty add entry');
       parentSel.remove();
     }
   });
