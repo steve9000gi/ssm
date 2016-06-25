@@ -43,32 +43,32 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=responsibility</td>
+	<td>css=span.entry &gt; input[type=&quot;text&quot;]</td>
 	<td>responsibility1</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-responsibility</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=responsibility</td>
+	<td>xpath=(//input[@type='text'])[3]</td>
 	<td>responsibility2</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-responsibility</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=responsibility</td>
+	<td>xpath=(//input[@type='text'])[4]</td>
 	<td>responsibility3</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-responsibility</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 </tbody></table>
