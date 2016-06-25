@@ -99,16 +99,44 @@ var addNeed = function(d3) {
 
 var addResource = function(d3) {
   var inputEl = d3.select('input[name=resource]').node(),
+      // TODO: what if no helpfulness radio is checked?
       helpfulness = d3.select('input[name=helpfulness]:checked').node().value,
       parent = nodesByType.need[exports.currentNeed],
       edgeColor = helpfulness === 'helpful' ? 'green'
                 : helpfulness === 'not-helpful' ? 'red'
-                : 'black';
-  newNode = addNode(d3, 'resource', parent, inputEl.value, edgeColor);
+                : 'black',
+      newNode = addNode(d3, 'resource', parent, inputEl.value, edgeColor);
   inputEl.value = '';
   d3.selectAll('input[name=helpfulness]').property('checked', false);
   newNode.helpfulness = helpfulness;
   modDatabase.writeMapToDatabase(d3, true);
+};
+
+var removeNode = function(d3, type, indexAmongType, skipConfirm) {
+  var node = nodesByType[type][indexAmongType];
+  var confirmTxt = 'Are you sure you want to remove this ' + type + '?';
+  if (type === 'responsibility') {
+    confirmTxt += ' All connected needs and resources will be removed too!';
+  } else if (type === 'need') {
+    confirmTxt += ' All connected resources will be removed too!';
+  }
+  var proceed = skipConfirm || window.confirm(confirmTxt);
+  if (!proceed) return false;
+  modSvg.nodes.splice(modSvg.nodes.indexOf(node), 1);
+  modSvg.links.filter(function(l){
+    return l.source === node || l.target === node;
+  }).map(function(l){
+    modSvg.links.splice(modSvg.links.indexOf(l), 1);
+  });
+  for (var i=0; i < node.__children__.length; i++) {
+    var child = node.__children__[i];
+    removeNode(d3, child.type, nodesByType[child.type].indexOf(child), true);
+  }
+  var arr = node.__children__;
+  arr.splice(arr.indexOf(node), 1);
+  nodesByType[type].splice(indexAmongType, 1);
+  if (!skipConfirm) rebalanceNodes(d3);
+  return true;
 };
 
 var highlightResponsibility = function(d3, responsibilityNumber) {
@@ -253,22 +281,7 @@ var steps = {
         modUpdate.updateGraph(d3);
       };
       var uponRemove = function(i) {
-        var node = nodesByType.responsibility[i];
-        var confirmTxt = 'Are you sure you want to remove this responsibility? '+
-              'All connected needs and resources will be removed too!',
-            confirmed = window.confirm(confirmTxt);
-        if (!confirmed) return false;
-        modSvg.nodes.splice(modSvg.nodes.indexOf(node), 1);
-        modSvg.links.filter(function(l){
-          return l.source === nodesByType.role && l.target === node;
-        }).map(function(l){
-          modSvg.links.splice(modSvg.links.indexOf(l), 1);
-        });
-        var arr = nodesByType.role.__children__;
-        arr.splice(arr.indexOf(node), 1);
-        nodesByType.responsibility.splice(i, 1);
-        rebalanceNodes(d3);
-        // TODO: Remove all descendants of this node.
+        if (!removeNode(d3, 'responsibility', i)) return false;
         modDatabase.writeMapToDatabase(d3, true);
         modUpdate.updateGraph(d3);
         return true;

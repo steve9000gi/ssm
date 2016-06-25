@@ -65,11 +65,12 @@ CLOSED: [2016-06-11 Sat 21:35]
 CLOSED: [2016-06-15 Wed 22:17]
 *** DONE allow backspacing in wizard text inputs and text areas
 CLOSED: [2016-06-16 Thu 21:02]
-*** TODO prevent step advancement when data entry incomplete
 *** TODO deploy (goal: by Fri June 24)
 ** Nice-to-haves
-*** TODO display responsibilities as editable list
-- remove all descendants along with a removed responsibility
+*** DONE display responsibilities as editable list
+CLOSED: [2016-06-24 Fri 22:19]
+*** TODO prevent step advancement when data entry incomplete
+*** TODO fix bug when no helpfulness radio button is checked
 *** TODO foreach responsibility, display needs as editable list
 *** TODO enable wizard for maps with preexisting info
 This would require some design to figure out how the wizard works with preexisting info.
