@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:8081/" />
+<title>delete-from-responsibility-recursively</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">delete-from-responsibility-recursively</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step2 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step3 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=role</td>
+	<td>role</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-role-next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>css=span.entry &gt; input[type=&quot;text&quot;]</td>
+	<td>responsibility1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.update</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>xpath=(//input[@type='text'])[3]</td>
+	<td>responsibility2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>xpath=(//input[@type='text'])[4]</td>
+	<td>responsibility3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step5 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need1.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need1.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need1.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step6 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need2.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need2.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need2.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step6 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need3.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need3.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=need</td>
+	<td>need3.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-need</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step6 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource1.1.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=helpfulness</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource1.1.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource1.1.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step7 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource1.2.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource1.2.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource1.2.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=helpfulness</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step7 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource1.3.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource1.3.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=helpfulness</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource1.3.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step7 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource2.1.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=helpfulness</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource2.1.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource2.1.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=helpfulness</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step7 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource2.2.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource2.2.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=helpfulness</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource2.2.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=helpfulness</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step7 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource2.3.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=helpfulness</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource2.3.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource2.3.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step7 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource3.1.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource3.1.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=helpfulness</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource3.1.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step7 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource3.2.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=helpfulness</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource3.2.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource3.2.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step7 &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource3.3.1</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource3.3.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='helpfulness'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=resource</td>
+	<td>resource3.3.3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=helpfulness</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.add-resource</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
