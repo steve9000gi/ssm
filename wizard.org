@@ -65,7 +65,8 @@ CLOSED: [2016-06-11 Sat 21:35]
 CLOSED: [2016-06-15 Wed 22:17]
 *** DONE allow backspacing in wizard text inputs and text areas
 CLOSED: [2016-06-16 Thu 21:02]
-*** TODO deploy (goal: by Fri June 24)
+*** DONE deploy (goal: by Fri June 24)
+CLOSED: [2016-06-24 Fri 23:26]
 ** Nice-to-haves
 *** DONE display responsibilities as editable list
 CLOSED: [2016-06-24 Fri 22:19]
@@ -90,7 +91,10 @@ screen. Middle click started dragging, left click finished it. But left drag
 didn't work.
 *** TODO wizard and toolbox collide if window small enough
 See screenshot.
-*** TODO edit child nodes of a parent all at once (10 hours)
+*** DONE edit child nodes of a parent all at once (10 hours)
+CLOSED: [2016-06-26 Sun 21:46]
+I haven't done this for resources yet, because that step needs to change in
+more profound ways anyway.
 *** TODO enable swapping out of text (3-5 hours)
 *** TODO drop-down completion of common answers at each step
 Example markup:

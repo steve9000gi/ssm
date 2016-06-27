@@ -116,9 +116,9 @@ var removeNode = function(d3, type, indexAmongType, skipConfirm) {
   var node = nodesByType[type][indexAmongType];
   var confirmTxt = 'Are you sure you want to remove this ' + type + '?';
   if (type === 'responsibility') {
-    confirmTxt += ' All connected needs and resources will be removed too!';
+    confirmTxt += ' All connected needs and resources (if any) will be removed!';
   } else if (type === 'need') {
-    confirmTxt += ' All connected resources will be removed too!';
+    confirmTxt += ' All connected resources (if any) will be removed too!';
   }
   var proceed = skipConfirm || window.confirm(confirmTxt);
   if (!proceed) return false;
@@ -139,6 +139,41 @@ var removeNode = function(d3, type, indexAmongType, skipConfirm) {
   return true;
 };
 
+var setupNeedEntryList = function(d3, responsibilityNumber) {
+  var responsibility = nodesByType.responsibility[responsibilityNumber];
+  var uponAdd = function(i, text) {
+    addNode(d3, 'need', responsibility, text);
+    modDatabase.writeMapToDatabase(d3, true);
+  };
+
+  var uponUpdate = function(i, text) {
+    var node = responsibility.__children__[i],
+        d3element = modSvg.shapeGroups.filter(function(dval) {
+          return dval.id === node.id;
+        });
+    modText.changeElementTextImmediately(d3, d3element, node, text);
+    modDatabase.writeMapToDatabase(d3, true);
+    modUpdate.updateGraph(d3);
+  };
+
+  var uponRemove = function(i) {
+    var node = responsibility.__children__[i],
+        idx = nodesByType.need.indexOf(node);
+    if (!removeNode(d3, 'need', idx)) return false;
+    modDatabase.writeMapToDatabase(d3, true);
+    modUpdate.updateGraph(d3);
+    return true;
+  };
+
+  var selector = '#wizard-need-list';
+  var existingTexts = responsibility.__children__.map(function(d) {
+    return d.name;
+  });
+  modEntryList.teardown(d3, selector);
+  modEntryList.setup(d3, selector, existingTexts,
+                     uponAdd, uponUpdate, uponRemove);
+};
+
 var highlightResponsibility = function(d3, responsibilityNumber) {
   if (responsibilityNumber === null) {
     modSelection.removeSelectFromNode();
@@ -156,6 +191,8 @@ var highlightResponsibility = function(d3, responsibilityNumber) {
   d3.select('#wizard_current_responsibility_text')
     .text(node.name);
   modSelection.selectNode(d3node, node);
+  // This probably doesn't really belong here, but it is a convenient place.
+  setupNeedEntryList(d3, responsibilityNumber);
 };
 
 var highlightNeed = function(d3, needNumber) {
@@ -271,6 +308,7 @@ var steps = {
         addNode(d3, 'responsibility', nodesByType.role, text);
         modDatabase.writeMapToDatabase(d3, true);
       };
+
       var uponUpdate = function(i, text) {
         var node = nodesByType.responsibility[i],
             d3element = modSvg.shapeGroups.filter(function(dval) {
@@ -280,12 +318,14 @@ var steps = {
         modDatabase.writeMapToDatabase(d3, true);
         modUpdate.updateGraph(d3);
       };
+
       var uponRemove = function(i) {
         if (!removeNode(d3, 'responsibility', i)) return false;
         modDatabase.writeMapToDatabase(d3, true);
         modUpdate.updateGraph(d3);
         return true;
       };
+
       var selector = '#wizard-responsibility-list';
       var existingTexts = nodesByType.responsibility.map(function(d) {
         return d.name;
@@ -293,6 +333,7 @@ var steps = {
       modEntryList.setup(d3, selector, existingTexts,
                          uponAdd, uponUpdate, uponRemove);
     },
+
     exit: function(d3) {
       modEntryList.teardown(d3, '#wizard-responsibility-list');
     }

@@ -18,102 +18,102 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=need</td>
+	<td>css=span.entry &gt; input[type=&quot;text&quot;]</td>
 	<td>need1.1</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-need</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=need</td>
+	<td>xpath=(//input[@type='text'])[3]</td>
 	<td>need1.2</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-need</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=need</td>
+	<td>xpath=(//input[@type='text'])[4]</td>
 	<td>need1.3</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-need</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.next</td>
+	<td>css=#wizard-step6 &gt; button.next</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=need</td>
+	<td>css=span.entry &gt; input[type=&quot;text&quot;]</td>
 	<td>need2.1</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-need</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=need</td>
+	<td>xpath=(//input[@type='text'])[3]</td>
 	<td>need2.2</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-need</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=need</td>
+	<td>xpath=(//input[@type='text'])[4]</td>
 	<td>need2.3</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-need</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.next</td>
+	<td>css=#wizard-step6 &gt; button.next</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=need</td>
+	<td>css=span.entry &gt; input[type=&quot;text&quot;]</td>
 	<td>need3.1</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-need</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=need</td>
+	<td>xpath=(//input[@type='text'])[3]</td>
 	<td>need3.2</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-need</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=need</td>
+	<td>xpath=(//input[@type='text'])[4]</td>
 	<td>need3.3</td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=button.add-need</td>
+	<td>css=button.add</td>
 	<td></td>
 </tr>
 </tbody></table>
