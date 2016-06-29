@@ -70,15 +70,13 @@ CLOSED: [2016-06-24 Fri 23:26]
 ** Nice-to-haves
 *** DONE display responsibilities as editable list
 CLOSED: [2016-06-24 Fri 22:19]
+*** DONE edit child nodes of a parent all at once (10 hours)
+CLOSED: [2016-06-26 Sun 21:46]
+I haven't done this for resources yet, because that step needs to change in
+more profound ways anyway.
 *** TODO prevent step advancement when data entry incomplete
 *** TODO fix bug when no helpfulness radio button is checked
 *** TODO foreach responsibility, display needs as editable list
-*** TODO enable wizard for maps with preexisting info
-This would require some design to figure out how the wizard works with preexisting info.
-Would it move nodes that it didn't place?
-Would it refuse to operate on maps that weren't well-formed?
-(And if so, how would the error show up in the UI?)
-This would also need the wizard added to the options menu.
 *** TODO prettify things with better styles
 One thing I definitely want is for the back and next buttons to show up at the
 same place every time.
@@ -91,10 +89,6 @@ screen. Middle click started dragging, left click finished it. But left drag
 didn't work.
 *** TODO wizard and toolbox collide if window small enough
 See screenshot.
-*** DONE edit child nodes of a parent all at once (10 hours)
-CLOSED: [2016-06-26 Sun 21:46]
-I haven't done this for resources yet, because that step needs to change in
-more profound ways anyway.
 *** TODO enable swapping out of text (3-5 hours)
 *** TODO drop-down completion of common answers at each step
 Example markup:
@@ -108,6 +102,14 @@ Example markup:
   <option value="kiwi"></option>
 </datalist>
 *** TODO enable text selection in wizard area
+** Later
+*** TODO enable wizard for maps with preexisting info
+This would require some design to figure out how the wizard works with preexisting info.
+Would it move nodes that it didn't place?
+Would it refuse to operate on maps that weren't well-formed?
+(And if so, how would the error show up in the UI?)
+This would also need the wizard added to the options menu.
+This is specifically out of scope for now, per Kristen.
 * Notes from call with Steve and Kristen, Friday, June 10, 2016
 ** Wizard only applicable if started with blank state
 Don't have to handle preexisting maps, at least for now.
