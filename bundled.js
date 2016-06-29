@@ -3907,7 +3907,12 @@ var steps = {
     },
 
     exit: function(d3) {
+      if (nodesByType.responsibility.length === 0) {
+        alert('You must enter some responsibilities before proceeding.');
+        return false;
+      }
       modEntryList.teardown(d3, '#wizard-responsibility-list');
+      return true;
     }
   },
 
@@ -3922,6 +3927,7 @@ var steps = {
     },
     exit: function(d3) {
       highlightResponsibility(d3, null);
+      return true;
     },
     subStepAdvance: function(d3) {
       if (++exports.currentResponsibility !== nodesByType.responsibility.length){
@@ -3950,6 +3956,7 @@ var steps = {
     },
     exit: function(d3) {
       highlightNeed(d3, null);
+      return true;
     },
     subStepAdvance: function(d3) {
       if (++exports.currentNeed !== nodesByType.need.length) {
@@ -3970,7 +3977,7 @@ var steps = {
 
 exports.initializeAtStep = function(d3) {
   var stepObj = steps[exports.currentStep] || {};
-  stepObj.enter && stepObj.enter(d3, 0);
+  if (stepObj.enter) stepObj.enter(d3, 0);
   exports.showStep(d3);
 };
 
@@ -3980,11 +3987,13 @@ exports.nextStep = function(d3) {
     // The current step isn't ready to move on to the next step.
     return;
   }
-  stepObj.exit && stepObj.exit(d3);
-  exports.currentStep++;
-  stepObj = steps[exports.currentStep] || {};
-  stepObj.enter && stepObj.enter(d3, 1);
-  exports.showStep(d3);
+  // A step can prevent advancement by returning something falsy.
+  if (!stepObj.exit || stepObj.exit(d3)) {
+    exports.currentStep++;
+    stepObj = steps[exports.currentStep] || {};
+    if (stepObj.enter) stepObj.enter(d3, 1);
+    exports.showStep(d3);
+  }
 };
 
 exports.prevStep = function(d3) {
@@ -3993,10 +4002,10 @@ exports.prevStep = function(d3) {
     // The current step isn't ready to move on to the previous step.
     return;
   }
-  stepObj.exit && stepObj.exit(d3);
+  if (stepObj.exit) stepObj.exit(d3);
   exports.currentStep--;
   stepObj = steps[exports.currentStep] || {};
-  stepObj.enter && stepObj.enter(d3, -1);
+  if (stepObj.enter) stepObj.enter(d3, -1);
   exports.showStep(d3);
 };
 
