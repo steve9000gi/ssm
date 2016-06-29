@@ -93,14 +93,6 @@ var addNode = function(d3, type, parent, text, edgeColor) {
   return newNode;
 };
 
-var addNeed = function(d3) {
-  var inputEl = d3.select('input[name=need]').node(),
-      parent = nodesByType.responsibility[exports.currentResponsibility];
-  addNode(d3, 'need', parent, inputEl.value);
-  inputEl.value = '';
-  modDatabase.writeMapToDatabase(d3, true);
-};
-
 var addResource = function(d3) {
   var inputEl = d3.select('input[name=resource]').node(),
       // TODO: what if no helpfulness radio is checked?
@@ -237,8 +229,6 @@ var attachButtonHandlers = function(d3) {
     .on('click', function(){ exports.hideWizard(d3); });
   d3.selectAll('#wizard button.add-role-next')
     .on('click', function(){ addRoleThenNext(d3); });
-  d3.selectAll('#wizard button.add-need')
-    .on('click', function(){ addNeed(d3); });
   d3.selectAll('#wizard button.add-resource')
     .on('click', function(){ addResource(d3); });
   // Stop propagation of keydown events, so that the handlers elsewhere in this
