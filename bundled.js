@@ -1138,9 +1138,11 @@ var onClickAdd = function(d3, selector, data,
     var inputSelector = 'span.entry:nth-child(' + (i+1) + ') input',
         newText = root.select(inputSelector).property('value'),
         newData = data.slice(0);
-    newData.push(newText);
-    uponAdd(i, newText);
-    update(d3, selector, newData, uponAdd, uponUpdate, uponRemove);
+    if (newText !== '') {
+      newData.push(newText);
+      uponAdd(i, newText);
+      update(d3, selector, newData, uponAdd, uponUpdate, uponRemove);
+    }
   };
 };
 
@@ -1150,9 +1152,11 @@ var onClickUpdate = function(d3, selector, data,
     var inputSelector = 'span.entry:nth-child(' + (i+1) + ') input',
         newText = root.select(inputSelector).property('value'),
         newData = data.slice(0);
-    newData[i] = newText;
-    uponUpdate(i, newText);
-    update(d3, selector, newData, uponAdd, uponUpdate, uponRemove);
+    if (newText !== '') {
+      newData[i] = newText;
+      uponUpdate(i, newText);
+      update(d3, selector, newData, uponAdd, uponUpdate, uponRemove);
+    }
   };
 };
 
@@ -3925,17 +3929,29 @@ var steps = {
       }
       highlightResponsibility(d3, exports.currentResponsibility);
     },
+
     exit: function(d3) {
       highlightResponsibility(d3, null);
       return true;
     },
+
     subStepAdvance: function(d3) {
+      // Require confirmation before advancing from an empty need list.
+      var respNode = nodesByType.responsibility[exports.currentResponsibility];
+      if (respNode.__children__.length === 0 && !respNode.noChildrenOK) {
+        var confirmTxt = 'Are you sure you want to proceed without adding any' +
+              ' needs for this responsibility?';
+        if (!confirm(confirmTxt)) return true;
+        respNode.noChildrenOK = true;
+      }
+      // Advance to the next responsibility, if possible; else to the next step.
       if (++exports.currentResponsibility !== nodesByType.responsibility.length){
         highlightResponsibility(d3, exports.currentResponsibility);
         return true;
       }
       return false;
     },
+
     subStepRetreat: function(d3) {
       if (--exports.currentResponsibility >= 0) {
         highlightResponsibility(d3, exports.currentResponsibility);
@@ -3954,10 +3970,12 @@ var steps = {
       }
       highlightNeed(d3, exports.currentNeed);
     },
+
     exit: function(d3) {
       highlightNeed(d3, null);
       return true;
     },
+
     subStepAdvance: function(d3) {
       if (++exports.currentNeed !== nodesByType.need.length) {
         highlightNeed(d3, exports.currentNeed);
@@ -3965,6 +3983,7 @@ var steps = {
       }
       return false;
     },
+
     subStepRetreat: function(d3) {
       if (--exports.currentNeed >= 0) {
         highlightNeed(d3, exports.currentNeed);
@@ -3987,7 +4006,7 @@ exports.nextStep = function(d3) {
     // The current step isn't ready to move on to the next step.
     return;
   }
-  // A step can prevent advancement by returning something falsy.
+  // A step can prevent advancement by returning something falsy from `exit`.
   if (!stepObj.exit || stepObj.exit(d3)) {
     exports.currentStep++;
     stepObj = steps[exports.currentStep] || {};

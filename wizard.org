@@ -74,7 +74,8 @@ CLOSED: [2016-06-24 Fri 22:19]
 CLOSED: [2016-06-26 Sun 21:46]
 I haven't done this for resources yet, because that step needs to change in
 more profound ways anyway.
-*** TODO prevent step advancement when data entry incomplete
+*** DONE prevent step advancement when data entry incomplete
+CLOSED: [2016-06-29 Wed 21:07]
 *** TODO fix bug when no helpfulness radio button is checked
 *** TODO foreach responsibility, display needs as editable list
 *** TODO prettify things with better styles

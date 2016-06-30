@@ -4,9 +4,11 @@ var onClickAdd = function(d3, selector, data,
     var inputSelector = 'span.entry:nth-child(' + (i+1) + ') input',
         newText = root.select(inputSelector).property('value'),
         newData = data.slice(0);
-    newData.push(newText);
-    uponAdd(i, newText);
-    update(d3, selector, newData, uponAdd, uponUpdate, uponRemove);
+    if (newText !== '') {
+      newData.push(newText);
+      uponAdd(i, newText);
+      update(d3, selector, newData, uponAdd, uponUpdate, uponRemove);
+    }
   };
 };
 
@@ -16,9 +18,11 @@ var onClickUpdate = function(d3, selector, data,
     var inputSelector = 'span.entry:nth-child(' + (i+1) + ') input',
         newText = root.select(inputSelector).property('value'),
         newData = data.slice(0);
-    newData[i] = newText;
-    uponUpdate(i, newText);
-    update(d3, selector, newData, uponAdd, uponUpdate, uponRemove);
+    if (newText !== '') {
+      newData[i] = newText;
+      uponUpdate(i, newText);
+      update(d3, selector, newData, uponAdd, uponUpdate, uponRemove);
+    }
   };
 };
 
