@@ -128,7 +128,7 @@ var removeNode = function(d3, type, indexAmongType, skipConfirm) {
     var child = node.__children__[i];
     removeNode(d3, child.type, nodesByType[child.type].indexOf(child), true);
   }
-  var arr = node.__children__;
+  var arr = node.__parent__.__children__;
   arr.splice(arr.indexOf(node), 1);
   nodesByType[type].splice(indexAmongType, 1);
   if (!skipConfirm) rebalanceNodes(d3);
@@ -188,7 +188,9 @@ var highlightResponsibility = function(d3, responsibilityNumber) {
     .text(node.name);
   modSelection.selectNode(d3node, node);
   // This probably doesn't really belong here, but it is a convenient place.
-  setupNeedEntryList(d3, responsibilityNumber);
+  if (responsibilityNumber !== null) {
+    setupNeedEntryList(d3, responsibilityNumber);
+  }
 };
 
 var highlightNeed = function(d3, needNumber) {
