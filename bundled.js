@@ -2641,6 +2641,7 @@ exports.selectNode = function(d3node, d) {
 };
 
 exports.removeSelectFromNode = function() {
+  if (!exports.selectedNode) return;
   modSvg.shapeGroups.filter(function(cd) {
     return cd.id === exports.selectedNode.id;
   }).classed(exports.selectedClass, false);
