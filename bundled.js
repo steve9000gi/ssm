@@ -1193,8 +1193,9 @@ var update = function(d3, selector, data, uponAdd, uponUpdate, uponRemove) {
   root.append('button').attr('class', 'update').text('Update');
   root.append('button').attr('class', 'remove').text('Remove');
   root.select('input').on('keyup', function(d,i){
+    var key = d3.event.key || d3.event.keyIdentifier;
     d3.event.stopPropagation();
-    if (d3.event.key === 'Enter') {
+    if (key === 'Enter') {
       onClickUpdate.apply(null, args).call(null, d, i);
     }
   });
@@ -1203,8 +1204,9 @@ var update = function(d3, selector, data, uponAdd, uponUpdate, uponRemove) {
   // for which there are no corresponding document elements.
   var newSpans = root.enter().append('span').attr('class', 'entry');
   newSpans.append('input').attr('type', 'text').on('keyup', function(d,i){
+    var key = d3.event.key || d3.event.keyIdentifier;
     d3.event.stopPropagation();
-    if (d3.event.key === 'Enter') {
+    if (key === 'Enter') {
       onClickAdd.apply(null, args).call(null, d, i);
     }
   });
