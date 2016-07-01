@@ -1,4 +1,5 @@
-var modDatabase = require('./database.js'),
+var modCompletions = require('./completions.js'),
+    modDatabase = require('./database.js'),
     modEntryList = require('./entry-list.js'),
     modEvents = require('./events.js'),
     modSelection = require('./selection.js'),
@@ -167,6 +168,7 @@ var setupNeedEntryList = function(d3, responsibilityNumber) {
   });
   modEntryList.teardown(d3, selector);
   modEntryList.setup(d3, selector, existingTexts,
+                     modCompletions.completionsByType.need,
                      uponAdd, uponUpdate, uponRemove);
 };
 
@@ -327,6 +329,7 @@ var steps = {
         return d.name;
       });
       modEntryList.setup(d3, selector, existingTexts,
+                         modCompletions.completionsByType.responsibility,
                          uponAdd, uponUpdate, uponRemove);
     },
 

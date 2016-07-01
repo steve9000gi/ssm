@@ -326,6 +326,43 @@ exports.hide = function(d3) {
 };
 
 },{}],4:[function(require,module,exports){
+var animals = [
+  'aardvark',
+  'badger',
+  'camel',
+  'deer',
+  'eagle',
+  'fish',
+  'gazelle',
+  'hedgehog',
+  'impala',
+  'jaguar',
+  'kangaroo',
+  'leopard',
+  'moose',
+  'newt',
+  'owl',
+  'pig',
+  'quail',
+  'raccoon',
+  'scorpion',
+  'tiger',
+  'urchin',
+  'vulture',
+  'walrus',
+  'xerus',
+  'yak',
+  'zebra'
+];
+
+exports.completionsByType = {
+  'role': animals,
+  'responsibility': animals,
+  'need': animals,
+  'resource': animals
+};
+
+},{}],5:[function(require,module,exports){
 var modEvents = require('./events.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
@@ -517,7 +554,7 @@ exports.setup = function(d3) {
   }
 };
 
-},{"./events.js":10,"./selected-color.js":20,"./selection.js":22,"./text.js":26,"./update.js":29}],5:[function(require,module,exports){
+},{"./events.js":11,"./selected-color.js":21,"./selection.js":23,"./text.js":27,"./update.js":30}],6:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modBackend = require('./backend.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
@@ -871,7 +908,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./backend.js":2,"./circles-of-care.js":3,"./serialize.js":23,"./system-support-map.js":25,"./util.js":30}],6:[function(require,module,exports){
+},{"./auth.js":1,"./backend.js":2,"./circles-of-care.js":3,"./serialize.js":24,"./system-support-map.js":26,"./util.js":31}],7:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -958,7 +995,7 @@ exports.setupDragHandle = function(d3) {
     });
 };
 
-},{"./grid.js":16,"./svg.js":24,"./update.js":29}],7:[function(require,module,exports){
+},{"./grid.js":17,"./svg.js":25,"./update.js":30}],8:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -1085,7 +1122,7 @@ exports.addControls = function(d3) {
   createEdgeStyleSelectionSampleEdges(d3);
 };
 
-},{"./edge-thickness.js":8,"./selected-color.js":20,"./selected-shape.js":21}],8:[function(require,module,exports){
+},{"./edge-thickness.js":9,"./selected-color.js":21,"./selected-shape.js":22}],9:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.thickness = 3;
@@ -1131,11 +1168,19 @@ exports.createSubmenu = function(d3) {
       });
 };
 
-},{"./selected-color.js":20}],9:[function(require,module,exports){
+},{"./selected-color.js":21}],10:[function(require,module,exports){
+var datalistId = function(selector) {
+  // FIXME: this assumes the selector is an id selector, like '#selector'. It
+  // doesn't have to be.
+  return selector.slice(1) + '_datalist';
+};
+
 var onClickAdd = function(d3, selector, data,
                           uponAdd, uponUpdate, uponRemove, root) {
   return function(d,i){
-    var inputSelector = 'span.entry:nth-child(' + (i+1) + ') input',
+    // + 1 for base-1 counting in `nth-child` selectors, and +1 for the
+    // `<datalist>` element, which is an earlier sibling in the document.
+    var inputSelector = 'span.entry:nth-child(' + (i+2) + ') input',
         newText = root.select(inputSelector).property('value'),
         newData = data.slice(0);
     if (newText !== '') {
@@ -1149,7 +1194,7 @@ var onClickAdd = function(d3, selector, data,
 var onClickUpdate = function(d3, selector, data,
                              uponAdd, uponUpdate, uponRemove, root) {
   return function(d,i){
-    var inputSelector = 'span.entry:nth-child(' + (i+1) + ') input',
+    var inputSelector = 'span.entry:nth-child(' + (i+2) + ') input',
         newText = root.select(inputSelector).property('value'),
         newData = data.slice(0);
     if (newText !== '') {
@@ -1163,7 +1208,7 @@ var onClickUpdate = function(d3, selector, data,
 var onClickRemove = function(d3, selector, data,
                              uponAdd, uponUpdate, uponRemove, root) {
   return function(d,i){
-    var inputSelector = 'span.entry:nth-child(' + (i+1) + ') input',
+    var inputSelector = 'span.entry:nth-child(' + (i+2) + ') input',
         newText = root.select(inputSelector).property('value'),
         removed = data.slice(0,i).concat(data.slice(i+1, data.length)),
         newData = uponRemove(i) ? removed : data;
@@ -1203,13 +1248,16 @@ var update = function(d3, selector, data, uponAdd, uponUpdate, uponRemove) {
   // The `enter()` starts modifying the "enter" selection, i.e. data elements
   // for which there are no corresponding document elements.
   var newSpans = root.enter().append('span').attr('class', 'entry');
-  newSpans.append('input').attr('type', 'text').on('keyup', function(d,i){
-    var key = d3.event.key || d3.event.keyIdentifier;
-    d3.event.stopPropagation();
-    if (key === 'Enter') {
-      onClickAdd.apply(null, args).call(null, d, i);
-    }
-  });
+  newSpans.append('input')
+    .attr('type', 'text')
+    .attr('list', datalistId(selector))
+    .on('keyup', function(d,i){
+      var key = d3.event.key || d3.event.keyIdentifier;
+      d3.event.stopPropagation();
+      if (key === 'Enter') {
+        onClickAdd.apply(null, args).call(null, d, i);
+      }
+    });
   newSpans.append('button').attr('class', 'add').text('Add');
   newSpans.select('input').node().focus();
 
@@ -1226,8 +1274,17 @@ var update = function(d3, selector, data, uponAdd, uponUpdate, uponRemove) {
   root.exit().remove();
 };
 
-exports.setup = function(d3, selector, existingTexts,
+exports.setup = function(d3, selector, existingTexts, completions,
                          uponAdd, uponUpdate, uponRemove) {
+  // Be sure to add the datalist as the first child element, for the sake of the
+  // `nth-child` selections above.
+  d3.select(selector)
+    .append('datalist')
+    .attr('id', datalistId(selector))
+    .selectAll('option')
+    .data(completions)
+    .enter().append('option')
+    .attr('value', String);
   var data = existingTexts.slice(0),
       root = d3.select(selector).selectAll('span.entry').data(data),
       newSpans = root.enter().append('span').attr('class', 'entry');
@@ -1237,9 +1294,10 @@ exports.setup = function(d3, selector, existingTexts,
 
 exports.teardown = function(d3, selector) {
   d3.select(selector).selectAll('span.entry').remove();
+  d3.select(datalistId(selector)).remove();
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modEdgeStyle = require('./edge-style.js'),
     modEdgeThickness = require('./edge-thickness.js'),
@@ -1483,7 +1541,7 @@ exports.pathMouseDown = function(d3, d3path, d) {
   }
 };
 
-},{"./drag.js":6,"./edge-style.js":7,"./edge-thickness.js":8,"./selected-color.js":20,"./selected-shape.js":21,"./selection.js":22,"./svg.js":24,"./text.js":26,"./update.js":29,"./zoom.js":32}],11:[function(require,module,exports){
+},{"./drag.js":7,"./edge-style.js":8,"./edge-thickness.js":9,"./selected-color.js":21,"./selected-shape.js":22,"./selection.js":23,"./svg.js":25,"./text.js":27,"./update.js":30,"./zoom.js":33}],12:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -1600,7 +1658,7 @@ exports.exportGraphAsImage = function(d3) {
   canvas.remove();
 };
 
-},{"./circles-of-care.js":3,"./selected-color.js":20,"./system-support-map.js":25,"./text.js":26,"./update.js":29}],12:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./selected-color.js":21,"./system-support-map.js":26,"./text.js":27,"./update.js":30}],13:[function(require,module,exports){
 var modSerialize = require('./serialize.js');
 
 // Save as JSON file
@@ -1640,7 +1698,7 @@ exports.setupUpload = function(d3) {
   });
 };
 
-},{"./serialize.js":23}],13:[function(require,module,exports){
+},{"./serialize.js":24}],14:[function(require,module,exports){
 exports.addLogos = function(d3) {
   d3.select("#mainSVG").append("svg:image")
     .attr("xlink:href", "mch-tracs.png")
@@ -1666,7 +1724,7 @@ exports.addCredits = function(d3) {
     .attr("x", 30);
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modContextMenu = require('./context-menu.js'),
     modDatabase = require('./database.js'),
@@ -1752,7 +1810,7 @@ exports.create = function(d3) {
   modContextMenu.setup(d3);
 };
 
-},{"./circles-of-care.js":3,"./context-menu.js":4,"./database.js":5,"./drag.js":6,"./events.js":10,"./file.js":12,"./front-matter.js":13,"./options-menu.js":19,"./selected-color.js":20,"./svg.js":24,"./system-support-map.js":25,"./toolbox.js":27,"./tooltips.js":28,"./zoom.js":32}],15:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./context-menu.js":5,"./database.js":6,"./drag.js":7,"./events.js":11,"./file.js":13,"./front-matter.js":14,"./options-menu.js":20,"./selected-color.js":21,"./svg.js":25,"./system-support-map.js":26,"./toolbox.js":28,"./tooltips.js":29,"./zoom.js":33}],16:[function(require,module,exports){
 // This file is necessary to break a circular dependency between the grid and
 // zoom modules. JST 2015-10-21
 exports.translate = [0, 0];
@@ -1766,7 +1824,7 @@ exports.fitGridToZoom = function(d3) {
     .attr("transform", "translate(" + reverseTranslate + ")");
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var modGridZoom = require('./grid-zoom.js');
 
 var gridVisible = false,
@@ -1883,7 +1941,7 @@ exports.enableSnap = function(d3) {
   showTurnOffGridText(d3);
 };
 
-},{"./grid-zoom.js":15}],17:[function(require,module,exports){
+},{"./grid-zoom.js":16}],18:[function(require,module,exports){
 // Help/instructions button and info box:
 module.exports = function(d3) {
   d3.select("#toolbox").insert("div", ":first-child")
@@ -1920,7 +1978,7 @@ module.exports = function(d3) {
   });
 };
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -1975,7 +2033,7 @@ document.onload = (function(d3) {
   });
 })(window.d3);
 
-},{"./auth.js":1,"./database.js":5,"./events.js":10,"./graph.js":14,"./svg.js":24,"./update.js":29,"./wizard.js":31}],19:[function(require,module,exports){
+},{"./auth.js":1,"./database.js":6,"./events.js":11,"./graph.js":15,"./svg.js":25,"./update.js":30,"./wizard.js":32}],20:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modContextMenu = require('./context-menu.js'),
@@ -2236,7 +2294,7 @@ exports.createOptionsButton = function(d3) {
     });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":3,"./context-menu.js":4,"./edge-thickness.js":8,"./export.js":11,"./grid.js":16,"./selected-color.js":20,"./selected-shape.js":21,"./selection.js":22,"./system-support-map.js":25,"./text.js":26,"./update.js":29}],20:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":3,"./context-menu.js":5,"./edge-thickness.js":9,"./export.js":12,"./grid.js":17,"./selected-color.js":21,"./selected-shape.js":22,"./selection.js":23,"./system-support-map.js":26,"./text.js":27,"./update.js":30}],21:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -2296,7 +2354,7 @@ exports.createColorPalette = function(d3) {
   d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
 };
 
-},{"./edge-style.js":7,"./selected-shape.js":21}],21:[function(require,module,exports){
+},{"./edge-style.js":8,"./selected-shape.js":22}],22:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -2612,7 +2670,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":20,"./svg.js":24,"./update.js":29}],22:[function(require,module,exports){
+},{"./selected-color.js":21,"./svg.js":25,"./update.js":30}],23:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
     modSvg = require('./svg.js');
@@ -2683,7 +2741,7 @@ exports.replaceSelectEdge = function(d3, d3Path, edgeData) {
   modSelection.selectedEdge = edgeData;
 };
 
-},{"./selected-color.js":20,"./selection.js":22,"./svg.js":24}],23:[function(require,module,exports){
+},{"./selected-color.js":21,"./selection.js":23,"./svg.js":25}],24:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modEvents = require('./events.js'),
     modGridZoom = require('./grid-zoom.js'),
@@ -2818,7 +2876,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":3,"./events.js":10,"./grid-zoom.js":15,"./svg.js":24,"./system-support-map.js":25,"./update.js":29,"./wizard.js":31,"./zoom.js":32}],24:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./events.js":11,"./grid-zoom.js":16,"./svg.js":25,"./system-support-map.js":26,"./update.js":30,"./wizard.js":32,"./zoom.js":33}],25:[function(require,module,exports){
 exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
@@ -2846,7 +2904,7 @@ exports.setup = function(d3) {
     .attr("id", "graphG");
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.hideText = "Hide system support rings";
@@ -2926,7 +2984,7 @@ exports.create = function(d3) {
       .text(function(d) { return d.name; });
 };
 
-},{"./selected-color.js":20}],26:[function(require,module,exports){
+},{"./selected-color.js":21}],27:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
@@ -3125,7 +3183,7 @@ exports.changeElementTextImmediately = function(d3, d3element, node, text) {
   exports.formatText(d3, d3element, node);
 };
 
-},{"./drag.js":6,"./selected-color.js":20,"./selected-shape.js":21,"./svg.js":24,"./update.js":29}],27:[function(require,module,exports){
+},{"./drag.js":7,"./selected-color.js":21,"./selected-shape.js":22,"./svg.js":25,"./update.js":30}],28:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modEdgeStyle = require('./edge-style.js'),
     modHelp = require('./help.js'),
@@ -3152,7 +3210,7 @@ exports.prepareToolbox = function(d3) {
   modEdgeStyle.addControls(d3);
 };
 
-},{"./circles-of-care.js":3,"./edge-style.js":7,"./help.js":17,"./options-menu.js":19,"./selected-color.js":20,"./selected-shape.js":21,"./system-support-map.js":25,"./update.js":29}],28:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./edge-style.js":8,"./help.js":18,"./options-menu.js":20,"./selected-color.js":21,"./selected-shape.js":22,"./system-support-map.js":26,"./update.js":30}],29:[function(require,module,exports){
 exports.tip = null;
 
 // "Notes" == tooltips
@@ -3170,7 +3228,7 @@ exports.setupNotes = function(d3) {
   d3.select("#mainSVG").call(exports.tip);
 };
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modDrag = require('./drag.js'),
     modEvents = require('./events.js'),
@@ -3536,7 +3594,7 @@ exports.updateWindow = function(d3) {
   exports.updateGraph(d3);
 };
 
-},{"./circles-of-care.js":3,"./drag.js":6,"./events.js":10,"./grid.js":16,"./selected-color.js":20,"./selection.js":22,"./svg.js":24,"./system-support-map.js":25,"./text.js":26,"./tooltips.js":28,"./util.js":30}],30:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./drag.js":7,"./events.js":11,"./grid.js":17,"./selected-color.js":21,"./selection.js":23,"./svg.js":25,"./system-support-map.js":26,"./text.js":27,"./tooltips.js":29,"./util.js":31}],31:[function(require,module,exports){
 var cookiesByName = null;
 
 exports.readCookieByName = function(name) {
@@ -3582,8 +3640,9 @@ exports.computeRectangleBoundary = function(edge) {
   return ((absCosTheta > thresholdCos) ? h * hyp / dy : w * hyp / dx) + offset;
 };
 
-},{}],31:[function(require,module,exports){
-var modDatabase = require('./database.js'),
+},{}],32:[function(require,module,exports){
+var modCompletions = require('./completions.js'),
+    modDatabase = require('./database.js'),
     modEntryList = require('./entry-list.js'),
     modEvents = require('./events.js'),
     modSelection = require('./selection.js'),
@@ -3752,6 +3811,7 @@ var setupNeedEntryList = function(d3, responsibilityNumber) {
   });
   modEntryList.teardown(d3, selector);
   modEntryList.setup(d3, selector, existingTexts,
+                     modCompletions.completionsByType.need,
                      uponAdd, uponUpdate, uponRemove);
 };
 
@@ -3912,6 +3972,7 @@ var steps = {
         return d.name;
       });
       modEntryList.setup(d3, selector, existingTexts,
+                         modCompletions.completionsByType.responsibility,
                          uponAdd, uponUpdate, uponRemove);
     },
 
@@ -4033,7 +4094,7 @@ exports.prevStep = function(d3) {
   exports.showStep(d3);
 };
 
-},{"./database.js":5,"./entry-list.js":9,"./events.js":10,"./selection.js":22,"./svg.js":24,"./system-support-map.js":25,"./text.js":26,"./update.js":29}],32:[function(require,module,exports){
+},{"./completions.js":4,"./database.js":6,"./entry-list.js":10,"./events.js":11,"./selection.js":23,"./svg.js":25,"./system-support-map.js":26,"./text.js":27,"./update.js":30}],33:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modGridZoom = require('./grid-zoom.js'),
     modText = require('./text.js');
@@ -4076,4 +4137,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid-zoom.js":15,"./grid.js":16,"./text.js":26}]},{},[18]);
+},{"./grid-zoom.js":16,"./grid.js":17,"./text.js":27}]},{},[19]);

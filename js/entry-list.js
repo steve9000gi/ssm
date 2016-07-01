@@ -1,7 +1,15 @@
+var datalistId = function(selector) {
+  // FIXME: this assumes the selector is an id selector, like '#selector'. It
+  // doesn't have to be.
+  return selector.slice(1) + '_datalist';
+};
+
 var onClickAdd = function(d3, selector, data,
                           uponAdd, uponUpdate, uponRemove, root) {
   return function(d,i){
-    var inputSelector = 'span.entry:nth-child(' + (i+1) + ') input',
+    // + 1 for base-1 counting in `nth-child` selectors, and +1 for the
+    // `<datalist>` element, which is an earlier sibling in the document.
+    var inputSelector = 'span.entry:nth-child(' + (i+2) + ') input',
         newText = root.select(inputSelector).property('value'),
         newData = data.slice(0);
     if (newText !== '') {
@@ -15,7 +23,7 @@ var onClickAdd = function(d3, selector, data,
 var onClickUpdate = function(d3, selector, data,
                              uponAdd, uponUpdate, uponRemove, root) {
   return function(d,i){
-    var inputSelector = 'span.entry:nth-child(' + (i+1) + ') input',
+    var inputSelector = 'span.entry:nth-child(' + (i+2) + ') input',
         newText = root.select(inputSelector).property('value'),
         newData = data.slice(0);
     if (newText !== '') {
@@ -29,7 +37,7 @@ var onClickUpdate = function(d3, selector, data,
 var onClickRemove = function(d3, selector, data,
                              uponAdd, uponUpdate, uponRemove, root) {
   return function(d,i){
-    var inputSelector = 'span.entry:nth-child(' + (i+1) + ') input',
+    var inputSelector = 'span.entry:nth-child(' + (i+2) + ') input',
         newText = root.select(inputSelector).property('value'),
         removed = data.slice(0,i).concat(data.slice(i+1, data.length)),
         newData = uponRemove(i) ? removed : data;
@@ -69,13 +77,16 @@ var update = function(d3, selector, data, uponAdd, uponUpdate, uponRemove) {
   // The `enter()` starts modifying the "enter" selection, i.e. data elements
   // for which there are no corresponding document elements.
   var newSpans = root.enter().append('span').attr('class', 'entry');
-  newSpans.append('input').attr('type', 'text').on('keyup', function(d,i){
-    var key = d3.event.key || d3.event.keyIdentifier;
-    d3.event.stopPropagation();
-    if (key === 'Enter') {
-      onClickAdd.apply(null, args).call(null, d, i);
-    }
-  });
+  newSpans.append('input')
+    .attr('type', 'text')
+    .attr('list', datalistId(selector))
+    .on('keyup', function(d,i){
+      var key = d3.event.key || d3.event.keyIdentifier;
+      d3.event.stopPropagation();
+      if (key === 'Enter') {
+        onClickAdd.apply(null, args).call(null, d, i);
+      }
+    });
   newSpans.append('button').attr('class', 'add').text('Add');
   newSpans.select('input').node().focus();
 
@@ -92,8 +103,17 @@ var update = function(d3, selector, data, uponAdd, uponUpdate, uponRemove) {
   root.exit().remove();
 };
 
-exports.setup = function(d3, selector, existingTexts,
+exports.setup = function(d3, selector, existingTexts, completions,
                          uponAdd, uponUpdate, uponRemove) {
+  // Be sure to add the datalist as the first child element, for the sake of the
+  // `nth-child` selections above.
+  d3.select(selector)
+    .append('datalist')
+    .attr('id', datalistId(selector))
+    .selectAll('option')
+    .data(completions)
+    .enter().append('option')
+    .attr('value', String);
   var data = existingTexts.slice(0),
       root = d3.select(selector).selectAll('span.entry').data(data),
       newSpans = root.enter().append('span').attr('class', 'entry');
@@ -103,4 +123,5 @@ exports.setup = function(d3, selector, existingTexts,
 
 exports.teardown = function(d3, selector) {
   d3.select(selector).selectAll('span.entry').remove();
+  d3.select(datalistId(selector)).remove();
 };

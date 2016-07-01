@@ -79,7 +79,8 @@ more profound ways anyway.
 CLOSED: [2016-06-29 Wed 21:07]
 *** DONE foreach responsibility, display needs as editable list
 CLOSED: [2016-06-29 Wed 21:21]
-*** TODO drop-down completion of common answers at each step
+*** DONE drop-down completion of common answers at each step
+CLOSED: [2016-07-01 Fri 15:46]
 Example markup:
 <input type="text" placeholder="enter a fruit" list="dl" />
 <datalist id="dl"">
