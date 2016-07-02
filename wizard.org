@@ -68,6 +68,8 @@ CLOSED: [2016-06-16 Thu 21:02]
 *** DONE deploy (goal: by Fri June 24)
 CLOSED: [2016-06-24 Fri 23:26]
 ** Bugs
+*** TODO entry-list steps don't save the correct step
+So when reloading the page, it reverts to the previous step
 ** Nice-to-haves
 *** DONE display responsibilities as editable list
 CLOSED: [2016-06-24 Fri 22:19]
@@ -92,7 +94,8 @@ Example markup:
   <option value="kiwi"></option>
 </datalist>
 *** TODO fix bug when no helpfulness radio button is checked
-*** TODO prettify things with better styles
+*** DONE prettify things with better styles
+CLOSED: [2016-07-01 Fri 22:02]
 One thing I definitely want is for the back and next buttons to show up at the
 same place every time.
 *** TODO zoom out map when wizard opened, so that the full circles are shown
@@ -102,8 +105,6 @@ same place every time.
 - I also ran into some issue with dragging nodes at the bottom (right) of the
 screen. Middle click started dragging, left click finished it. But left drag
 didn't work.
-*** TODO wizard and toolbox collide if window small enough
-See screenshot.
 *** TODO enable swapping out of text (3-5 hours)
 *** TODO enable text selection in wizard area
 ** Later

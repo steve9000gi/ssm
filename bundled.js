@@ -3656,6 +3656,7 @@ exports.currentStep = 1;
 exports.currentResponsibility = undefined;
 exports.currentNeed = undefined;
 
+var numSteps = 9;
 var nodesByType = {
       'role': null,
       'responsibility': [],
@@ -3926,7 +3927,7 @@ exports.hideWizard = function(d3) {
 
 exports.showStep = function(d3) {
   var i, id, el;
-  for (i=1; i <= 8; i++) {
+  for (i=1; i <= numSteps; i++) {
     id = 'wizard-step' + i;
     if (i === exports.currentStep) {
       if ((el = document.getElementById(id))) {
@@ -3937,6 +3938,12 @@ exports.showStep = function(d3) {
         el.style.display = 'none';
       }
     }
+  }
+  if (exports.currentStep && steps[exports.currentStep] &&
+      steps[exports.currentStep].isMinimized) {
+    document.getElementById('wizard').className = 'minimized';
+  } else {
+    document.getElementById('wizard').className = 'open';
   }
   attachButtonHandlers(d3);
 };
@@ -4027,7 +4034,9 @@ var steps = {
     }
   },
 
-  7: {
+  7: { isMinimized: true },
+
+  8: {
     enter: function(d3, direction) {
       if (direction === 1) {
         exports.currentNeed = 0;
