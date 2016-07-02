@@ -311,10 +311,16 @@ path.link.selected, g.pathG.selected path {
   float: left;
 }
 
-#wizard.open {
-  display: block;
+#wizard.closed {
+  display: none;
+  height: 0px;
+}
+
+#wizard.open .wizard-step {
+  position: absolute;
   top: 0;
   left: 0;
+  right: 0;
   height: 340px;
   background-color: white;
   border: 2px solid green;
@@ -323,7 +329,7 @@ path.link.selected, g.pathG.selected path {
   overflow-y: auto;
 }
 
-#wizard.open div.close {
+#wizard.open .wizard-step div.close {
   float: right;
   font-size: 20px;
   border: 1px solid gray;
@@ -333,14 +339,21 @@ path.link.selected, g.pathG.selected path {
   cursor: pointer;
 }
 
-#wizard.closed {
-  display: none;
-  height: 0px;
-}
-
-#wizard.open aside {
+#wizard.open .wizard-step aside {
   clear: right;
   float: right;
   width: 30%;
   border: 1px solid #aaa;
+}
+
+#wizard.open .wizard-step .wizard-buttons {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+}
+
+#wizard.open .wizard-step .wizard-buttons button {
+  padding: 8px 20px;
+  font-size: 20px;
+  border-radius: 5px;
 }
