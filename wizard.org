@@ -67,7 +67,41 @@ CLOSED: [2016-06-15 Wed 22:17]
 CLOSED: [2016-06-16 Thu 21:02]
 *** DONE deploy (goal: by Fri June 24)
 CLOSED: [2016-06-24 Fri 23:26]
+** Priorities (from Kristen, June 13)
+*** TODO majorly revamp "resources" step
+**** DONE minimized interstitial step before resources
+**** TODO resource data entry step
+- What type of resource would you like to describe?
+  (From a drop-down list with ability to type in something not there.)
+- Can you name/describe the resource more specifically?
+  (Go from type to specific instance.)
+- Please select all needs that you have entered that this resouroce supports.
+  (SHOW THEM a list of all needs, organized by responsibility,
+  and allow them to select one or more that this resource
+  will draw an arrow to -- resource --> need(s).
+  The selection can be made with radio buttons/check boxes/highlighting,
+  we just want to make it user friendly and abundantly clear
+  that you can click to include and then click again to de-select.)
+- How helpful has this resource been?
+  (radio button or scale with three options - helpful, not helpful neutral)
+- Can you describe why you feel the resource is or is not helpful?
+  In what ways?
+  (free text, does not have to go in the map, but if it did it would go
+  on the edge between the resource and need.)
+**** TODO "another resource or next step?" interstitial
+*** TODO add "wishes" step
+**** TODO interstitial step before wishes
+"Ask them to reflect on their emerging map again and share their top three wishes for how they could be better supported in meeting their responsibilities. Tell them they'll get three wishes and will be guided through entering each, one at a time."
+**** TODO wish data entry step
+- Please describe your wish.
+- Does this wish connect most importantly to a responsibility you feel stuck on, a need you struggle to meet, or a resource that you would like to change in some way? (Note: We want to connect your wish to the one most important factor in your map.)
+- Please select the specific (----) from the list below. (They highlight it.)
+If the wish is connected to an existing resource (question is prompted only if the connection is to a resource) ask, "Please describe how you would like that resource to change." (free text, not necessarily included in the map; if it's in the map it'll go on the edge.)
+*** TODO on final step, allow download as JSON or image
+"Show the map, thank them for taking the time to complete it. Allow them to download it as a json file that can be opened in the ssm website or as a picture file (.jpg?). Contact ssm@unc.edu?
+*** TODO enable swapping out text copy (3-5 hours)
 ** Bugs
+*** TODO js exception when no helpfulness radio button is checked
 *** TODO entry-list steps don't save the correct step
 So when reloading the page, it reverts to the previous step
 ** Nice-to-haves
@@ -93,7 +127,6 @@ Example markup:
   <option value="pear"></option>
   <option value="kiwi"></option>
 </datalist>
-*** TODO fix bug when no helpfulness radio button is checked
 *** DONE prettify things with better styles
 CLOSED: [2016-07-01 Fri 22:02]
 One thing I definitely want is for the back and next buttons to show up at the
@@ -105,7 +138,6 @@ same place every time.
 - I also ran into some issue with dragging nodes at the bottom (right) of the
 screen. Middle click started dragging, left click finished it. But left drag
 didn't work.
-*** TODO enable swapping out of text (3-5 hours)
 *** TODO enable text selection in wizard area
 ** Later
 *** TODO enable wizard for maps with preexisting info
