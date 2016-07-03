@@ -122,14 +122,20 @@
         </aside>
         <h1>Ring #4: Resources</h1>
         <p>The next ring identifies the resources you use to meet your needs from Ring #3. Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you tried (whether or not they have helped you) to get that need met? Resources for your map might include websites, brochures, training programs, buses, providers, a case manager, organizations in your community, or books you read to build a skill in yourself.</p>
-        <p>The resources on Ring #4 will be color-coded to indicate their level of helpfulness.</p>
-        <p>You&rsquo;ll be asked about each need in turn, starting with the first one you entered.</p>
-        <h3>Need <span id="wizard_current_need_number">_</span> of <span id="wizard_need_count">_</span>: <span id="wizard_current_need_text">____</span></h3>
-        <label>A resources that will help meet this need is:
-          <input type="text" name="resource" />
+        <p>The lines to resources on Ring #4 will be color-coded to indicate their level of helpfulness.</p>
+        <label>What type of resource would you like to describe?
+          <input type="text" name="resource_type" list="resource-type-completions" />
+          <datalist id="resource-type-completions""></datalist>
         </label>
         <br/>
-        This resource was:
+        <label>Can you name/describe the resource more specifically?
+          <input type="text" name="resource_name" />
+        </label>
+        <br/>
+        Please select all needs that you have entered that this resource supports.
+        <div id="wizard-resource-needs"></div>
+        <br/>
+        How helpful has this resource been?
         <br/>
         <label>
           <input type="radio" name="helpfulness" value="helpful" /> Helpful
@@ -143,8 +149,9 @@
           <input type="radio" name="helpfulness" value="not-helpful" /> Not helpful
         </label>
         <br/>
-        <button class="add-resource">Add</button>
-        <br/>
+        <label>Can you describe why you feel the resource is or is not helpful? In what ways?<br/>
+          <textarea name="resource_helpfulness_description"></textarea>
+        </label>
         <div class="wizard-buttons">
           <button class="back">&laquo; Back</button>
           <button class="next">Next &raquo;</button>

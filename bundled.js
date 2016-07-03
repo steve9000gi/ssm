@@ -3839,23 +3839,36 @@ var highlightResponsibility = function(d3, responsibilityNumber) {
   }
 };
 
-var highlightNeed = function(d3, needNumber) {
-  if (needNumber === null) {
-    modSelection.removeSelectFromNode();
-    return;
-  }
-  if (needNumber >= nodesByType.need.length) {
-    return;
-  }
-  var node = nodesByType.need[needNumber],
-      d3node = d3.select('#shapeG' + node.id);
-  d3.select('#wizard_need_count')
-    .text(nodesByType.need.length);
-  d3.select('#wizard_current_need_number')
-    .text(needNumber + 1);
-  d3.select('#wizard_current_need_text')
-    .text(node.name);
-  modSelection.selectNode(d3node, node);
+var setupResourceForm = function(d3) {
+  var groups = d3
+        .select('#wizard-resource-needs')
+        .selectAll('div.wizard-need-group')
+        .data(nodesByType.responsibility)
+        .enter().append('div')
+        .attr('class', 'wizard-need-group');
+  groups.append('h5')
+    .text(function(d){ return d.name; });
+  // This is a `selectAll` on a `selectAll` selection, so this qualifies as a
+  // nested d3 selection. See https://bost.ocks.org/mike/nest/ for info.
+  var labels = groups
+        .selectAll('label')
+        .data(function(d){ return d.__children__; })
+        .enter().append('label');
+  labels.append('input')
+    .attr('type', 'checkbox')
+    .attr('name', function(d, indexInResp, indexOfResp){
+      return 'a' + indexOfResp + '_' + indexInResp;
+    });
+  // Using d3's `.text` here will wipe out the checkboxes appended above.
+  // See https://github.com/d3/d3/issues/94
+  labels.each(function(d){
+    this.appendChild(document.createTextNode(d.name));
+  });
+  d3.select('#resource-type-completions')
+    .selectAll('option')
+    .data(modCompletions.completionsByType.resource)
+    .enter().append('option')
+    .attr('value', String);
 };
 
 var guardedClose = function(d3) {
@@ -4043,17 +4056,17 @@ var steps = {
       } else if (direction === -1) {
         exports.currentNeed = nodesByType.need.length - 1;
       }
-      highlightNeed(d3, exports.currentNeed);
+      setupResourceForm(d3);
     },
 
     exit: function(d3) {
-      highlightNeed(d3, null);
+      setupResourceForm(d3);
       return true;
     },
 
     subStepAdvance: function(d3) {
       if (++exports.currentNeed !== nodesByType.need.length) {
-        highlightNeed(d3, exports.currentNeed);
+        setupResourceForm(d3);
         return true;
       }
       return false;
@@ -4061,7 +4074,7 @@ var steps = {
 
     subStepRetreat: function(d3) {
       if (--exports.currentNeed >= 0) {
-        highlightNeed(d3, exports.currentNeed);
+        setupResourceForm(d3);
         return true;
       }
       return false;

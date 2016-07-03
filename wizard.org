@@ -70,7 +70,8 @@ CLOSED: [2016-06-24 Fri 23:26]
 ** Priorities (from Kristen, June 13)
 *** TODO majorly revamp "resources" step
 **** DONE minimized interstitial step before resources
-**** TODO resource data entry step
+**** DONE resource data entry step
+CLOSED: [2016-07-02 Sat 22:17]
 - What type of resource would you like to describe?
   (From a drop-down list with ability to type in something not there.)
 - Can you name/describe the resource more specifically?
@@ -88,7 +89,16 @@ CLOSED: [2016-06-24 Fri 23:26]
   In what ways?
   (free text, does not have to go in the map, but if it did it would go
   on the edge between the resource and need.)
+**** TODO Block substep advancement until basic info is entered.
+**** TODO Save entered data to map and backend
+- node name should be "resource_type" input
+- also save "resource_name", maybe as notes about the node
+- add an edge from every need whose box was checked
+- color-code edges by `helpfulness` rating (and save that somewhere, if not already saved)
+- save "resource_helpfulness_description" text somewhere
 **** TODO "another resource or next step?" interstitial
+This should be a substep to the resource step, Step 8.
+Step 8 should not exit until all resources have been added.
 *** TODO add "wishes" step
 **** TODO interstitial step before wishes
 "Ask them to reflect on their emerging map again and share their top three wishes for how they could be better supported in meeting their responsibilities. Tell them they'll get three wishes and will be guided through entering each, one at a time."
@@ -104,6 +114,7 @@ If the wish is connected to an existing resource (question is prompted only if t
 *** TODO js exception when no helpfulness radio button is checked
 *** TODO entry-list steps don't save the correct step
 So when reloading the page, it reverts to the previous step
+This might be because we don't currently save merely for step advancment.
 ** Nice-to-haves
 *** DONE display responsibilities as editable list
 CLOSED: [2016-06-24 Fri 22:19]
