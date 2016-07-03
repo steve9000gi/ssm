@@ -344,6 +344,7 @@ path.link.selected, g.pathG.selected path {
   float: right;
   width: 30%;
   border: 1px solid #aaa;
+  margin-top: 20px;
 }
 
 #wizard.open .wizard-step .wizard-buttons {
