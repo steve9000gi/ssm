@@ -112,7 +112,7 @@ var upsertResource = function(d3, resourceNumber) {
       checkedNeedsSel = '#wizard-resource-needs input[type=checkbox]:checked',
       checkedParentNeeds = d3.selectAll(checkedNeedsSel),
       checkedHelpfulness = d3.select('input[name=helpfulness]:checked').node(),
-      helpDescrip = d3.select('input[name=resource_helpfulness_description'),
+      helpDescrip = d3.select('textarea[name=resource_helpfulness_description'),
       noType = type.node().value === '',
       noNeeds = checkedParentNeeds.size() === 0,
       noHelpfulness = !checkedHelpfulness;
