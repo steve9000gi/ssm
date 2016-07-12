@@ -402,3 +402,7 @@ path.link.selected, g.pathG.selected path {
   border: 1px solid #aaa;
   scroll: auto;
 }
+
+#wizard-resource-helpfulness-radio-group {
+  max-width: 600px;
+}

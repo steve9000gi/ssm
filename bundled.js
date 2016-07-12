@@ -3662,7 +3662,10 @@ var nodesByType = {
       'responsibility': [],
       'need': [],
       'resource': []
-    };
+    },
+    // a flag to be set when user selects "continue" option from "add resources"
+    // interstitial:
+    doneWithResources;
 
 var addRoleThenNext = function(d3) {
   var text = d3.select('input[name=role]').node().value,
@@ -3754,7 +3757,7 @@ var upsertResource = function(d3, resourceNumber) {
       checkedHelpfulness = d3.select('input[name=helpfulness]:checked').node(),
       helpDescrip = d3.select('input[name=resource_helpfulness_description'),
       noType = type.node().value === '',
-      noNeeds = checkedNeedsSel.length === 0,
+      noNeeds = checkedParentNeeds.size() === 0,
       noHelpfulness = !checkedHelpfulness;
 
   if (noType) {
@@ -3778,6 +3781,9 @@ var upsertResource = function(d3, resourceNumber) {
   }
 
   if (noHelpfulness) {
+    d3.select('#wizard-resource-helpfulness-radio-group')
+      .transition(0.5)
+      .style('border', '1px solid red');
     d3.select('#wizard-resource-helpfulness-error')
       .text('Please select one option below.')
       .style('color', '#a00')
@@ -3792,12 +3798,14 @@ var upsertResource = function(d3, resourceNumber) {
                   : helpfulness === 'not-helpful' ? 'red'
                   : 'black',
         parents = [];
+
     checkedParentNeeds.each(function(){
       // A name might be `a2_3`, for example.
       var indexes = d3.select(this).attr('name').slice(1).split('_'),
           resp = nodesByType.responsibility[indexes[0]];
       parents.push(resp.__children__[indexes[1]]);
     });
+
     var newNode = addNode(d3, 'resource', parents, type.node().value, edgeColor),
         nameNode = name.node(),
         hdNode = helpDescrip.node();
@@ -3937,6 +3945,10 @@ var setupResourceInterstitial = function(d3) {
   document.getElementById('wizard').className = 'minimized';
   d3.select('#wizard-step8 .resource-form').style('display', 'none');
   d3.select('#wizard-step8 .resource-interstitial').style('display', 'block');
+  d3.selectAll('#wizard button.add-resource')
+    .on('click', function(){ exports.nextStep(d3); });
+  d3.selectAll('#wizard button.next-step')
+    .on('click', function(){ doneWithResources = true; exports.nextStep(d3); });
 };
 
 var guardedClose = function(d3) {
@@ -3958,8 +3970,6 @@ var attachButtonHandlers = function(d3) {
     .on('click', function(){ exports.hideWizard(d3); });
   d3.selectAll('#wizard button.add-role-next')
     .on('click', function(){ addRoleThenNext(d3); });
-  d3.selectAll('#wizard button.add-resource')
-    .on('click', function(){ addResource(d3); });
   // Stop propagation of keydown events, so that the handlers elsewhere in this
   // code don't prevent default. I need to do this to allow users to hit
   // 'backspace' in these fields.
@@ -4121,15 +4131,13 @@ var steps = {
   8: {
     // false if on an in-between "add more or continue?" interstitial:
     doingDataEntry: true,
-    // a flag to be set when user selects "continue" option from interstitial:
-    shouldContinue: false,
     currentResource: null,
 
     enter: function(d3, direction) {
       this.currentResource =
         direction === -1 ? nodesByType.resource.length - 1 : 0;
       this.doingDataEntry = true;
-      this.shouldContinue = false;
+      doneWithResources = false;
       setupResourceForm(d3, this.currentResource);
     },
 
@@ -4140,7 +4148,7 @@ var steps = {
         this.doingDataEntry = false;
         setupResourceInterstitial(d3);
         return true;
-      } else if (this.shouldContinue) {
+      } else if (doneWithResources) {
         return false;
       } else {
         this.currentResource += 1;

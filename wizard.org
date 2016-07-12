@@ -89,16 +89,20 @@ CLOSED: [2016-07-02 Sat 22:17]
   In what ways?
   (free text, does not have to go in the map, but if it did it would go
   on the edge between the resource and need.)
-**** TODO Block substep advancement until basic info is entered.
+**** DONE Block substep advancement until basic info is entered.
+CLOSED: [2016-07-12 Tue 14:32]
+**** DONE "another resource or next step?" interstitial
+CLOSED: [2016-07-12 Tue 14:32]
+This should be a substep to the resource step, Step 8.
+Step 8 should not exit until all resources have been added.
 **** TODO Save entered data to map and backend
 - node name should be "resource_type" input
 - also save "resource_name", maybe as notes about the node
 - add an edge from every need whose box was checked
 - color-code edges by `helpfulness` rating (and save that somewhere, if not already saved)
 - save "resource_helpfulness_description" text somewhere
-**** TODO "another resource or next step?" interstitial
-This should be a substep to the resource step, Step 8.
-Step 8 should not exit until all resources have been added.
+**** TODO restore resource entry state upon reload
+**** TODO add line breaks between checkboxes
 *** TODO add "wishes" step
 **** TODO interstitial step before wishes
 "Ask them to reflect on their emerging map again and share their top three wishes for how they could be better supported in meeting their responsibilities. Tell them they'll get three wishes and will be guided through entering each, one at a time."
