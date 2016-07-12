@@ -95,7 +95,8 @@ CLOSED: [2016-07-12 Tue 14:32]
 CLOSED: [2016-07-12 Tue 14:32]
 This should be a substep to the resource step, Step 8.
 Step 8 should not exit until all resources have been added.
-**** TODO Save entered data to map and backend
+**** DONE Save entered data to map and backend
+CLOSED: [2016-07-12 Tue 15:08]
 - node name should be "resource_type" input
 - also save "resource_name", maybe as notes about the node
 - add an edge from every need whose box was checked

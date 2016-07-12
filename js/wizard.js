@@ -167,7 +167,7 @@ var upsertResource = function(d3, resourceNumber) {
         nameNode = name.node(),
         hdNode = helpDescrip.node();
     newNode.helpfulness = helpfulness;
-    if (nameNode) newNode.name = nameNode.value;
+    if (nameNode) newNode.specific_name = nameNode.value;
     if (hdNode) newNode.helpfulnessDescription = hdNode.value;
     modDatabase.writeMapToDatabase(d3, true);
     return true;
