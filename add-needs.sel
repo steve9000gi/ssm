@@ -48,7 +48,7 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=#wizard-step6 &gt; button.next</td>
+	<td>css=#wizard-step6 button.next</td>
 	<td></td>
 </tr>
 <tr>
@@ -83,7 +83,7 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=#wizard-step6 &gt; button.next</td>
+	<td>css=#wizard-step6 button.next</td>
 	<td></td>
 </tr>
 <tr>
