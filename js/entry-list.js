@@ -123,5 +123,5 @@ exports.setup = function(d3, selector, existingTexts, completions,
 
 exports.teardown = function(d3, selector) {
   d3.select(selector).selectAll('span.entry').remove();
-  d3.select(datalistId(selector)).remove();
+  d3.select('#' + datalistId(selector)).remove();
 };
