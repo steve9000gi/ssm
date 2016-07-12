@@ -116,45 +116,54 @@
       </div>
 
       <div id="wizard-step8" class="wizard-step">
-        <div class="close"><span>X</span></div>
-        <aside>
-          Tip: If needs were ingredients in a recipe, resources might include things like a favorite recipe, particular brands of an ingredient, or a store that sells many ingredients on your list.
-        </aside>
-        <h1>Ring #4: Resources</h1>
-        <p>The next ring identifies the resources you use to meet your needs from Ring #3. Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you tried (whether or not they have helped you) to get that need met? Resources for your map might include websites, brochures, training programs, buses, providers, a case manager, organizations in your community, or books you read to build a skill in yourself.</p>
-        <p>The lines to resources on Ring #4 will be color-coded to indicate their level of helpfulness.</p>
-        <label>What type of resource would you like to describe?
-          <input type="text" name="resource_type" list="resource-type-completions" />
-          <datalist id="resource-type-completions""></datalist>
-        </label>
-        <br/>
-        <label>Can you name/describe the resource more specifically?
-          <input type="text" name="resource_name" />
-        </label>
-        <br/>
-        Please select all needs that you have entered that this resource supports.
-        <div id="wizard-resource-needs"></div>
-        <br/>
-        How helpful has this resource been?
-        <br/>
-        <label>
-          <input type="radio" name="helpfulness" value="helpful" /> Helpful
-        </label>
-        <br/>
-        <label>
-          <input type="radio" name="helpfulness" value="somewhat-helpful" /> Somewhat helpful
-        </label>
-        <br/>
-        <label>
-          <input type="radio" name="helpfulness" value="not-helpful" /> Not helpful
-        </label>
-        <br/>
-        <label>Can you describe why you feel the resource is or is not helpful? In what ways?<br/>
-          <textarea name="resource_helpfulness_description"></textarea>
-        </label>
-        <div class="wizard-buttons">
-          <button class="back">&laquo; Back</button>
-          <button class="next">Next &raquo;</button>
+        <div class="resource-form">
+          <div class="close"><span>X</span></div>
+          <aside>
+            Tip: If needs were ingredients in a recipe, resources might include things like a favorite recipe, particular brands of an ingredient, or a store that sells many ingredients on your list.
+          </aside>
+          <h1>Ring #4: Resources</h1>
+          <p>The next ring identifies the resources you use to meet your needs from Ring #3. Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you tried (whether or not they have helped you) to get that need met? Resources for your map might include websites, brochures, training programs, buses, providers, a case manager, organizations in your community, or books you read to build a skill in yourself.</p>
+          <p>The lines to resources on Ring #4 will be color-coded to indicate their level of helpfulness.</p>
+          <label>What type of resource would you like to describe?
+            <span id="wizard-resource-type-error"></span>
+            <input type="text" name="resource_type" list="resource-type-completions" />
+            <datalist id="resource-type-completions""></datalist>
+          </label>
+          <br/>
+          <label>Can you name/describe the resource more specifically?
+            <input type="text" name="resource_name" />
+          </label>
+          <br/>
+          Please select all needs that you have entered that this resource supports.
+          <span id="wizard-resource-needs-error"></span>
+          <div id="wizard-resource-needs"></div>
+          <br/>
+          How helpful has this resource been?
+          <span id="wizard-resource-helpfulness-error"></span>
+          <br/>
+          <label>
+            <input type="radio" name="helpfulness" value="helpful" /> Helpful
+          </label>
+          <br/>
+          <label>
+            <input type="radio" name="helpfulness" value="somewhat-helpful" /> Somewhat helpful
+          </label>
+          <br/>
+          <label>
+            <input type="radio" name="helpfulness" value="not-helpful" /> Not helpful
+          </label>
+          <br/>
+          <label>Can you describe why you feel the resource is or is not helpful? In what ways?<br/>
+            <textarea name="resource_helpfulness_description"></textarea>
+          </label>
+          <div class="wizard-buttons">
+            <button class="back">&laquo; Back</button>
+            <button class="next">Next &raquo;</button>
+          </div>
+        </div>
+
+        <div class="resource-interstitial">
+          TODO: implement interstitial content
         </div>
       </div>
 

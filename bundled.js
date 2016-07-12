@@ -3718,39 +3718,98 @@ var rebalanceNodes = function(d3) {
   modUpdate.updateGraph(d3);
 };
 
-var addNode = function(d3, type, parent, text, edgeColor) {
+var addNode = function(d3, type, parent_s, text, edgeColor) {
+  // parent_s might be single parent or an array of many parents
   var newNode = modEvents.addNode(d3, 0, 0, text),
-      edge = {
-        source: parent,
+      parents = [].concat(parent_s),
+      multiParent = parents.length > 1,
+      newEdge = function(src) { return {
+        source: src,
         target: newNode,
         style: 'solid',
         color: edgeColor || 'black',
         thickness: 3,
         name: ''
-      };
-  modEvents.addEdge(d3, edge);
+      }; };
+  newNode.__parents__ = parents.slice(0);
+  for (var i=0; i < parents.length; i++) {
+    modEvents.addEdge(d3, newEdge(parents[i]));
+    newNode.__parents__[i].__children__.push(newNode);
+  }
   newNode.type = type;
-  newNode.__parent__ = parent;
-  newNode.__parent__.__children__.push(newNode);
   newNode.__children__ = [];
   nodesByType[type].push(newNode);
   rebalanceNodes(d3);
   return newNode;
 };
 
-var addResource = function(d3) {
-  var inputEl = d3.select('input[name=resource]').node(),
-      // TODO: what if no helpfulness radio is checked?
-      helpfulness = d3.select('input[name=helpfulness]:checked').node().value,
-      parent = nodesByType.need[exports.currentNeed],
-      edgeColor = helpfulness === 'helpful' ? 'green'
-                : helpfulness === 'not-helpful' ? 'red'
-                : 'black',
-      newNode = addNode(d3, 'resource', parent, inputEl.value, edgeColor);
-  inputEl.value = '';
-  d3.selectAll('input[name=helpfulness]').property('checked', false);
-  newNode.helpfulness = helpfulness;
-  modDatabase.writeMapToDatabase(d3, true);
+// If a resource already exists with the given number, update it; otherwise, add
+// one at that number in `nodesByType.resource`. Return true if successful, or
+// false if insufficient data entered in form.
+var upsertResource = function(d3, resourceNumber) {
+  var type = d3.select('input[name=resource_type]'),
+      name = d3.select('input[name=resource_name]'),
+      checkedNeedsSel = '#wizard-resource-needs input[type=checkbox]:checked',
+      checkedParentNeeds = d3.selectAll(checkedNeedsSel),
+      checkedHelpfulness = d3.select('input[name=helpfulness]:checked').node(),
+      helpDescrip = d3.select('input[name=resource_helpfulness_description'),
+      noType = type.node().value === '',
+      noNeeds = checkedNeedsSel.length === 0,
+      noHelpfulness = !checkedHelpfulness;
+
+  if (noType) {
+    type.transition(0.5)
+      .style('border', '1px solid red')
+      .style('background-color', '#ffa');
+    d3.select('#wizard-resource-type-error')
+      .text('Please enter a resource type.')
+      .style('color', '#a00')
+      .append('br');
+  }
+
+  if (noNeeds) {
+    d3.select('#wizard-resource-needs')
+      .transition(0.5)
+      .style('border', '1px solid red');
+    d3.select('#wizard-resource-needs-error')
+      .text('Please select at least one related need.')
+      .style('color', '#a00')
+      .append('br');
+  }
+
+  if (noHelpfulness) {
+    d3.select('#wizard-resource-helpfulness-error')
+      .text('Please select one option below.')
+      .style('color', '#a00')
+      .append('br');
+  }
+
+  if (noType || noNeeds || noHelpfulness) return false;
+  if (resourceNumber >= nodesByType.resource.length) {
+    // insert
+    var helpfulness = checkedHelpfulness.value,
+        edgeColor = helpfulness === 'helpful' ? 'green'
+                  : helpfulness === 'not-helpful' ? 'red'
+                  : 'black',
+        parents = [];
+    checkedParentNeeds.each(function(){
+      // A name might be `a2_3`, for example.
+      var indexes = d3.select(this).attr('name').slice(1).split('_'),
+          resp = nodesByType.responsibility[indexes[0]];
+      parents.push(resp.__children__[indexes[1]]);
+    });
+    var newNode = addNode(d3, 'resource', parents, type.node().value, edgeColor),
+        nameNode = name.node(),
+        hdNode = helpDescrip.node();
+    newNode.helpfulness = helpfulness;
+    if (nameNode) newNode.name = nameNode.value;
+    if (hdNode) newNode.helpfulnessDescription = hdNode.value;
+    modDatabase.writeMapToDatabase(d3, true);
+    return true;
+
+  } else {
+    // TODO: update
+  }
 };
 
 var removeNode = function(d3, type, indexAmongType, skipConfirm) {
@@ -3773,8 +3832,10 @@ var removeNode = function(d3, type, indexAmongType, skipConfirm) {
     var child = node.__children__[i];
     removeNode(d3, child.type, nodesByType[child.type].indexOf(child), true);
   }
-  var arr = node.__parent__.__children__;
-  arr.splice(arr.indexOf(node), 1);
+  for (i=0; i < node.__parents__.length; i++) {
+    var arr = node.__parents__[i].__children__;
+    arr.splice(arr.indexOf(node), 1);
+  }
   nodesByType[type].splice(indexAmongType, 1);
   if (!skipConfirm) rebalanceNodes(d3);
   return true;
@@ -3821,9 +3882,7 @@ var highlightResponsibility = function(d3, responsibilityNumber) {
     modSelection.removeSelectFromNode();
     return;
   }
-  if (responsibilityNumber >= nodesByType.responsibility.length) {
-    return;
-  }
+  if (responsibilityNumber >= nodesByType.responsibility.length) return;
   var node = nodesByType.responsibility[responsibilityNumber],
       d3node = d3.select('#shapeG' + node.id);
   d3.select('#wizard_responsibility_count')
@@ -3839,7 +3898,10 @@ var highlightResponsibility = function(d3, responsibilityNumber) {
   }
 };
 
-var setupResourceForm = function(d3) {
+var setupResourceForm = function(d3, resourceNum) {
+  document.getElementById('wizard').className = 'open';
+  d3.select('#wizard-step8 .resource-form').style('display', 'block');
+  d3.select('#wizard-step8 .resource-interstitial').style('display', 'none');
   var groups = d3
         .select('#wizard-resource-needs')
         .selectAll('div.wizard-need-group')
@@ -3869,6 +3931,12 @@ var setupResourceForm = function(d3) {
     .data(modCompletions.completionsByType.resource)
     .enter().append('option')
     .attr('value', String);
+};
+
+var setupResourceInterstitial = function(d3) {
+  document.getElementById('wizard').className = 'minimized';
+  d3.select('#wizard-step8 .resource-form').style('display', 'none');
+  d3.select('#wizard-step8 .resource-interstitial').style('display', 'block');
 };
 
 var guardedClose = function(d3) {
@@ -3909,6 +3977,7 @@ exports.inferParentChildRelationships = function(d3) {
     var node = nodes[i],
         type = node.type;
     node.__children__ = [];
+    node.__parents__ = [];
     if (type === 'role') {
       nodesByType[type] = node;
     } else {
@@ -3919,7 +3988,7 @@ exports.inferParentChildRelationships = function(d3) {
     var source = edges[i].source,
         target = edges[i].target;
     source.__children__.push(target);
-    target.__parent__ = source;
+    target.__parents__.push(source);
   }
 };
 
@@ -4050,34 +4119,50 @@ var steps = {
   7: { isMinimized: true },
 
   8: {
-    enter: function(d3, direction) {
-      if (direction === 1) {
-        exports.currentNeed = 0;
-      } else if (direction === -1) {
-        exports.currentNeed = nodesByType.need.length - 1;
-      }
-      setupResourceForm(d3);
-    },
+    // false if on an in-between "add more or continue?" interstitial:
+    doingDataEntry: true,
+    // a flag to be set when user selects "continue" option from interstitial:
+    shouldContinue: false,
+    currentResource: null,
 
-    exit: function(d3) {
-      setupResourceForm(d3);
-      return true;
+    enter: function(d3, direction) {
+      this.currentResource =
+        direction === -1 ? nodesByType.resource.length - 1 : 0;
+      this.doingDataEntry = true;
+      this.shouldContinue = false;
+      setupResourceForm(d3, this.currentResource);
     },
 
     subStepAdvance: function(d3) {
-      if (++exports.currentNeed !== nodesByType.need.length) {
-        setupResourceForm(d3);
+      if (this.doingDataEntry) {
+        // block advancement if insufficient data entered in form:
+        if (!upsertResource(d3, this.currentResource)) return true;
+        this.doingDataEntry = false;
+        setupResourceInterstitial(d3);
+        return true;
+      } else if (this.shouldContinue) {
+        return false;
+      } else {
+        this.currentResource += 1;
+        this.doingDataEntry = true;
+        setupResourceForm(d3, this.currentResource);
         return true;
       }
-      return false;
     },
 
     subStepRetreat: function(d3) {
-      if (--exports.currentNeed >= 0) {
-        setupResourceForm(d3);
+      if (!this.doingDataEntry) {
+        this.currentResource -= 1;
+        this.doingDataEntry = true;
+        setupResourceForm(d3, this.currentResource);
+        return true;
+      } else if (this.currentResource === 0) {
+        return false;
+      } else {
+        this.doingDataEntry = false;
+        setupResourceInterstitial(d3);
         return true;
       }
-      return false;
     }
   }
 };
