@@ -263,10 +263,21 @@ var highlightResponsibility = function(d3, responsibilityNumber) {
   }
 };
 
+var clearResourceForm = function(d3) {
+  d3.select('#wizard-step8 input[name=resource_type]').property('value', '');
+  d3.select('#wizard-step8 input[name=resource_name]').property('value', '');
+  d3.select('#resource-type-completions').selectAll('option').remove();
+  d3.select('#wizard-resource-needs').selectAll('div').remove();
+  d3.select('#wizard-step8 input[name=helpfulness]:checked')
+    .property('checked', false);
+  d3.select('#wizard-step8 textarea').property('value', '');
+};
+
 var setupResourceForm = function(d3, resourceNum) {
   document.getElementById('wizard').className = 'open';
   d3.select('#wizard-step8 .resource-form').style('display', 'block');
   d3.select('#wizard-step8 .resource-interstitial').style('display', 'none');
+  clearResourceForm(d3);
   var groups = d3
         .select('#wizard-resource-needs')
         .selectAll('div.wizard-need-group')
@@ -485,57 +496,89 @@ var steps = {
 
   7: { isMinimized: true },
 
+  // Step 8, adding resources, is a bit complicated.
+  //
+  // After adding a resource, there's a small sub-step, which I'm calling the
+  // "interstitial" here, that just asks if the user wants to add more resources
+  // or proceed to the next step. A good way to think about the interstitial is
+  // that it floats at the end of all the resource data entry form sub-steps.
+  //
+  // In the normal, forward flow, Step 8 starts at the entry form for the first
+  // resource, then goes to the interstitial, then, so long as the user wants to
+  // add another resource, it goes to another entry form then another
+  // interstitial. When the user clicks "next" in the interstitial (instead of
+  // "add resource"), we go to step 9.
+  //
+  // In the backward flow, Step 9 goes to the interstitial. As before, "next"
+  // goes to Step 9, and "add resource" goes to an empty form to add a new
+  // resource. Back from the interstitial goes to an entry form prepopulated
+  // with the last resource's data (for updating). Back from there goes to an
+  // entry form prepopulated with the previous resource's data. Back from the
+  // first resource's entry form goes to Step 7. Hitting "next" from any
+  // resource other than the last will go directly to the next resource, without
+  // any intervening interstitial.
+  //
+  // If the page is loaded when the user was last seen at Step 8, do the
+  // interstitial.
+
   8: {
     // false if on an in-between "add more or continue?" interstitial:
     doingDataEntry: true,
     currentResource: null,
 
     enter: function(d3, direction) {
-      this.currentResource =
-        direction === -1 ? nodesByType.resource.length - 1 : 0;
-      this.doingDataEntry = true;
       doneWithResources = false;
-      setupResourceForm(d3, this.currentResource);
+      if (direction === 1) {
+        this.currentResource = 0;
+        this.doingDataEntry = true;
+        setupResourceForm(d3, this.currentResource);
+      } else {
+        this.currentResource = nodesByType.resource.length - 1;
+        this.doingDataEntry = false;
+        setupResourceInterstitial(d3);
+      }
     },
 
     subStepAdvance: function(d3) {
       if (this.doingDataEntry) {
-        // block advancement if insufficient data entered in form:
-        if (!upsertResource(d3, this.currentResource)) return true;
-        this.doingDataEntry = false;
-        setupResourceInterstitial(d3);
-        return true;
-      } else if (doneWithResources) {
-        return false;
-      } else {
-        this.currentResource += 1;
-        this.doingDataEntry = true;
-        setupResourceForm(d3, this.currentResource);
+        if (this.currentResource === nodesByType.resource.length) {
+          // add new resource
+          if (!upsertResource(d3, this.currentResource)) return true;
+          this.doingDataEntry = false;
+          setupResourceInterstitial(d3);
+        } else {
+          // update existing resource
+          if (!upsertResource(d3, this.currentResource++)) return true;
+          setupResourceForm(d3, this.currentResource);
+        }
         return true;
       }
+
+      // If we get this far, then we are advancing from the interstitial.
+      if (doneWithResources) return false; // advance to next major step
+      this.currentResource += 1;
+      this.doingDataEntry = true;
+      setupResourceForm(d3, this.currentResource);
+      return true;
     },
 
     subStepRetreat: function(d3) {
       if (!this.doingDataEntry) {
-        this.currentResource -= 1;
         this.doingDataEntry = true;
         setupResourceForm(d3, this.currentResource);
         return true;
-      } else if (this.currentResource === 0) {
-        return false;
-      } else {
-        this.doingDataEntry = false;
-        setupResourceInterstitial(d3);
-        return true;
       }
+      if (this.currentResource === 0) return false;
+      setupResourceForm(d3, --this.currentResource);
+      return true;
     }
   }
 };
 
 exports.initializeAtStep = function(d3) {
+  exports.showStep(d3);
   var stepObj = steps[exports.currentStep] || {};
   if (stepObj.enter) stepObj.enter(d3, 0);
-  exports.showStep(d3);
 };
 
 exports.nextStep = function(d3) {
@@ -547,9 +590,9 @@ exports.nextStep = function(d3) {
   // A step can prevent advancement by returning something falsy from `exit`.
   if (!stepObj.exit || stepObj.exit(d3)) {
     exports.currentStep++;
+    exports.showStep(d3);
     stepObj = steps[exports.currentStep] || {};
     if (stepObj.enter) stepObj.enter(d3, 1);
-    exports.showStep(d3);
   }
 };
 
@@ -561,7 +604,7 @@ exports.prevStep = function(d3) {
   }
   if (stepObj.exit) stepObj.exit(d3);
   exports.currentStep--;
+  exports.showStep(d3);
   stepObj = steps[exports.currentStep] || {};
   if (stepObj.enter) stepObj.enter(d3, -1);
-  exports.showStep(d3);
 };

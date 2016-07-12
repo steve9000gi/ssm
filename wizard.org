@@ -102,7 +102,10 @@ CLOSED: [2016-07-12 Tue 15:08]
 - add an edge from every need whose box was checked
 - color-code edges by `helpfulness` rating (and save that somewhere, if not already saved)
 - save "resource_helpfulness_description" text somewhere
-**** TODO restore resource entry state upon reload
+**** DONE restore resource entry state upon reload
+CLOSED: [2016-07-12 Tue 15:54]
+**** TODO insert existing node's data into form
+**** TODO update node in map
 **** TODO add line breaks between checkboxes
 *** TODO add "wishes" step
 **** TODO interstitial step before wishes
