@@ -104,7 +104,8 @@ CLOSED: [2016-07-12 Tue 15:08]
 - save "resource_helpfulness_description" text somewhere
 **** DONE restore resource entry state upon reload
 CLOSED: [2016-07-12 Tue 15:54]
-**** TODO insert existing node's data into form
+**** DONE insert existing node's data into form
+CLOSED: [2016-07-12 Tue 16:24]
 **** TODO update node in map
 **** TODO add line breaks between checkboxes
 *** TODO add "wishes" step

@@ -268,9 +268,28 @@ var clearResourceForm = function(d3) {
   d3.select('#wizard-step8 input[name=resource_name]').property('value', '');
   d3.select('#resource-type-completions').selectAll('option').remove();
   d3.select('#wizard-resource-needs').selectAll('div').remove();
-  d3.select('#wizard-step8 input[name=helpfulness]:checked')
+  d3.selectAll('#wizard-step8 input[name=helpfulness]:checked')
     .property('checked', false);
   d3.select('#wizard-step8 textarea').property('value', '');
+};
+
+var populateResourceForm = function(d3, resource) {
+  d3.select('#wizard-step8 input[name=resource_type]')
+    .property('value', resource.name);
+  d3.select('#wizard-step8 input[name=resource_name]')
+    .property('value', resource.specific_name);
+  d3.select('#wizard-resource-needs')
+    .selectAll('div.wizard-need-group')
+    .selectAll('label')
+    .select('input')
+    .property('checked', function(d,i,j){
+      return resource.__parents__.indexOf(d) !== -1;
+    });
+  d3.select('#wizard-step8 input[name=helpfulness][value="' +
+            resource.helpfulness + '"]')
+    .property('checked', true);
+  d3.select('#wizard-step8 textarea')
+    .property('value', resource.helpfulnessDescription);
 };
 
 var setupResourceForm = function(d3, resourceNum) {
@@ -307,6 +326,9 @@ var setupResourceForm = function(d3, resourceNum) {
     .data(modCompletions.completionsByType.resource)
     .enter().append('option')
     .attr('value', String);
+  if (resourceNum < nodesByType.resource.length) {
+    populateResourceForm(d3, nodesByType.resource[resourceNum]);
+  }
 };
 
 var setupResourceInterstitial = function(d3) {
