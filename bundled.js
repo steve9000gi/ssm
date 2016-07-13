@@ -3558,7 +3558,14 @@ exports.updateExistingPaths = function() {
   })
     .attr("d",  function(d) {
       return setPath(d);
-    });
+    })
+    .select('path')
+    .style('stroke', function(d){return d.color;})
+    .style('fill',   function(d){return d.color;});
+  modSvg.edgeGroups
+    .select('text')
+    .style('stroke', function(d){return d.color;})
+    .style('fill',   function(d){return d.color;});
   return modSvg.edgeGroups;
 };
 
