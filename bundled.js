@@ -325,8 +325,8 @@ exports.logoutUser = function(d3) {
     });
 }
 
-exports.backendBase = 'http://syssci.renci.org:8080';
 },{"./backend.js":3}],3:[function(require,module,exports){
+exports.backendBase = 'http://syssci.renci.org:8080';
 
 },{}],4:[function(require,module,exports){
 exports.visible = false;
