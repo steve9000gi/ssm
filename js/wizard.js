@@ -570,8 +570,13 @@ var steps = {
           setupResourceInterstitial(d3);
         } else {
           // update existing resource
-          if (!upsertResource(d3, this.currentResource++)) return true;
-          setupResourceForm(d3, this.currentResource);
+          if (!upsertResource(d3, this.currentResource)) return true;
+          this.currentResource += 1;
+          if (this.currentResource === nodesByType.resource.length) {
+            setupResourceInterstitial(d3);
+          } else {
+            setupResourceForm(d3, this.currentResource);
+          }
         }
         return true;
       }
