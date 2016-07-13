@@ -1,4 +1,50 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+exports.union = function(d3, a, b, acc) {
+  var a2 = acc ? a.map(acc) : a,
+      b2 = acc ? b.map(acc) : b,
+      arr = a.slice(0),
+      set = d3.set(a2);
+  for (var i=0, m=b2.length; i<m; i++) {
+    if (!set.has(b2[i])) arr.push(b[i]);
+  }
+  return arr;
+};
+
+exports.intersection = function(d3, a, b, acc) {
+  var a2 = acc ? a.map(acc) : a,
+      b2 = acc ? b.map(acc) : b,
+      arr = [],
+      set = d3.set(a2);
+  for (var i=0, m=b2.length; i<m; i++) {
+    if (set.has(b2[i])) arr.push(b[i]);
+  }
+  return arr;
+};
+
+exports.difference = function(d3, a, b, acc) {
+  var a2 = acc ? a.map(acc) : a,
+      b2 = acc ? b.map(acc) : b,
+      arr = [],
+      set = d3.set(b2);
+  for (var i=0, m=a.length; i<m; i++) {
+    if (!set.has(a2[i])) arr.push(a[i]);
+  }
+  return arr;
+};
+
+// Return an array containing 3 things:
+// 0. items unique to first array
+// 1. items common to both arrays (i.e. the intersection)
+// 2. items unique to second array
+exports.venn = function(d3, a, b, acc) {
+  return [
+    exports.difference(d3, a, b, acc),
+    exports.intersection(d3, a, b, acc),
+    exports.difference(d3, b, a, acc),
+  ];
+};
+
+},{}],2:[function(require,module,exports){
 var modBackend = require('./backend.js');
 
 // Check whether we're authenticated at the backend, and call the callback
@@ -279,10 +325,10 @@ exports.logoutUser = function(d3) {
     });
 }
 
-},{"./backend.js":2}],2:[function(require,module,exports){
 exports.backendBase = 'http://syssci.renci.org:8080';
+},{"./backend.js":3}],3:[function(require,module,exports){
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 exports.visible = false;
 exports.center = null;
 exports.hideText = 'Hide Circles of Care';
@@ -325,7 +371,7 @@ exports.hide = function(d3) {
     .datum({"name": "Show Circles of Care"});
 };
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var animals = [
   'aardvark',
   'badger',
@@ -362,7 +408,7 @@ exports.completionsByType = {
   'resource': animals
 };
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var modEvents = require('./events.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
@@ -554,7 +600,7 @@ exports.setup = function(d3) {
   }
 };
 
-},{"./events.js":11,"./selected-color.js":21,"./selection.js":23,"./text.js":27,"./update.js":30}],6:[function(require,module,exports){
+},{"./events.js":12,"./selected-color.js":22,"./selection.js":24,"./text.js":28,"./update.js":31}],7:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modBackend = require('./backend.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
@@ -908,7 +954,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./backend.js":2,"./circles-of-care.js":3,"./serialize.js":24,"./system-support-map.js":26,"./util.js":31}],7:[function(require,module,exports){
+},{"./auth.js":2,"./backend.js":3,"./circles-of-care.js":4,"./serialize.js":25,"./system-support-map.js":27,"./util.js":32}],8:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -995,7 +1041,7 @@ exports.setupDragHandle = function(d3) {
     });
 };
 
-},{"./grid.js":17,"./svg.js":25,"./update.js":30}],8:[function(require,module,exports){
+},{"./grid.js":18,"./svg.js":26,"./update.js":31}],9:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -1122,7 +1168,7 @@ exports.addControls = function(d3) {
   createEdgeStyleSelectionSampleEdges(d3);
 };
 
-},{"./edge-thickness.js":9,"./selected-color.js":21,"./selected-shape.js":22}],9:[function(require,module,exports){
+},{"./edge-thickness.js":10,"./selected-color.js":22,"./selected-shape.js":23}],10:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.thickness = 3;
@@ -1168,7 +1214,7 @@ exports.createSubmenu = function(d3) {
       });
 };
 
-},{"./selected-color.js":21}],10:[function(require,module,exports){
+},{"./selected-color.js":22}],11:[function(require,module,exports){
 var datalistId = function(selector) {
   // FIXME: this assumes the selector is an id selector, like '#selector'. It
   // doesn't have to be.
@@ -1297,7 +1343,7 @@ exports.teardown = function(d3, selector) {
   d3.select('#' + datalistId(selector)).remove();
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modEdgeStyle = require('./edge-style.js'),
     modEdgeThickness = require('./edge-thickness.js'),
@@ -1462,6 +1508,14 @@ exports.addEdge = function(d3, newEdge) {
   }
 };
 
+exports.removeEdge = function(source, target) {
+  modSvg.links.filter(function(l){
+    return l.source === source && l.target === target;
+  }).map(function(l){
+    modSvg.links.splice(modSvg.links.indexOf(l), 1);
+  });
+};
+
 exports.setupEventListeners = function(d3) {
   var svg = modSvg.svg;
   d3.select(window).on("keydown", function() {
@@ -1541,7 +1595,7 @@ exports.pathMouseDown = function(d3, d3path, d) {
   }
 };
 
-},{"./drag.js":7,"./edge-style.js":8,"./edge-thickness.js":9,"./selected-color.js":21,"./selected-shape.js":22,"./selection.js":23,"./svg.js":25,"./text.js":27,"./update.js":30,"./zoom.js":33}],12:[function(require,module,exports){
+},{"./drag.js":8,"./edge-style.js":9,"./edge-thickness.js":10,"./selected-color.js":22,"./selected-shape.js":23,"./selection.js":24,"./svg.js":26,"./text.js":28,"./update.js":31,"./zoom.js":34}],13:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -1658,7 +1712,7 @@ exports.exportGraphAsImage = function(d3) {
   canvas.remove();
 };
 
-},{"./circles-of-care.js":3,"./selected-color.js":21,"./system-support-map.js":26,"./text.js":27,"./update.js":30}],13:[function(require,module,exports){
+},{"./circles-of-care.js":4,"./selected-color.js":22,"./system-support-map.js":27,"./text.js":28,"./update.js":31}],14:[function(require,module,exports){
 var modSerialize = require('./serialize.js');
 
 // Save as JSON file
@@ -1698,7 +1752,7 @@ exports.setupUpload = function(d3) {
   });
 };
 
-},{"./serialize.js":24}],14:[function(require,module,exports){
+},{"./serialize.js":25}],15:[function(require,module,exports){
 exports.addLogos = function(d3) {
   d3.select("#mainSVG").append("svg:image")
     .attr("xlink:href", "mch-tracs.png")
@@ -1724,7 +1778,7 @@ exports.addCredits = function(d3) {
     .attr("x", 30);
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modContextMenu = require('./context-menu.js'),
     modDatabase = require('./database.js'),
@@ -1810,7 +1864,7 @@ exports.create = function(d3) {
   modContextMenu.setup(d3);
 };
 
-},{"./circles-of-care.js":3,"./context-menu.js":5,"./database.js":6,"./drag.js":7,"./events.js":11,"./file.js":13,"./front-matter.js":14,"./options-menu.js":20,"./selected-color.js":21,"./svg.js":25,"./system-support-map.js":26,"./toolbox.js":28,"./tooltips.js":29,"./zoom.js":33}],16:[function(require,module,exports){
+},{"./circles-of-care.js":4,"./context-menu.js":6,"./database.js":7,"./drag.js":8,"./events.js":12,"./file.js":14,"./front-matter.js":15,"./options-menu.js":21,"./selected-color.js":22,"./svg.js":26,"./system-support-map.js":27,"./toolbox.js":29,"./tooltips.js":30,"./zoom.js":34}],17:[function(require,module,exports){
 // This file is necessary to break a circular dependency between the grid and
 // zoom modules. JST 2015-10-21
 exports.translate = [0, 0];
@@ -1824,7 +1878,7 @@ exports.fitGridToZoom = function(d3) {
     .attr("transform", "translate(" + reverseTranslate + ")");
 };
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var modGridZoom = require('./grid-zoom.js');
 
 var gridVisible = false,
@@ -1941,7 +1995,7 @@ exports.enableSnap = function(d3) {
   showTurnOffGridText(d3);
 };
 
-},{"./grid-zoom.js":16}],18:[function(require,module,exports){
+},{"./grid-zoom.js":17}],19:[function(require,module,exports){
 // Help/instructions button and info box:
 module.exports = function(d3) {
   d3.select("#toolbox").insert("div", ":first-child")
@@ -1978,7 +2032,7 @@ module.exports = function(d3) {
   });
 };
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
@@ -2033,7 +2087,7 @@ document.onload = (function(d3) {
   });
 })(window.d3);
 
-},{"./auth.js":1,"./database.js":6,"./events.js":11,"./graph.js":15,"./svg.js":25,"./update.js":30,"./wizard.js":32}],20:[function(require,module,exports){
+},{"./auth.js":2,"./database.js":7,"./events.js":12,"./graph.js":16,"./svg.js":26,"./update.js":31,"./wizard.js":33}],21:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modContextMenu = require('./context-menu.js'),
@@ -2294,7 +2348,7 @@ exports.createOptionsButton = function(d3) {
     });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":3,"./context-menu.js":5,"./edge-thickness.js":9,"./export.js":12,"./grid.js":17,"./selected-color.js":21,"./selected-shape.js":22,"./selection.js":23,"./system-support-map.js":26,"./text.js":27,"./update.js":30}],21:[function(require,module,exports){
+},{"./auth.js":2,"./circles-of-care.js":4,"./context-menu.js":6,"./edge-thickness.js":10,"./export.js":13,"./grid.js":18,"./selected-color.js":22,"./selected-shape.js":23,"./selection.js":24,"./system-support-map.js":27,"./text.js":28,"./update.js":31}],22:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -2354,7 +2408,7 @@ exports.createColorPalette = function(d3) {
   d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
 };
 
-},{"./edge-style.js":8,"./selected-shape.js":22}],22:[function(require,module,exports){
+},{"./edge-style.js":9,"./selected-shape.js":23}],23:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -2670,7 +2724,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":21,"./svg.js":25,"./update.js":30}],23:[function(require,module,exports){
+},{"./selected-color.js":22,"./svg.js":26,"./update.js":31}],24:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
     modSvg = require('./svg.js');
@@ -2741,7 +2795,7 @@ exports.replaceSelectEdge = function(d3, d3Path, edgeData) {
   modSelection.selectedEdge = edgeData;
 };
 
-},{"./selected-color.js":21,"./selection.js":23,"./svg.js":25}],24:[function(require,module,exports){
+},{"./selected-color.js":22,"./selection.js":24,"./svg.js":26}],25:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modEvents = require('./events.js'),
     modGridZoom = require('./grid-zoom.js'),
@@ -2876,7 +2930,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":3,"./events.js":11,"./grid-zoom.js":16,"./svg.js":25,"./system-support-map.js":26,"./update.js":30,"./wizard.js":32,"./zoom.js":33}],25:[function(require,module,exports){
+},{"./circles-of-care.js":4,"./events.js":12,"./grid-zoom.js":17,"./svg.js":26,"./system-support-map.js":27,"./update.js":31,"./wizard.js":33,"./zoom.js":34}],26:[function(require,module,exports){
 exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
@@ -2904,7 +2958,7 @@ exports.setup = function(d3) {
     .attr("id", "graphG");
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.hideText = "Hide system support rings";
@@ -2984,7 +3038,7 @@ exports.create = function(d3) {
       .text(function(d) { return d.name; });
 };
 
-},{"./selected-color.js":21}],27:[function(require,module,exports){
+},{"./selected-color.js":22}],28:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
@@ -3183,7 +3237,7 @@ exports.changeElementTextImmediately = function(d3, d3element, node, text) {
   exports.formatText(d3, d3element, node);
 };
 
-},{"./drag.js":7,"./selected-color.js":21,"./selected-shape.js":22,"./svg.js":25,"./update.js":30}],28:[function(require,module,exports){
+},{"./drag.js":8,"./selected-color.js":22,"./selected-shape.js":23,"./svg.js":26,"./update.js":31}],29:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modEdgeStyle = require('./edge-style.js'),
     modHelp = require('./help.js'),
@@ -3210,7 +3264,7 @@ exports.prepareToolbox = function(d3) {
   modEdgeStyle.addControls(d3);
 };
 
-},{"./circles-of-care.js":3,"./edge-style.js":8,"./help.js":18,"./options-menu.js":20,"./selected-color.js":21,"./selected-shape.js":22,"./system-support-map.js":26,"./update.js":30}],29:[function(require,module,exports){
+},{"./circles-of-care.js":4,"./edge-style.js":9,"./help.js":19,"./options-menu.js":21,"./selected-color.js":22,"./selected-shape.js":23,"./system-support-map.js":27,"./update.js":31}],30:[function(require,module,exports){
 exports.tip = null;
 
 // "Notes" == tooltips
@@ -3228,7 +3282,7 @@ exports.setupNotes = function(d3) {
   d3.select("#mainSVG").call(exports.tip);
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modDrag = require('./drag.js'),
     modEvents = require('./events.js'),
@@ -3601,7 +3655,7 @@ exports.updateWindow = function(d3) {
   exports.updateGraph(d3);
 };
 
-},{"./circles-of-care.js":3,"./drag.js":7,"./events.js":11,"./grid.js":17,"./selected-color.js":21,"./selection.js":23,"./svg.js":25,"./system-support-map.js":26,"./text.js":27,"./tooltips.js":29,"./util.js":31}],31:[function(require,module,exports){
+},{"./circles-of-care.js":4,"./drag.js":8,"./events.js":12,"./grid.js":18,"./selected-color.js":22,"./selection.js":24,"./svg.js":26,"./system-support-map.js":27,"./text.js":28,"./tooltips.js":30,"./util.js":32}],32:[function(require,module,exports){
 var cookiesByName = null;
 
 exports.readCookieByName = function(name) {
@@ -3647,8 +3701,9 @@ exports.computeRectangleBoundary = function(edge) {
   return ((absCosTheta > thresholdCos) ? h * hyp / dy : w * hyp / dx) + offset;
 };
 
-},{}],32:[function(require,module,exports){
-var modCompletions = require('./completions.js'),
+},{}],33:[function(require,module,exports){
+var modArrayUtils = require('./array-utils.js'),
+    modCompletions = require('./completions.js'),
     modDatabase = require('./database.js'),
     modEntryList = require('./entry-list.js'),
     modEvents = require('./events.js'),
@@ -3753,6 +3808,56 @@ var addNode = function(d3, type, parent_s, text, edgeColor) {
   return newNode;
 };
 
+var updateNode = function(d3, type, indexAmongType, parent_s, text, edgeColor) {
+  var node = nodesByType[type][indexAmongType],
+      parents = [].concat(parent_s),
+      parentGroups = modArrayUtils.venn(d3, node.__parents__, parents,
+                                        function(d){ return d.name; }),
+      newEdge = function(src) { return {
+        source: src,
+        target: node,
+        style: 'solid',
+        color: edgeColor || 'black',
+        thickness: 3,
+        name: ''
+      }; },
+      i, arr, m;
+
+  for (i=0, arr=parentGroups[0], m=arr.length; i<m; i++) {
+    modEvents.removeEdge(arr[i], node);
+  }
+  for (i=0, arr=parentGroups[2], m=arr.length; i<m; i++) {
+    modEvents.addEdge(d3, newEdge(arr[i]));
+  }
+
+  var ll = modSvg.links.filter(function(l){
+    return parentGroups[1].indexOf(l.source) > -1 && l.target === node;
+  });
+  modSvg.links.filter(function(l){
+    return parentGroups[1].indexOf(l.source) > -1 && l.target === node;
+  }).map(function(l){
+    // FIXME: This doesn't take effect until hover for some reason.
+    modSvg.links[modSvg.links.indexOf(l)].color = edgeColor;
+  });
+
+  var d3element = modSvg.shapeGroups.filter(function(dval) {
+    return dval.id === node.id;
+  });
+  node.name = text;
+  modText.changeElementTextImmediately(d3, d3element, node, text);
+  node.__parents__ = parents;
+  rebalanceNodes(d3);
+  return node;
+};
+
+var upsertNode = function(d3, type, indexAmongType, parent_s, text, edgeColor) {
+  if (indexAmongType >= nodesByType[type].length) {
+    return addNode(d3, type, parent_s, text, edgeColor);
+  } else {
+    return updateNode(d3, type, indexAmongType, parent_s, text, edgeColor);
+  }
+};
+
 // If a resource already exists with the given number, update it; otherwise, add
 // one at that number in `nodesByType.resource`. Return true if successful, or
 // false if insufficient data entered in form.
@@ -3798,33 +3903,39 @@ var upsertResource = function(d3, resourceNumber) {
   }
 
   if (noType || noNeeds || noHelpfulness) return false;
-  if (resourceNumber >= nodesByType.resource.length) {
-    // insert
-    var helpfulness = checkedHelpfulness.value,
-        edgeColor = helpfulness === 'helpful' ? 'green'
-                  : helpfulness === 'not-helpful' ? 'red'
-                  : 'black',
-        parents = [];
 
-    checkedParentNeeds.each(function(){
-      // A name might be `a2_3`, for example.
-      var indexes = d3.select(this).attr('name').slice(1).split('_'),
-          resp = nodesByType.responsibility[indexes[0]];
-      parents.push(resp.__children__[indexes[1]]);
-    });
+  var helpfulness = checkedHelpfulness.value,
+      edgeColor = helpfulness === 'helpful' ? 'green'
+        : helpfulness === 'not-helpful' ? 'red'
+        : 'black',
+      parents = [];
 
-    var newNode = addNode(d3, 'resource', parents, type.node().value, edgeColor),
-        nameNode = name.node(),
-        hdNode = helpDescrip.node();
-    newNode.helpfulness = helpfulness;
-    if (nameNode) newNode.specific_name = nameNode.value;
-    if (hdNode) newNode.helpfulnessDescription = hdNode.value;
-    modDatabase.writeMapToDatabase(d3, true);
-    return true;
+  checkedParentNeeds.each(function(){
+    // A name might be `a2_3`, for example.
+    var indexes = d3.select(this).attr('name').slice(1).split('_'),
+        resp = nodesByType.responsibility[indexes[0]];
+    parents.push(resp.__children__[indexes[1]]);
+  });
 
+  var newNode = upsertNode(d3, 'resource', resourceNumber, parents,
+                           type.node().value, edgeColor),
+      nameNode = name.node(),
+      hdNode = helpDescrip.node();
+
+  newNode.helpfulness = helpfulness;
+  if (nameNode) {
+    newNode.specific_name = nameNode.value;
   } else {
-    // TODO: update
+    delete newNode.specific_name;
   }
+  if (hdNode) {
+    newNode.helpfulnessDescription = hdNode.value;
+  } else {
+    delete newNode.helpfulnessDescription;
+  }
+
+  modDatabase.writeMapToDatabase(d3, true);
+  return true;
 };
 
 var removeNode = function(d3, type, indexAmongType, skipConfirm) {
@@ -4286,7 +4397,7 @@ exports.prevStep = function(d3) {
   if (stepObj.enter) stepObj.enter(d3, -1);
 };
 
-},{"./completions.js":4,"./database.js":6,"./entry-list.js":10,"./events.js":11,"./selection.js":23,"./svg.js":25,"./system-support-map.js":26,"./text.js":27,"./update.js":30}],33:[function(require,module,exports){
+},{"./array-utils.js":1,"./completions.js":5,"./database.js":7,"./entry-list.js":11,"./events.js":12,"./selection.js":24,"./svg.js":26,"./system-support-map.js":27,"./text.js":28,"./update.js":31}],34:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modGridZoom = require('./grid-zoom.js'),
     modText = require('./text.js');
@@ -4329,4 +4440,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid-zoom.js":16,"./grid.js":17,"./text.js":27}]},{},[19]);
+},{"./grid-zoom.js":17,"./grid.js":18,"./text.js":28}]},{},[20]);

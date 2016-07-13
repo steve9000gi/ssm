@@ -1,4 +1,5 @@
-var modCompletions = require('./completions.js'),
+var modArrayUtils = require('./array-utils.js'),
+    modCompletions = require('./completions.js'),
     modDatabase = require('./database.js'),
     modEntryList = require('./entry-list.js'),
     modEvents = require('./events.js'),
@@ -103,6 +104,56 @@ var addNode = function(d3, type, parent_s, text, edgeColor) {
   return newNode;
 };
 
+var updateNode = function(d3, type, indexAmongType, parent_s, text, edgeColor) {
+  var node = nodesByType[type][indexAmongType],
+      parents = [].concat(parent_s),
+      parentGroups = modArrayUtils.venn(d3, node.__parents__, parents,
+                                        function(d){ return d.name; }),
+      newEdge = function(src) { return {
+        source: src,
+        target: node,
+        style: 'solid',
+        color: edgeColor || 'black',
+        thickness: 3,
+        name: ''
+      }; },
+      i, arr, m;
+
+  for (i=0, arr=parentGroups[0], m=arr.length; i<m; i++) {
+    modEvents.removeEdge(arr[i], node);
+  }
+  for (i=0, arr=parentGroups[2], m=arr.length; i<m; i++) {
+    modEvents.addEdge(d3, newEdge(arr[i]));
+  }
+
+  var ll = modSvg.links.filter(function(l){
+    return parentGroups[1].indexOf(l.source) > -1 && l.target === node;
+  });
+  modSvg.links.filter(function(l){
+    return parentGroups[1].indexOf(l.source) > -1 && l.target === node;
+  }).map(function(l){
+    // FIXME: This doesn't take effect until hover for some reason.
+    modSvg.links[modSvg.links.indexOf(l)].color = edgeColor;
+  });
+
+  var d3element = modSvg.shapeGroups.filter(function(dval) {
+    return dval.id === node.id;
+  });
+  node.name = text;
+  modText.changeElementTextImmediately(d3, d3element, node, text);
+  node.__parents__ = parents;
+  rebalanceNodes(d3);
+  return node;
+};
+
+var upsertNode = function(d3, type, indexAmongType, parent_s, text, edgeColor) {
+  if (indexAmongType >= nodesByType[type].length) {
+    return addNode(d3, type, parent_s, text, edgeColor);
+  } else {
+    return updateNode(d3, type, indexAmongType, parent_s, text, edgeColor);
+  }
+};
+
 // If a resource already exists with the given number, update it; otherwise, add
 // one at that number in `nodesByType.resource`. Return true if successful, or
 // false if insufficient data entered in form.
@@ -148,33 +199,39 @@ var upsertResource = function(d3, resourceNumber) {
   }
 
   if (noType || noNeeds || noHelpfulness) return false;
-  if (resourceNumber >= nodesByType.resource.length) {
-    // insert
-    var helpfulness = checkedHelpfulness.value,
-        edgeColor = helpfulness === 'helpful' ? 'green'
-                  : helpfulness === 'not-helpful' ? 'red'
-                  : 'black',
-        parents = [];
 
-    checkedParentNeeds.each(function(){
-      // A name might be `a2_3`, for example.
-      var indexes = d3.select(this).attr('name').slice(1).split('_'),
-          resp = nodesByType.responsibility[indexes[0]];
-      parents.push(resp.__children__[indexes[1]]);
-    });
+  var helpfulness = checkedHelpfulness.value,
+      edgeColor = helpfulness === 'helpful' ? 'green'
+        : helpfulness === 'not-helpful' ? 'red'
+        : 'black',
+      parents = [];
 
-    var newNode = addNode(d3, 'resource', parents, type.node().value, edgeColor),
-        nameNode = name.node(),
-        hdNode = helpDescrip.node();
-    newNode.helpfulness = helpfulness;
-    if (nameNode) newNode.specific_name = nameNode.value;
-    if (hdNode) newNode.helpfulnessDescription = hdNode.value;
-    modDatabase.writeMapToDatabase(d3, true);
-    return true;
+  checkedParentNeeds.each(function(){
+    // A name might be `a2_3`, for example.
+    var indexes = d3.select(this).attr('name').slice(1).split('_'),
+        resp = nodesByType.responsibility[indexes[0]];
+    parents.push(resp.__children__[indexes[1]]);
+  });
 
+  var newNode = upsertNode(d3, 'resource', resourceNumber, parents,
+                           type.node().value, edgeColor),
+      nameNode = name.node(),
+      hdNode = helpDescrip.node();
+
+  newNode.helpfulness = helpfulness;
+  if (nameNode) {
+    newNode.specific_name = nameNode.value;
   } else {
-    // TODO: update
+    delete newNode.specific_name;
   }
+  if (hdNode) {
+    newNode.helpfulnessDescription = hdNode.value;
+  } else {
+    delete newNode.helpfulnessDescription;
+  }
+
+  modDatabase.writeMapToDatabase(d3, true);
+  return true;
 };
 
 var removeNode = function(d3, type, indexAmongType, skipConfirm) {

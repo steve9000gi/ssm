@@ -106,7 +106,8 @@ CLOSED: [2016-07-12 Tue 15:08]
 CLOSED: [2016-07-12 Tue 15:54]
 **** DONE insert existing node's data into form
 CLOSED: [2016-07-12 Tue 16:24]
-**** TODO update node in map
+**** DONE update node in map
+CLOSED: [2016-07-12 Tue 22:09]
 **** TODO add line breaks between checkboxes
 *** TODO add "wishes" step
 **** TODO interstitial step before wishes

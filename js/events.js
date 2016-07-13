@@ -162,6 +162,14 @@ exports.addEdge = function(d3, newEdge) {
   }
 };
 
+exports.removeEdge = function(source, target) {
+  modSvg.links.filter(function(l){
+    return l.source === source && l.target === target;
+  }).map(function(l){
+    modSvg.links.splice(modSvg.links.indexOf(l), 1);
+  });
+};
+
 exports.setupEventListeners = function(d3) {
   var svg = modSvg.svg;
   d3.select(window).on("keydown", function() {
