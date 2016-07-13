@@ -4324,20 +4324,18 @@ var steps = {
 
     subStepAdvance: function(d3) {
       if (this.doingDataEntry) {
-        if (this.currentResource === nodesByType.resource.length) {
-          // add new resource
-          if (!upsertResource(d3, this.currentResource)) return true;
+        var numResources = nodesByType.resource.length;
+        if (!upsertResource(d3, this.currentResource)) return true;
+        if (this.currentResource >= numResources - 1) {
+          // We either just added a new resource or just updated the last one.
+          // In either case, go to the interstitial.
           this.doingDataEntry = false;
           setupResourceInterstitial(d3);
         } else {
-          // update existing resource
-          if (!upsertResource(d3, this.currentResource)) return true;
+          // We just updated a resource other than the last one. Edit the next
+          // one.
           this.currentResource += 1;
-          if (this.currentResource === nodesByType.resource.length) {
-            setupResourceInterstitial(d3);
-          } else {
-            setupResourceForm(d3, this.currentResource);
-          }
+          setupResourceForm(d3, this.currentResource);
         }
         return true;
       }
