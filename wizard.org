@@ -68,7 +68,8 @@ CLOSED: [2016-06-16 Thu 21:02]
 *** DONE deploy (goal: by Fri June 24)
 CLOSED: [2016-06-24 Fri 23:26]
 ** Priorities (from Kristen, June 13)
-*** TODO majorly revamp "resources" step
+*** DONE majorly revamp "resources" step
+CLOSED: [2016-07-13 Wed 11:02]
 **** DONE minimized interstitial step before resources
 **** DONE resource data entry step
 CLOSED: [2016-07-02 Sat 22:17]
@@ -108,20 +109,35 @@ CLOSED: [2016-07-12 Tue 15:54]
 CLOSED: [2016-07-12 Tue 16:24]
 **** DONE update node in map
 CLOSED: [2016-07-12 Tue 22:09]
-**** TODO add line breaks between checkboxes
+**** DONE add line breaks between checkboxes
+CLOSED: [2016-07-13 Wed 11:02]
 *** TODO add "wishes" step
 **** TODO interstitial step before wishes
-"Ask them to reflect on their emerging map again and share their top three wishes for how they could be better supported in meeting their responsibilities. Tell them they'll get three wishes and will be guided through entering each, one at a time."
+"Ask them to reflect on their emerging map again
+and share their top three wishes
+for how they could be better supported
+in meeting their responsibilities.
+Tell them they'll get three wishes
+and will be guided through entering each,
+one at a time."
 **** TODO wish data entry step
 - Please describe your wish.
-- Does this wish connect most importantly to a responsibility you feel stuck on, a need you struggle to meet, or a resource that you would like to change in some way? (Note: We want to connect your wish to the one most important factor in your map.)
+- Does this wish connect most importantly to
+  a responsibility you feel stuck on,
+  a need you struggle to meet,
+  or a resource that you would like to change in some way?
+  (Note: We want to connect your wish to
+  the one most important factor in your map.)
 - Please select the specific (----) from the list below. (They highlight it.)
-If the wish is connected to an existing resource (question is prompted only if the connection is to a resource) ask, "Please describe how you would like that resource to change." (free text, not necessarily included in the map; if it's in the map it'll go on the edge.)
+If the wish is connected to an existing resource
+(question is prompted only if the connection is to a resource)
+ask, "Please describe how you would like that resource to change."
+(free text, not necessarily included in the map;
+if it's in the map it'll go on the edge.)
 *** TODO on final step, allow download as JSON or image
 "Show the map, thank them for taking the time to complete it. Allow them to download it as a json file that can be opened in the ssm website or as a picture file (.jpg?). Contact ssm@unc.edu?
 *** TODO enable swapping out text copy (3-5 hours)
 ** Bugs
-*** TODO js exception when no helpfulness radio button is checked
 *** TODO entry-list steps don't save the correct step
 So when reloading the page, it reverts to the previous step
 This might be because we don't currently save merely for step advancment.

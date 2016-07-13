@@ -400,7 +400,11 @@ path.link.selected, g.pathG.selected path {
   max-height: 300px;
   max-width: 600px;
   border: 1px solid #aaa;
-  scroll: auto;
+  overflow: auto;
+}
+
+#wizard-resource-needs .wizard-need-group h5 {
+  margin: 10px 0 0;
 }
 
 #wizard-resource-helpfulness-radio-group {

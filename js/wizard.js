@@ -342,6 +342,7 @@ var populateResourceForm = function(d3, resource) {
     .property('checked', function(d,i,j){
       return resource.__parents__.indexOf(d) !== -1;
     });
+  d3.select('#wizard-resource-needs').selectAll('label').append('br');
   d3.select('#wizard-step8 input[name=helpfulness][value="' +
             resource.helpfulness + '"]')
     .property('checked', true);
