@@ -112,7 +112,8 @@ CLOSED: [2016-07-12 Tue 22:09]
 **** DONE add line breaks between checkboxes
 CLOSED: [2016-07-13 Wed 11:02]
 *** TODO add "wishes" step
-**** TODO interstitial step before wishes
+**** DONE interstitial step before wishes
+CLOSED: [2016-07-13 Wed 16:36]
 "Ask them to reflect on their emerging map again
 and share their top three wishes
 for how they could be better supported

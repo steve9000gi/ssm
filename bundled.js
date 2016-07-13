@@ -3718,7 +3718,7 @@ exports.currentStep = 1;
 exports.currentResponsibility = undefined;
 exports.currentNeed = undefined;
 
-var numSteps = 9;
+var numSteps = 10;
 var nodesByType = {
       'role': null,
       'responsibility': [],
@@ -4359,7 +4359,9 @@ var steps = {
       setupResourceForm(d3, --this.currentResource);
       return true;
     }
-  }
+  },
+
+  9: { isMinimized: true }
 };
 
 exports.initializeAtStep = function(d3) {
