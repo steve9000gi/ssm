@@ -405,15 +405,25 @@ var setupResourceInterstitial = function(d3) {
     .on('click', function(){ doneWithResources = true; exports.nextStep(d3); });
 };
 
-// TODO:
 var setupWishFormParentList = function(d3, parentType) {
   d3.select('#wizard-step10 span.wish-parent-type').text(parentType);
   d3.select('#wizard-step10 div.wish-parent-selection')
     .style('display', 'block');
+  d3.select('div.wish-parent-list').selectAll('*').remove();
+  var select = d3.select('#wizard-step10 div.wish-parent-list')
+        .append('select')
+        .attr('name', 'wish_parent_node_index');
+  var options = select.selectAll('option')
+        .data([null].concat(nodesByType[parentType]))
+        .enter().append('option')
+        .attr('value', function(d,i){ return d ? i : null; })
+        .text(function(d){ return d ? d.name : ''; });
+  d3.select('#wizard-step10 div.wish-resource-description')
+    .style('display', parentType === 'resource' ? 'block' : 'none');
 };
 
-// TODO:
 var setupWishForm = function(d3, wishNum) {
+  // TODO: clear wish form
   d3.select('#wizard-step10 span.wish-number')
     .text(wishNum + 1);
   d3.select('#wizard-step10').selectAll('input[name=wish_parent_type]')
