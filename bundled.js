@@ -3718,7 +3718,7 @@ exports.currentStep = 1;
 exports.currentResponsibility = undefined;
 exports.currentNeed = undefined;
 
-var numSteps = 10;
+var numSteps = 11;
 var nodesByType = {
       'role': null,
       'responsibility': [],

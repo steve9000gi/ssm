@@ -180,11 +180,48 @@
           <button class="back">&laquo; Back</button>
           <button class="next">Next &raquo;</button>
         </div>
-        <p>Please reflect on your map and consider what wishes might better support you in meeting your responsibilities.</p>
+        <p>Please reflect on your map and consider your wishes. If you could have anything, what might better support you in meeting your responsibilities?</p>
         <p>The next steps will guide you through entering your top 3 wishes, one at a time.</p>
       </div>
 
       <div id="wizard-step10" class="wizard-step">
+        <div class="close"><span>X</span></div>
+        <div class="wizard-buttons">
+          <button class="back">&laquo; Back</button>
+          <button class="next">Next &raquo;</button>
+        </div>
+        <h1>Outer area: Wishes</h1>
+        <p>If you could have anything to support you in your responsibilities, what would it be? These wishes will go outside of the outermost ring. We'll do 3 wishes. You're currently on wish <span class="wish-number">_</span> of 3.</p>
+        <label>
+          Please describe your wish.<br>
+          <span id="wizard-wish-name-error"></span>
+          <input type="text" name="wish_name">
+        </label>
+        <p>
+          Does it connect most importantly to:
+          <span id="wizard-wish-parent-type-error"></span>
+        </p>
+        <label>
+          <input type="radio" name="wish_parent_type" value="responsibility"> a responsibility you feel stuck on;<br/>
+        </label>
+        <label>
+          <input type="radio" name="wish_parent_type" value="need"> a need you struggle to meet;<br/>
+        </label>
+        <label>
+          <input type="radio" name="wish_parent_type" value="resource"> or a resource that you would like to change in some way?<br/>
+        </label>
+        <div class="wish-parent-selection" style="display: none;">
+          <p>(Note: we want to connect your wish to the one most important factor in your map.) Please select the specific <span class="wish-parent-type">_</span> from the list below.</p>
+          <span id="wizard-wish-parent-node-error"></span>
+          <div class="wish-parent-list"></div>
+        </div>
+        <div class="wish-resource-description" style="display: none;">
+          <p>Please describe how you would like that resource to change.</p>
+          <textarea name="wish_resource_description"></textarea>
+        </div>
+      </div>
+
+      <div id="wizard-step11" class="wizard-step">
         <div class="close"><span>X</span></div>
         <aside>
           <h5>Wondering what to do next?</h5>
