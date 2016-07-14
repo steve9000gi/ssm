@@ -141,7 +141,8 @@ CLOSED: [2016-07-13 Wed 21:41]
 **** TODO prevent forward stepping unless required selections made
 **** DONE fill in span.wish-number dynamically
 CLOSED: [2016-07-13 Wed 21:35]
-**** TODO fill in span.wish-parent-type dynamically
+**** DONE fill in span.wish-parent-type dynamically
+CLOSED: [2016-07-13 Wed 21:56]
 **** TODO fill in div.wish-parent-list dynamically
 **** TODO display div.wish-resource-description dynamically
 **** TODO upon "next", add wish to map and save it to backend

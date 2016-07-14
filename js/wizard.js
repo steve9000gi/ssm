@@ -406,9 +406,20 @@ var setupResourceInterstitial = function(d3) {
 };
 
 // TODO:
+var setupWishFormParentList = function(d3, parentType) {
+  d3.select('#wizard-step10 span.wish-parent-type').text(parentType);
+  d3.select('#wizard-step10 div.wish-parent-selection')
+    .style('display', 'block');
+};
+
+// TODO:
 var setupWishForm = function(d3, wishNum) {
   d3.select('#wizard-step10 span.wish-number')
     .text(wishNum + 1);
+  d3.select('#wizard-step10').selectAll('input[name=wish_parent_type]')
+    .on('click', function(){
+      setupWishFormParentList(d3, d3.select(this).property('value'));
+    });
 };
 
 var guardedClose = function(d3) {
