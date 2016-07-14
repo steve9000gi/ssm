@@ -31,5 +31,6 @@ exports.completionsByType = {
   'role': animals,
   'responsibility': animals,
   'need': animals,
-  'resource': animals
+  'resource': animals,
+  'wish': animals
 };

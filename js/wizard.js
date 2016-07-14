@@ -453,6 +453,11 @@ var setupWishForm = function(d3, wishNum) {
       descrip = wish && wish.resourceDescription;
   root.select('span.wish-number').text(wishNum + 1);
   root.select('input[name=wish_name]').property('value', name || '');
+  root.select('#wish-completions')
+    .selectAll('option')
+    .data(modCompletions.completionsByType.wish)
+    .enter().append('option')
+    .attr('value', String);
   root.select('textarea').property('value', descrip || '');
   root.select('div.wish-parent-list').selectAll('*').remove();
   root.selectAll('input[name=wish_parent_type]')
@@ -464,9 +469,10 @@ var setupWishForm = function(d3, wishNum) {
     root.selectAll('input[name=wish_parent_type][value=' + parentType + ']')
       .property('checked', true);
     setupWishFormParentList(d3, parentType);
-    root.selectAll('option').property('selected', function(d,i){
-      return i === parentIndex + 1;
-    });
+    root.select('select').selectAll('option')
+      .property('selected', function(d,i){
+        return i === parentIndex + 1;
+      });
   }
 };
 

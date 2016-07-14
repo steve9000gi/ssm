@@ -158,7 +158,8 @@ Need to save:
 - wish_resource_description
 **** DONE fill existing wish data into form
 CLOSED: [2016-07-14 Thu 11:42]
-**** TODO do we want completions for wish_name?
+**** DONE add completions for wish name
+CLOSED: [2016-07-14 Thu 11:53]
 **** TODO update existing wishes
 *** TODO on final step, allow download as JSON or image
 "Show the map, thank them for taking the time to complete it. Allow them to download it as a json file that can be opened in the ssm website or as a picture file (.jpg?). Contact ssm@unc.edu?
@@ -167,6 +168,12 @@ CLOSED: [2016-07-14 Thu 11:42]
 *** TODO entry-list steps don't save the correct step
 So when reloading the page, it reverts to the previous step
 This might be because we don't currently save merely for step advancment.
+*** TODO datalists in Chrome don't support expanding the list first
+In other words, gotta type something before completions fire on that text.
+There's a down-arrow that would suggest you can pre-expand, but it doesn't work.
+Maybe different markup would make that work?
+Maybe something in SSM is interfering with the expansion?
+If not, maybe use a polyfill?
 ** Nice-to-haves
 *** DONE display responsibilities as editable list
 CLOSED: [2016-06-24 Fri 22:19]

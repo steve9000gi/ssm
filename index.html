@@ -127,7 +127,7 @@
           <label>What type of resource would you like to describe?
             <span id="wizard-resource-type-error"></span>
             <input type="text" name="resource_type" list="resource-type-completions" />
-            <datalist id="resource-type-completions""></datalist>
+            <datalist id="resource-type-completions"></datalist>
           </label>
           <br/>
           <label>Can you name/describe the resource more specifically?
@@ -191,7 +191,8 @@
         <label>
           Please describe your wish.<br>
           <span id="wizard-wish-name-error" style="color: #a00"></span>
-          <input type="text" name="wish_name">
+          <input type="text" name="wish_name" list="wish-completions">
+          <datalist id="wish-completions"></datalist>
         </label>
         <p>
           Does it connect most importantly to:
