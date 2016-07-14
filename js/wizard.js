@@ -3,7 +3,9 @@ var modArrayUtils = require('./array-utils.js'),
     modDatabase = require('./database.js'),
     modEntryList = require('./entry-list.js'),
     modEvents = require('./events.js'),
+    modExport = require('./export.js'),
     modSelection = require('./selection.js'),
+    modSerialize = require('./serialize.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modSvg = require('./svg.js'),
     modText = require('./text.js'),
@@ -759,6 +761,22 @@ var steps = {
       this.currentWish -= 1;
       setupWishForm(d3, this.currentWish);
       return true;
+    }
+  },
+
+  11: {
+    enter: function(d3) {
+      d3.select('#wizard-download-map-data')
+        .on('click', function(){
+          var json = window.JSON.stringify(modSerialize.getMapObject(d3)),
+              blob = new window.Blob(
+                [json], {type: "text/plain;charset=utf-8"});
+          window.saveAs(blob, "SystemSupportMap.json");
+        });
+      d3.select('#wizard-download-map-image')
+        .on('click', function(){
+          modExport.exportGraphAsImage(d3);
+        });
     }
   }
 };

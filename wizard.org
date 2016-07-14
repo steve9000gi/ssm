@@ -163,7 +163,8 @@ CLOSED: [2016-07-14 Thu 11:42]
 CLOSED: [2016-07-14 Thu 11:53]
 **** DONE update existing wishes
 CLOSED: [2016-07-14 Thu 12:06]
-*** TODO on final step, allow download as JSON or image
+*** DONE on final step, allow download as JSON or image
+CLOSED: [2016-07-14 Thu 13:55]
 "Show the map, thank them for taking the time to complete it. Allow them to download it as a json file that can be opened in the ssm website or as a picture file (.jpg?). Contact ssm@unc.edu?
 *** TODO enable swapping out text copy (3-5 hours)
 ** Bugs

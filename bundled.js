@@ -3713,7 +3713,9 @@ var modArrayUtils = require('./array-utils.js'),
     modDatabase = require('./database.js'),
     modEntryList = require('./entry-list.js'),
     modEvents = require('./events.js'),
+    modExport = require('./export.js'),
     modSelection = require('./selection.js'),
+    modSerialize = require('./serialize.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modSvg = require('./svg.js'),
     modText = require('./text.js'),
@@ -4470,6 +4472,22 @@ var steps = {
       setupWishForm(d3, this.currentWish);
       return true;
     }
+  },
+
+  11: {
+    enter: function(d3) {
+      d3.select('#wizard-download-map-data')
+        .on('click', function(){
+          var json = window.JSON.stringify(modSerialize.getMapObject(d3)),
+              blob = new window.Blob(
+                [json], {type: "text/plain;charset=utf-8"});
+          window.saveAs(blob, "SystemSupportMap.json");
+        });
+      d3.select('#wizard-download-map-image')
+        .on('click', function(){
+          modExport.exportGraphAsImage(d3);
+        });
+    }
   }
 };
 
@@ -4507,7 +4525,7 @@ exports.prevStep = function(d3) {
   if (stepObj.enter) stepObj.enter(d3, -1);
 };
 
-},{"./array-utils.js":1,"./completions.js":5,"./database.js":7,"./entry-list.js":11,"./events.js":12,"./selection.js":24,"./svg.js":26,"./system-support-map.js":27,"./text.js":28,"./update.js":31}],34:[function(require,module,exports){
+},{"./array-utils.js":1,"./completions.js":5,"./database.js":7,"./entry-list.js":11,"./events.js":12,"./export.js":13,"./selection.js":24,"./serialize.js":25,"./svg.js":26,"./system-support-map.js":27,"./text.js":28,"./update.js":31}],34:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modGridZoom = require('./grid-zoom.js'),
     modText = require('./text.js');
