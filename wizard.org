@@ -170,6 +170,7 @@ CLOSED: [2016-07-14 Thu 12:06]
 *** TODO entry-list steps don't save the correct step
 So when reloading the page, it reverts to the previous step
 This might be because we don't currently save merely for step advancment.
+Also, I can click 'Finish' on the wizard, reload, and wizard is still there.
 *** TODO datalists in Chrome don't support expanding the list first
 In other words, gotta type something before completions fire on that text.
 There's a down-arrow that would suggest you can pre-expand, but it doesn't work.

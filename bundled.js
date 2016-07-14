@@ -1603,6 +1603,11 @@ var modCirclesOfCare = require('./circles-of-care.js'),
     modText = require('./text.js'),
     modUpdate = require('./update.js');
 
+var isVisible = function(d3, el) {
+  return d3.select(el).style('display') !== 'none' &&
+    d3.select(el.parentNode).style('display') !== 'none';
+};
+
 // Return dimensions of bounding box for all visible objects plus a little
 // extra. Ignore toolbox.
 var getGraphExtent = function(d3, shapes) {
@@ -1611,19 +1616,19 @@ var getGraphExtent = function(d3, shapes) {
   var minY = Number.MAX_VALUE;
   var maxY = Number.MIN_VALUE;
   shapes.each(function(d) {
-    if (d3.select(this).style("display") !== "none") { // Don't include hidden objects
-      var bbox = this.getBBox();
-      var x = d.x || parseFloat(d3.select(this).attr("cx")); // ssmCircles: no x, y
-      var y = d.y || parseFloat(d3.select(this).attr("cy"));
-      var thisXMin = x - bbox.width / 2;
-      var thisXMax = x + bbox.width / 2;
-      var thisYMin = y - bbox.height / 2;
-      var thisYMax = y + bbox.height / 2;
-      minX = (minX < thisXMin) ? minX : thisXMin;
-      maxX = (maxX > thisXMax) ? maxX : thisXMax;
-      minY = (minY < thisYMin) ? minY : thisYMin;
-      maxY = (maxY > thisYMax) ? maxY : thisYMax;
-    }
+    // Don't include hidden objects
+    if (!isVisible(d3, this)) return;
+    var bbox = this.getBBox();
+    var x = d.x || parseFloat(d3.select(this).attr("cx")); // ssmCircles: no x, y
+    var y = d.y || parseFloat(d3.select(this).attr("cy"));
+    var thisXMin = x - bbox.width / 2;
+    var thisXMax = x + bbox.width / 2;
+    var thisYMin = y - bbox.height / 2;
+    var thisYMax = y + bbox.height / 2;
+    minX = (minX < thisXMin) ? minX : thisXMin;
+    maxX = (maxX > thisXMax) ? maxX : thisXMax;
+    minY = (minY < thisYMin) ? minY : thisYMin;
+    maxY = (maxY > thisYMax) ? maxY : thisYMax;
   });
   var width = maxX - minX;
   var height = maxY - minY;
