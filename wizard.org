@@ -156,7 +156,8 @@ Need to save:
 - wish_name
 - wish_parent (i.e. the edge)
 - wish_resource_description
-**** TODO fill existing wish data into form
+**** DONE fill existing wish data into form
+CLOSED: [2016-07-14 Thu 11:42]
 **** TODO do we want completions for wish_name?
 **** TODO update existing wishes
 *** TODO on final step, allow download as JSON or image

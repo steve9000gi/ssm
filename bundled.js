@@ -4148,16 +4148,30 @@ var setupWishFormParentList = function(d3, parentType) {
 };
 
 var setupWishForm = function(d3, wishNum) {
-  var root = d3.select('#wizard-step10');
+  var root = d3.select('#wizard-step10'),
+      wish = wishNum < nodesByType.wish.length && nodesByType.wish[wishNum],
+      name = wish && wish.name,
+      parent = wish && wish.__parents__[0],
+      parentType = wish && parent.type,
+      parentIndex = wish && nodesByType[parentType].indexOf(parent),
+      descrip = wish && wish.resourceDescription;
   root.select('span.wish-number').text(wishNum + 1);
-  root.select('input[name=wish_name]').property('value', '');
-  root.select('textarea').property('value', '');
+  root.select('input[name=wish_name]').property('value', name || '');
+  root.select('textarea').property('value', descrip || '');
   root.select('div.wish-parent-list').selectAll('*').remove();
   root.selectAll('input[name=wish_parent_type]')
     .property('checked', false)
     .on('click', function(){
       setupWishFormParentList(d3, d3.select(this).property('value'));
     });
+  if (parentType) {
+    root.selectAll('input[name=wish_parent_type][value=' + parentType + ']')
+      .property('checked', true);
+    setupWishFormParentList(d3, parentType);
+    root.selectAll('option').property('selected', function(d,i){
+      return i === parentIndex + 1;
+    });
+  }
 };
 
 var guardedClose = function(d3) {
