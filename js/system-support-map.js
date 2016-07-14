@@ -3,7 +3,7 @@ var modSelectedColor = require('./selected-color.js');
 exports.hideText = "Hide system support rings";
 exports.center = null;
 exports.visible = true;
-exports.ringRadii = [110, 275, 475, 675];
+exports.ringRadii = [110, 275, 475, 675, 875];
 
 // Center circles and text in window
 exports.show = function(d3) {

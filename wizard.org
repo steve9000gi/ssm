@@ -138,7 +138,8 @@ ask, "Please describe how you would like that resource to change."
 if it's in the map it'll go on the edge.)
 **** DONE basic step movement (forwards and backwards)
 CLOSED: [2016-07-13 Wed 21:41]
-**** TODO prevent forward stepping unless required selections made
+**** DONE prevent forward stepping unless required selections made
+CLOSED: [2016-07-14 Thu 11:08]
 **** DONE fill in span.wish-number dynamically
 CLOSED: [2016-07-13 Wed 21:35]
 **** DONE fill in span.wish-parent-type dynamically
@@ -149,11 +150,13 @@ CLOSED: [2016-07-14 Thu 10:10]
 CLOSED: [2016-07-14 Thu 10:15]
 **** DONE display div.wish-resource-description dynamically
 CLOSED: [2016-07-14 Thu 10:11]
-**** TODO upon "next", add wish to map and save it to backend
+**** DONE upon "next", add wish to map and save it to backend
+CLOSED: [2016-07-14 Thu 11:08]
 Need to save:
 - wish_name
 - wish_parent (i.e. the edge)
 - wish_resource_description
+**** TODO fill existing wish data into form
 **** TODO do we want completions for wish_name?
 **** TODO update existing wishes
 *** TODO on final step, allow download as JSON or image

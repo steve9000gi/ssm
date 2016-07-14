@@ -46,7 +46,8 @@ var targetRadius = function(nodeType) {
   var ringNum = {
     'responsibility': 1,
     'need': 2,
-    'resource': 3
+    'resource': 3,
+    'wish': 4
   }[nodeType];
   var ringRadii = modSystemSupportMap.ringRadii,
       innerRingRadius = ringRadii[ringNum - 1],
@@ -63,7 +64,7 @@ var rebalanceNodes = function(d3) {
   var center = modSystemSupportMap.center,
       cx = center.x,
       cy = center.y,
-      nodeTypes = ['responsibility', 'need', 'resource'];
+      nodeTypes = ['responsibility', 'need', 'resource', 'wish'];
   setPosition(nodesByType.role, cx, cy);
   for (var typeNum = 0; typeNum < nodeTypes.length; typeNum++) {
     var type = nodeTypes[typeNum],
@@ -127,13 +128,12 @@ var updateNode = function(d3, type, indexAmongType, parent_s, text, edgeColor) {
     modEvents.addEdge(d3, newEdge(arr[i]));
   }
 
-  var ll = modSvg.links.filter(function(l){
+  modSvg.links.filter(function(l){
     return parentGroups[1].indexOf(l.source) > -1 && l.target === node;
   });
   modSvg.links.filter(function(l){
     return parentGroups[1].indexOf(l.source) > -1 && l.target === node;
   }).map(function(l){
-    // FIXME: This doesn't take effect until hover for some reason.
     modSvg.links[modSvg.links.indexOf(l)].color = edgeColor;
   });
 
@@ -235,8 +235,29 @@ var upsertResource = function(d3, resourceNumber) {
   return true;
 };
 
-// TODO:
-var upsertWish = function(d3, resourceNumber) {
+var upsertWish = function(d3, wishNumber) {
+  var root = d3.select('#wizard-step10'),
+      name = root.select('input[name=wish_name]').property('value'),
+      parentTypeSel = root.select('input[name=wish_parent_type]:checked'),
+      parentType = parentTypeSel.size() ?
+        parentTypeSel.property('value') : null,
+      selectNode = root.select('select').node(),
+      // subtract 1 because of the empty first option
+      parentIdx = selectNode && selectNode.selectedIndex - 1,
+      parentNode = parentIdx ? nodesByType[parentType][parentIdx] : null,
+      descrip = root.select('textarea').property('value');
+
+  d3.select('#wizard-wish-name-error')
+    .text(name ? '' : 'Please enter a wish name.');
+  d3.select('#wizard-wish-parent-type-error')
+    .text(parentType ? '' : 'Please make a selection.');
+  d3.select('#wizard-wish-parent-node-error')
+    .text(parentNode ? '' : 'Please make a selection.');
+  if (!name || !parentType || !parentNode) return false;
+
+  var newNode = upsertNode(d3, 'wish', wishNumber, parentNode, name);
+  newNode.resourceDescription = descrip;
+  modDatabase.writeMapToDatabase(d3, true);
   return true;
 };
 
@@ -423,11 +444,12 @@ var setupWishFormParentList = function(d3, parentType) {
 };
 
 var setupWishForm = function(d3, wishNum) {
-  d3.select('#wizard-step10 span.wish-number')
-    .text(wishNum + 1);
-  d3.select('#wizard-step10 input[name=wish_name]').property('value', '');
-  d3.select('#wizard-step10 textarea').property('value', '');
-  d3.select('#wizard-step10').selectAll('input[name=wish_parent_type]')
+  var root = d3.select('#wizard-step10');
+  root.select('span.wish-number').text(wishNum + 1);
+  root.select('input[name=wish_name]').property('value', '');
+  root.select('textarea').property('value', '');
+  root.select('div.wish-parent-list').selectAll('*').remove();
+  root.selectAll('input[name=wish_parent_type]')
     .property('checked', false)
     .on('click', function(){
       setupWishFormParentList(d3, d3.select(this).property('value'));
