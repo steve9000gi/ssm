@@ -136,9 +136,11 @@ If the wish is connected to an existing resource
 ask, "Please describe how you would like that resource to change."
 (free text, not necessarily included in the map;
 if it's in the map it'll go on the edge.)
-**** TODO basic step movement (forwards and backwards)
+**** DONE basic step movement (forwards and backwards)
+CLOSED: [2016-07-13 Wed 21:41]
 **** TODO prevent forward stepping unless required selections made
-**** TODO fill in span.wish-number dynamically
+**** DONE fill in span.wish-number dynamically
+CLOSED: [2016-07-13 Wed 21:35]
 **** TODO fill in span.wish-parent-type dynamically
 **** TODO fill in div.wish-parent-list dynamically
 **** TODO display div.wish-resource-description dynamically

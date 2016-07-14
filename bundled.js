@@ -3723,7 +3723,8 @@ var nodesByType = {
       'role': null,
       'responsibility': [],
       'need': [],
-      'resource': []
+      'resource': [],
+      'wish': []
     },
     // a flag to be set when user selects "continue" option from "add resources"
     // interstitial:
@@ -3938,6 +3939,11 @@ var upsertResource = function(d3, resourceNumber) {
   return true;
 };
 
+// TODO:
+var upsertWish = function(d3, resourceNumber) {
+  return true;
+};
+
 var removeNode = function(d3, type, indexAmongType, skipConfirm) {
   var node = nodesByType[type][indexAmongType];
   var confirmTxt = 'Are you sure you want to remove this ' + type + '?';
@@ -4101,6 +4107,12 @@ var setupResourceInterstitial = function(d3) {
     .on('click', function(){ exports.nextStep(d3); });
   d3.selectAll('#wizard button.next-step')
     .on('click', function(){ doneWithResources = true; exports.nextStep(d3); });
+};
+
+// TODO:
+var setupWishForm = function(d3, wishNum) {
+  d3.select('#wizard-step10 span.wish-number')
+    .text(wishNum + 1);
 };
 
 var guardedClose = function(d3) {
@@ -4361,7 +4373,32 @@ var steps = {
     }
   },
 
-  9: { isMinimized: true }
+  9: { isMinimized: true },
+
+  10: {
+    currentWish: null,
+
+    enter: function(d3, direction) {
+      this.currentWish = direction === 1 ? 0
+        : Math.max(0, nodesByType.wish.length - 1);
+      setupWishForm(d3, this.currentWish);
+    },
+
+    subStepAdvance: function(d3) {
+      if (!upsertWish(d3, this.currentWish)) return true;
+      if (this.currentWish === 2) return false;
+      this.currentWish += 1;
+      setupWishForm(d3, this.currentWish);
+      return true;
+    },
+
+    subStepRetreat: function(d3) {
+      if (this.currentWish === 0) return false;
+      this.currentWish -= 1;
+      setupWishForm(d3, this.currentWish);
+      return true;
+    }
+  }
 };
 
 exports.initializeAtStep = function(d3) {
