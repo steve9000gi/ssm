@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:8081/" />
+<title>wishes</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">wishes</td></tr>
+</thead><tbody>
+<tr>
+	<td>click</td>
+	<td>css=button.next-step</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=wish_name</td>
+	<td>if wishes</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>name=wish_parent_type</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=wish_parent_node_index</td>
+	<td>label=responsibility3</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step10 &gt; div.wizard-buttons &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=wish_name</td>
+	<td>were horses</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='wish_parent_type'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='wizard-step10']/div[2]/label[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=wish_parent_node_index</td>
+	<td>label=need2.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step10 &gt; div.wizard-buttons &gt; button.next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=wish_name</td>
+	<td>I'd be rich</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='wish_parent_type'])[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='wizard-step10']/div[2]/label[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=wish_parent_node_index</td>
+	<td>label=hedgehog</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=wish_resource_description</td>
+	<td>less pokey please</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#wizard-step10 &gt; div.wizard-buttons &gt; button.next</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
