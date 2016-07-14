@@ -52,11 +52,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>//div[@id='wizard-step10']/div[2]/label[2]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>select</td>
 	<td>name=wish_parent_node_index</td>
 	<td>label=need2.2</td>
@@ -74,11 +69,6 @@
 <tr>
 	<td>click</td>
 	<td>xpath=(//input[@name='wish_parent_type'])[3]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//div[@id='wizard-step10']/div[2]/label[3]</td>
 	<td></td>
 </tr>
 <tr>

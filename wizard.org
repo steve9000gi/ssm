@@ -111,7 +111,8 @@ CLOSED: [2016-07-12 Tue 16:24]
 CLOSED: [2016-07-12 Tue 22:09]
 **** DONE add line breaks between checkboxes
 CLOSED: [2016-07-13 Wed 11:02]
-*** TODO add "wishes" step
+*** DONE add "wishes" step
+CLOSED: [2016-07-14 Thu 12:08]
 **** DONE interstitial step before wishes
 CLOSED: [2016-07-13 Wed 16:36]
 "Ask them to reflect on their emerging map again
@@ -160,7 +161,8 @@ Need to save:
 CLOSED: [2016-07-14 Thu 11:42]
 **** DONE add completions for wish name
 CLOSED: [2016-07-14 Thu 11:53]
-**** TODO update existing wishes
+**** DONE update existing wishes
+CLOSED: [2016-07-14 Thu 12:06]
 *** TODO on final step, allow download as JSON or image
 "Show the map, thank them for taking the time to complete it. Allow them to download it as a json file that can be opened in the ssm website or as a picture file (.jpg?). Contact ssm@unc.edu?
 *** TODO enable swapping out text copy (3-5 hours)

@@ -3944,12 +3944,12 @@ var upsertWish = function(d3, wishNumber) {
   var root = d3.select('#wizard-step10'),
       name = root.select('input[name=wish_name]').property('value'),
       parentTypeSel = root.select('input[name=wish_parent_type]:checked'),
-      parentType = parentTypeSel.size() ?
-        parentTypeSel.property('value') : null,
+      parentType = parentTypeSel.empty() ? null
+        : parentTypeSel.property('value'),
       selectNode = root.select('select').node(),
-      // subtract 1 because of the empty first option
-      parentIdx = selectNode && selectNode.selectedIndex - 1,
-      parentNode = parentIdx ? nodesByType[parentType][parentIdx] : null,
+      selectedIdx = selectNode && selectNode.selectedIndex,
+      // subtract 1 because of the empty first option:
+      parentNode = selectedIdx ? nodesByType[parentType][selectedIdx - 1] : null,
       descrip = root.select('textarea').property('value');
 
   d3.select('#wizard-wish-name-error')
@@ -3961,7 +3961,8 @@ var upsertWish = function(d3, wishNumber) {
   if (!name || !parentType || !parentNode) return false;
 
   var newNode = upsertNode(d3, 'wish', wishNumber, parentNode, name);
-  newNode.resourceDescription = descrip;
+  if (parentType === 'resource') newNode.resourceDescription = descrip;
+  else delete newNode.resourceDescription;
   modDatabase.writeMapToDatabase(d3, true);
   return true;
 };
