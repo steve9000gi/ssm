@@ -145,7 +145,8 @@ CLOSED: [2016-07-13 Wed 21:35]
 CLOSED: [2016-07-13 Wed 21:56]
 **** DONE fill in div.wish-parent-list dynamically
 CLOSED: [2016-07-14 Thu 10:10]
-**** TODO clear wish form for new wish entry
+**** DONE clear wish form for new wish entry
+CLOSED: [2016-07-14 Thu 10:15]
 **** DONE display div.wish-resource-description dynamically
 CLOSED: [2016-07-14 Thu 10:11]
 **** TODO upon "next", add wish to map and save it to backend

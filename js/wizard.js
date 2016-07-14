@@ -423,10 +423,12 @@ var setupWishFormParentList = function(d3, parentType) {
 };
 
 var setupWishForm = function(d3, wishNum) {
-  // TODO: clear wish form
   d3.select('#wizard-step10 span.wish-number')
     .text(wishNum + 1);
+  d3.select('#wizard-step10 input[name=wish_name]').property('value', '');
+  d3.select('#wizard-step10 textarea').property('value', '');
   d3.select('#wizard-step10').selectAll('input[name=wish_parent_type]')
+    .property('checked', false)
     .on('click', function(){
       setupWishFormParentList(d3, d3.select(this).property('value'));
     });
