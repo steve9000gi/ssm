@@ -320,9 +320,9 @@ var setupNeedEntryList = function(d3, responsibilityNumber) {
   };
 
   var selector = '#wizard-need-list';
-  var existingTexts = responsibility.__children__.map(function(d) {
-    return d.name;
-  });
+  var existingTexts = responsibility.__children__
+        .filter(function(d) {return d.type === 'need';})
+        .map(function(d) {return d.name;});
   modEntryList.teardown(d3, selector);
   modEntryList.setup(d3, selector, existingTexts,
                      modCompletions.completionsByType.need,
@@ -595,9 +595,9 @@ var steps = {
       };
 
       var selector = '#wizard-responsibility-list';
-      var existingTexts = nodesByType.responsibility.map(function(d) {
-        return d.name;
-      });
+      var existingTexts = nodesByType.responsibility
+            .filter(function(d) {return d.type === 'responsibility';})
+            .map(function(d) {return d.name;});
       modEntryList.setup(d3, selector, existingTexts,
                          modCompletions.completionsByType.responsibility,
                          uponAdd, uponUpdate, uponRemove);

@@ -186,7 +186,8 @@ CLOSED: [2016-07-18 Mon 12:16]
 - will need to position these by their center, not corner
 - but pay attention to the space required for a realistic map, esp. with stars
 ** Bugs
-*** TODO in entry lists, only include children of a specific type (alternatively, filter out wishes).
+*** DONE in entry lists, only include children of a specific type (alternatively, filter out wishes).
+CLOSED: [2016-07-18 Mon 12:31]
 *** DONE it should not be possible to add an empty node for "role"
 CLOSED: [2016-07-18 Mon 12:22]
 *** TODO datalists in Chrome don't support expanding the list first
@@ -195,6 +196,8 @@ There's a down-arrow that would suggest you can pre-expand, but it doesn't work.
 Maybe different markup would make that work?
 Maybe something in SSM is interfering with the expansion?
 If not, maybe use a polyfill?
+Further clue: hitting down then blurring the field DOES have an effect.
+It's just that (apparently) the completion list widget doesn't get displayed.
 ** Nice-to-haves
 *** DONE display responsibilities as editable list
 CLOSED: [2016-06-24 Fri 22:19]
