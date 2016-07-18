@@ -3802,7 +3802,7 @@ var addNode = function(d3, type, parent_s, text, edgeColor) {
         source: src,
         target: newNode,
         style: 'solid',
-        color: edgeColor || 'black',
+        color: edgeColor || '#000000',
         thickness: 3,
         name: ''
       }; };
@@ -3827,7 +3827,7 @@ var updateNode = function(d3, type, indexAmongType, parent_s, text, edgeColor) {
         source: src,
         target: node,
         style: 'solid',
-        color: edgeColor || 'black',
+        color: edgeColor || '#000000',
         thickness: 3,
         name: ''
       }; },
@@ -3914,9 +3914,9 @@ var upsertResource = function(d3, resourceNumber) {
   if (noType || noNeeds || noHelpfulness) return false;
 
   var helpfulness = checkedHelpfulness.value,
-      edgeColor = helpfulness === 'helpful' ? 'green'
-        : helpfulness === 'not-helpful' ? 'red'
-        : 'black',
+      edgeColor = helpfulness === 'helpful' ? '#00bd00'
+        : helpfulness === 'not-helpful' ? '#ff0000'
+        : '#000000',
       parents = [];
 
   checkedParentNeeds.each(function(){
