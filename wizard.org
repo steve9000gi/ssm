@@ -167,11 +167,27 @@ CLOSED: [2016-07-14 Thu 12:06]
 CLOSED: [2016-07-14 Thu 13:55]
 "Show the map, thank them for taking the time to complete it. Allow them to download it as a json file that can be opened in the ssm website or as a picture file (.jpg?). Contact ssm@unc.edu?
 *** TODO enable swapping out text copy (3-5 hours)
+- Weak preference for ~/ssm/module_name~ over ~/ssm/?module=name~ URL scheme.
+- Also, weak preference for single deployment instead of multiple.
+- There will probably be 3 versions eventually:
+  default, parent/caregivers, and Title V workforce
+** Finishing up tasks (from Steve & Kristen, July 14)
+*** DONE tell Steve how we can work together Git-wise
+CLOSED: [2016-07-18 Mon 12:16]
+*** TODO fix arrowheads
+*** TODO save with each step next/back button click (incl. finish)
+*** TODO minimize button and min/max functionality
+*** TODO zoom out initially; restore initial zoom at role step
+*** TODO remove inner scroll bar for resources -> need list
+*** TODO add a button to control whether type/name of resource is shown in the map
+*** TODO provide instructions for Steve and Kristen for updating completion text and text module
+*** TODO spend a few minutes looking at d3v4 force-directed layout
+*** TODO add node shapes and colors
+- will need to position these by their center, not corner
+- but pay attention to the space required for a realistic map, esp. with stars
 ** Bugs
-*** TODO entry-list steps don't save the correct step
-So when reloading the page, it reverts to the previous step
-This might be because we don't currently save merely for step advancment.
-Also, I can click 'Finish' on the wizard, reload, and wizard is still there.
+*** TODO in entry lists, only include children of a specific type (alternatively, filter out wishes).
+*** TODO able to add empty role node? Maybe by hitting "back" instead of "next"?
 *** TODO datalists in Chrome don't support expanding the list first
 In other words, gotta type something before completions fire on that text.
 There's a down-arrow that would suggest you can pre-expand, but it doesn't work.
@@ -213,6 +229,8 @@ same place every time.
 screen. Middle click started dragging, left click finished it. But left drag
 didn't work.
 *** TODO enable text selection in wizard area
+*** TODO might want to ask for and/or hardcode the system descrip on prereq screen
+From Kristen, July 14, 2016
 ** Later
 *** TODO enable wizard for maps with preexisting info
 This would require some design to figure out how the wizard works with preexisting info.
