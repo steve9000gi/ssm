@@ -178,7 +178,8 @@ CLOSED: [2016-07-18 Mon 12:16]
 CLOSED: [2016-07-18 Mon 12:54]
 *** DONE save with each step next/back button click (incl. finish)
 CLOSED: [2016-07-18 Mon 15:12]
-*** TODO minimize button and min/max functionality
+*** DONE minimize button and min/max functionality
+CLOSED: [2016-07-18 Mon 15:59]
 *** TODO zoom out initially; restore initial zoom at role step
 *** TODO remove inner scroll bar for resources -> need list
 *** TODO add a button to control whether type/name of resource is shown in the map

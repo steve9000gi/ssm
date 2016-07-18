@@ -4131,7 +4131,7 @@ var setupResourceForm = function(d3, resourceNum) {
 };
 
 var setupResourceInterstitial = function(d3) {
-  document.getElementById('wizard').className = 'minimized';
+  document.getElementById('wizard').className = 'small';
   d3.select('#wizard-step8 .resource-form').style('display', 'none');
   d3.select('#wizard-step8 .resource-interstitial').style('display', 'block');
   d3.selectAll('#wizard button.add-resource')
@@ -4199,8 +4199,20 @@ var guardedClose = function(d3) {
 };
 
 var attachButtonHandlers = function(d3) {
-  d3.selectAll('#wizard div.close span')
+  d3.selectAll('#wizard div.close')
     .on('click', function(){ guardedClose(d3); });
+  d3.selectAll('#wizard div.minimize')
+    .on('click', function(){
+      document.getElementById('wizard').className = 'minimized';
+      d3.selectAll('#wizard div.maximize').style('display', 'block');
+      d3.selectAll('#wizard div.minimize').style('display', 'none');
+    });
+  d3.selectAll('#wizard div.maximize')
+    .on('click', function(){
+      document.getElementById('wizard').className = 'open';
+      d3.selectAll('#wizard div.maximize').style('display', 'none');
+      d3.selectAll('#wizard div.minimize').style('display', 'block');
+    });
   d3.selectAll('#wizard button.next')
     .on('click', function(){ exports.nextStep(d3); });
   d3.selectAll('#wizard button.back')
@@ -4247,6 +4259,8 @@ exports.inferParentChildRelationships = function(d3) {
 exports.showWizard = function(d3, subStepState) {
   document.getElementById('wizard').className = 'open';
   document.getElementById('toolbox').style.visibility = 'hidden';
+  d3.selectAll('#wizard div.maximize').style('display', 'none');
+  d3.selectAll('#wizard div.minimize').style('display', 'block');
   exports.wizardActive = true;
   exports.initializeAtStep(d3, subStepState);
   modUpdate.updateWindow(d3);
@@ -4274,8 +4288,8 @@ exports.showStep = function(d3) {
     }
   }
   if (exports.currentStep && steps[exports.currentStep] &&
-      steps[exports.currentStep].isMinimized) {
-    document.getElementById('wizard').className = 'minimized';
+      steps[exports.currentStep].isSmall) {
+    document.getElementById('wizard').className = 'small';
   } else {
     document.getElementById('wizard').className = 'open';
   }
@@ -4375,7 +4389,7 @@ var steps = {
     }
   },
 
-  7: { isMinimized: true },
+  7: { isSmall: true },
 
   // Step 8, adding resources, is a bit complicated.
   //
@@ -4473,7 +4487,7 @@ var steps = {
     }
   },
 
-  9: { isMinimized: true },
+  9: { isSmall: true },
 
   10: {
     currentWish: null,
