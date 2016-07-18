@@ -187,7 +187,8 @@ CLOSED: [2016-07-18 Mon 12:16]
 - but pay attention to the space required for a realistic map, esp. with stars
 ** Bugs
 *** TODO in entry lists, only include children of a specific type (alternatively, filter out wishes).
-*** TODO able to add empty role node? Maybe by hitting "back" instead of "next"?
+*** DONE it should not be possible to add an empty node for "role"
+CLOSED: [2016-07-18 Mon 12:22]
 *** TODO datalists in Chrome don't support expanding the list first
 In other words, gotta type something before completions fire on that text.
 There's a down-arrow that would suggest you can pre-expand, but it doesn't work.

@@ -3739,13 +3739,13 @@ var nodesByType = {
     doneWithResources;
 
 var addRoleThenNext = function(d3) {
-  var text = d3.select('input[name=role]').node().value,
-      center = modSystemSupportMap.center,
-      node = modEvents.addNode(d3, center.x, center.y, text);
+  var text = d3.select('input[name=role]').node().value;
   if (!text) {
     alert('You must enter a role before proceeding.');
     return false;
   }
+  var center = modSystemSupportMap.center,
+      node = modEvents.addNode(d3, center.x, center.y, text);
   node.type = 'role';
   node.__children__ = [];
   nodesByType.role = node;
