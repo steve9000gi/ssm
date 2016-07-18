@@ -2871,6 +2871,7 @@ exports.getMapObject = function(d3) {
     ret.wizardCurrentStep = modWizard.currentStep;
     ret.wizardCurrentResponsibility = modWizard.currentResponsibility;
     ret.wizardCurrentNeed = modWizard.currentNeed;
+    ret.wizardSubStepState = modWizard.getCurrentSubStepState(d3);
   }
   return ret;
 };
@@ -2928,7 +2929,7 @@ exports.importMap = function(d3, jsonObj, id) {
       modWizard.currentResponsibility = jsonObj.wizardCurrentResponsibility;
       modWizard.currentNeed = jsonObj.wizardCurrentNeed;
       modWizard.inferParentChildRelationships(d3);
-      modWizard.showWizard(d3);
+      modWizard.showWizard(d3, jsonObj.wizardSubStepState);
     }
   } catch(err) {
     window.alert("Error parsing uploaded file\nerror message: " + err.message);
@@ -4205,7 +4206,10 @@ var attachButtonHandlers = function(d3) {
   d3.selectAll('#wizard button.back')
     .on('click', function(){ exports.prevStep(d3); });
   d3.selectAll('#wizard button.finish')
-    .on('click', function(){ exports.hideWizard(d3); });
+    .on('click', function(){
+      exports.hideWizard(d3);
+      modDatabase.writeMapToDatabase(d3, true);
+    });
   d3.selectAll('#wizard button.add-role-next')
     .on('click', function(){ addRoleThenNext(d3); });
   // Stop propagation of keydown events, so that the handlers elsewhere in this
@@ -4240,11 +4244,11 @@ exports.inferParentChildRelationships = function(d3) {
   }
 };
 
-exports.showWizard = function(d3) {
+exports.showWizard = function(d3, subStepState) {
   document.getElementById('wizard').className = 'open';
   document.getElementById('toolbox').style.visibility = 'hidden';
   exports.wizardActive = true;
-  exports.initializeAtStep(d3);
+  exports.initializeAtStep(d3, subStepState);
   modUpdate.updateWindow(d3);
 };
 
@@ -4324,8 +4328,11 @@ var steps = {
   },
 
   6: {
-    enter: function(d3, direction) {
-      if (direction === 1) {
+    enter: function(d3, direction, subStepState) {
+      if (direction === 0) {
+        exports.currentResponsibility =
+          (subStepState && subStepState.currentResponsibility) || 0;
+      } else if (direction === 1) {
         exports.currentResponsibility = 0;
       } else if (direction === -1) {
         exports.currentResponsibility = nodesByType.responsibility.length - 1;
@@ -4336,6 +4343,10 @@ var steps = {
     exit: function(d3) {
       highlightResponsibility(d3, null);
       return true;
+    },
+
+    getSubStepState: function(d3) {
+      return {currentResponsibility: exports.currentResponsibility};
     },
 
     subStepAdvance: function(d3) {
@@ -4396,17 +4407,32 @@ var steps = {
     doingDataEntry: true,
     currentResource: null,
 
-    enter: function(d3, direction) {
-      doneWithResources = false;
-      if (direction === 1) {
+    enter: function(d3, direction, subStepState) {
+      if (direction === 0) {
+        doneWithResources = subStepState.doneWithResources;
+        this.currentResource = subStepState.currentResource;
+        this.doingDataEntry = subStepState.doingDataEntry;
+        if (this.doingDataEntry) setupResourceForm(d3, this.currentResource);
+        else setupResourceInterstitial(d3);
+      } else if (direction === 1) {
+        doneWithResources = false;
         this.currentResource = 0;
         this.doingDataEntry = true;
         setupResourceForm(d3, this.currentResource);
       } else {
+        doneWithResources = false;
         this.currentResource = nodesByType.resource.length - 1;
         this.doingDataEntry = false;
         setupResourceInterstitial(d3);
       }
+    },
+
+    getSubStepState: function(d3) {
+      return {
+        doingDataEntry: this.doingDataEntry,
+        currentResource: this.currentResource,
+        doneWithResources: doneWithResources
+      };
     },
 
     subStepAdvance: function(d3) {
@@ -4452,10 +4478,19 @@ var steps = {
   10: {
     currentWish: null,
 
-    enter: function(d3, direction) {
-      this.currentWish = direction === 1 ? 0
-        : Math.max(0, nodesByType.wish.length - 1);
+    enter: function(d3, direction, subStepState) {
+      if (direction === 0) {
+        this.currentWish = subStepState.currentWish;
+      } else if (direction === 1) {
+        this.currentWish = 0;
+      } else {
+        this.currentWish = Math.max(0, nodesByType.wish.length - 1);
+      }
       setupWishForm(d3, this.currentWish);
+    },
+
+    getSubStepState: function(d3) {
+      return {currentWish: this.currentWish};
     },
 
     subStepAdvance: function(d3) {
@@ -4491,16 +4526,17 @@ var steps = {
   }
 };
 
-exports.initializeAtStep = function(d3) {
+exports.initializeAtStep = function(d3, subStepState) {
   exports.showStep(d3);
   var stepObj = steps[exports.currentStep] || {};
-  if (stepObj.enter) stepObj.enter(d3, 0);
+  if (stepObj.enter) stepObj.enter(d3, 0, subStepState);
 };
 
 exports.nextStep = function(d3) {
   var stepObj = steps[exports.currentStep] || {};
   if (stepObj.subStepAdvance && stepObj.subStepAdvance(d3)) {
     // The current step isn't ready to move on to the next step.
+    modDatabase.writeMapToDatabase(d3, true);
     return;
   }
   // A step can prevent advancement by returning something falsy from `exit`.
@@ -4509,6 +4545,7 @@ exports.nextStep = function(d3) {
     exports.showStep(d3);
     stepObj = steps[exports.currentStep] || {};
     if (stepObj.enter) stepObj.enter(d3, 1);
+    modDatabase.writeMapToDatabase(d3, true);
   }
 };
 
@@ -4516,6 +4553,7 @@ exports.prevStep = function(d3) {
   var stepObj = steps[exports.currentStep] || {};
   if (stepObj.subStepRetreat && stepObj.subStepRetreat(d3)) {
     // The current step isn't ready to move on to the previous step.
+    modDatabase.writeMapToDatabase(d3, true);
     return;
   }
   if (stepObj.exit) stepObj.exit(d3);
@@ -4523,6 +4561,13 @@ exports.prevStep = function(d3) {
   exports.showStep(d3);
   stepObj = steps[exports.currentStep] || {};
   if (stepObj.enter) stepObj.enter(d3, -1);
+  modDatabase.writeMapToDatabase(d3, true);
+};
+
+exports.getCurrentSubStepState = function(d3) {
+  var stepObj = steps[exports.currentStep] || {},
+      fn = stepObj.getSubStepState;
+  return fn ? fn.call(stepObj, d3) : null;
 };
 
 },{"./array-utils.js":1,"./completions.js":5,"./database.js":7,"./entry-list.js":11,"./events.js":12,"./export.js":13,"./selection.js":24,"./serialize.js":25,"./svg.js":26,"./system-support-map.js":27,"./text.js":28,"./update.js":31}],34:[function(require,module,exports){

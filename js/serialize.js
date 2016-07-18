@@ -67,6 +67,7 @@ exports.getMapObject = function(d3) {
     ret.wizardCurrentStep = modWizard.currentStep;
     ret.wizardCurrentResponsibility = modWizard.currentResponsibility;
     ret.wizardCurrentNeed = modWizard.currentNeed;
+    ret.wizardSubStepState = modWizard.getCurrentSubStepState(d3);
   }
   return ret;
 };
@@ -124,7 +125,7 @@ exports.importMap = function(d3, jsonObj, id) {
       modWizard.currentResponsibility = jsonObj.wizardCurrentResponsibility;
       modWizard.currentNeed = jsonObj.wizardCurrentNeed;
       modWizard.inferParentChildRelationships(d3);
-      modWizard.showWizard(d3);
+      modWizard.showWizard(d3, jsonObj.wizardSubStepState);
     }
   } catch(err) {
     window.alert("Error parsing uploaded file\nerror message: " + err.message);
