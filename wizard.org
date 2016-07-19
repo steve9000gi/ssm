@@ -192,7 +192,8 @@ Pending completion of the text modularity feature.
 CLOSED: [2016-07-19 Tue 15:12]
 It looks promising. "Force" is a primary concept now, and composing them is
 built-in.
-*** TODO add node shapes and colors
+*** DONE add node shapes and colors
+CLOSED: [2016-07-19 Tue 15:25]
 - will need to position these by their center, not corner
 - but pay attention to the space required for a realistic map, esp. with stars
 ** Bugs

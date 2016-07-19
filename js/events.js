@@ -127,13 +127,13 @@ var svgMouseUp = function(d3) {
 // FIXME: this function and the next one should really live elsewhere, modSvg
 // probably.
 
-exports.addNode = function(d3, x, y, text) {
+exports.addNode = function(d3, x, y, text, color, shape) {
   var d = {id: exports.shapeId,
            name: text,
            x: x,
            y: y,
-           color: modSelectedColor.clr,
-           shape: modSelectedShape.shape};
+           color: color || modSelectedColor.clr,
+           shape: shape || modSelectedShape.shape};
   modSvg.nodes.push(d);
   exports.shapeId++;
   modUpdate.updateGraph(d3);

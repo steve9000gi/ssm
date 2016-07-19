@@ -1474,13 +1474,13 @@ var svgMouseUp = function(d3) {
 // FIXME: this function and the next one should really live elsewhere, modSvg
 // probably.
 
-exports.addNode = function(d3, x, y, text) {
+exports.addNode = function(d3, x, y, text, color, shape) {
   var d = {id: exports.shapeId,
            name: text,
            x: x,
            y: y,
-           color: modSelectedColor.clr,
-           shape: modSelectedShape.shape};
+           color: color || modSelectedColor.clr,
+           shape: shape || modSelectedShape.shape};
   modSvg.nodes.push(d);
   exports.shapeId++;
   modUpdate.updateGraph(d3);
@@ -3733,6 +3733,20 @@ var nodesByType = {
       'resource': [],
       'wish': []
     },
+    shapesByType = {
+      'role':           'diamond',
+      'responsibility': 'circle',
+      'need':           'rectangle',
+      'resource':       'ellipse',
+      'wish':           'star'
+    },
+    colorsByType = {
+      'role':           '#8800ff', // purple
+      'responsibility': '#0000ff', // blue
+      'need':           '#00bdbd', // cyan
+      'resource':       '#000000', // black
+      'wish':           '#999900'  // gold
+    },
     // a flag to be set when user selects "continue" option from "add resources"
     // interstitial:
     doneWithResources;
@@ -3744,7 +3758,9 @@ var addRoleThenNext = function(d3) {
     return false;
   }
   var center = modSystemSupportMap.center,
-      node = modEvents.addNode(d3, center.x, center.y, text);
+      color = colorsByType.role,
+      shape = shapesByType.role,
+      node = modEvents.addNode(d3, center.x, center.y, text, color, shape);
   node.type = 'role';
   node.__children__ = [];
   nodesByType.role = node;
@@ -3794,7 +3810,9 @@ var rebalanceNodes = function(d3) {
 
 var addNode = function(d3, type, parent_s, text, edgeColor) {
   // parent_s might be single parent or an array of many parents
-  var newNode = modEvents.addNode(d3, 0, 0, text),
+  var color = colorsByType[type],
+      shape = shapesByType[type],
+      newNode = modEvents.addNode(d3, 0, 0, text, color, shape),
       parents = [].concat(parent_s),
       multiParent = parents.length > 1,
       newEdge = function(src) { return {
