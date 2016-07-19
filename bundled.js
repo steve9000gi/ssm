@@ -4105,7 +4105,9 @@ var setupResourceForm = function(d3, resourceNum) {
   // nested d3 selection. See https://bost.ocks.org/mike/nest/ for info.
   var labels = groups
         .selectAll('label')
-        .data(function(d){ return d.__children__; })
+        .data(function(d){
+          return d.__children__.filter(function(c){return c.type === 'need';});
+        })
         .enter().append('label');
   labels.append('input')
     .attr('type', 'checkbox')
