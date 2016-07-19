@@ -181,12 +181,17 @@ CLOSED: [2016-07-18 Mon 15:12]
 *** DONE minimize button and min/max functionality
 CLOSED: [2016-07-18 Mon 15:59]
 *** TODO zoom out initially; restore initial zoom at role step
+Pending response from Kristen, WIP code is on the wizard-zoom branch
 *** DONE remove inner scroll bar for resources -> need list
 CLOSED: [2016-07-19 Tue 14:06]
 *** DONE add a button to control whether type/name of resource is shown in the map
 CLOSED: [2016-07-19 Tue 14:49]
 *** TODO provide instructions for Steve and Kristen for updating completion text and text module
-*** TODO spend a few minutes looking at d3v4 force-directed layout
+Pending completion of the text modularity feature.
+*** DONE spend a few minutes looking at d3v4 force-directed layout
+CLOSED: [2016-07-19 Tue 15:12]
+It looks promising. "Force" is a primary concept now, and composing them is
+built-in.
 *** TODO add node shapes and colors
 - will need to position these by their center, not corner
 - but pay attention to the space required for a realistic map, esp. with stars
