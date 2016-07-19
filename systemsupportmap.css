@@ -424,7 +424,6 @@ path.link.selected, g.pathG.selected path {
 }
 
 #wizard-resource-needs {
-  max-height: 300px;
   max-width: 600px;
   border: 1px solid #aaa;
   overflow: auto;

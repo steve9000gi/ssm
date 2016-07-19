@@ -181,7 +181,8 @@ CLOSED: [2016-07-18 Mon 15:12]
 *** DONE minimize button and min/max functionality
 CLOSED: [2016-07-18 Mon 15:59]
 *** TODO zoom out initially; restore initial zoom at role step
-*** TODO remove inner scroll bar for resources -> need list
+*** DONE remove inner scroll bar for resources -> need list
+CLOSED: [2016-07-19 Tue 14:06]
 *** TODO add a button to control whether type/name of resource is shown in the map
 *** TODO provide instructions for Steve and Kristen for updating completion text and text module
 *** TODO spend a few minutes looking at d3v4 force-directed layout
@@ -191,6 +192,7 @@ CLOSED: [2016-07-18 Mon 15:59]
 ** Bugs
 *** DONE in entry lists, only include children of a specific type (alternatively, filter out wishes).
 CLOSED: [2016-07-18 Mon 12:31]
+*** TODO in resource -> need list, only display child needs, not child wishes
 *** DONE it should not be possible to add an empty node for "role"
 CLOSED: [2016-07-18 Mon 12:22]
 *** TODO datalists in Chrome don't support expanding the list first
