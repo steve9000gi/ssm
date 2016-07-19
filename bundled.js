@@ -3872,45 +3872,56 @@ var upsertNode = function(d3, type, indexAmongType, parent_s, text, edgeColor) {
 var upsertResource = function(d3, resourceNumber) {
   var type = d3.select('input[name=resource_type]'),
       name = d3.select('input[name=resource_name]'),
+      typeNode = type.node(),
+      nameNode = name.node(),
+      labelIndex = d3.select('select[name="resource_label_field"]')
+        .node().selectedIndex,
+      labelField = ['type', 'name'][labelIndex],
+      nodeLabel = labelField === 'type' ? typeNode.value : nameNode.value,
       checkedNeedsSel = '#wizard-resource-needs input[type=checkbox]:checked',
       checkedParentNeeds = d3.selectAll(checkedNeedsSel),
       checkedHelpfulness = d3.select('input[name=helpfulness]:checked').node(),
       helpDescrip = d3.select('textarea[name=resource_helpfulness_description'),
       noType = type.node().value === '',
       noNeeds = checkedParentNeeds.size() === 0,
-      noHelpfulness = !checkedHelpfulness;
+      noHelp = !checkedHelpfulness,
+      badLabel = labelField === 'name' && !nameNode.value,
+      errorSel;
 
-  if (noType) {
-    type.transition(0.5)
-      .style('border', '1px solid red')
-      .style('background-color', '#ffa');
-    d3.select('#wizard-resource-type-error')
-      .text('Please enter a resource type.')
-      .style('color', '#a00')
-      .append('br');
-  }
+  type.transition(0.5)
+    .style('border', noType ? '1px solid red' : null)
+    .style('background-color', noType ? '#ffa' : null);
+  errorSel = d3.select('#wizard-resource-type-error')
+    .text(noType ? 'Please enter a resource type.' : '')
+    .style('color', noType ? '#a00' : null);
+  if (noType) errorSel.append('br');
+  else errorSel.selectAll('br').remove();
 
-  if (noNeeds) {
-    d3.select('#wizard-resource-needs')
-      .transition(0.5)
-      .style('border', '1px solid red');
-    d3.select('#wizard-resource-needs-error')
-      .text('Please select at least one related need.')
-      .style('color', '#a00')
-      .append('br');
-  }
+  d3.select('#wizard-resource-needs')
+    .transition(0.5)
+    .style('border', noNeeds ? '1px solid red' : null);
+  errorSel = d3.select('#wizard-resource-needs-error')
+    .text(noNeeds ? 'Please select at least one related need.' : '')
+    .style('color', noNeeds ? '#a00' : null);
+  if (noNeeds) errorSel.append('br');
+  else errorSel.selectAll('br').remove();
 
-  if (noHelpfulness) {
-    d3.select('#wizard-resource-helpfulness-radio-group')
-      .transition(0.5)
-      .style('border', '1px solid red');
-    d3.select('#wizard-resource-helpfulness-error')
-      .text('Please select one option below.')
-      .style('color', '#a00')
-      .append('br');
-  }
+  d3.select('#wizard-resource-helpfulness-radio-group')
+    .transition(0.5)
+    .style('border', noHelp ? '1px solid red' : null);
+  errorSel = d3.select('#wizard-resource-helpfulness-error')
+    .text(noHelp ? 'Please select one option below.' : '')
+    .style('color', noHelp ? '#a00' : null);
+  if (noHelp) errorSel.append('br');
+  else errorSel.selectAll('br').remove();
 
-  if (noType || noNeeds || noHelpfulness) return false;
+  errorSel = d3.select('#wizard-resource-label-error')
+    .text(badLabel ? "You can't have an empty label. Either use 'type' as the label or fill in a name above." : '')
+    .style('color', badLabel ? '#a00' : null);
+  if (badLabel) errorSel.append('br');
+  else errorSel.selectAll('br').remove();
+
+  if (noType || noNeeds || noHelp || badLabel) return false;
 
   var helpfulness = checkedHelpfulness.value,
       edgeColor = helpfulness === 'helpful' ? '#00bd00'
@@ -3926,15 +3937,16 @@ var upsertResource = function(d3, resourceNumber) {
   });
 
   var newNode = upsertNode(d3, 'resource', resourceNumber, parents,
-                           type.node().value, edgeColor),
-      nameNode = name.node(),
+                           nodeLabel, edgeColor),
       hdNode = helpDescrip.node();
 
   newNode.helpfulness = helpfulness;
+  newNode.labelField = labelField;
+  newNode.generalName = typeNode.value;
   if (nameNode) {
-    newNode.specific_name = nameNode.value;
+    newNode.specificName = nameNode.value;
   } else {
-    delete newNode.specific_name;
+    delete newNode.specificName;
   }
   if (hdNode) {
     newNode.helpfulnessDescription = hdNode.value;
@@ -4071,9 +4083,11 @@ var clearResourceForm = function(d3) {
 
 var populateResourceForm = function(d3, resource) {
   d3.select('#wizard-step8 input[name=resource_type]')
-    .property('value', resource.name);
+    .property('value', resource.generalName);
   d3.select('#wizard-step8 input[name=resource_name]')
-    .property('value', resource.specific_name);
+    .property('value', resource.specificName);
+  var selectNode = d3.select('select[name="resource_label_field"]').node();
+  selectNode.selectedIndex = resource.labelField === 'type' ? 0 : 1;
   d3.select('#wizard-resource-needs')
     .selectAll('div.wizard-need-group')
     .selectAll('label')

@@ -183,7 +183,8 @@ CLOSED: [2016-07-18 Mon 15:59]
 *** TODO zoom out initially; restore initial zoom at role step
 *** DONE remove inner scroll bar for resources -> need list
 CLOSED: [2016-07-19 Tue 14:06]
-*** TODO add a button to control whether type/name of resource is shown in the map
+*** DONE add a button to control whether type/name of resource is shown in the map
+CLOSED: [2016-07-19 Tue 14:49]
 *** TODO provide instructions for Steve and Kristen for updating completion text and text module
 *** TODO spend a few minutes looking at d3v4 force-directed layout
 *** TODO add node shapes and colors
