@@ -1,6 +1,5 @@
 var modCirclesOfCare = require('./circles-of-care.js'),
     modEvents = require('./events.js'),
-    modGridZoom = require('./grid-zoom.js'),
     modSvg = require('./svg.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modUpdate = require('./update.js'),

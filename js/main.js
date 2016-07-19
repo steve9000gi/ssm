@@ -45,9 +45,8 @@ document.onload = (function(d3) {
     modUpdate.updateGraph(d3);
     if (!modDatabase.loadMapFromLocation(d3)) {
       // blank slate; open wizard
+      modWizard.currentStep = 1;
       modWizard.showWizard(d3);
     }
-    window.showWizard = function() { modWizard.showWizard(d3); };
-    window.hideWizard = function() { modWizard.hideWizard(d3); };
   });
 })(window.d3);
