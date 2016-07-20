@@ -3080,7 +3080,7 @@ exports.setup = function(d3) {
       re = /\bmodule=([^&]+)/,
       match = re.exec(queryStr),
       module = match && decodeURIComponent(match[1]) || 'default',
-      url = module && '/strings/' + module + '.yaml';
+      url = module && 'strings/' + module + '.yaml';
   if (!url) return;
   d3.xhr(url)
     .get(function(error, data) {
