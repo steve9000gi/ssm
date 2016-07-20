@@ -166,7 +166,8 @@ CLOSED: [2016-07-14 Thu 12:06]
 *** DONE on final step, allow download as JSON or image
 CLOSED: [2016-07-14 Thu 13:55]
 "Show the map, thank them for taking the time to complete it. Allow them to download it as a json file that can be opened in the ssm website or as a picture file (.jpg?). Contact ssm@unc.edu?
-*** TODO enable swapping out text copy (3-5 hours)
+*** DONE enable swapping out text copy (3-5 hours)
+CLOSED: [2016-07-19 Tue 22:08]
 - Weak preference for ~/ssm/module_name~ over ~/ssm/?module=name~ URL scheme.
 - Also, weak preference for single deployment instead of multiple.
 - There will probably be 3 versions eventually:
@@ -248,6 +249,7 @@ didn't work.
 *** TODO enable text selection in wizard area
 *** TODO might want to ask for and/or hardcode the system descrip on prereq screen
 From Kristen, July 14, 2016
+*** TODO do nicer URL scheme for text module selection
 ** Later
 *** TODO enable wizard for maps with preexisting info
 This would require some design to figure out how the wizard works with preexisting info.

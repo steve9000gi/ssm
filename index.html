@@ -12,25 +12,12 @@
         <div class="minimize">__</div>
         <div class="maximize">&square;</div>
         <aside>
-          <h3>Examples of systems mapped by SSM</h3>
-          <ul>
-            <li>Supporting a child/children with special health care needs and/or developmental disabilities;</li>
-            <li>Above, but in a specific life-course (i.e., transition to adulthood);</li>
-            <li>Family outcomes in the 3 months post-partum;</li>
-            <li>The social-emotional health of a child/children;</li>
-            <li>Migraine self-management;</li>
-            <li>Community-academic partnerships working to improve population health;</li>
-            <li>Efforts to address isolation among individuals in a community;</li>
-            <li>Efforts to increase inter-generational cohesion in a community;</li>
-            <li>And, efforts to reconnect with one’s landscape/environment.</li>
-          </ul>
+          <h3 data-string="example-systems-header"></h3>
+          <ul data-string="example-systems.list"></ul>
         </aside>
 
-        <h1>Welcome to the System Support Map (SSM) wizard</h1>
-        <p>A System Support Map (SSM) is a way of visualizing the different kinds of support you might use to work on a complicated challenge.</p>
-        <p>For example, a map for a mother of a child with special healthcare needs would include her responsibilities to her child, what she needs to do to fulfill those responsibilities, and the resources that help her meet those needs. Check the sidebar for some more examples of systems mapped by others.</p>
-        <p>This wizard will ask you questions and then build the System Support Map for you based on your answers.</p>
-        <p>Hit the &ldquo;Next&rdquo; button to continue.</p>
+        <h1 data-string="welcome-header"></h1>
+        <div data-string="welcome-text.paras"></div>
         <div class="wizard-buttons">
           <button class="next">Next &raquo;</button>
         </div>
@@ -40,12 +27,8 @@
         <div class="close">X</div>
         <div class="minimize">__</div>
         <div class="maximize">&square;</div>
-        <h1>Overview</h1>
-        <p>Here&rsquo;s a quick overview of the process.</p>
-        <p>Notice the rings in the chart below and the labels for each ring.</p>
-        <p>You will build your SSM step-by-step, starting inside the innermost ring and working your way outwards.</p>
-        <p>The controls in the lower left corner may be used to build a System Support Map directly, but this wizard is intended to do the building for you.</p>
-        <p>Hit the &ldquo;Next&rdquo; button to continue.</p>
+        <h1 data-string="overview-header"></h1>
+        <div data-string="overview-text.paras"></div>
         <div class="wizard-buttons">
           <button class="back">&laquo; Back</button>
           <button class="next">Next &raquo;</button>
@@ -56,10 +39,8 @@
         <div class="close">X</div>
         <div class="minimize">__</div>
         <div class="maximize">&square;</div>
-        <h1>Prerequisites</h1>
-        <p>Before starting to build your SSM, you should have a clear idea of the challenge you are attempting to map and your role in it.</p>
-        <p>This is important! If you don&rsquo;t have a solid understanding of your role in this challenge, this exercise could be unclear and unhelpful.</p>
-        <p>Hit the &ldquo;Next&rdquo; button to continue.</p>
+        <h1 data-string="prerequisites-header"></h1>
+        <div data-string="prerequisites-text.paras"></div>
         <div class="wizard-buttons">
           <button class="back">&laquo; Back</button>
           <button class="next">Next &raquo;</button>
@@ -70,14 +51,12 @@
         <div class="close">X</div>
         <div class="minimize">__</div>
         <div class="maximize">&square;</div>
-        <h1>Ring #1: Identifying Your Role</h1>
-        <p>What role do you play in the system producing this challenge? Some possible roles are: patient, family member, teacher, organizational leader, legislator, or community member.</p>
-        <p>If you have multiple roles that you want to study, pick one. Each map is for one role, and one role only. You can come back and fill out other maps for other roles later, if you want.</p>
-        <label>My role is:
+        <h1 data-string="ring1-header"></h1>
+        <div data-string="ring1-intro.paras"></div>
+        <label><span data-string="ring1-label"></span>
           <input type="text" name="role" />
         </label>
-        <p>When you hit &ldquo;Next,&rdquo; your role will be inserted into the chart below for you.</p>
-        <p>Hit the &ldquo;Next&rdquo; button to continue.</p>
+        <div data-string="ring1-afterword.paras"></div>
         <div class="wizard-buttons">
           <button class="back">&laquo; Back</button>
           <button class="add-role-next">Next &raquo;</button>
@@ -88,12 +67,9 @@
         <div class="close">X</div>
         <div class="minimize">__</div>
         <div class="maximize">&square;</div>
-        <aside>Tip: For some people it makes more sense to describe objectives or goals instead of responsibilities in the second ring.</aside>
-        <h1>Ring #2: Responsibilities</h1>
-        <p>The second ring contains the responsibilities that you have in your role as a(n) <code><span id="wizard_role_text">_</span></code>.</p>
-        <p>Identify the four to eight most important responsibilities and add them here.</p>
-        <p>When you click the &ldquo;Add&rdquo; button below, the responsibilities you&rsquo;ve entered will be added to the chart below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to go to the next step.</p>
-        <p>I have a responsibility to:</p>
+        <aside data-string="ring2-aside"></aside>
+        <h1 data-string="ring2-header"></h1>
+        <div data-string="ring2-text.paras"></div>
         <div id="wizard-responsibility-list"></div>
         <div class="wizard-buttons">
           <button class="back">&laquo; Back</button>
@@ -105,11 +81,10 @@
         <div class="close">X</div>
         <div class="minimize">__</div>
         <div class="maximize">&square;</div>
-        <h1>Ring #3: Needs</h1>
-        <p>The third ring identifies exactly what is needed to meet each responsibility. Common responses include time, money, reimbursement, buy-in from my organization, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, energy, and creativity.</p>
-        <p>You&rsquo;ll be asked about each responsibility in turn, starting with the first one you entered.</p>
+        <h1 data-string="ring3-header"></h1>
+        <div data-string="ring3-text.paras"></div>
         <h3>Responsibility <span id="wizard_current_responsibility_number">_</span> of <span id="wizard_responsibility_count">_</span>: <span id="wizard_current_responsibility_text">____</span></h3>
-        <p>To fulfill this responsibility, I need:</p>
+        <div data-string="ring3-prompt.paras"></div>
         <div id="wizard-need-list"></div>
         <div class="wizard-buttons">
           <button class="back">&laquo; Back</button>
@@ -123,8 +98,7 @@
           <button class="back">&laquo; Back</button>
           <button class="next">Next &raquo;</button>
         </div>
-        <p>Here's your map so far.</p>
-        <p>Please gather your thoughts about resources that you have tried in the recent past.</p>
+        <div data-string="pre-ring4-text.paras"></div>
       </div>
 
       <div id="wizard-step8" class="wizard-step">
@@ -132,35 +106,32 @@
           <div class="close">X</div>
           <div class="minimize">__</div>
           <div class="maximize">&square;</div>
-          <aside>
-            Tip: If needs were ingredients in a recipe, resources might include things like a favorite recipe, particular brands of an ingredient, or a store that sells many ingredients on your list.
-          </aside>
-          <h1>Ring #4: Resources</h1>
-          <p>The next ring identifies the resources you use to meet your needs from Ring #3. Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you tried (whether or not they have helped you) to get that need met? Resources for your map might include websites, brochures, training programs, buses, providers, a case manager, organizations in your community, or books you read to build a skill in yourself.</p>
-          <p>The lines to resources on Ring #4 will be color-coded to indicate their level of helpfulness.</p>
-          <label>What type of resource would you like to describe?
+          <aside data-string="ring4-aside"></aside>
+          <h1 data-string="ring4-header"></h1>
+          <div data-string="ring4-intro.paras"></div>
+          <label><span data-string="ring4-resource-type-prompt"></span>
             <span id="wizard-resource-type-error"></span>
             <input type="text" name="resource_type" list="resource-type-completions" />
             <datalist id="resource-type-completions"></datalist>
           </label>
           <br/>
-          <label>Can you name/describe the resource more specifically?
+          <label><span data-string="ring4-resource-name-prompt"></span>
             <input type="text" name="resource_name" />
           </label>
           <br/>
           <span id="wizard-resource-label-error"></span>
-          Use the
+          <span data-string="ring4-resource-label-field-before-prompt"></span>
           <select name="resource_label_field">
             <option value="type" selected="true">type</option>
             <option value="name">name</option>
           </select>
-          for the label in the map below.
+          <span data-string="ring4-resource-label-field-after-prompt"></span>
           <br/>
-          Please select all needs that you have entered that this resource supports.
+          <span data-string="ring4-resource-needs-prompt"></span>
           <span id="wizard-resource-needs-error"></span>
           <div id="wizard-resource-needs"></div>
           <br/>
-          How helpful has this resource been?
+          <span data-string="ring4-resource-helpfulness-prompt"></span>
           <span id="wizard-resource-helpfulness-error"></span>
           <div id="wizard-resource-helpfulness-radio-group">
             <label>
@@ -175,7 +146,7 @@
               <input type="radio" name="helpfulness" value="not-helpful" /> Not helpful
             </label>
           </div>
-          <label>Can you describe why you feel the resource is or is not helpful? In what ways?<br/>
+          <label><span data-string="ring4-resource-helpfulness-description-prompt"></span><br/>
             <textarea name="resource_helpfulness_description"></textarea>
           </label>
           <div class="wizard-buttons">
@@ -191,8 +162,7 @@
             <button class="back">&laquo; Back</button>
             <button class="next-step">Next &raquo;</button>
           </div>
-          <p>Here's your map so far.</p>
-          <p>If you'd like to add another resource, click the &ldquo;Add Resource&rdquo; button. Otherwise, click &ldquo;Next&rdquo;.</p>
+          <span data-string="ring4-interstitial-text.paras"></span>
         </div>
       </div>
 
@@ -202,42 +172,41 @@
           <button class="back">&laquo; Back</button>
           <button class="next">Next &raquo;</button>
         </div>
-        <p>Please reflect on your map and consider your wishes. If you could have anything, what might better support you in meeting your responsibilities?</p>
-        <p>The next steps will guide you through entering your top 3 wishes, one at a time.</p>
+        <span data-string="pre-ring5-text.paras"></span>
       </div>
 
       <div id="wizard-step10" class="wizard-step">
         <div class="close">X</div>
         <div class="minimize">__</div>
         <div class="maximize">&square;</div>
-        <h1>Outer area: Wishes</h1>
-        <p>If you could have anything to support you in your responsibilities, what would it be? These wishes will go outside of the outermost ring. We'll do 3 wishes. You're currently on wish <span class="wish-number">_</span> of 3.</p>
+        <h1 data-string="ring5-header"></h1>
+        <div data-string="ring5-intro.paras"></div>
         <label>
-          Please describe your wish.<br>
+          <span data-string="ring5-wish-name-prompt"></span><br>
           <span id="wizard-wish-name-error" style="color: #a00"></span>
           <input type="text" name="wish_name" list="wish-completions">
           <datalist id="wish-completions"></datalist>
         </label>
         <p>
-          Does it connect most importantly to:
+          <span data-string="ring5-wish-connection-prompt"></span>
           <span id="wizard-wish-parent-type-error"></span>
         </p>
         <label>
-          <input type="radio" name="wish_parent_type" value="responsibility"> a responsibility you feel stuck on;<br/>
+          <input type="radio" name="wish_parent_type" value="responsibility"> <span data-string="ring5-wish-connection-responsibility"></span><br/>
         </label>
         <label>
-          <input type="radio" name="wish_parent_type" value="need"> a need you struggle to meet;<br/>
+          <input type="radio" name="wish_parent_type" value="need"> <span data-string="ring5-wish-connection-need"></span><br/>
         </label>
         <label>
-          <input type="radio" name="wish_parent_type" value="resource"> or a resource that you would like to change in some way?<br/>
+          <input type="radio" name="wish_parent_type" value="resource"> <span data-string="ring5-wish-connection-resource"></span><br/>
         </label>
         <div class="wish-parent-selection" style="display: none;">
-          <p>(Note: we want to connect your wish to the one most important factor in your map.) Please select the specific <span class="wish-parent-type">_</span> from the list below.</p>
+          <div data-string="ring5-wish-parent-text.paras"></div>
           <span id="wizard-wish-parent-node-error" style="color: #a00"></span>
           <div class="wish-parent-list"></div>
         </div>
         <div class="wish-resource-description" style="display: none;">
-          <p>Please describe how you would like that resource to change.</p>
+          <div data-string="ring5-wish-resource-description-prompt"></div>
           <textarea name="wish_resource_description"></textarea>
         </div>
         <div class="wizard-buttons">
@@ -251,14 +220,14 @@
         <div class="minimize">__</div>
         <div class="maximize">&square;</div>
         <aside>
-          <h5>Wondering what to do next?</h5>
-          <p>Now that you have a clear picture of the challenge and your role in it, many people find it helpful to use the map to think about how they could work on the challenge. What could you do to change your role, responsibilities, resources, and needs for the better? You can add these wishes on the outside of the rings, connecting them with the responsibilities, needs, or resources they would change.</p>
+          <h5 data-string="review-aside-header"></h5>
+          <div data-string="review-aside-text.paras"></div>
         </aside>
-        <h1>Review and Next Steps</h1>
-        <p>You&rsquo;re done! When you click the &ldquo;Finish&rdquo; button, this guide will go away and you can view or print your map.</p>
-        <p>You can also:</p>
-        <p><button id="wizard-download-map-data">download your map data</button></p>
-        <p><button id="wizard-download-map-image">download your map as an image</button></p>
+        <h1 data-string="review-header"></h1>
+        <div data-string="review-text.paras"></div>
+        <div data-string="review-download-prompt"></div>
+        <p><button id="wizard-download-map-data" data-string="review-download-data-text"></button></p>
+        <p><button id="wizard-download-map-image" data-string="review-download-image-text"></button></p>
         <div class="wizard-buttons">
           <button class="back">&laquo; Back</button>
           <button class="finish">Finish</button>
@@ -294,6 +263,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.6.1/js-yaml.min.js" charset="utf-8></script>
     <script type='text/javascript' src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"> </script>
     <script src="//cdn.jsdelivr.net/filesaver.js/0.1/FileSaver.min.js"></script>
     <script src="bundled.js" charset="utf-8"></script>

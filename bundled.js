@@ -601,7 +601,7 @@ exports.setup = function(d3) {
   }
 };
 
-},{"./events.js":12,"./selected-color.js":22,"./selection.js":24,"./text.js":28,"./update.js":31}],7:[function(require,module,exports){
+},{"./events.js":12,"./selected-color.js":22,"./selection.js":24,"./text.js":29,"./update.js":32}],7:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modBackend = require('./backend.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
@@ -955,7 +955,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":2,"./backend.js":3,"./circles-of-care.js":4,"./serialize.js":25,"./system-support-map.js":27,"./util.js":32}],8:[function(require,module,exports){
+},{"./auth.js":2,"./backend.js":3,"./circles-of-care.js":4,"./serialize.js":25,"./system-support-map.js":27,"./util.js":33}],8:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -1042,7 +1042,7 @@ exports.setupDragHandle = function(d3) {
     });
 };
 
-},{"./grid.js":18,"./svg.js":26,"./update.js":31}],9:[function(require,module,exports){
+},{"./grid.js":18,"./svg.js":26,"./update.js":32}],9:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -1596,7 +1596,7 @@ exports.pathMouseDown = function(d3, d3path, d) {
   }
 };
 
-},{"./drag.js":8,"./edge-style.js":9,"./edge-thickness.js":10,"./selected-color.js":22,"./selected-shape.js":23,"./selection.js":24,"./svg.js":26,"./text.js":28,"./update.js":31,"./zoom.js":34}],13:[function(require,module,exports){
+},{"./drag.js":8,"./edge-style.js":9,"./edge-thickness.js":10,"./selected-color.js":22,"./selected-shape.js":23,"./selection.js":24,"./svg.js":26,"./text.js":29,"./update.js":32,"./zoom.js":35}],13:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
@@ -1718,7 +1718,7 @@ exports.exportGraphAsImage = function(d3) {
   canvas.remove();
 };
 
-},{"./circles-of-care.js":4,"./selected-color.js":22,"./system-support-map.js":27,"./text.js":28,"./update.js":31}],14:[function(require,module,exports){
+},{"./circles-of-care.js":4,"./selected-color.js":22,"./system-support-map.js":27,"./text.js":29,"./update.js":32}],14:[function(require,module,exports){
 var modSerialize = require('./serialize.js');
 
 // Save as JSON file
@@ -1870,7 +1870,7 @@ exports.create = function(d3) {
   modContextMenu.setup(d3);
 };
 
-},{"./circles-of-care.js":4,"./context-menu.js":6,"./database.js":7,"./drag.js":8,"./events.js":12,"./file.js":14,"./front-matter.js":15,"./options-menu.js":21,"./selected-color.js":22,"./svg.js":26,"./system-support-map.js":27,"./toolbox.js":29,"./tooltips.js":30,"./zoom.js":34}],17:[function(require,module,exports){
+},{"./circles-of-care.js":4,"./context-menu.js":6,"./database.js":7,"./drag.js":8,"./events.js":12,"./file.js":14,"./front-matter.js":15,"./options-menu.js":21,"./selected-color.js":22,"./svg.js":26,"./system-support-map.js":27,"./toolbox.js":30,"./tooltips.js":31,"./zoom.js":35}],17:[function(require,module,exports){
 // This file is necessary to break a circular dependency between the grid and
 // zoom modules. JST 2015-10-21
 exports.translate = [0, 0];
@@ -2072,6 +2072,7 @@ document.onload = (function(d3) {
       modEvents = require('./events.js'),
       modGraph = require('./graph.js'),
       modSvg = require('./svg.js'),
+      modTextModules = require('./text-modules.js'),
       modUpdate = require('./update.js'),
       modWizard = require('./wizard.js');
 
@@ -2081,6 +2082,7 @@ document.onload = (function(d3) {
 
   modAuth.afterAuthentication(d3, function() {
     modSvg.setup(d3);
+    modTextModules.setup(d3);
     modGraph.create(d3);
     modEvents.shapeId = 0;
     modUpdate.updateGraph(d3);
@@ -2092,7 +2094,7 @@ document.onload = (function(d3) {
   });
 })(window.d3);
 
-},{"./auth.js":2,"./database.js":7,"./events.js":12,"./graph.js":16,"./svg.js":26,"./update.js":31,"./wizard.js":33}],21:[function(require,module,exports){
+},{"./auth.js":2,"./database.js":7,"./events.js":12,"./graph.js":16,"./svg.js":26,"./text-modules.js":28,"./update.js":32,"./wizard.js":34}],21:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modContextMenu = require('./context-menu.js'),
@@ -2353,7 +2355,7 @@ exports.createOptionsButton = function(d3) {
     });
 };
 
-},{"./auth.js":2,"./circles-of-care.js":4,"./context-menu.js":6,"./edge-thickness.js":10,"./export.js":13,"./grid.js":18,"./selected-color.js":22,"./selected-shape.js":23,"./selection.js":24,"./system-support-map.js":27,"./text.js":28,"./update.js":31}],22:[function(require,module,exports){
+},{"./auth.js":2,"./circles-of-care.js":4,"./context-menu.js":6,"./edge-thickness.js":10,"./export.js":13,"./grid.js":18,"./selected-color.js":22,"./selected-shape.js":23,"./selection.js":24,"./system-support-map.js":27,"./text.js":29,"./update.js":32}],22:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -2729,7 +2731,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":22,"./svg.js":26,"./update.js":31}],24:[function(require,module,exports){
+},{"./selected-color.js":22,"./svg.js":26,"./update.js":32}],24:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
     modSvg = require('./svg.js');
@@ -2935,7 +2937,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":4,"./events.js":12,"./svg.js":26,"./system-support-map.js":27,"./update.js":31,"./wizard.js":33,"./zoom.js":34}],26:[function(require,module,exports){
+},{"./circles-of-care.js":4,"./events.js":12,"./svg.js":26,"./system-support-map.js":27,"./update.js":32,"./wizard.js":34,"./zoom.js":35}],26:[function(require,module,exports){
 exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
@@ -3044,6 +3046,54 @@ exports.create = function(d3) {
 };
 
 },{"./selected-color.js":22}],28:[function(require,module,exports){
+// Text modules are stored as YAML files in the `/strings/` directory. To use
+// the non-default one, specify the name of the text module (without the .yaml
+// extension) in the URL like so:
+// http://syssci.renci.org/ssm/?module=NAME
+
+var listToHtml = function(d3, items) {
+  return items.map(function(i){ return '<li>' + i + '</li>';}).join('\n');
+};
+
+var parasToHtml = function(d3, paras) {
+  return paras.map(function(i){ return '<p>' + i + '</p>';}).join('\n');
+};
+
+var fillStrings = function(d3, strings) {
+  d3.selectAll('[data-string]')
+    .each(function(){
+      var sel = d3.select(this),
+          str = sel.attr('data-string'),
+          type = str.split('.')[1] || 'plain';
+      if (type === 'plain') {
+        sel.text(strings[str]);
+      } else if (type === 'paras') {
+        this.innerHTML = parasToHtml(d3, strings[str]);
+      } else if (type === 'list') {
+        this.innerHTML = listToHtml(d3, strings[str]);
+      }
+    });
+};
+
+exports.setup = function(d3) {
+  var queryStr = window.location.search,
+      re = /\bmodule=([^&]+)/,
+      match = re.exec(queryStr),
+      module = match && decodeURIComponent(match[1]) || 'default',
+      url = module && '/strings/' + module + '.yaml';
+  if (!url) return;
+  d3.xhr(url)
+    .get(function(error, data) {
+      if (error) {
+        console.error('GET ' + url + ' failed with status ' + error.status + ' and response text ' + error.response);
+      } else {
+        var strings = window.jsyaml.safeLoad(data.response);
+        fillStrings(d3, strings);
+      }
+    });
+};
+
+},{}],29:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
@@ -3242,7 +3292,7 @@ exports.changeElementTextImmediately = function(d3, d3element, node, text) {
   exports.formatText(d3, d3element, node);
 };
 
-},{"./drag.js":8,"./selected-color.js":22,"./selected-shape.js":23,"./svg.js":26,"./update.js":31}],29:[function(require,module,exports){
+},{"./drag.js":8,"./selected-color.js":22,"./selected-shape.js":23,"./svg.js":26,"./update.js":32}],30:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modEdgeStyle = require('./edge-style.js'),
     modHelp = require('./help.js'),
@@ -3269,7 +3319,7 @@ exports.prepareToolbox = function(d3) {
   modEdgeStyle.addControls(d3);
 };
 
-},{"./circles-of-care.js":4,"./edge-style.js":9,"./help.js":19,"./options-menu.js":21,"./selected-color.js":22,"./selected-shape.js":23,"./system-support-map.js":27,"./update.js":31}],30:[function(require,module,exports){
+},{"./circles-of-care.js":4,"./edge-style.js":9,"./help.js":19,"./options-menu.js":21,"./selected-color.js":22,"./selected-shape.js":23,"./system-support-map.js":27,"./update.js":32}],31:[function(require,module,exports){
 exports.tip = null;
 
 // "Notes" == tooltips
@@ -3287,7 +3337,7 @@ exports.setupNotes = function(d3) {
   d3.select("#mainSVG").call(exports.tip);
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 var modCirclesOfCare = require('./circles-of-care.js'),
     modDrag = require('./drag.js'),
     modEvents = require('./events.js'),
@@ -3660,7 +3710,7 @@ exports.updateWindow = function(d3) {
   exports.updateGraph(d3);
 };
 
-},{"./circles-of-care.js":4,"./drag.js":8,"./events.js":12,"./grid.js":18,"./selected-color.js":22,"./selection.js":24,"./svg.js":26,"./system-support-map.js":27,"./text.js":28,"./tooltips.js":30,"./util.js":32}],32:[function(require,module,exports){
+},{"./circles-of-care.js":4,"./drag.js":8,"./events.js":12,"./grid.js":18,"./selected-color.js":22,"./selection.js":24,"./svg.js":26,"./system-support-map.js":27,"./text.js":29,"./tooltips.js":31,"./util.js":33}],33:[function(require,module,exports){
 var cookiesByName = null;
 
 exports.readCookieByName = function(name) {
@@ -3706,7 +3756,7 @@ exports.computeRectangleBoundary = function(edge) {
   return ((absCosTheta > thresholdCos) ? h * hyp / dy : w * hyp / dx) + offset;
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var modArrayUtils = require('./array-utils.js'),
     modCompletions = require('./completions.js'),
     modDatabase = require('./database.js'),
@@ -4616,7 +4666,7 @@ exports.getCurrentSubStepState = function(d3) {
   return fn ? fn.call(stepObj, d3) : null;
 };
 
-},{"./array-utils.js":1,"./completions.js":5,"./database.js":7,"./entry-list.js":11,"./events.js":12,"./export.js":13,"./selection.js":24,"./serialize.js":25,"./svg.js":26,"./system-support-map.js":27,"./text.js":28,"./update.js":31}],34:[function(require,module,exports){
+},{"./array-utils.js":1,"./completions.js":5,"./database.js":7,"./entry-list.js":11,"./events.js":12,"./export.js":13,"./selection.js":24,"./serialize.js":25,"./svg.js":26,"./system-support-map.js":27,"./text.js":29,"./update.js":32}],35:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modGridZoom = require('./grid-zoom.js'),
     modText = require('./text.js');
@@ -4659,4 +4709,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid-zoom.js":17,"./grid.js":18,"./text.js":28}]},{},[20]);
+},{"./grid-zoom.js":17,"./grid.js":18,"./text.js":29}]},{},[20]);

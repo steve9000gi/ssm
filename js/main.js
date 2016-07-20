@@ -31,6 +31,7 @@ document.onload = (function(d3) {
       modEvents = require('./events.js'),
       modGraph = require('./graph.js'),
       modSvg = require('./svg.js'),
+      modTextModules = require('./text-modules.js'),
       modUpdate = require('./update.js'),
       modWizard = require('./wizard.js');
 
@@ -40,6 +41,7 @@ document.onload = (function(d3) {
 
   modAuth.afterAuthentication(d3, function() {
     modSvg.setup(d3);
+    modTextModules.setup(d3);
     modGraph.create(d3);
     modEvents.shapeId = 0;
     modUpdate.updateGraph(d3);
