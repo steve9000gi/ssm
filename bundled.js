@@ -3659,24 +3659,6 @@ var nodesByType = {
     // interstitial:
     doneWithResources;
 
-var addRoleThenNext = function(d3) {
-  var text = d3.select('input[name=role]').node().value;
-  if (!text) {
-    alert('You must enter a role before proceeding.');
-    return false;
-  }
-  var center = modSystemSupportMap.center,
-      color = colorsByType.role,
-      shape = shapesByType.role,
-      node = modEvents.addNode(d3, center.x, center.y, text, color, shape);
-  node.type = 'role';
-  node.__children__ = [];
-  nodesByType.role = node;
-  d3.select('#wizard_role_text').text(text);
-  modDatabase.writeMapToDatabase(d3, true);
-  exports.nextStep(d3);
-};
-
 var targetRadius = function(nodeType) {
   var ringNum = {
     'responsibility': 1,
@@ -3731,14 +3713,15 @@ var addNode = function(d3, type, parent_s, text, edgeColor) {
         thickness: 3,
         name: ''
       }; };
-  newNode.__parents__ = parents.slice(0);
+  if (type !== 'role') newNode.__parents__ = parents.slice(0);
   for (var i=0; i < parents.length; i++) {
     modEvents.addEdge(d3, newEdge(parents[i]));
     newNode.__parents__[i].__children__.push(newNode);
   }
   newNode.type = type;
   newNode.__children__ = [];
-  nodesByType[type].push(newNode);
+  if (type === 'role') nodesByType.role = newNode;
+  else nodesByType[type].push(newNode);
   rebalanceNodes(d3);
   return newNode;
 };
@@ -4162,8 +4145,6 @@ var attachButtonHandlers = function(d3) {
       exports.hideWizard(d3);
       modDatabase.writeMapToDatabase(d3, true);
     });
-  d3.selectAll('#wizard button.add-role-next')
-    .on('click', function(){ addRoleThenNext(d3); });
   // Stop propagation of keydown events, so that the handlers elsewhere in this
   // code don't prevent default. I need to do this to allow users to hit
   // 'backspace' in these fields.
@@ -4262,14 +4243,27 @@ var steps = {
       modZoom.setZoom(d3, xlate, newZoom);
       modZoom.setup(d3, modSvg.svg);
       return true;
-    }},
+    }
+  },
 
   4: {
     enter: function(d3) {
       modZoom.setZoom(d3, initialTranslate, initialZoom);
       modZoom.setup(d3, modSvg.svg);
       return true;
-    }},
+    },
+
+    exit: function(d3) {
+      var text = d3.select('input[name=role]').node().value;
+      if (!text) {
+        alert('You must enter a role before proceeding.');
+        return false;
+      }
+      addNode(d3, 'role', [], text);
+      d3.select('#wizard_role_text').text(text);
+      return true;
+    }
+  },
 
   5: {
     enter: function(d3) {
