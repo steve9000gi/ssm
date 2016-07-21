@@ -1,7 +1,6 @@
 var modCirclesOfCare = require('./circles-of-care.js'),
     modDrag = require('./drag.js'),
     modEvents = require('./events.js'),
-    modGrid = require('./grid.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
     modSvg = require('./svg.js'),
@@ -366,6 +365,5 @@ exports.updateWindow = function(d3) {
       width = window.innerWidth,
       height = window.innerHeight - wizardEl.clientHeight;
   modSvg.svg.attr('width', width).attr('height', height);
-  modGrid.create(d3);
   exports.updateGraph(d3);
 };

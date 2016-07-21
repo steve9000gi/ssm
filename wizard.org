@@ -184,8 +184,9 @@ CLOSED: [2016-07-18 Mon 12:54]
 CLOSED: [2016-07-18 Mon 15:12]
 *** DONE minimize button and min/max functionality
 CLOSED: [2016-07-18 Mon 15:59]
-*** TODO zoom out initially; restore initial zoom at role step
-Pending response from Kristen, WIP code is on the wizard-zoom branch
+*** DONE zoom out initially; restore initial zoom at role step
+CLOSED: [2016-07-21 Thu 15:47]
+Removed grid feature to do it.
 *** DONE remove inner scroll bar for resources -> need list
 CLOSED: [2016-07-19 Tue 14:06]
 *** DONE add a button to control whether type/name of resource is shown in the map

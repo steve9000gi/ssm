@@ -3,7 +3,6 @@ var modAuth = require('./auth.js'),
     modContextMenu = require('./context-menu.js'),
     modEdgeThickness = require('./edge-thickness.js'),
     modExport = require('./export.js'),
-    modGrid = require('./grid.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
     modSelection = require('./selection.js'),
@@ -123,7 +122,6 @@ exports.createOptionsMenu = function(d3) {
                {"name": "Set text line length...", "id": "setTextLineLenItem"},
                {"name": "Set line thickness...", "id": "setLineThicknessItem"},
                {"name": "Set selected object color", "id": "setSelectedObjectColorItem"},
-               {"name": "Snap to grid", "id": "snapToGridItem"},
                {"name": "Export map as image", "id": "exportMapAsImageItem"},
                {"name": "Load text for context menu", "id": "loadContextTextItem"},
                {"name": "Log out", "id": "logoutUser"}];
@@ -211,22 +209,16 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
       case choices[5].name:
         setSelectedObjectColor(d3);
         break;
-      case choices[6].name:
-        modGrid.enableSnap(d3);
-        break;
-      case modGrid.hideText:
-        modGrid.hide(d3);
-        break;
       case modSystemSupportMap.hideText:
         modSystemSupportMap.hide(d3);
         break;
-      case choices[7].name:
+      case choices[6].name:
         modExport.exportGraphAsImage(d3);
         break;
-      case choices[8].name:
+      case choices[7].name:
         modContextMenu.loadFromClient(d3);
         break;
-      case choices[9].name:
+      case choices[8].name:
         modAuth.logoutUser(d3);
         break;
       default:

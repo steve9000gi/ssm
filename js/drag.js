@@ -1,5 +1,4 @@
-var modGrid = require('./grid.js'),
-    modSvg = require('./svg.js'),
+var modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
 
 exports.justDragged = false;
@@ -17,7 +16,6 @@ var dragmove = function(d3, d) {
     exports.dragLine.style("stroke-width", 0);
     d.x += d3.event.dx;
     d.y +=  d3.event.dy;
-    modGrid.snap(d);
     modUpdate.updateGraph(d3);
   }
 };
@@ -37,7 +35,6 @@ exports.setupDrag = function(d3) {
       dragmove(d3, args);
     })
     .on("dragend", function(args) {
-      modGrid.snap(args);
       // Todo check if edge-mode is selected
     });
 };

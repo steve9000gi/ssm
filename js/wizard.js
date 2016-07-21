@@ -9,7 +9,8 @@ var modArrayUtils = require('./array-utils.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modSvg = require('./svg.js'),
     modText = require('./text.js'),
-    modUpdate = require('./update.js');
+    modUpdate = require('./update.js'),
+    modZoom = require('./zoom.js');
 
 exports.wizardActive = undefined;
 exports.currentStep = 1;
@@ -38,6 +39,7 @@ var nodesByType = {
       'resource':       '#000000', // black
       'wish':           '#999900'  // gold
     },
+    initialTranslate, initialZoom,
     // a flag to be set when user selects "continue" option from "add resources"
     // interstitial:
     doneWithResources;
@@ -621,6 +623,39 @@ exports.showStep = function(d3) {
 
 var steps = {
   // Note: uninteresting steps are omitted here.
+  1: {
+    enter: function(d3) {
+      var activeWizEl = d3.selectAll('#wizard .wizard-step')
+            .filter(function(){ return this.style.display === 'block'; })
+            .node(),
+          wizHeight = activeWizEl.clientHeight,
+          body = document.body,
+          bodyHeight = body.clientHeight,
+          bodyWidth = body.clientWidth,
+          mapHeight = bodyHeight - wizHeight,
+          mapWidth = bodyWidth,
+          contentSize = 2 * modSystemSupportMap.ringRadii[3] + 80,
+          newZoom = Math.min(mapHeight, mapWidth) / contentSize,
+          outerCircle = d3.select('circle.ssmCircle[r="675"]'),
+          centerX = outerCircle.attr('cx') * newZoom,
+          centerY = outerCircle.attr('cy') * newZoom,
+          newX = mapWidth / 2,
+          newY = wizHeight + mapHeight / 2,
+          xlate = [newX - centerX, newY - centerY];
+      initialTranslate = modZoom.translate;
+      initialZoom = modZoom.zoom;
+      modZoom.setZoom(d3, xlate, newZoom);
+      modZoom.setup(d3, modSvg.svg);
+      return true;
+    }},
+
+  4: {
+    enter: function(d3) {
+      modZoom.setZoom(d3, initialTranslate, initialZoom);
+      modZoom.setup(d3, modSvg.svg);
+      return true;
+    }},
+
   5: {
     enter: function(d3) {
       var uponAdd = function(i, text) {
