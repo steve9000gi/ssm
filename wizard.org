@@ -12,15 +12,18 @@ I'm gonna say yes, at least as a nice-to-have.
 *** DONE should we have different colors or shapes for different types of nodes?
 CLOSED: [2016-06-09 Thu 20:12]
 Gonna say no for now, though it shouldn't be hard to add later.
-*** TODO think about wizard workflow for an already-existent map
+*** DONE think about wizard workflow for an already-existent map
+CLOSED: [2016-07-21 Thu 10:34]
 One thing in particular bothers me: on steps with multiple nodes added, the
 resume feels weird as-is. Like, say we want to edit the text of a node on the
 map, but only with the wizard. How do we get to, say, resource #8? Do we have to
 click next on the resource step 7 times, or what?
 A potentially better way would be to list all the nodes added in a given step.
 The problem with that is screen real-estate.
-*** TODO when placing a node, should we only move nodes if (all?) others were placed by wizard?
-*** TODO what happens to the wizard at smaller screen resolutions?
+*** DONE when placing a node, should we only move nodes if (all?) others were placed by wizard?
+CLOSED: [2016-07-21 Thu 10:34]
+*** DONE what happens to the wizard at smaller screen resolutions?
+CLOSED: [2016-07-21 Thu 10:34]
 Should probably at least say overflow: scroll for the wizard.
 ** Done before hiatus
 *** DONE add all steps to DOM, and show/hide them at each step
@@ -187,7 +190,8 @@ Pending response from Kristen, WIP code is on the wizard-zoom branch
 CLOSED: [2016-07-19 Tue 14:06]
 *** DONE add a button to control whether type/name of resource is shown in the map
 CLOSED: [2016-07-19 Tue 14:49]
-*** TODO provide instructions for Steve and Kristen for updating completion text and text module
+*** DONE provide instructions for Steve and Kristen for updating completion text and text module
+CLOSED: [2016-07-21 Thu 10:34]
 Pending completion of the text modularity feature.
 *** DONE spend a few minutes looking at d3v4 force-directed layout
 CLOSED: [2016-07-19 Tue 15:12]
@@ -204,7 +208,8 @@ CLOSED: [2016-07-18 Mon 12:31]
 CLOSED: [2016-07-19 Tue 14:10]
 *** DONE it should not be possible to add an empty node for "role"
 CLOSED: [2016-07-18 Mon 12:22]
-*** TODO datalists in Chrome don't support expanding the list first
+*** DONE datalists in Chrome don't support expanding the list first
+CLOSED: [2016-07-21 Thu 15:06]
 In other words, gotta type something before completions fire on that text.
 There's a down-arrow that would suggest you can pre-expand, but it doesn't work.
 Maybe different markup would make that work?
@@ -212,6 +217,10 @@ Maybe something in SSM is interfering with the expansion?
 If not, maybe use a polyfill?
 Further clue: hitting down then blurring the field DOES have an effect.
 It's just that (apparently) the completion list widget doesn't get displayed.
+Update: turns out it's not related to the text selection issue,
+but is just incomplete support for datalist.
+Even this polyfill for datalist doesn't work that way in Chrome:
+https://css-tricks.com/examples/RelevantDropdown/
 ** Nice-to-haves
 *** DONE display responsibilities as editable list
 CLOSED: [2016-06-24 Fri 22:19]
@@ -239,18 +248,17 @@ Example markup:
 CLOSED: [2016-07-01 Fri 22:02]
 One thing I definitely want is for the back and next buttons to show up at the
 same place every time.
-*** TODO zoom out map when wizard opened, so that the full circles are shown
-*** TODO some things drawn wrong when wizard opened
+*** DONE some things drawn wrong when wizard opened
+CLOSED: [2016-07-21 Thu 10:35]
 - This includes captions for nodes.
 - Probably includes some other things too--worth testing.
 - I also ran into some issue with dragging nodes at the bottom (right) of the
 screen. Middle click started dragging, left click finished it. But left drag
 didn't work.
-*** TODO enable text selection in wizard area
-*** TODO might want to ask for and/or hardcode the system descrip on prereq screen
-From Kristen, July 14, 2016
-*** TODO do nicer URL scheme for text module selection
+*** DONE enable text selection in wizard area
+CLOSED: [2016-07-21 Thu 15:01]
 ** Later
+*** TODO do nicer URL scheme for text module selection
 *** TODO enable wizard for maps with preexisting info
 This would require some design to figure out how the wizard works with preexisting info.
 Would it move nodes that it didn't place?
@@ -258,6 +266,8 @@ Would it refuse to operate on maps that weren't well-formed?
 (And if so, how would the error show up in the UI?)
 This would also need the wizard added to the options menu.
 This is specifically out of scope for now, per Kristen.
+*** TODO might want to ask for and/or hardcode the system descrip on prereq screen
+From Kristen, July 14, 2016
 * Notes from call with Steve and Kristen, Friday, June 10, 2016
 ** Wizard only applicable if started with blank state
 Don't have to handle preexisting maps, at least for now.
