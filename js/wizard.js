@@ -26,9 +26,9 @@ var nodesByType = {
       'wish': []
     },
     shapesByType = {
-      'role':           'diamond',
-      'responsibility': 'circle',
-      'need':           'rectangle',
+      'role':           'circle',
+      'responsibility': 'rectangle',
+      'need':           'diamond',
       'resource':       'ellipse',
       'wish':           'star'
     },
