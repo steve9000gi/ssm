@@ -381,8 +381,16 @@ path.link.selected, g.pathG.selected path {
   clear: right;
   float: right;
   width: 30%;
-  border: 1px solid #aaa;
+  border: 3px ridge #aaa;
   margin-top: 20px;
+  margin-left: 20px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 8px;
+}
+
+[data-string="ring2-aside"], [data-string="ring4-aside"] {
+  padding-top: 8px;
 }
 
 .wizard-step .wizard-buttons {
