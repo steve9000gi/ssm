@@ -635,6 +635,10 @@ var steps = {
     enter: function(d3) {
       modZoom.setZoom(d3, initialTranslate, initialZoom);
       modZoom.setup(d3, modSvg.svg);
+      d3.select('#wizard-step4_datalist').selectAll('option')
+        .data(modCompletions.completionsByType().role)
+        .enter().append('option')
+        .attr('value', String);
       return true;
     },
 
