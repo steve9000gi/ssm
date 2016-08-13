@@ -27,6 +27,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>type</td>
+	<td>name=prereqs_focus_description</td>
+	<td>You know my hero</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=prereqs_context</td>
+	<td>The one thats on</td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>css=button.next</td>
 	<td></td>
@@ -69,6 +79,11 @@
 <tr>
 	<td>click</td>
 	<td>css=button.add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=textarea[name=&quot;prereqs_context&quot;]</td>
 	<td></td>
 </tr>
 </tbody></table>

@@ -28,6 +28,8 @@ prerequisites-text.paras:
   - 'Please take a few minutes to develop a clear idea of the challenge you are attempting to map and your role in it.'
   - 'This is important! If you don&rsquo;t have a solid understanding of your role in this challenge, this map-building exercise could be unclear and unhelpful.'
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
+prerequisites-focus-description-prompt: 'In the text below, please briefly describe the challenge you will focus on in this map.'
+prerequisites-context-prompt: 'As a last step before we begin your map, provide a little more context around your experiences. In the text box below, please briefly describe your child, including age and any particular healthcare needs, diagnoses, or challenges.'
 
 # Step 4
 ring1-header: 'Ring #1: Identifying Your Role'

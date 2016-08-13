@@ -60,7 +60,9 @@ exports.getMapObject = function(d3) {
     "graphGTransform": d3.select("#graphG").attr("transform"),
     "systemSupportMapCenter": modSystemSupportMap.center,
     "circlesOfCareCenter": modCirclesOfCare.center,
-    "wizardActive": modWizard.wizardActive
+    "wizardActive": modWizard.wizardActive,
+    "focusDescription": modWizard.focusDescription,
+    "focusContext": modWizard.focusContext
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
@@ -118,6 +120,9 @@ exports.importMap = function(d3, jsonObj, id) {
     if (typeof id === 'number') {
       window.location.hash = '/map/' + id;
     }
+
+    modWizard.focusDescription = jsonObj.focusDescription;
+    modWizard.focusContext = jsonObj.focusContext;
 
     if (jsonObj.wizardActive) {
       modWizard.currentStep = jsonObj.wizardCurrentStep;

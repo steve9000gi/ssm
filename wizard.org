@@ -222,6 +222,7 @@ Update: turns out it's not related to the text selection issue,
 but is just incomplete support for datalist.
 Even this polyfill for datalist doesn't work that way in Chrome:
 https://css-tricks.com/examples/RelevantDropdown/
+*** TODO go past "role", then hit back, and get an error message
 ** Nice-to-haves
 *** DONE display responsibilities as editable list
 CLOSED: [2016-06-24 Fri 22:19]
@@ -274,13 +275,18 @@ From Kristen, July 14, 2016
 CLOSED: [2016-08-12 Fri 21:19]
 CaregiversCYSHCN2
 TitleVWorkforce4
-*** TODO Add completions to role input
-*** TODO Add two new textarea questions in Step 3: Prerequisites
-**** TODO 1
+*** DONE Add completions to role input
+CLOSED: [2016-08-12 Fri 21:48]
+*** DONE Add two new textarea questions in Step 3: Prerequisites
+CLOSED: [2016-08-12 Fri 23:10]
+**** DONE 1
+CLOSED: [2016-08-12 Fri 23:10]
 In the text below, please briefly describe the challenge you will focus on in this map.
-**** TODO 2
+**** DONE 2
+CLOSED: [2016-08-12 Fri 23:10]
 As a last step before we begin your map, provide a little more context around your experiences. In the text box below, please briefly describe your child, including age and any particular healthcare needs, diagnoses, or challenges.
-**** TODO Remember to save to and retrieve from the database
+**** DONE Remember to save to and retrieve from the database
+CLOSED: [2016-08-12 Fri 23:10]
 *** TODO Display map ID at the last step
 E.g. "ID for this system support map: 678"
 * Notes from call with Steve and Kristen, Friday, June 10, 2016

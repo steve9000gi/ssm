@@ -2844,7 +2844,9 @@ exports.getMapObject = function(d3) {
     "graphGTransform": d3.select("#graphG").attr("transform"),
     "systemSupportMapCenter": modSystemSupportMap.center,
     "circlesOfCareCenter": modCirclesOfCare.center,
-    "wizardActive": modWizard.wizardActive
+    "wizardActive": modWizard.wizardActive,
+    "focusDescription": modWizard.focusDescription,
+    "focusContext": modWizard.focusContext
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
@@ -2902,6 +2904,9 @@ exports.importMap = function(d3, jsonObj, id) {
     if (typeof id === 'number') {
       window.location.hash = '/map/' + id;
     }
+
+    modWizard.focusDescription = jsonObj.focusDescription;
+    modWizard.focusContext = jsonObj.focusContext;
 
     if (jsonObj.wizardActive) {
       modWizard.currentStep = jsonObj.wizardCurrentStep;
@@ -3752,6 +3757,8 @@ var modArrayUtils = require('./array-utils.js'),
     modZoom = require('./zoom.js');
 
 exports.wizardActive = undefined;
+exports.focusDescription = undefined;
+exports.focusContext = undefined;
 exports.currentStep = 1;
 exports.currentResponsibility = undefined;
 exports.currentNeed = undefined;
@@ -4370,12 +4377,44 @@ var steps = {
     }
   },
 
+  3: {
+    enter: function(d3) {
+      var sel;
+      if (exports.focusDescription) {
+        sel = 'textarea[name=prereqs_focus_description]';
+        d3.select(sel).node().value = exports.focusDescription;
+      }
+      if (exports.focusContext) {
+        sel = 'textarea[name=prereqs_context]';
+        d3.select(sel).node().value = exports.focusContext;
+      }
+      return true;
+    },
+
+    exit: function(d3) {
+      var sel = 'textarea[name=prereqs_focus_description]',
+          focusText = d3.select(sel).node().value,
+          sel2 = 'textarea[name=prereqs_context]',
+          contextText = d3.select(sel2).node().value;
+      if (!focusText || !contextText) {
+        alert('You must answer both questions before proceeding.');
+        return false;
+      }
+      exports.focusDescription = focusText;
+      exports.focusContext = contextText;
+      return true;
+    }
+  },
+
   4: {
     enter: function(d3) {
       // If we didn't transit step 1 in this page load, initialTranslate and
       // initialZoom will be unset, so use default values.
       modZoom.setZoom(d3, initialTranslate || 0, initialZoom || 1);
       modZoom.setup(d3, modSvg.svg);
+      if (nodesByType.role) {
+        d3.select('input[name=role]').node().value = nodesByType.role.name;
+      }
       d3.select('#wizard-step4_datalist').selectAll('option')
         .data(modCompletions.completionsByType().role)
         .enter().append('option')
