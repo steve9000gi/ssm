@@ -5,6 +5,8 @@ var modAuth = require('./auth.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modUtil = require('./util.js');
 
+exports.id = null;
+
 // Fetch a map from the backend given its id
 var fetchMap = function(d3, id) {
   d3.json(modBackend.backendBase + '/map/' + id)
@@ -13,6 +15,7 @@ var fetchMap = function(d3, id) {
         function() { window.alert('Error talking to backend server.'); })
     .on('load', function(data) {
       d3.select('#map-index').style('visibility', 'hidden');
+      exports.id = id;
       modSerialize.importMap(d3, data.document, id);
       window.location.hash = '/map/' + id;
     })
@@ -283,6 +286,7 @@ exports.loadMapFromLocation = function(d3) {
             }
           })
       .on('load', function(data) {
+        exports.id = id;
         modSerialize.importMap(d3, data.document, id);
         window.location.hash = '/map/' + id;
       })
@@ -339,6 +343,7 @@ exports.writeMapToDatabase = function(d3, skipSuccessAlert) {
             alert(text);
           }
           window.location.hash = '/map/' + data.id;
+          exports.id = data.id;
         })
         .send('POST', JSON.stringify(modSerialize.getMapObject(d3)));
     }

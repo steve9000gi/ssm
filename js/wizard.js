@@ -928,6 +928,8 @@ var steps = {
         .on('click', function(){
           modExport.exportGraphAsImage(d3);
         });
+      d3.select('#wizard-step11-map-id')
+        .text(modDatabase.id);
     }
   }
 };

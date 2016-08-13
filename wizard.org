@@ -287,7 +287,8 @@ CLOSED: [2016-08-12 Fri 23:10]
 As a last step before we begin your map, provide a little more context around your experiences. In the text box below, please briefly describe your child, including age and any particular healthcare needs, diagnoses, or challenges.
 **** DONE Remember to save to and retrieve from the database
 CLOSED: [2016-08-12 Fri 23:10]
-*** TODO Display map ID at the last step
+*** DONE Display map ID at the last step
+CLOSED: [2016-08-12 Fri 23:49]
 E.g. "ID for this system support map: 678"
 * Notes from call with Steve and Kristen, Friday, June 10, 2016
 ** Wizard only applicable if started with blank state
