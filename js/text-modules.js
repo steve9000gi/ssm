@@ -3,6 +3,8 @@
 // extension) in the URL like so:
 // http://syssci.renci.org/ssm/?module=NAME
 
+exports.module = null;
+
 var listToHtml = function(d3, items) {
   return items.map(function(i){ return '<li>' + i + '</li>';}).join('\n');
 };
@@ -39,6 +41,7 @@ exports.setup = function(d3) {
       if (error) {
         console.error('GET ' + url + ' failed with status ' + error.status + ' and response text ' + error.response);
       } else {
+        exports.module = module;
         var strings = window.jsyaml.safeLoad(data.response);
         fillStrings(d3, strings);
       }

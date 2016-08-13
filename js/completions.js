@@ -1,3 +1,5 @@
+var modTextModules = require('./text-modules.js');
+
 var animals = [
   'aardvark',
   'badger',
@@ -30,7 +32,7 @@ var animals = [
 var rolesCYSHCN = [
   'Parent',
   'Guardian'
-]; 
+];
 
 var responsibilitiesCYSHCN = [
   'Coordinate and Advocate for my child’s specific needs',
@@ -96,6 +98,8 @@ var wishesCYSHCN = [
   'Housing solutions'
 ];
 
+var rolesTitleV = {};
+
 var responsibilitiesTitleV = [
   'Gather evidence-informed strategies to promote breastfeeding',
   'Increase the percent of women receiving well visits',
@@ -121,10 +125,33 @@ var needsTitleV = [
   'Funding'
 ];
 
-exports.completionsByType = {
-  'role': rolesCYSHCN,
-  'responsibility': responsibilitiesCYSHCN,
-  'need': needsCYSHCN,
-  'resource': resourcesCYSHCN,
-  'wish': wishesCYSHCN
+var resourcesTitleV = {};
+var wishesTitleV = {};
+
+var CYSHCNCompletions = {
+  role: rolesCYSHCN,
+  responsibility: responsibilitiesCYSHCN,
+  need: needsCYSHCN,
+  resource: resourcesCYSHCN,
+  wish: wishesCYSHCN
+};
+
+var titleVCompletions = {
+  role: rolesTitleV,
+  responsibility: responsibilitiesTitleV,
+  need: needsTitleV,
+  resource: resourcesTitleV,
+  wish: wishesTitleV
+};
+
+var completionsByTextModule = {
+  CaregiversCYSHCN1: CYSHCNCompletions,
+  CaregiversCYSHCN2: CYSHCNCompletions,
+  TitleVWorkforce3: titleVCompletions,
+  TitleVWorkforce4: titleVCompletions
+};
+
+exports.completionsByType = function() {
+  var module = modTextModules.module;
+  return completionsByTextModule[module] || CYSHCNCompletions;
 };

@@ -340,7 +340,7 @@ var setupNeedEntryList = function(d3, responsibilityNumber) {
         .map(function(d) {return d.name;});
   modEntryList.teardown(d3, selector);
   modEntryList.setup(d3, selector, existingTexts,
-                     modCompletions.completionsByType.need,
+                     modCompletions.completionsByType().need,
                      uponAdd, uponUpdate, uponRemove);
 };
 
@@ -430,7 +430,7 @@ var setupResourceForm = function(d3, resourceNum) {
   labels.append('br');
   d3.select('#resource-type-completions')
     .selectAll('option')
-    .data(modCompletions.completionsByType.resource)
+    .data(modCompletions.completionsByType().resource)
     .enter().append('option')
     .attr('value', String);
   if (resourceNum < nodesByType.resource.length) {
@@ -477,7 +477,7 @@ var setupWishForm = function(d3, wishNum) {
   root.select('input[name=wish_name]').property('value', name || '');
   root.select('#wish-completions')
     .selectAll('option')
-    .data(modCompletions.completionsByType.wish)
+    .data(modCompletions.completionsByType().wish)
     .enter().append('option')
     .attr('value', String);
   root.select('textarea').property('value', descrip || '');
@@ -679,7 +679,7 @@ var steps = {
             .filter(function(d) {return d.type === 'responsibility';})
             .map(function(d) {return d.name;});
       modEntryList.setup(d3, selector, existingTexts,
-                         modCompletions.completionsByType.responsibility,
+                         modCompletions.completionsByType().responsibility,
                          uponAdd, uponUpdate, uponRemove);
     },
 

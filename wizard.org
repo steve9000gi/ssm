@@ -269,6 +269,20 @@ This would also need the wizard added to the options menu.
 This is specifically out of scope for now, per Kristen.
 *** TODO might want to ask for and/or hardcode the system descrip on prereq screen
 From Kristen, July 14, 2016
+** Tagalongs, from Friday, August 12, 2016
+*** DONE Make completionsByType depend on module version
+CLOSED: [2016-08-12 Fri 21:19]
+CaregiversCYSHCN2
+TitleVWorkforce4
+*** TODO Add completions to role input
+*** TODO Add two new textarea questions in Step 3: Prerequisites
+**** TODO 1
+In the text below, please briefly describe the challenge you will focus on in this map.
+**** TODO 2
+As a last step before we begin your map, provide a little more context around your experiences. In the text box below, please briefly describe your child, including age and any particular healthcare needs, diagnoses, or challenges.
+**** TODO Remember to save to and retrieve from the database
+*** TODO Display map ID at the last step
+E.g. "ID for this system support map: 678"
 * Notes from call with Steve and Kristen, Friday, June 10, 2016
 ** Wizard only applicable if started with blank state
 Don't have to handle preexisting maps, at least for now.

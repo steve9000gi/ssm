@@ -372,6 +372,8 @@ exports.hide = function(d3) {
 };
 
 },{}],5:[function(require,module,exports){
+var modTextModules = require('./text-modules.js');
+
 var animals = [
   'aardvark',
   'badger',
@@ -404,7 +406,7 @@ var animals = [
 var rolesCYSHCN = [
   'Parent',
   'Guardian'
-]; 
+];
 
 var responsibilitiesCYSHCN = [
   'Coordinate and Advocate for my child’s specific needs',
@@ -470,6 +472,8 @@ var wishesCYSHCN = [
   'Housing solutions'
 ];
 
+var rolesTitleV = {};
+
 var responsibilitiesTitleV = [
   'Gather evidence-informed strategies to promote breastfeeding',
   'Increase the percent of women receiving well visits',
@@ -495,15 +499,38 @@ var needsTitleV = [
   'Funding'
 ];
 
-exports.completionsByType = {
-  'role': rolesCYSHCN,
-  'responsibility': responsibilitiesCYSHCN,
-  'need': needsCYSHCN,
-  'resource': resourcesCYSHCN,
-  'wish': wishesCYSHCN
+var resourcesTitleV = {};
+var wishesTitleV = {};
+
+var CYSHCNCompletions = {
+  role: rolesCYSHCN,
+  responsibility: responsibilitiesCYSHCN,
+  need: needsCYSHCN,
+  resource: resourcesCYSHCN,
+  wish: wishesCYSHCN
 };
 
-},{}],6:[function(require,module,exports){
+var titleVCompletions = {
+  role: rolesTitleV,
+  responsibility: responsibilitiesTitleV,
+  need: needsTitleV,
+  resource: resourcesTitleV,
+  wish: wishesTitleV
+};
+
+var completionsByTextModule = {
+  CaregiversCYSHCN1: CYSHCNCompletions,
+  CaregiversCYSHCN2: CYSHCNCompletions,
+  TitleVWorkforce3: titleVCompletions,
+  TitleVWorkforce4: titleVCompletions
+};
+
+exports.completionsByType = function() {
+  var module = modTextModules.module;
+  return completionsByTextModule[module] || CYSHCNCompletions;
+};
+
+},{"./text-modules.js":26}],6:[function(require,module,exports){
 var modEvents = require('./events.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
@@ -3003,6 +3030,8 @@ exports.create = function(d3) {
 // extension) in the URL like so:
 // http://syssci.renci.org/ssm/?module=NAME
 
+exports.module = null;
+
 var listToHtml = function(d3, items) {
   return items.map(function(i){ return '<li>' + i + '</li>';}).join('\n');
 };
@@ -3039,6 +3068,7 @@ exports.setup = function(d3) {
       if (error) {
         console.error('GET ' + url + ' failed with status ' + error.status + ' and response text ' + error.response);
       } else {
+        exports.module = module;
         var strings = window.jsyaml.safeLoad(data.response);
         fillStrings(d3, strings);
       }
@@ -4049,7 +4079,7 @@ var setupNeedEntryList = function(d3, responsibilityNumber) {
         .map(function(d) {return d.name;});
   modEntryList.teardown(d3, selector);
   modEntryList.setup(d3, selector, existingTexts,
-                     modCompletions.completionsByType.need,
+                     modCompletions.completionsByType().need,
                      uponAdd, uponUpdate, uponRemove);
 };
 
@@ -4139,7 +4169,7 @@ var setupResourceForm = function(d3, resourceNum) {
   labels.append('br');
   d3.select('#resource-type-completions')
     .selectAll('option')
-    .data(modCompletions.completionsByType.resource)
+    .data(modCompletions.completionsByType().resource)
     .enter().append('option')
     .attr('value', String);
   if (resourceNum < nodesByType.resource.length) {
@@ -4186,7 +4216,7 @@ var setupWishForm = function(d3, wishNum) {
   root.select('input[name=wish_name]').property('value', name || '');
   root.select('#wish-completions')
     .selectAll('option')
-    .data(modCompletions.completionsByType.wish)
+    .data(modCompletions.completionsByType().wish)
     .enter().append('option')
     .attr('value', String);
   root.select('textarea').property('value', descrip || '');
@@ -4388,7 +4418,7 @@ var steps = {
             .filter(function(d) {return d.type === 'responsibility';})
             .map(function(d) {return d.name;});
       modEntryList.setup(d3, selector, existingTexts,
-                         modCompletions.completionsByType.responsibility,
+                         modCompletions.completionsByType().responsibility,
                          uponAdd, uponUpdate, uponRemove);
     },
 
