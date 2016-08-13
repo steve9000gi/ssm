@@ -4372,7 +4372,9 @@ var steps = {
 
   4: {
     enter: function(d3) {
-      modZoom.setZoom(d3, initialTranslate, initialZoom);
+      // If we didn't transit step 1 in this page load, initialTranslate and
+      // initialZoom will be unset, so use default values.
+      modZoom.setZoom(d3, initialTranslate || 0, initialZoom || 1);
       modZoom.setup(d3, modSvg.svg);
       d3.select('#wizard-step4_datalist').selectAll('option')
         .data(modCompletions.completionsByType().role)
