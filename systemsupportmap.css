@@ -451,3 +451,15 @@ path.link.selected, g.pathG.selected path {
 #wizard-resource-helpfulness-radio-group {
   max-width: 600px;
 }
+
+#map-id-div {
+  margin-top: 14px;
+}
+
+#wizard-step11-map-id {
+  color: green;
+}
+
+#review-download-data-tips, [data-string = "review-download-image-tips"] {
+  margin-right: 210px;
+}

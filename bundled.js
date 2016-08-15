@@ -472,33 +472,9 @@ var wishesCYSHCN = [
   'Housing solutions'
 ];
 
-var rolesTitleV = {};
-
-var responsibilitiesTitleV = [
-  'Gather evidence-informed strategies to promote breastfeeding',
-  'Increase the percent of women receiving well visits',
-  'Facilitate care coordination',
-  'Inform policy makers',
-  'Engage stakeholders and partners',
-  'Monitor MCH data',
-  'Facilitate meetings',
-  'Write reports',
-  'Oversee a team'
-];
-
-var needsTitleV = [
-  'Information',
-  'Communication skills',
-  'File sharing system',
-  'Knowledge',
-  'Facilitation skills',
-  'Real-time data',
-  'Staff',
-  'Partnerships',
-  'Supportive leadership',
-  'Funding'
-];
-
+var rolesTitleV ={}; 
+var responsibilitiesTitleV = {};
+var needsTitleV = {};
 var resourcesTitleV = {};
 var wishesTitleV = {};
 
@@ -521,8 +497,10 @@ var titleVCompletions = {
 var completionsByTextModule = {
   CaregiversCYSHCN1: CYSHCNCompletions,
   CaregiversCYSHCN2: CYSHCNCompletions,
+  CaregiversCYSHCN3: CYSHCNCompletions,
   TitleVWorkforce3: titleVCompletions,
-  TitleVWorkforce4: titleVCompletions
+  TitleVWorkforce4: titleVCompletions,
+  TitleVWorkforce5: titleVCompletions
 };
 
 exports.completionsByType = function() {
