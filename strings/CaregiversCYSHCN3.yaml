@@ -17,11 +17,17 @@ example-systems.list:
 
 # Step 2
 overview-header: 'Overview'
-overview-text.paras:
+overview-text-1.paras:
   - 'Here&rsquo;s a quick overview of the process.'
-  - 'Notice the rings in the chart below and the labels for each ring. The labels are &ldquo;Role/Identity,&rdquo; &ldquo;Most Important Responsibilities,&rdquo; &ldquo;General Needs for Each Responsibility,&rdquo; &ldquo;Available Resources,&rdquo; and &ldquo;Wish List.&rdquo;' 
+  - 'Notice the rings in the chart below and the labels for each ring. The labels are &ldquo;Role/Identity,&rdquo; &ldquo;Most Important Responsibilities,&rdquo; &ldquo;General Needs for Each Responsibility,&rdquo; &ldquo;Available Resources,&rdquo; and &ldquo;Wish List.&rdquo;'
   - 'You will build your SSM step by step, starting inside the innermost ring and working your way outwards.'
-  - 'The wizard is intended to build the SSM for you, but there are some things you can control along the way.  You can zoom in and out of the map by using your mouse&rsquo;s scroll button. You can move the whole map around by holding the left mouse button down anywhere on the background and dragging. You can move shapes around by holding the left mouse button down on the shape you want to move and dragging.  If the arrows that the wizard builds overlap, you can move the shapes and the arrows will move too, though it&rsquo;s best to do this step at the very end because the position of shapes changes whenever a new shape is addedIf one arrow obscures another, you can move the shapes the arrows are attached to and the arrows will move along with them, although it&rsquo;s best to do this rearranging at the very end, when all the shapes and arrows are in place. Once you start the wizard, you can step away and complete the wizard in parts – just keep this browser window open. When your SSM is complete, you will be able to save the map as a special file, which you can open and view or edit further using our web-based System Support Mapping tool. We&rsquo;ll give you instructions on how to do this at the end. You&rsquo;ll also be able to download a picture of your map, which you could easily share with others electronically.'
+  - 'The wizard is intended to build the SSM for you, but there are some things you can control along the way. You can:'
+overview-list-item-1: 'zoom in and out of the map by clicking on it and using the scroll button on your mouse'
+overview-list-item-2: 'move the whole map around by holding the left mouse button down anywhere on the background and dragging'
+overview-list-item-3: 'move shapes around by holding the left mouse button down on the shape you want to move and dragging'
+overview-list-item-4: 'move the shapes (if arrows overlap) and the arrows will move too, although it would be best to do this step at the very end because the shapes are automatically repositioned each time a new one is added.'
+overview-text-2.paras:
+  - 'Once you start the wizard, you can step away from a partially completed map and finish it later &mdash; just keep the wizard open in the browser. When your SSM is complete, you will be able to save the map as a special file, which you can open and view or edit further using our web-based System Support Mapping tool. We&rsquo;ll give you instructions on how to do this at the end. You will also be able to download a picture of your map, which you could easily share with others electronically.'
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
 
 # Step 3
