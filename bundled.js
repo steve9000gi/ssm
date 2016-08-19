@@ -498,9 +498,11 @@ var completionsByTextModule = {
   CaregiversCYSHCN1: CYSHCNCompletions,
   CaregiversCYSHCN2: CYSHCNCompletions,
   CaregiversCYSHCN3: CYSHCNCompletions,
+  CaregiversCYSHCN: CYSHCNCompletions,
   TitleVWorkforce3: titleVCompletions,
   TitleVWorkforce4: titleVCompletions,
-  TitleVWorkforce5: titleVCompletions
+  TitleVWorkforce5: titleVCompletions,
+  TitleVWorkforce: titleVCompletions
 };
 
 exports.completionsByType = function() {
@@ -1775,7 +1777,7 @@ exports.exportGraphAsImage = function(d3) {
   d3.select("#credits")
     .attr("display", "block")
     .attr("y", extent.h - 30)
-   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2015 UNC-CH)");
+   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2016 UNC-CH)");
 
   // Create canvas:
   d3.select("body").append("canvas")
@@ -3028,6 +3030,10 @@ var parasToHtml = function(d3, paras) {
   return paras.map(function(i){ return '<p>' + i + '</p>';}).join('\n');
 };
 
+var linkToHtml = function(d3, link) {
+  return '<a href="' + link + '" target="_blank">this survey</a>\n';
+};
+
 var fillStrings = function(d3, strings) {
   d3.selectAll('[data-string]')
     .each(function(){
@@ -3040,6 +3046,8 @@ var fillStrings = function(d3, strings) {
         this.innerHTML = parasToHtml(d3, strings[str]);
       } else if (type === 'list') {
         this.innerHTML = listToHtml(d3, strings[str]);
+      } else if (type === 'link') {
+	this.innerHTML = linkToHtml(d3, strings[str]);
       }
     });
 };

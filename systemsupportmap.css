@@ -457,10 +457,14 @@ path.link.selected, g.pathG.selected path {
 }
 
 #wizard-step11-map-id {
-  font-weight: bold;
-  text-shadow: 1px 0px 2px #ff0000;
+  color: #bb0000;
+  text-shadow: 1px 0px #000000;
 }
 
 #review-download-data-tips, [data-string = "review-download-image-tips"] {
   margin-right: 210px;
+}
+
+#map-uses {
+  margin-right: 110px;
 }

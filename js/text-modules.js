@@ -13,6 +13,10 @@ var parasToHtml = function(d3, paras) {
   return paras.map(function(i){ return '<p>' + i + '</p>';}).join('\n');
 };
 
+var linkToHtml = function(d3, link) {
+  return '<a href="' + link + '" target="_blank">this survey</a>\n';
+};
+
 var fillStrings = function(d3, strings) {
   d3.selectAll('[data-string]')
     .each(function(){
@@ -25,6 +29,8 @@ var fillStrings = function(d3, strings) {
         this.innerHTML = parasToHtml(d3, strings[str]);
       } else if (type === 'list') {
         this.innerHTML = listToHtml(d3, strings[str]);
+      } else if (type === 'link') {
+	this.innerHTML = linkToHtml(d3, strings[str]);
       }
     });
 };

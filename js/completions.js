@@ -124,9 +124,11 @@ var completionsByTextModule = {
   CaregiversCYSHCN1: CYSHCNCompletions,
   CaregiversCYSHCN2: CYSHCNCompletions,
   CaregiversCYSHCN3: CYSHCNCompletions,
+  CaregiversCYSHCN: CYSHCNCompletions,
   TitleVWorkforce3: titleVCompletions,
   TitleVWorkforce4: titleVCompletions,
-  TitleVWorkforce5: titleVCompletions
+  TitleVWorkforce5: titleVCompletions,
+  TitleVWorkforce: titleVCompletions
 };
 
 exports.completionsByType = function() {
