@@ -76,20 +76,21 @@ var renderRegistrationForm = function(d3, callback) {
     .text('Create a new account');
   var form = content
     .append('form')
+    .attr("id", "register")
     .html('<p>Note: all fields are required.</p>' +
-          '<label>' +
+          '<label class="register-top">' +
           '  Email address:' +
           '  <input type="text" name="email" />' +
           '</label>' +
           '<br />' +
 
-          '<label>' +
+          '<label class="register-top">' +
           '  Name:' +
           '  <input type="text" name="name" />' +
           '</label>' +
           '<br />' +
 
-          '<label>' +
+          '<label class="register-top">' +
           '  State/Territory:' +
           '  <input type="text" name="state" />' +
           '</label>' +
@@ -113,13 +114,13 @@ var renderRegistrationForm = function(d3, callback) {
           '</label>' +
           '<br />' +
 
-          '<label>' +
+          '<label class="register-bottom">' +
           '  Password:' +
           '  <input type="password" name="password" />' +
           '</label>' +
           '<br />' +
 
-          '<label>' +
+          '<label class="register-bottom">' +
           '  Confirm password:' +
           '  <input type="password" name="password" />' +
           '</label>' +
@@ -141,7 +142,7 @@ var renderRegistrationForm = function(d3, callback) {
   var link = content
     .append('a')
     .attr('href', '#')
-    .text('Already have an account? Login.')
+    .text('Already have an account? Log in.')
     .on('click', function() {
       content.selectAll('*').remove();
       renderLoginForm(d3, callback);
