@@ -303,7 +303,7 @@ path.link.selected, g.pathG.selected path {
 .register-top {
  display: inline-block;
  text-align: right;
- width: 214px;
+ width: 258px;
 }
 
 .register-bottom {
@@ -384,13 +384,10 @@ path.link.selected, g.pathG.selected path {
   border: 3px ridge #aaa;
   margin-top: 20px;
   margin-left: 20px;
+  padding-top: 8px;
   padding-left: 16px;
   padding-right: 16px;
   padding-bottom: 8px;
-}
-
-[data-string="ring2-aside"], [data-string="ring4-aside"] {
-  padding-top: 8px;
 }
 
 .wizard-step .wizard-buttons {

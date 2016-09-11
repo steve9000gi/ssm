@@ -116,6 +116,7 @@ pre-ring5-text.paras:
 # Step 10
 ring5-header: 'Outer area: Wishes'
 # Note: this must contain a span of class "wish-number":
+ring5-aside: 'Tip[s] coming soon'
 ring5-intro.paras:
   - 'If you could have anything to support you in your responsibilities, what would it be? Is there a resource that you wish was different in some way? A need you would like help with? A responsibility you don&rsquo;t even know how to begin to tackle? We would like you to describe your three most important wishes for how you could be better supported in your work described in this SSM. These wishes will go outside of the outermost ring. Please enter 3 below.'
 ring5-wish-name-prompt:

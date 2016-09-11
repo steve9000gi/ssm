@@ -44,19 +44,19 @@ var renderRegistrationForm = function(d3, callback) {
           '<br />' +
 
           '<label class="register-top">' +
-          '  State/Territory:' +
+          '  State/Territory/Country:' +
           '  <input type="text" name="state" />' +
           '</label>' +
           '<br />' +
           '<br />' +
 
           'Affiliations (select all that apply):' +
-          '<br /><input type="checkbox" name="affil_self_advocate" value="on" /> Self Advocate' +
-          '<br /><input type="checkbox" name="affil_family_member" value="on" /> Family Member/Representative' +
-          '<br /><input type="checkbox" name="affil_health_provider" value="on" /> Health Provider or Professional' +
-          '<br /><input type="checkbox" name="affil_education_provider" value="on" /> Education Provider or Professional' +
-          '<br /><input type="checkbox" name="affil_smcha_staff" value="on" /> State Maternal Child Health Agency Staff' +
-          '<br /><input type="checkbox" name="affil_local_org_staff" value="on" /> Community-Based or Local Organization Staff' +
+          '<br /><input type="checkbox" name="affil_self_advocate" value="on" /> Self-advocate' +
+          '<br /><input type="checkbox" name="affil_family_member" value="on" /> Family member/representative' +
+          '<br /><input type="checkbox" name="affil_health_provider" value="on" /> Health provider or professional' +
+          '<br /><input type="checkbox" name="affil_education_provider" value="on" /> Education provider or professional' +
+          '<br /><input type="checkbox" name="affil_smcha_staff" value="on" /> State Maternal Child Health agency staff' +
+          '<br /><input type="checkbox" name="affil_local_org_staff" value="on" /> Community-based or local organization staff' +
           '<br />' +
           '<br />' +
 

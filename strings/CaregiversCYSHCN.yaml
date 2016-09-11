@@ -46,6 +46,7 @@ prerequisites-context-prompt: 'As a last step before we begin your map, provide 
 
 # Step 4
 ring1-header: 'Ring #1: Identifying Your Role'
+ring1-aside: 'Tip[s] coming soon'
 ring1-intro.paras:
   - 'How would you name your role in the work you are mapping? What role do you play in the system producing this challenge? Some possible roles are: parent, sibling, grandparent, caregiver, or care coordinator. Feel free to add as much detail as you would like. You can also describe the health care needs of your child or any other pertinent information for your role'
   - 'If you have multiple roles that you want to explore, pick one. Each map is for one role, and one role only. You can come back and fill out other maps for other roles later.'
@@ -67,7 +68,7 @@ ring2-text.paras:
 
 # Step 6
 ring3-header: 'Ring #3: Needs'
-ring3-aside:  'Tip: Needs are the ingredients in a recipe for how you get each responsibility done.'
+ring3-aside: 'Tip: Needs are the ingredients in a recipe for how you get each responsibility done.'
 ring3-text.paras:
   - 'The third ring identifies exactly what is needed to meet each responsibility.' 
   - 'Common needs include time, money, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, energy, and creativity.  You can be very specific, such as &ldquo;I need access to reliable transportation to attend doctor appointments,&rdquo; or more general, such as &ldquo;I need guidance.&rdquo;'
@@ -115,7 +116,8 @@ pre-ring5-text.paras:
 
 # Step 10
 ring5-header: 'Outer area: Wishes'
-# Note: this must contain a span of class "wish-number":
+# Note: this must contain a span of class "wish-number"
+ring5-aside: 'Tip[s] coming soon'
 ring5-intro.paras:
   - 'If you could have anything to support you in meeting your responsibilities, what would it be? Is there a resource that you wish was different in some way? A need you would like help with? A responsibility you don&rsquo;t even know how to begin to tackle? We would like you to describe your three most important wishes for how you could be better supported in your work described in this SSM. These wishes will go outside of the outermost ring. Please enter 3 below.  You&rsquo;re currently on wish <span class="wish-number"></span> of 3.'
 ring5-wish-name-prompt:
