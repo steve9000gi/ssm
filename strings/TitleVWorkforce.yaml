@@ -46,6 +46,7 @@ prerequisites-context-prompt: 'As a last step before we begin your map, provide 
 
 # Step 4
 ring1-header: 'Ring #1: Identifying Your Role'
+ring1-aside: 'Tip[s] coming soon'
 ring1-intro.paras:
   - 'How would you name your role in the work you are mapping?  Some possible roles are: project manager, care coordinator, service provider, health educator, or state public health leader.'
   - 'If you have multiple roles that you want to explore, pick one. Each map is designed to look at one role and one role only. You can come back and fill out other maps for other roles later.'
