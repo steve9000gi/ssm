@@ -391,7 +391,7 @@ path.link.selected, g.pathG.selected path {
 }
 
 .wizard-step .wizard-buttons {
-  position: absolute;
+  position: fixed;
   bottom: 15px;
   right: 15px;
 }
