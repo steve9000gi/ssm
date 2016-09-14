@@ -8,9 +8,12 @@
   <body>
     <div id="wizard" class="closed">
       <div id="wizard-step1" class="wizard-step">
-        <div class="close">X</div>
-        <div class="minimize">__</div>
-        <div class="maximize">&square;</div>
+        <div class="wizard-buttons">
+          <button class="next">Next &raquo;</button>
+	  <div class="close">X</div>
+	  <div class="minimize">__</div>
+	  <div class="maximize">&square;</div>
+        </div>
         <aside>
           <h3 data-string="example-systems-header"></h3>
           <ul data-string="example-systems.list"></ul>
@@ -24,15 +27,16 @@
 	  <span data-string="map-uses-2-span"></span>
 	</div>
 	<div data-string="next-page-instruction.paras"></div>
-        <div class="wizard-buttons">
-          <button class="next">Next &raquo;</button>
-        </div>
       </div>
 
       <div id="wizard-step2" class="wizard-step">
-        <div class="close">X</div>
-        <div class="minimize">__</div>
-        <div class="maximize">&square;</div>
+        <div class="wizard-buttons">
+          <button class="back">&laquo; Back</button>
+          <button class="next">Next &raquo;</button>
+	  <div class="close">X</div>
+	  <div class="minimize">__</div>
+	  <div class="maximize">&square;</div>
+        </div>
         <h1 data-string="overview-header"></h1>
         <div data-string="overview-text-1.paras"></div>
 	<ul>
@@ -42,16 +46,16 @@
 	  <li data-string="overview-list-item-4"></li>
 	</ul>
         <div data-string="overview-text-2.paras"></div>
-        <div class="wizard-buttons">
-          <button class="back">&laquo; Back</button>
-          <button class="next">Next &raquo;</button>
-        </div>
       </div>
 
       <div id="wizard-step3" class="wizard-step">
-        <div class="close">X</div>
-        <div class="minimize">__</div>
-        <div class="maximize">&square;</div>
+        <div class="wizard-buttons">
+          <button class="back">&laquo; Back</button>
+          <button class="next">Next &raquo;</button>
+	  <div class="close">X</div>
+	  <div class="minimize">__</div>
+	  <div class="maximize">&square;</div>
+        </div>
         <h1 data-string="prerequisites-header"></h1>
         <div data-string="prerequisites-text.paras"></div>
         <p>
@@ -66,16 +70,16 @@
             <textarea name="prereqs_context"></textarea>
           </label>
         </p>
-        <div class="wizard-buttons">
-          <button class="back">&laquo; Back</button>
-          <button class="next">Next &raquo;</button>
-        </div>
       </div>
 
       <div id="wizard-step4" class="wizard-step">
-        <div class="close">X</div>
-        <div class="minimize">__</div>
-        <div class="maximize">&square;</div>
+        <div class="wizard-buttons">
+          <button class="back">&laquo; Back</button>
+          <button class="next">Next &raquo;</button>
+	  <div class="close">X</div>
+	  <div class="minimize">__</div>
+	  <div class="maximize">&square;</div>
+        </div>
         <aside data-string="ring1-aside"></aside>
         <h1 data-string="ring1-header"></h1>
         <div data-string="ring1-intro.paras"></div>
@@ -85,56 +89,56 @@
           <input type="text" name="role" list="wizard-step4_datalist" />
         </label>
         <div data-string="ring1-afterword.paras"></div>
-        <div class="wizard-buttons">
-          <button class="back">&laquo; Back</button>
-          <button class="next">Next &raquo;</button>
-        </div>
       </div>
 
       <div id="wizard-step5" class="wizard-step">
-        <div class="close">X</div>
-        <div class="minimize">__</div>
-        <div class="maximize">&square;</div>
+        <div class="wizard-buttons">
+          <button class="back">&laquo; Back</button>
+          <button class="next">Next &raquo;</button>
+	  <div class="close">X</div>
+	  <div class="minimize">__</div>
+	  <div class="maximize">&square;</div>
+        </div>
         <aside data-string="ring2-aside"></aside>
         <h1 data-string="ring2-header"></h1>
         <div data-string="ring2-text.paras"></div>
         <div id="wizard-responsibility-list"></div>
-        <div class="wizard-buttons">
-          <button class="back">&laquo; Back</button>
-          <button class="next">Next &raquo;</button>
-        </div>
       </div>
 
       <div id="wizard-step6" class="wizard-step">
-        <div class="close">X</div>
-        <div class="minimize">__</div>
-        <div class="maximize">&square;</div>
+        <div class="wizard-buttons">
+          <button class="back">&laquo; Back</button>
+          <button class="next">Next &raquo;</button>
+	  <div class="close">X</div>
+	  <div class="minimize">__</div>
+	  <div class="maximize">&square;</div>
+        </div>
         <aside data-string="ring3-aside"></aside>
         <h1 data-string="ring3-header"></h1>
         <div data-string="ring3-text.paras"></div>
         <h3>Responsibility <span id="wizard_current_responsibility_number">_</span> of <span id="wizard_responsibility_count">_</span>: <span id="wizard_current_responsibility_text">____</span></h3>
         <div data-string="ring3-prompt.paras"></div>
         <div id="wizard-need-list"></div>
-        <div class="wizard-buttons">
-          <button class="back">&laquo; Back</button>
-          <button class="next">Next &raquo;</button>
-        </div>
       </div>
 
       <div id="wizard-step7" class="wizard-step">
-        <div class="close">X</div>
         <div class="wizard-buttons">
           <button class="back">&laquo; Back</button>
           <button class="next">Next &raquo;</button>
+          <div class="close">X</div>
         </div>
         <div data-string="pre-ring4-text.paras"></div>
       </div>
 
       <div id="wizard-step8" class="wizard-step">
         <div class="resource-form">
-          <div class="close">X</div>
-          <div class="minimize">__</div>
-          <div class="maximize">&square;</div>
+          <div class="wizard-buttons">
+            <button class="back">&laquo; Back</button>
+            <button class="next">Next &raquo;</button>
+	    <div class="close">X</div>
+	    <div class="minimize">__</div>
+	    <div class="maximize">&square;</div>
+          </div>
           <aside data-string="ring4-aside"></aside>
           <h1 data-string="ring4-header"></h1>
           <div data-string="ring4-intro.paras"></div>
@@ -178,36 +182,38 @@
           <label><span data-string="ring4-resource-helpfulness-description-prompt"></span><br/>
             <textarea name="resource_helpfulness_description"></textarea>
           </label>
-          <div class="wizard-buttons">
-            <button class="back">&laquo; Back</button>
-            <button class="next">Next &raquo;</button>
-          </div>
         </div>
 
         <div class="resource-interstitial">
-          <div class="close">X</div>
           <div class="wizard-buttons">
             <button class="add-resource">Add Resource</button>
             <button class="back">&laquo; Back</button>
             <button class="next-step">Next &raquo;</button>
+            <div class="close">X</div>
           </div>
           <span data-string="ring4-interstitial-text.paras"></span>
         </div>
       </div>
 
       <div id="wizard-step9" class="wizard-step">
-        <div class="close">X</div>
         <div class="wizard-buttons">
           <button class="back">&laquo; Back</button>
           <button class="next">Next &raquo;</button>
+	  <div class="close">X</div>
+	  <div class="minimize">__</div>
+	  <div class="maximize">&square;</div>
         </div>
         <span data-string="pre-ring5-text.paras"></span>
       </div>
 
       <div id="wizard-step10" class="wizard-step">
-        <div class="close">X</div>
-        <div class="minimize">__</div>
-        <div class="maximize">&square;</div>
+       <div class="wizard-buttons">
+          <button class="back">&laquo; Back</button>
+          <button class="next">Next &raquo;</button>
+          <div class="close">X</div>
+          <div class="minimize">__</div>
+          <div class="maximize">&square;</div>
+        </div>
         <aside data-string="ring5-aside"></aside>
         <h1 data-string="ring5-header"></h1>
         <div data-string="ring5-intro.paras"></div>
@@ -239,16 +245,16 @@
           <div data-string="ring5-wish-resource-description-prompt"></div>
           <textarea name="wish_resource_description"></textarea>
         </div>
-        <div class="wizard-buttons">
-          <button class="back">&laquo; Back</button>
-          <button class="next">Next &raquo;</button>
-        </div>
       </div>
 
       <div id="wizard-step11" class="wizard-step">
-        <div class="close">X</div>
-        <div class="minimize">__</div>
-        <div class="maximize">&square;</div>
+        <div class="wizard-buttons">
+          <button class="back">&laquo; Back</button>
+          <button class="finish">Finish</button>
+	  <div class="close">X</div>
+	  <div class="minimize">__</div>
+	  <div class="maximize">&square;</div>
+        </div>
         <aside>
           <h5 data-string="review-aside-header"></h5>
           <div data-string="review-aside-text.paras"></div>
@@ -270,10 +276,6 @@
 	  <span data-string="survey.link"></span>
           <span data-string="review-map-id"></span>
           <span id="wizard-step11-map-id"></span><span data-string="end-sentence"></span>
-        </div>
-        <div class="wizard-buttons">
-          <button class="back">&laquo; Back</button>
-          <button class="finish">Finish</button>
         </div>
       </div>
     </div>

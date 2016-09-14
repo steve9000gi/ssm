@@ -391,9 +391,13 @@ path.link.selected, g.pathG.selected path {
 }
 
 .wizard-step .wizard-buttons {
-  position: fixed;
-  bottom: 15px;
-  right: 15px;
+  position: block;
+  float: right;
+  /*
+  top: 6px;
+  right: 74px;
+  margin-right: 6px;
+  */
 }
 
 .wizard-step .wizard-buttons button {
@@ -456,10 +460,6 @@ path.link.selected, g.pathG.selected path {
 #wizard-step11-map-id {
   color: #bb0000;
   text-shadow: 1px 0px #000000;
-}
-
-#review-download-data-tips, [data-string = "review-download-image-tips"] {
-  margin-right: 210px;
 }
 
 #map-uses {
