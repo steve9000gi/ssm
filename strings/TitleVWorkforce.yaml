@@ -107,7 +107,7 @@ ring4-resource-helpfulness-description-prompt:
 
 # Resource interstitial
 ring4-interstitial-text.paras:
-  - 'If you&rsquo;d like to add another resource, click the &ldquo;Add Resource&rdquo; button. Otherwise, click &ldquo;Next&rdquo;.'
+  - 'If you&rsquo;d like to add another resource, click the &ldquo;Add Resource&rdquo; button. Otherwise, click &ldquo;Next.&rdquo;'
 
 # Step 9
 pre-ring5-text.paras:

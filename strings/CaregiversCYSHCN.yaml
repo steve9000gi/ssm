@@ -79,7 +79,7 @@ ring3-prompt.paras:
 # Step 7
 pre-ring4-text.paras:
   - 'Here&rsquo;s your map so far.'
-  - 'Please look at it, and gather Please gather your thoughts about resources that you have tried used in the recent past to support completion of your responsibilities. You will be prompted to enter those in the next screen, and it will help for you to have a list ready.'
+  - 'Please look at it, and gather your thoughts about resources that you have tried in the recent past to support completion of your responsibilities. You will be prompted to enter those in the next screen, and it will help for you to have a list ready.'
 
 # Step 8
 ring4-header: 'Ring #4: Resources'
@@ -106,8 +106,7 @@ ring4-resource-helpfulness-description-prompt:
 
 # Resource interstitial
 ring4-interstitial-text.paras:
-  - 'Here&rsquo;s your map so far.'
-  - 'If you&rsquo;d like to add another resource, click the &ldquo;Add Resource&rdquo; button. Otherwise, click &ldquo;Next&rdquo;.'
+  - 'If you&rsquo;d like to add another resource, click the &ldquo;Add Resource&rdquo; button. Otherwise, click &ldquo;Next.&rdquo;'
 
 # Step 9
 pre-ring5-text.paras:
