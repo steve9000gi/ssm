@@ -48,9 +48,9 @@ ring1-aside-header: 'Tips:'
 ring1-aside.list:
   - 'If you have multiple roles that you want to explore, pick one. Including multiple roles in a single map will not work well. You can come back and fill out other maps for other roles later.'
   - 'You may choose an option from the drop-down list or type in something different if you don&rsquo;t see what you want.'
+  - 'Remember to click &ldquo;Add&rdquo; after you select or write in a responsibility.'
 ring1-intro.paras:
-  - 'How would you name your role in the work you are mapping? What role do you play in the system producing this challenge? Some possible roles are: parent, sibling, grandparent, caregiver, or care coordinator. Feel free to add as much detail as you would like. You can also describe the health care needs of your child or any other pertinent information for your role.'
-  - 'If you have multiple roles that you want to explore, pick one. Each map is for one role, and one role only. You can come back and fill out other maps for other roles later.'
+  - 'How would you name your role in the work you are mapping? What role do you play in the system producing this challenge? Some possible roles are: parent, sibling, grandparent, caregiver, or care coordinator.'
 ring1-label: 'My role is:'
 ring1-afterword.paras:
   - 'When you hit &ldquo;Next,&rdquo; your role will be inserted into the map below for you.'
