@@ -43,10 +43,14 @@ prerequisites-text.paras:
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
 prerequisites-focus-description-prompt: 'In the text below, please briefly describe the challenge you will focus on in this map.'
 prerequisites-context-prompt: 'As a last step before we begin your map, provide a little more context around the initiative. In the text box below, please briefly describe key partners collaborating with you and the time frame for the work.'
+prerequisites-next.paras:
+  - 'Hit the &ldquo;Next&rdquo; button to continue.'
 
 # Step 4
 ring1-header: 'Ring #1: Identifying Your Role'
-ring1-aside: 'Tip[s] coming soon'
+ring1-aside-header: 'Tips:'
+ring1-aside.list:
+  - 'to be added'
 ring1-intro.paras:
   - 'How would you name your role in the work you are mapping?  Some possible roles are: project manager, care coordinator, service provider, health educator, or state public health leader.'
   - 'If you have multiple roles that you want to explore, pick one. Each map is designed to look at one role and one role only. You can come back and fill out other maps for other roles later.'
@@ -57,8 +61,9 @@ ring1-afterword.paras:
 
 # Step 5
 ring2-header: 'Ring #2: Responsibilities'
-ring2-aside:
-  'Tip: For some people it makes more sense to describe relevant project activities, objectives or goals instead of responsibilities in this ring. As long as you are describing ways you invest your time related to the challenge you are mapping, the specific label doesn&rsquo;t matter.'
+ring2-aside-header: 'Tip:'
+ring2-aside.list:
+  - 'For some people it makes more sense to describe relevant project activities, objectives or goals instead of responsibilities in this ring. As long as you are describing ways you invest your time related to the challenge you are mapping, the specific label doesn&rsquo;t matter.'
 # Note: this must include a <span> with id "wizard_role_text" somewhere.
 ring2-text.paras:
   - 'The second ring contains the responsibilities that you have in your role as <code><span id="wizard_role_text">_</span></code>.'

@@ -389,6 +389,11 @@ path.link.selected, g.pathG.selected path {
   padding-right: 16px;
   padding-bottom: 8px;
 }
+ 
+aside h3 {
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
 
 .wizard-step .wizard-buttons {
   position: block;
@@ -464,4 +469,15 @@ path.link.selected, g.pathG.selected path {
 
 #map-uses {
   margin-right: 110px;
+}
+
+#wizard_role_text {
+  font-family: arial;
+}
+.next, .finish {
+  margin-right: 2px;
+}
+
+.back {
+  margin-right: 1px;
 }
