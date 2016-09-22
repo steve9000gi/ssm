@@ -296,14 +296,20 @@ path.link.selected, g.pathG.selected path {
 
 #login label {
   display: inline-block;
-  float: left;
-  clear: left;
-  width: 70px;
-  text-align: left;
+  width: 80px;
+  text-align: right;
 }
 
-#login label {
-  width: 110px;
+.register-top {
+ display: inline-block;
+ text-align: right;
+ width: 258px;
+}
+
+.register-bottom {
+ display: inline-block;
+ text-align: right;
+ width: 235px;
 }
 
 #login input[type="text",type="password"] {

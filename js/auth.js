@@ -30,20 +30,20 @@ var renderRegistrationForm = function(d3, callback) {
   var form = content
     .append('form')
     .html('<p>Note: all fields are required.</p>' +
-          '<label>' +
+          '<label class="register-top">' +
           '  Email address:' +
           '  <input type="text" name="email" />' +
           '</label>' +
           '<br />' +
 
-          '<label>' +
+          '<label class="register-top">' +
           '  Name:' +
           '  <input type="text" name="name" />' +
           '</label>' +
           '<br />' +
 
-          '<label>' +
-          '  State/Territory:' +
+          '<label class="register-top">' +
+          '  State/Territory/Country:' +
           '  <input type="text" name="state" />' +
           '</label>' +
           '<br />' +
@@ -66,13 +66,13 @@ var renderRegistrationForm = function(d3, callback) {
           '</label>' +
           '<br />' +
 
-          '<label>' +
+          '<label class="register-bottom">' +
           '  Password:' +
           '  <input type="password" name="password" />' +
           '</label>' +
           '<br />' +
 
-          '<label>' +
+          '<label class="register-bottom">' +
           '  Confirm password:' +
           '  <input type="password" name="password" />' +
           '</label>' +
