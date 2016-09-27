@@ -146,8 +146,6 @@ review-aside-text.paras:
 review-text.paras:
   - 'You are almost there! Let&rsquo;s clean up your map.  Try moving the shapes around so that they are evenly spaced and the lines don&rsquo;t cross as much. Be sure to keep the blue rectangles in the blue &ldquo;Responsibilities&rdquo; ring, the aqua diamonds in the aqua &ldquo;Needs&rdquo; ring, the black ovals in the black &ldquo;Resources&rdquo; ring, and the gold &ldquo;Wish List&rdquo; stars outside the outermost ring.'
   - 'Once your map looks good to you, you&rsquo;re finished! If you want to save your map, which we recommend, there are a few options…'  
-  - 'When you click the &ldquo;Finish&rdquo; button, this guide will go away and you can view or print your map.'
-review-download-prompt: 'You can also:'
 review-download-data-text: 'download your map data'
 review-download-data-tips-header: 'What can you do with downloaded data?'
 review-download-data-tips-span1: 'Add to or otherwise modify your map by opening the downloaded file in '

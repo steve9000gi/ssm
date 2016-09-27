@@ -481,3 +481,7 @@ aside h3 {
 .back {
   margin-right: 1px;
 }
+
+.finish {
+  display: none;
+}
