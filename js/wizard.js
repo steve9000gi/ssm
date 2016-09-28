@@ -85,6 +85,19 @@ var rebalanceNodes = function(d3) {
   modUpdate.updateGraph(d3);
 };
 
+// Returns [source, target].
+var setEdgeDirection = function(d3, shape, oldNode, newNode) {
+  var front, back;
+  switch (newNode.shape) {
+    case "circle":
+    case "rectangle":
+    case "diamond":
+      return [oldNode, newNode]; // Arrow points out
+    default:
+      return [newNode, oldNode]; // Arrow points inward
+  };
+};
+
 var addNode = function(d3, type, parent_s, text, edgeColor) {
   // parent_s might be single parent or an array of many parents
   var color = colorsByType[type],
@@ -92,14 +105,17 @@ var addNode = function(d3, type, parent_s, text, edgeColor) {
       newNode = modEvents.addNode(d3, 0, 0, text, color, shape),
       parents = [].concat(parent_s),
       multiParent = parents.length > 1,
-      newEdge = function(src) { return {
-        source: src,
-        target: newNode,
-        style: 'solid',
-        color: edgeColor || '#000000',
-        thickness: 3,
-        name: ''
-      }; };
+      newEdge = function(src) { 
+        var endNodes = setEdgeDirection(d3, shape, src, newNode);
+          return {
+            source: endNodes[0],
+            target: endNodes[1],
+            style: 'solid',
+            color: edgeColor || '#000000',
+            thickness: 3,
+            name: ''
+        };
+      };
   if (type !== 'role') newNode.__parents__ = parents.slice(0);
   for (var i=0; i < parents.length; i++) {
     modEvents.addEdge(d3, newEdge(parents[i]));
