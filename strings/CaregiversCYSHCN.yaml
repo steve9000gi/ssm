@@ -48,7 +48,6 @@ ring1-aside-header: 'Tips:'
 ring1-aside.list:
   - 'If you have multiple roles that you want to explore, pick one. Including multiple roles in a single map will not work well. You can come back and fill out other maps for other roles later.'
   - 'You may choose an option from the drop-down list or type in something different if you don&rsquo;t see what you want.'
-  - 'Remember to click &ldquo;Add&rdquo; after you select or write in a responsibility.'
 ring1-intro.paras:
   - 'How would you name your role in the work you are mapping? What role do you play in the system producing this challenge? Some possible roles are: parent, sibling, grandparent, caregiver, or care coordinator.'
 ring1-label: 'My role is:'
@@ -62,6 +61,7 @@ ring2-aside-header: 'Tips:'
 ring2-aside.list:
   - 'For some people it makes more sense to describe activities, objectives, or goals instead of responsibilities in this ring. As long as you are describing ways you spend your time related to the challenge you are mapping, the specific label does not matter.'
   - 'Remember to focus your response on the challenge you have identified. (We know you have a million responsibilities in life!)'
+  - 'Don&lsquo;t forget to click &ldquo;Add&rdquo; after you select or write in a responsibility.'
 # Note: this must include a <span> with id "wizard_role_text" somewhere.
 ring2-text.paras:
   - 'The second ring contains the responsibilities that you have in your role as <code><span id="wizard_role_text">_</span></code>.'
@@ -71,7 +71,9 @@ ring2-text.paras:
 
 # Step 6
 ring3-header: 'Ring #3: Needs'
-ring3-aside: 'Tip: Needs are the most important ingredients in a recipe for how you complete each responsibility.'
+ring3-aside-header: 'Tip:'
+ring3-aside.list:
+  - 'Needs are the most important ingredients in a recipe for how you complete each responsibility.'
 ring3-text.paras:
   - 'The third ring describes the most important needs you have related to each responsibility. Common needs include time, providers, money, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, energy, and creativity. You can be very specific, such as &ldquo;I need access to reliable transportation to attend doctor appointments,&rdquo; or more general, such as &ldquo;transportation.&rdquo;'
   - 'You&rsquo;ll be asked about each responsibility in turn, starting with the first one you entered. Again, feel free to choose from the drop-down list, or write in something else. As you add needs, they will be entered into your SSM. At first, the positioning of the shapes will look odd. Please keep going – it will improve as you add more needs. And, if you want, you can move things around when your map is completely filled in. If you move things now, they will get moved back every time a new item is added.'
@@ -85,8 +87,9 @@ pre-ring4-text.paras:
 
 # Step 8
 ring4-header: 'Ring #4: Resources'
-ring4-aside:
-  'Tip: Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, or a friend who makes baking so much more fun!'
+ring4-aside-header: 'Tip:'
+ring4-aside.list:
+  - 'Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, or a friend who makes baking so much more fun!'
 ring4-intro.paras:
   - 'The next ring identifies the resources that you use to help you meet your needs described in Ring #3.' 
   - 'Reflect for a moment about the needs you listed. What specific things, organizations, places, personal strengths, or people have you tried (whether or not they have helped you) to get your needs met? Resources for your map might include public transportation, health care providers, a case manager, organizations and services in your community, local or national organizations, knowledge or strengths that you or someone around you has, skills, websites, books, brochures or training programs.'
@@ -119,7 +122,9 @@ pre-ring5-text.paras:
 # Step 10
 ring5-header: 'Outer area: Wishes'
 # Note: this must contain a span of class "wish-number"
-ring5-aside: 'Tip: You need to enter exactly three wishes for desired change. Use them wisely!'
+ring5-aside-header: 'Tip:'
+ring5-aside.list:
+  - 'You need to enter exactly three wishes for desired change. Use them wisely!'
 ring5-intro.paras:
   - 'Thinking about your map, what are the most meaningful changes that would better support you in meeting your responsibilities? Is there a resource that you wish were different in some way? A need you would like help with? A responsibility you don&rsquo;t even know how to begin to tackle? We would like you to describe your three most important wishes for how you could be better supported in your work described in this SSM. These wishes will go outside of the outermost ring. Please enter 3 below.  You&rsquo;re currently on wish <span class="wish-number"></span> of 3.'
 ring5-wish-name-prompt:

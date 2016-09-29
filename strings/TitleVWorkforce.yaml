@@ -48,12 +48,11 @@ prerequisites-next.paras:
 
 # Step 4
 ring1-header: 'Ring #1: Identifying Your Role'
-ring1-aside-header: 'Tips:'
+ring1-aside-header: 'Tip:'
 ring1-aside.list:
-  - 'to be added'
+  - 'If you have multiple roles that you want to explore, pick one. Including multiple roles in a single map will not work well. Each map is designed to look at one role and one role only. You can come back and fill out other maps for other roles later.'
 ring1-intro.paras:
   - 'How would you name your role in the work you are mapping?  Some possible roles are: project manager, care coordinator, service provider, health educator, or state public health leader.'
-  - 'If you have multiple roles that you want to explore, pick one. Each map is designed to look at one role and one role only. You can come back and fill out other maps for other roles later.'
 ring1-label: 'My role is:'
 ring1-afterword.paras:
   - 'When you hit &ldquo;Next,&rdquo; your role will be inserted into the map below for you.'
@@ -61,9 +60,10 @@ ring1-afterword.paras:
 
 # Step 5
 ring2-header: 'Ring #2: Responsibilities'
-ring2-aside-header: 'Tip:'
+ring2-aside-header: 'Tips:'
 ring2-aside.list:
   - 'For some people it makes more sense to describe relevant project activities, objectives or goals instead of responsibilities in this ring. As long as you are describing ways you invest your time related to the challenge you are mapping, the specific label doesn&rsquo;t matter.'
+  - 'Don&lsquo;t forget to click &ldquo;Add&rdquo; after you select or write in a responsibility.'
 # Note: this must include a <span> with id "wizard_role_text" somewhere.
 ring2-text.paras:
   - 'The second ring contains the responsibilities that you have in your role as <code><span id="wizard_role_text">_</span></code>.'
@@ -73,8 +73,9 @@ ring2-text.paras:
 
 # Step 6
 ring3-header: 'Ring #3: Needs'
-ring3-aside: 
-  'Tip: Needs are the ingredients in a recipe for how you get each responsibility done.'
+ring3-aside-header: 'Tip:'
+ring3-aside.list:
+  - 'Needs are the ingredients in a recipe for how you get each responsibility done.'
 ring3-text.paras:
   - 'The third ring identifies exactly what is needed to meet each responsibility.' 
   - 'Common needs include time, reimbursement, buy-in from your organization, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, and creativity.  You can be very specific, such as &ldquo;I need access to a state car to conduct site visits,&rdquo; or more general, such as &ldquo;I need guidance.&rdquo;'
@@ -89,8 +90,9 @@ pre-ring4-text.paras:
 
 # Step 8
 ring4-header: 'Ring #4: Resources'
-ring4-aside:
-  'Tip: Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, or a friend who makes cooking so much more fun!'
+ring4-aside-header: 'Tip:'
+ring4-aside.list:
+  - 'Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, or a friend who makes cooking so much more fun!'
 ring4-intro.paras:
   - 'The next ring identifies the resources you use to meet your needs from Ring #3.' 
   - 'Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you tried (whether or not they have helped you) to get that need met? Resources might include knowledge or strengths you or someone around you has, websites, brochures, training programs, public transportation, services in your community, providers, a case manager, local or national organizations, or books you read to build a skill in yourself.'
@@ -122,7 +124,9 @@ pre-ring5-text.paras:
 # Step 10
 ring5-header: 'Outer area: Wishes'
 # Note: this must contain a span of class "wish-number":
-ring5-aside: 'Tip[s] coming soon'
+ring5-aside-header: 'Tip:'
+ring5-aside.list:
+  - 'You need to enter exactly three wishes for desired change. Use them wisely!'
 ring5-intro.paras:
   - 'If you could have anything to support you in your responsibilities, what would it be? Is there a resource that you wish was different in some way? A need you would like help with? A responsibility you don&rsquo;t even know how to begin to tackle? We would like you to describe your three most important wishes for how you could be better supported in your work described in this SSM. These wishes will go outside of the outermost ring. Please enter 3 below.'
 ring5-wish-name-prompt:
