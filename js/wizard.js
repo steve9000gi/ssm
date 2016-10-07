@@ -13,7 +13,7 @@ var modArrayUtils = require('./array-utils.js'),
     modZoom = require('./zoom.js');
 
 exports.wizardActive = undefined;
-exports.rocusDescription = undefined;
+exports.focusDescription = undefined;
 exports.focusContext = undefined;
 exports.currentStep = 1;
 exports.currentResponsibility = undefined;
