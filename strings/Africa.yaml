@@ -18,6 +18,18 @@ example-systems.list:
   - 'To help communicate your reality to care coordinators or others supporting you – so they can help you problem solve in a way that&rsquo;s more helpful to you.'
   - 'As a structured way to talk with peers about special needs. (For example, what did you do and how to support communication needs for your child? What role do you have in advocacy?)'
 
+# Step 1b: test adding page
+test-header:
+  'New Page to Test Adding Questions to Wizard'
+test.paras:
+  - 'This page is being used to prototype functionality that will be used to add new questions to the version of the wizard that&lsquo;s being built for use in Nigeria and the DRC.'
+  - 'Click the &ldquo;Next&rdquo; button to continue.'
+test-aside-header:
+  'Sidebar Title'
+test-aside.list:
+  - 'item 1'
+  - 'item 2'
+
 # Step 2
 overview-header: 'Overview'
 overview-text-1.paras:
