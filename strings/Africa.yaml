@@ -18,7 +18,7 @@ example-systems.list:
   - 'To help communicate your reality to care coordinators or others supporting you – so they can help you problem solve in a way that&rsquo;s more helpful to you.'
   - 'As a structured way to talk with peers about special needs. (For example, what did you do and how to support communication needs for your child? What role do you have in advocacy?)'
 
-# Step 1b: test adding page
+# Step 2: test adding page
 test-header:
   'New Page to Test Adding Questions to Wizard'
 test.paras:
@@ -29,7 +29,9 @@ test-aside-header:
 test-aside.list:
   - 'item 1'
   - 'item 2'
-
+test-prompt: 'Please enter some information about yourself:'
+test-buttons-prompt:
+  'How do you feel about that information?'
 # Step 2
 overview-header: 'Overview'
 overview-text-1.paras:

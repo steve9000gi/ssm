@@ -3749,6 +3749,7 @@ var modArrayUtils = require('./array-utils.js'),
     modZoom = require('./zoom.js');
 
 exports.wizardActive = undefined;
+exports.testDescription = undefined;
 exports.focusDescription = undefined;
 exports.focusContext = undefined;
 exports.currentStep = 1;
@@ -4381,6 +4382,27 @@ var steps = {
       initialZoom = modZoom.zoom;
       modZoom.setZoom(d3, xlate, newZoom);
       modZoom.setup(d3, modSvg.svg);
+      return true;
+    }
+  },
+
+  2: {
+    enter: function(d3) {
+      if (exports.testDescription) {
+        var sel = 'textarea[name=test_description]';
+        d3.select(sel).node().value = exports.testDescription;
+      }
+      return true;
+    },
+
+    exit: function(d3) {
+      var sel = 'textarea[name=test_description]',
+          testText = d3.select(sel).node().value;
+      if (!testText) {
+        alert('You must type something in before proceeding.');
+        return false;
+      }
+      exports.testDescription = testText;
       return true;
     }
   },
