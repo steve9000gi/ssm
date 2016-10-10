@@ -63,7 +63,8 @@ exports.getMapObject = function(d3) {
     "wizardActive": modWizard.wizardActive,
     "focusDescription": modWizard.focusDescription,
     "focusContext": modWizard.focusContext,
-    "testDescription": modWizard.testDescription
+    "testDescription": modWizard.testDescription,
+    "testButtonValue": modWizard.testButtonValue
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;

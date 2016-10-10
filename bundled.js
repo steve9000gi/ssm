@@ -2833,7 +2833,8 @@ exports.getMapObject = function(d3) {
     "wizardActive": modWizard.wizardActive,
     "focusDescription": modWizard.focusDescription,
     "focusContext": modWizard.focusContext,
-    "testDescription": modWizard.testDescription
+    "testDescription": modWizard.testDescription,
+    "testButtonValue": modWizard.testButtonValue
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
@@ -4393,17 +4394,25 @@ var steps = {
         var sel = 'textarea[name=test_description]';
         d3.select(sel).node().value = exports.testDescription;
       }
+      if (exports.testButtonValue) {
+        var checkedTestButton = 'input[name=test-button]:checked';
+        d3.select(checkedTestButton).node().value = exports.testButtonValue;;
+      }
       return true;
     },
 
     exit: function(d3) {
-      var sel = 'textarea[name=test_description]',
-          testText = d3.select(sel).node().value;
-      if (!testText) {
-        alert('You must type something in before proceeding.');
+      var sel = 'textarea[name=test_description]';
+      var testText = d3.select(sel).node().value;
+      var testButton = 'input[name=test-button]:checked';
+      var testButtonValue = d3.select(testButton).node().value;
+     
+      if (!(testText && testButtonValue)) {
+        alert('You must type and pick a redio button before proceeding.');
         return false;
       }
       exports.testDescription = testText;
+      exports.testButtonValue = testButtonValue;
       return true;
     }
   },
