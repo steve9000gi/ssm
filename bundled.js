@@ -2833,7 +2833,10 @@ exports.getMapObject = function(d3) {
     "wizardActive": modWizard.wizardActive,
     "focusDescription": modWizard.focusDescription,
     "focusContext": modWizard.focusContext,
-    "testDescription": modWizard.testDescription,
+    "state": modWizard.state, 
+    "county": modWizard.county,
+    "race": modWizard.race,
+    "hispanic": modWizard.hispanic,
     "testButtonValue": modWizard.testButtonValue
   };
   if (modWizard.wizardActive) {
@@ -4390,10 +4393,15 @@ var steps = {
 
   2: {
     enter: function(d3) {
-      if (exports.testDescription) {
-        var sel = 'textarea[name=test_description]';
-        d3.select(sel).node().value = exports.testDescription;
+      if (exports.state) {
+	d3.select("#state-select").node().value = exports.state;
       }
+      if (exports.county) {
+        var sel = 'textarea[name=county]';
+        d3.select(sel).node().value = exports.county;
+      }
+      // 2do: handle race import
+      //
       if (exports.testButtonValue) {
         var checkedTestButton = 'input[name=test-button]:checked';
         d3.select(checkedTestButton).node().value = exports.testButtonValue;;
@@ -4402,16 +4410,36 @@ var steps = {
     },
 
     exit: function(d3) {
-      var sel = 'textarea[name=test_description]';
-      var testText = d3.select(sel).node().value;
+      var stateSel = document.getElementById('state-select');
+      var state = stateSel.options[stateSel.selectedIndex].value
+      var countySel = 'textarea[name=county]';
+      var countyText = d3.select(countySel).node().value;
+      var americanIndian = document.getElementById('AmericanIndian').checked;
+      var white = document.getElementById('White').checked;
+      var asian = document.getElementById('Asian').checked;
+      var black = document.getElementById('Black').checked;
+      var hawaiian = document.getElementById('Hawaiian').checked;
+      var otherRace = document.getElementById('OtherRace').checked;
+      var otherRaceText = document.getElementById('OtherRaceText').value;
+      var races = Array();
+      if (americanIndian) races.push("American Indian");
+      if (white) races.push("White");
+      if (asian) races.push("Asian");
+      if (black) races.push("African American/Black");
+      if (hawaiian) races.push("Hawaiian or Pacific Islander");
+      if (otherRace) races.push(otherRaceText);
+      var hispanic = document.getElementById('isHispanic').checked;
       var testButton = 'input[name=test-button]:checked';
       var testButtonValue = d3.select(testButton).node().value;
      
-      if (!(testText && testButtonValue)) {
+      if (!(countyText && testButtonValue)) {
         alert('You must type and pick a redio button before proceeding.');
         return false;
       }
-      exports.testDescription = testText;
+      exports.state = state;
+      exports.county = countyText;
+      exports.race = races;
+      exports.hispanic = hispanic;
       exports.testButtonValue = testButtonValue;
       return true;
     }

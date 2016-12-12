@@ -63,7 +63,10 @@ exports.getMapObject = function(d3) {
     "wizardActive": modWizard.wizardActive,
     "focusDescription": modWizard.focusDescription,
     "focusContext": modWizard.focusContext,
-    "testDescription": modWizard.testDescription,
+    "state": modWizard.state, 
+    "county": modWizard.county,
+    "race": modWizard.race,
+    "hispanic": modWizard.hispanic,
     "testButtonValue": modWizard.testButtonValue
   };
   if (modWizard.wizardActive) {
