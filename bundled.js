@@ -2837,7 +2837,7 @@ exports.getMapObject = function(d3) {
     "county": modWizard.county,
     "race": modWizard.race,
     "hispanic": modWizard.hispanic,
-    "testButtonValue": modWizard.testButtonValue
+    "language": modWizard.language
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
@@ -4402,9 +4402,9 @@ var steps = {
       }
       // 2do: handle race import
       //
-      if (exports.testButtonValue) {
-        var checkedTestButton = 'input[name=test-button]:checked';
-        d3.select(checkedTestButton).node().value = exports.testButtonValue;;
+      if (exports.language) {
+        var checkedLanguageButton = 'input[name=language-button]:checked';
+        d3.select(checkedLanguageButton).node().value = exports.language;
       }
       return true;
     },
@@ -4429,18 +4429,21 @@ var steps = {
       if (hawaiian) races.push("Hawaiian or Pacific Islander");
       if (otherRace) races.push(otherRaceText);
       var hispanic = document.getElementById('isHispanic').checked;
-      var testButton = 'input[name=test-button]:checked';
-      var testButtonValue = d3.select(testButton).node().value;
-     
-      if (!(countyText && testButtonValue)) {
-        alert('You must type and pick a redio button before proceeding.');
+      var languageButton = 'input[name=language-button]:checked';
+      var language = d3.select(languageButton).node().value;
+      if (language == "OtherLanguage") {
+	var otherLanguageText = document.getElementById('OtherLanguageText').value;
+        language = otherLanguageText;	
+      }
+      if (!(countyText && language)) {
+        alert('You must type and pick a radio button before proceeding.');
         return false;
       }
       exports.state = state;
       exports.county = countyText;
       exports.race = races;
       exports.hispanic = hispanic;
-      exports.testButtonValue = testButtonValue;
+      exports.language = language;
       return true;
     }
   },

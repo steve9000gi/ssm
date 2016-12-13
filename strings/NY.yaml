@@ -22,15 +22,10 @@ example-systems.list:
 demographic-header:
   'This information will be used to improve supports and services for families of children with special health care needs. When you ar finished entering this personal information, please cick on the "Next" button to begin building your map. Thank you.'
 
-test-aside-header:
-  'Sidebar Title'
-test-aside.list:
-  - 'item 1'
-  - 'item 2'
 county-prompt: '2. What county or municipality do you live in?'
-test-buttons-prompt:
-  'How do you feel about that information?'
-test.paras:
+language-prompt:
+  '4. What language do you feel most comfortable speaking? (Please choose one.)'
+next.paras:
   - 'Click the &ldquo;Next&rdquo; button to continue.'
 
 # Step 2

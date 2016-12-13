@@ -67,7 +67,7 @@ exports.getMapObject = function(d3) {
     "county": modWizard.county,
     "race": modWizard.race,
     "hispanic": modWizard.hispanic,
-    "testButtonValue": modWizard.testButtonValue
+    "language": modWizard.language
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
