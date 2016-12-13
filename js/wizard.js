@@ -682,6 +682,7 @@ var steps = {
       var state = stateSel.options[stateSel.selectedIndex].value
       var countySel = 'textarea[name=county]';
       var countyText = d3.select(countySel).node().value;
+
       var americanIndian = document.getElementById('AmericanIndian').checked;
       var white = document.getElementById('White').checked;
       var asian = document.getElementById('Asian').checked;
@@ -696,9 +697,10 @@ var steps = {
       if (black) races.push("African American/Black");
       if (hawaiian) races.push("Hawaiian or Pacific Islander");
       if (otherRace) races.push(otherRaceText);
+
       var hispanic = document.getElementById('isHispanic').checked;
       var languageButton = 'input[name=language-button]:checked';
-      var language = d3.select(languageButton).node().value;
+      var language = languageButton ? d3.select(languageButton).node().value : null;
       if (language == "OtherLanguage") {
 	var otherLanguageText = document.getElementById('OtherLanguageText').value;
         language = otherLanguageText;	
@@ -711,6 +713,21 @@ var steps = {
 	var otherInsuranceText = document.getElementById('OtherInsuranceText').value;
         insurance = otherInsuranceText;	
       }
+
+      var otherHealthConditionText = document.getElementById('OtherHealthConditionText').value;
+      var healthConditions = Array();
+      d3.selectAll(".healthChkBox")
+        .each(function(d, i) {
+          if (this.checked) {
+            if (this.value == "Other") {
+              healthConditions.push(otherHealthConditionText);
+            } else {
+              healthConditions.push(this.value);
+            }
+          }
+          //console.log("d: " + d + "; i: " + i + "; value: " + this.value);
+      });
+
       if (!(state && countyText && races && language && age && insurance)) {
         alert('You must answer all questions before proceeding.');
         return false;
@@ -722,6 +739,7 @@ var steps = {
       exports.language = language;
       exports.age = age;
       exports.insurance = insurance;
+      exports.healthConditions = healthConditions;
       return true;
     }
   },
