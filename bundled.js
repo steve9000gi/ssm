@@ -2838,7 +2838,8 @@ exports.getMapObject = function(d3) {
     "race": modWizard.race,
     "hispanic": modWizard.hispanic,
     "language": modWizard.language,
-    "age": modWizard.age
+    "age": modWizard.age,
+    "insurance": modWizard.insurance
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
@@ -4411,6 +4412,11 @@ var steps = {
         var checkedAgeButton = 'input[name=age-button]:checked';
         d3.select(checkedAgeButton).node().value = exports.age;
       }
+      if (exports.insurance) {
+        var checkedInsuranceButton = 'input[name=insurance-button]:checked';
+        d3.select(checkedInsuranceButton).node().value = exports.insurance;
+      }
+
       return true;
     },
 
@@ -4442,7 +4448,13 @@ var steps = {
       }
       var ageButton = 'input[name=age-button]:checked';
       var age = d3.select(ageButton).node().value;
-      if (!(state && countyText && races && language && age)) {
+      var insuranceButton = 'input[name=insurance-button]:checked';
+      var insurance = d3.select(insuranceButton).node().value;
+      if (insurance == "OtherInsurance") {
+	var otherInsuranceText = document.getElementById('OtherInsuranceText').value;
+        insurance = otherInsuranceText;	
+      }
+      if (!(state && countyText && races && language && age && insurance)) {
         alert('You must answer all questions before proceeding.');
         return false;
       }
@@ -4452,6 +4464,7 @@ var steps = {
       exports.hispanic = hispanic;
       exports.language = language;
       exports.age = age;
+      exports.insurance = insurance;
       return true;
     }
   },

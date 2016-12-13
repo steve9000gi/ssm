@@ -68,7 +68,8 @@ exports.getMapObject = function(d3) {
     "race": modWizard.race,
     "hispanic": modWizard.hispanic,
     "language": modWizard.language,
-    "age": modWizard.age
+    "age": modWizard.age,
+    "insurance": modWizard.insurance
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;

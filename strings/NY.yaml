@@ -27,6 +27,8 @@ language-prompt:
   '5. What language do you feel most comfortable speaking? (Please choose one.)'
 age-prompt:
   '6. What is the age of your child?'
+insurance-prompt:
+  '7. What insurance do you have?'
 next.paras:
   - 'Click the &ldquo;Next&rdquo; button to continue.'
 
