@@ -24,7 +24,9 @@ demographic-header:
 
 county-prompt: '2. What county or municipality do you live in?'
 language-prompt:
-  '4. What language do you feel most comfortable speaking? (Please choose one.)'
+  '5. What language do you feel most comfortable speaking? (Please choose one.)'
+age-prompt:
+  '6. What is the age of your child?'
 next.paras:
   - 'Click the &ldquo;Next&rdquo; button to continue.'
 

@@ -2837,7 +2837,8 @@ exports.getMapObject = function(d3) {
     "county": modWizard.county,
     "race": modWizard.race,
     "hispanic": modWizard.hispanic,
-    "language": modWizard.language
+    "language": modWizard.language,
+    "age": modWizard.age
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
@@ -4406,6 +4407,10 @@ var steps = {
         var checkedLanguageButton = 'input[name=language-button]:checked';
         d3.select(checkedLanguageButton).node().value = exports.language;
       }
+      if (exports.age) {
+        var checkedAgeButton = 'input[name=age-button]:checked';
+        d3.select(checkedAgeButton).node().value = exports.age;
+      }
       return true;
     },
 
@@ -4435,8 +4440,10 @@ var steps = {
 	var otherLanguageText = document.getElementById('OtherLanguageText').value;
         language = otherLanguageText;	
       }
-      if (!(countyText && language)) {
-        alert('You must type and pick a radio button before proceeding.');
+      var ageButton = 'input[name=age-button]:checked';
+      var age = d3.select(ageButton).node().value;
+      if (!(state && countyText && races && language && age)) {
+        alert('You must answer all questions before proceeding.');
         return false;
       }
       exports.state = state;
@@ -4444,6 +4451,7 @@ var steps = {
       exports.race = races;
       exports.hispanic = hispanic;
       exports.language = language;
+      exports.age = age;
       return true;
     }
   },
