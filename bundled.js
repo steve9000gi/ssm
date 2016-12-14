@@ -2822,7 +2822,7 @@ var getNodes = function() {
   return ret;
 };
 
-// Return the current map as an JS object.
+// Return the current map as a JS object.
 exports.getMapObject = function(d3) {
   var ret = {
     "nodes": getNodes(),
@@ -4400,8 +4400,7 @@ var steps = {
 	d3.select("#state-select").node().value = exports.state;
       }
       if (exports.county) {
-        var sel = 'textarea[name=county]';
-        d3.select(sel).node().value = exports.county;
+        document.getElementById("county").value = exports.county;
       }
       // 2do: handle race import
       //
@@ -4424,8 +4423,7 @@ var steps = {
     exit: function(d3) {
       var stateSel = document.getElementById('state-select');
       var state = stateSel.options[stateSel.selectedIndex].value
-      var countySel = 'textarea[name=county]';
-      var countyText = d3.select(countySel).node().value;
+      var countyText = document.getElementById("county").value;
 
       var americanIndian = document.getElementById('AmericanIndian').checked;
       var white = document.getElementById('White').checked;
@@ -4443,16 +4441,16 @@ var steps = {
       if (otherRace) races.push(otherRaceText);
 
       var hispanic = document.getElementById('isHispanic').checked;
-      var languageButton = 'input[name=language-button]:checked';
-      var language = languageButton ? d3.select(languageButton).node().value : null;
+      var languageButton = d3.select('input[name=language-button]:checked');
+      var language = languageButton.node() ? languageButton.node().value : null;
       if (language == "OtherLanguage") {
 	var otherLanguageText = document.getElementById('OtherLanguageText').value;
         language = otherLanguageText;	
       }
-      var ageButton = 'input[name=age-button]:checked';
-      var age = d3.select(ageButton).node().value;
-      var insuranceButton = 'input[name=insurance-button]:checked';
-      var insurance = d3.select(insuranceButton).node().value;
+      var ageButton = d3.select('input[name=age-button]:checked');
+      var age = ageButton.node() ? ageButton.node().value : null;
+      var insuranceButton = d3.select('input[name=insurance-button]:checked');
+      var insurance = insuranceButton.node() ? insuranceButton.node().value : null;
       if (insurance == "OtherInsurance") {
 	var otherInsuranceText = document.getElementById('OtherInsuranceText').value;
         insurance = otherInsuranceText;	
@@ -4469,7 +4467,6 @@ var steps = {
               healthConditions.push(this.value);
             }
           }
-          //console.log("d: " + d + "; i: " + i + "; value: " + this.value);
       });
 
       if (!(state && countyText && races && language && age && insurance)) {

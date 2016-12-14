@@ -104,15 +104,13 @@
 
         <p>
           <label>
-            <span data-string="county-prompt"></span><br/>
-	    <textarea name="county"></textarea>
+            <span data-string="county-prompt"></span>
+            <input type="text" class="txt" id="county"/>
           </label>
         </p>
 
         <div>
-           <label class="meta-label">
-             3. What race do you consider yourself? You may choose more than one.
-           </label><br/>
+           <span data-string="race-prompt"></span><br/> 
 
 	   <label class="chkboxLabel">
 	      <input type="checkbox" id="AmericanIndian"
@@ -144,12 +142,12 @@
 	      value="Other"/>Other (please specify)</label>
 	    <br/>
 
-	    <input type="text" class="txt" id="OtherRaceText""/>
+	    <input type="text" class="txt" id="OtherRaceText"/>
 	    <br/>
         </div>
 
         <br/>
-	<label> <input type="checkbox" id="isHispanic"/> 4. Are you Hispanic?</label>
+	<label>4. Are you Hispanic? <input type="checkbox" id="isHispanic"/></label>
         <br/>
         <br/>
 
@@ -249,10 +247,7 @@
         </div> <!-- insurance -->
 
        <div>
-           <label class="meta-label">
-             8. Have you been told by a doctor or healthcare provider that your child with special health care needs has any of these health conditions? (Check all that apply.)
-           </label><br/>
-
+         <span data-string="health_conditions-prompt"></span><br/>
            <label class="chkboxLabel">
               <input type="checkbox" class="healthChkBox" id="ADHD"
               value="ADHD"/>ADHD</label>
@@ -605,22 +600,21 @@
         </aside>
         <h1 data-string="review-header"></h1>
         <div data-string="review-text.paras"></div>
-        <div data-string="review-download-prompt"></div>
-	<p><button id="wizard-download-map-data" data-string="review-download-data-text"></button></p>
-        <div id="review-download-data-tips">
-	  <!-- <h4 data-string="review-download-data-tips-header"></h4> -->
-	  <span data-string="review-download-data-tips-span1"></span>
-	  <a href="http://syssci.renci.org/ssm" target="_batch">our web-based System Support Mapping tool</a>
-	  <span data-string="review-download-data-tips-span2"></span>
-	</div>
-        <p><button id="wizard-download-map-image" data-string="review-download-image-text"></button></p>
-	<div data-string="review-download-image-tips"></div>
         <div id="map-id-div">
 	  <span data-string="survey-request"></span>
 	  <span data-string="survey.link"></span>
           <span data-string="review-map-id"></span>
           <span id="wizard-step12-map-id"></span><span data-string="end-sentence"></span>
         </div>
+        <div data-string="review-download-prompt"></div>
+	<p><button id="wizard-download-map-data" data-string="review-download-data-text"></button></p>
+        <div id="review-download-data-tips">
+	  <span data-string="review-download-data-tips-span1"></span>
+	  <a href="http://syssci.renci.org/ssm" target="_batch">our web-based System Support Mapping tool</a>
+	  <span data-string="review-download-data-tips-span2"></span>
+	</div>
+        <p><button id="wizard-download-map-image" data-string="review-download-image-text"></button></p>
+	<div data-string="review-download-image-tips"></div>
       </div>
     </div>
 

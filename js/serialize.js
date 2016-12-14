@@ -52,7 +52,7 @@ var getNodes = function() {
   return ret;
 };
 
-// Return the current map as an JS object.
+// Return the current map as a JS object.
 exports.getMapObject = function(d3) {
   var ret = {
     "nodes": getNodes(),

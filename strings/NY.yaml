@@ -22,17 +22,22 @@ example-systems.list:
 demographic-header:
   'This information will be used to improve supports and services for families of children with special health care needs. When you ar finished entering this personal information, please cick on the "Next" button to begin building your map. Thank you.'
 
-county-prompt: '2. What county or municipality do you live in?'
+county-prompt:
+  '2. What county or municipality do you live in?'
+race-prompt:
+  '3. What race do you consider yourself? You may choose more than one.'
 language-prompt:
   '5. What language do you feel most comfortable speaking? (Please choose one.)'
 age-prompt:
   '6. What is the age of your child?'
 insurance-prompt:
   '7. What insurance do you have?'
+health_conditions-prompt:
+  '8. Have you been told by a doctor or healthcare provider that your child with special health care needs has any of these health conditions? (Check all that apply.)'
 next.paras:
   - 'Click the &ldquo;Next&rdquo; button to continue.'
 
-# Step 2
+# Step 3
 overview-header: 'Overview'
 overview-text-1.paras:
   - 'Here&rsquo;s a quick overview of the process.'
@@ -47,7 +52,7 @@ overview-text-2.paras:
   - 'Once you start the wizard, you can step away from a partially completed map and finish it later — just keep the wizard open in the browser or copy and save the entire web link on your browser (including your unique map number at the end of the web link). When your SSM is complete, you will be able to save the map as a special file, which you can open and view or edit further using our web-based System Support Mapping tool. We&rsquo;ll give you instructions on how to do this at the end. You will also be able to download a picture of your map, which you could easily share with others electronically.'
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
 
-# Step 3
+# Step 4
 prerequisites-header: 'Prerequisites'
 prerequisites-text.paras:
   - 'Before starting to build your SSM, focus on a specific challenge you want to map. The broader your challenge, the bigger your map will be. Sometimes this is useful, but if you start and find your map to be overwhelming, come back and narrow your scope. For example, do you want to focus on how you support one aspect of your child&rsquo;s life or the big picture? What time frame are you considering? A common time frame is the past month, or year – to get a sense of what your support system has looked like so you can think about how to improve things moving forward. Or, if you are trying to anticipate something new, your time frame could be in the future.'
@@ -56,7 +61,7 @@ prerequisites-context-prompt: 'As a last step before we begin your map, provide 
 prerequisites-next.paras:
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
 
-# Step 4
+# Step 5
 ring1-header: 'Ring #1: Identifying Your Role'
 ring1-aside-header: 'Tips:'
 ring1-aside.list:
@@ -69,7 +74,7 @@ ring1-afterword.paras:
   - 'When you hit &ldquo;Next,&rdquo; your role will be inserted into the map below for you.'
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
 
-# Step 5
+# Step 6
 ring2-header: 'Ring #2: Responsibilities'
 ring2-aside-header: 'Tips:'
 ring2-aside.list:
@@ -83,7 +88,7 @@ ring2-text.paras:
   - 'When you click the &ldquo;Add&rdquo; button, the responsibilities you&rsquo;ve entered will be added to the map below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to go to the next step.'
   - 'One of my responsibilities is:'
 
-# Step 6
+# Step 7
 ring3-header: 'Ring #3: Needs'
 ring3-aside-header: 'Tip:'
 ring3-aside.list:
@@ -94,12 +99,12 @@ ring3-text.paras:
 ring3-prompt.paras:
   - 'To fulfill this responsibility, I need:'
 
-# Step 7
+# Step 8
 pre-ring4-text.paras:
   - 'Here&rsquo;s your map so far.'
   - 'Please look at it, and gather your thoughts about resources that you have tried in the recent past to support your effort (if your map is looking back in time) or that you foresee relying on (if your map is looking forward in time). You will be prompted to enter those in the next screen, and it will help for you to have a list ready.'
 
-# Step 8
+# Step 9
 ring4-header: 'Ring #4: Resources'
 ring4-aside-header: 'Tip:'
 ring4-aside.list:
@@ -128,12 +133,12 @@ ring4-resource-helpfulness-description-prompt:
 ring4-interstitial-text.paras:
   - 'If you&rsquo;d like to add another resource, click the &ldquo;Add Resource&rdquo; button. Otherwise, click &ldquo;Next.&rdquo;'
 
-# Step 9
+# Step 10
 pre-ring5-text.paras:
   - 'Here is your map so far. Please look at it, and gather your thoughts about the three things that, if they changed, would most support you in meeting your responsibilities'
   - 'The next steps will guide you through entering your top 3 wishes, one at a time.'
 
-# Step 10
+# Step 11
 ring5-header: 'Outer area: Wishes'
 # Note: this must contain a span of class "wish-number"
 ring5-aside-header: 'Tip:'
@@ -157,7 +162,7 @@ ring5-wish-parent-text.paras:
 ring5-wish-resource-description-prompt:
   'Please describe how you would like that resource to change.'
 
-# Step 11
+# Step 12
 review-header: 'Review and Next Steps'
 review-aside-header: 'Wondering what to do next?'
 review-aside-text.paras:
@@ -165,13 +170,14 @@ review-aside-text.paras:
 review-text.paras:
   - 'You are almost there! Let&rsquo;s clean up your map.  Try moving the shapes around so that they are evenly spaced and the lines don&rsquo;t cross as much. Be sure to keep the blue rectangles in the blue &ldquo;Responsibilities&rdquo; ring, the aqua diamonds in the aqua &ldquo;Needs&rdquo; ring, the black ovals in the black &ldquo;Resources&rdquo; ring, and the gold &ldquo;Wish List&rdquo; stars outside the outermost ring.'
   - 'Once your map looks good to you, you&rsquo;re finished! If you want to save your map, which we recommend, there are a few options…'  
+survey-request: 'But first! Please tell us about your experience using the SSM Wizard by filling out '
+survey.link: 'https://unc.az1.qualtrics.com/jfe/form/SV_6rpMx5m7yFAKma1'
+review-map-id: '(use nummerical ID '
+end-sentence: ' at the end of the URL above).'
 review-download-data-text: 'download your map data'
 review-download-data-tips-header: 'What can you do with downloaded data?'
 review-download-data-tips-span1: 'Add to or otherwise modify your map by opening the downloaded file in '
 review-download-data-tips-span2: '(when you get there, click on the button with the "?" on it to get started).'
 review-download-image-text: 'download your map as an image'
 review-download-image-tips: 'Before you download an image, there are a few things you can do to improve the image quality: zoom in or out for best fit; reposition the shapes to take advantage of the available space; move the whole map to get everything in. You can keep adjusting the map and downloading images until you have one you like.'
-survey-request: 'Please tell us about your experience using the SSM Wizard by filling out '
-survey.link: 'https://unc.az1.qualtrics.com/jfe/form/SV_6rpMx5m7yFAKma1'
-review-map-id: '(use ID '
-end-sentence: ').'
+
