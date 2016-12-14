@@ -172,7 +172,7 @@ review-text.paras:
   - 'Once your map looks good to you, you&rsquo;re finished! If you want to save your map, which we recommend, there are a few options…'  
 survey-request: 'But first! Please tell us about your experience using the SSM Wizard by filling out '
 survey.link: 'https://unc.az1.qualtrics.com/jfe/form/SV_6rpMx5m7yFAKma1'
-review-map-id: '(use nummerical ID '
+review-map-id: '(use numerical ID '
 end-sentence: ' at the end of the URL above).'
 review-download-data-text: 'download your map data'
 review-download-data-tips-header: 'What can you do with downloaded data?'
