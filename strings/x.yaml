@@ -1,0 +1,183 @@
+# Step 1 
+welcome-header:
+  'Welcome to the System Support Map Wizard.'
+welcome-text.paras:
+  - 'A System Support Map (SSM) is a tool that can help you break down and visualize how you approach a complicated challenge. Completing SSMs will support your own thinking about your objectives, needs, resources, and desired changes. Asking others working with you to create maps can help you strategize, together, about how to work smarter and improve outcomes.' 
+  - 'As a parent or caregiver of a child with special health needs, this tool will enable you to visually express your ongoing personal journey caring for your child. The process of creating this map can help you to clarify, document, and troubleshoot the complex web of responsibilities, needs, resources, services – and ultimately, the wish list – involved in supporting your child. Check the sidebar for some examples of challenges for which other parents and caregivers have found SSMs useful. While you can also complete a System Support Map with paper and markers or using our online tool, this wizard will ask you questions and then build the System Support Map for you based on your answers.'
+  - 'We are excited that you are about to create a System Support Map. We hope this process and resulting map are useful to you. After completing a map, you will have an opportunity to save and print your map. We will also ask you to complete a short evaluation to help us improve the tool. We will save your maps in a secure database so that you can access them in the future. You may use our online System Support Mapping tool (http://syssci.renci.org/ssm) to edit your map in the future, or come back to this wizard (http://syssci.renci.org/ssm-wizard/?module=CaregiversCYSHCN) and create a new map.'
+map-uses-1-span: 'Your maps will also be added to a group of maps that may be aggregated and analyzed together in a quality improvement or research project to learn more about the systems that support Maternal and Child Health in the US and territories. Your map will be de-identified and will not be linked to you personally in any reports or publications resulting from this work. Please contact '
+map-uses-2-span: ' if you have any questions about System Support Mapping or about the research project.'
+next-page-instruction.paras: 
+  - 'Hit the &ldquo;Next&rdquo; button to continue.'
+example-systems-header:
+  'Examples of how you can use System Support Maps as a caregiver supporting a child with special health needs and/or developmental disabilities:'
+example-systems.list:
+  - 'Documenting your effort to support your child&rsquo;s day-to-day needs: health care, school coordination, at-home care, socialization, financial support, etc.'
+  - 'Working with your immediate care team to figure out who does what to support your child&rsquo;s day-to-day needs better.'
+  - 'Anticipating what is needed to support your child in a specific life course, for example helping them transition to adulthood and associated increased independence.'
+  - 'To help communicate your reality to care coordinators or others supporting you – so they can help you problem solve in a way that&rsquo;s more helpful to you.'
+  - 'As a structured way to talk with peers about special needs. (For example, what did you do and how to support communication needs for your child? What role do you have in advocacy?)'
+
+# Step 2: Get demographic info
+demographic-header:
+  'This information will be used to improve supports and services for families of children with special health care needs. When you ar finished entering this personal information, please cick on the "Next" button to begin building your map. Thank you.'
+
+county-prompt:
+  '2. What county or municipality do you live in?'
+race-prompt:
+  '3. What race do you consider yourself? You may choose more than one.'
+language-prompt:
+  '5. What language do you feel most comfortable speaking? (Please choose one.)'
+age-prompt:
+  '6. What is the age of your child?'
+insurance-prompt:
+  '7. What insurance do you have?'
+health_conditions-prompt:
+  '8. Have you been told by a doctor or healthcare provider that your child with special health care needs has any of these health conditions? (Check all that apply.)'
+next.paras:
+  - 'Click the &ldquo;Next&rdquo; button to continue.'
+
+# Step 3
+overview-header: 'Overview'
+overview-text-1.paras:
+  - 'Here&rsquo;s a quick overview of the process.'
+  - 'Notice the rings in the chart below and the labels for each ring. The labels are &ldquo;Role/Identity,&rdquo; &ldquo;Most Important Responsibilities,&rdquo; &ldquo;General Needs for Each Responsibility,&rdquo; &ldquo;Available Resources,&rdquo; and &ldquo;Wish List.&rdquo;'
+  - 'You will build your SSM step by step, starting inside the innermost ring and working your way outwards.'
+  - 'The wizard is intended to build the SSM for you, but there are some things you can control along the way. You can:'
+overview-list-item-1: 'zoom in and out of the map by clicking on it and using the scroll button on your mouse;'
+overview-list-item-2: 'move the whole map around by holding the left mouse button down anywhere on the background and dragging;'
+overview-list-item-3: 'move shapes around by holding the left mouse button down on the shape you want to move and dragging;'
+overview-list-item-4: 'move the shapes (if arrows overlap) and the arrows will move too, although it would be best to do this step at the very end because the shapes are automatically repositioned each time a new one is added.'
+overview-text-2.paras:
+  - 'Once you start the wizard, you can step away from a partially completed map and finish it later — just keep the wizard open in the browser or copy and save the entire web link on your browser (including your unique map number at the end of the web link). When your SSM is complete, you will be able to save the map as a special file, which you can open and view or edit further using our web-based System Support Mapping tool. We&rsquo;ll give you instructions on how to do this at the end. You will also be able to download a picture of your map, which you could easily share with others electronically.'
+  - 'Hit the &ldquo;Next&rdquo; button to continue.'
+
+# Step 4
+prerequisites-header: 'Prerequisites'
+prerequisites-text.paras:
+  - 'Before starting to build your SSM, focus on a specific challenge you want to map. The broader your challenge, the bigger your map will be. Sometimes this is useful, but if you start and find your map to be overwhelming, come back and narrow your scope. For example, do you want to focus on how you support one aspect of your child&rsquo;s life or the big picture? What time frame are you considering? A common time frame is the past month, or year – to get a sense of what your support system has looked like so you can think about how to improve things moving forward. Or, if you are trying to anticipate something new, your time frame could be in the future.'
+prerequisites-focus-description-prompt: 'Please take a few minutes to develop a clear idea of the challenge you are attempting to map. Then, in the text box below, please briefly describe it.'
+prerequisites-context-prompt: 'As a last step before we begin your map, provide a little more context around your map. In the text box below, please briefly describe your child, including age and any particular healthcare needs, diagnoses, strengths or challenges you would like to share. You may also want to note anything about you or your family, where you live, or anything else that makes your support system unique.'
+prerequisites-next.paras:
+  - 'Hit the &ldquo;Next&rdquo; button to continue.'
+
+# Step 5
+ring1-header: 'Ring #1: Identifying Your Role'
+ring1-aside-header: 'Tips:'
+ring1-aside.list:
+  - 'If you have multiple roles that you want to explore, pick one. Including multiple roles in a single map will not work well. You can come back and fill out other maps for other roles later.'
+  - 'You may choose an option from the drop-down list or type in something different if you don&rsquo;t see what you want.'
+ring1-intro.paras:
+  - 'How would you name your role in the work you are mapping? What role do you play in the system producing this challenge? Some possible roles are: parent, sibling, grandparent, caregiver, or care coordinator.'
+ring1-label: 'My role is:'
+ring1-afterword.paras:
+  - 'When you hit &ldquo;Next,&rdquo; your role will be inserted into the map below for you.'
+  - 'Hit the &ldquo;Next&rdquo; button to continue.'
+
+# Step 6
+ring2-header: 'Ring #2: Responsibilities'
+ring2-aside-header: 'Tips:'
+ring2-aside.list:
+  - 'For some people it makes more sense to describe activities, objectives, or goals instead of responsibilities in this ring. As long as you are describing ways you spend your time related to the challenge you are mapping, the specific label does not matter.'
+  - 'Remember to focus your response on the challenge you have identified. (We know you have a million responsibilities in life!)'
+  - 'Don&lsquo;t forget to click &ldquo;Add&rdquo; after you select or write in a responsibility.'
+# Note: this must include a <span> with id "wizard_role_text" somewhere.
+ring2-text.paras:
+  - 'The second ring contains the responsibilities that you have in your role as <code><span id="wizard_role_text">_</span></code>.'
+  - 'Identify the four to eight most important responsibilities related to this role. Add them here. Some examples are included in the drop-down list in the text entry box. You may choose one of those as your response, or type something else in.'
+  - 'When you click the &ldquo;Add&rdquo; button, the responsibilities you&rsquo;ve entered will be added to the map below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to go to the next step.'
+  - 'One of my responsibilities is:'
+
+# Step 7
+ring3-header: 'Ring #3: Needs'
+ring3-aside-header: 'Tip:'
+ring3-aside.list:
+  - 'Needs are the most important ingredients in a recipe for how you complete each responsibility.'
+ring3-text.paras:
+  - 'The third ring describes the most important needs you have related to each responsibility. Common needs include time, providers, money, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, energy, and creativity. You can be very specific, such as &ldquo;I need access to reliable transportation to attend doctor appointments,&rdquo; or more general, such as &ldquo;transportation.&rdquo;'
+  - 'You&rsquo;ll be asked about each responsibility in turn, starting with the first one you entered. Again, feel free to choose from the drop-down list, or write in something else. As you add needs, they will be entered into your SSM. At first, the positioning of the shapes will look odd. Please keep going – it will improve as you add more needs. And, if you want, you can move things around when your map is completely filled in. If you move things now, they will get moved back every time a new item is added.'
+ring3-prompt.paras:
+  - 'To fulfill this responsibility, I need:'
+
+# Step 8
+pre-ring4-text.paras:
+  - 'Here&rsquo;s your map so far.'
+  - 'Please look at it, and gather your thoughts about resources that you have tried in the recent past to support your effort (if your map is looking back in time) or that you foresee relying on (if your map is looking forward in time). You will be prompted to enter those in the next screen, and it will help for you to have a list ready.'
+
+# Step 9
+ring4-header: 'Ring #4: Resources'
+ring4-aside-header: 'Tip:'
+ring4-aside.list:
+  - 'Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, or a friend who makes baking so much more fun!'
+ring4-intro.paras:
+  - 'The next ring identifies the resources that you use to help you meet your needs described in Ring #3.' 
+  - 'Reflect for a moment about the needs you listed. What specific things, organizations, places, personal strengths, or people have you tried (whether or not they have helped you) to get your needs met? Resources for your map might include public transportation, health care providers, a case manager, organizations and services in your community, local or national organizations, knowledge or strengths that you or someone around you has, skills, websites, books, brochures or training programs.'
+  - 'Hopefully you jotted down a list of resources that support you when you looked at your map on the last screen. If you haven&rsquo;t done that yet, go ahead and do it now. You can click &ldquo;back&rdquo; to see your map better.'
+  - 'When you are ready, enter information about each resource, one at a time. First, you will be asked to describe the resource – what type of resource is it? Examples might include your pediatrician, a website, a personal strength, or your child&rsquo;s school. Then, you will be asked to describe the resource more specifically. In the examples above, you might type &ldquo;Dr. Smith,&rdquo; &ldquo;`www.nameofwebsite.com,&rdquo; &ldquo;my patience,&rdquo; or &ldquo;my child&rsquo;s school.&rdquo;  You can select whether you want the general type of resource or specific resource name to show up in your map.'
+  - 'Next, you will be asked to click on each need that the resource helps with from a list that is generated from your own SSM. A resource can help with one need, or with many needs – check all that apply. For example, time management skills, or the ability to manage one&rsquo;s time, is a resource that might help with many of your needs, while a specific piece of equipment might only help with a single need that you listed. In the last step, you will be asked to rate how helpful each resource is, and to briefly comment on why the resource supports you or not – what about it is particularly helpful or not. Here we are interested in your personal experience with the resource – so answer for yourself (and not based on what others think about the resource).'
+  - 'The arrow lines connecting resources to your needs in Ring #4 will be color-coded to indicate that resource&rsquo;s level of helpfulness.'
+ring4-resource-type-prompt:
+  'What type of resource would you like to describe?'
+ring4-resource-name-prompt:
+  'Can you name/describe the resource more specifically?'
+ring4-resource-label-field-before-prompt: 'Use the'
+ring4-resource-label-field-after-prompt: 'for the label in the map below.'
+ring4-resource-needs-prompt:
+  'Please select all the needs that this resource supports.'
+ring4-resource-helpfulness-prompt:
+  'How helpful has this resource been?'
+ring4-resource-helpfulness-description-prompt:
+  'Can you describe why you feel the resource is or is not helpful? In what ways?'
+
+# Resource interstitial
+ring4-interstitial-text.paras:
+  - 'If you&rsquo;d like to add another resource, click the &ldquo;Add Resource&rdquo; button. Otherwise, click &ldquo;Next.&rdquo;'
+
+# Step 10
+pre-ring5-text.paras:
+  - 'Here is your map so far. Please look at it, and gather your thoughts about the three things that, if they changed, would most support you in meeting your responsibilities'
+  - 'The next steps will guide you through entering your top 3 wishes, one at a time.'
+
+# Step 11
+ring5-header: 'Outer area: Wishes'
+# Note: this must contain a span of class "wish-number"
+ring5-aside-header: 'Tip:'
+ring5-aside.list:
+  - 'You need to enter exactly three wishes for desired change. Use them wisely!'
+ring5-intro.paras:
+  - 'Thinking about your map, what are the most meaningful changes that would better support you in meeting your responsibilities? Is there a resource that you wish were different in some way? A need you would like help with? A responsibility you don&rsquo;t even know how to begin to tackle? We would like you to describe your three most important wishes for how you could be better supported in your work described in this SSM. These wishes will go outside of the outermost ring. Please enter 3 below.  You&rsquo;re currently on wish <span class="wish-number"></span> of 3.'
+ring5-wish-name-prompt:
+  'Please describe your wish.'
+ring5-wish-connection-prompt:
+  'Does it connect most importantly to:'
+ring5-wish-connection-responsibility:
+  'a responsibility you feel stuck on?'
+ring5-wish-connection-need:
+  'a need you struggle to meet?'
+ring5-wish-connection-resource:
+  'or a resource that you would like to change in some way?'
+# Note: this must contain a span of class "wish-parent-type":
+ring5-wish-parent-text.paras:
+  - 'We want to connect your wish to the one most relevant <span class="wish-parent-type"></span> in your map. Please make your specific selection from the list below.'
+ring5-wish-resource-description-prompt:
+  'Please describe how you would like that resource to change.'
+
+# Step 12
+review-header: 'Review and Next Steps'
+review-aside-header: 'Wondering what to do next?'
+review-aside-text.paras:
+  - 'Now that you have a clear picture of the challenge and your role in it, many people find it helpful to use the map to think about how they could work on the challenge. What could you do to change your role, responsibilities, resources, and needs for the better? You can add these wishes on the outside of the rings, connecting them with the responsibilities, needs, or resources they would change.'
+review-text.paras:
+  - 'You are almost there! Let&rsquo;s clean up your map.  Try moving the shapes around so that they are evenly spaced and the lines don&rsquo;t cross as much. Be sure to keep the blue rectangles in the blue &ldquo;Responsibilities&rdquo; ring, the aqua diamonds in the aqua &ldquo;Needs&rdquo; ring, the black ovals in the black &ldquo;Resources&rdquo; ring, and the gold &ldquo;Wish List&rdquo; stars outside the outermost ring.'
+  - 'Once your map looks good to you, you&rsquo;re finished! If you want to save your map, which we recommend, there are a few options…'  
+survey-request: 'But first! Please tell us about your experience using the SSM Wizard by filling out '
+survey.link: 'https://unc.az1.qualtrics.com/jfe/form/SV_6rpMx5m7yFAKma1'
+review-map-id: '(use numerical ID '
+end-sentence: ' at the end of the URL above).'
+review-download-data-text: 'download your map data'
+review-download-data-tips-header: 'What can you do with downloaded data?'
+review-download-data-tips-span1: 'Add to or otherwise modify your map by opening the downloaded file in '
+review-download-data-tips-span2: '(when you get there, click on the button with the "?" on it to get started).'
+review-download-image-text: 'download your map as an image'
+review-download-image-tips: 'Before you download an image, there are a few things you can do to improve the image quality: zoom in or out for best fit; reposition the shapes to take advantage of the available space; move the whole map to get everything in. You can keep adjusting the map and downloading images until you have one you like.'
+
