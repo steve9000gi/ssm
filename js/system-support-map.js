@@ -14,7 +14,8 @@ exports.show = function(d3) {
   }
   var ssmCenter = exports.center;
   d3.select(".ssmGroup")
-    .classed({"ssmHidden": false, "ssmVisible": true});
+    .classed("ssmHidden", false)
+    .classed("ssmVisible", true);
   exports.visible = true;
   d3.selectAll(".ssmCircle")
     .attr("cx", ssmCenter.x)
@@ -57,17 +58,22 @@ exports.create = function(d3) {
                 return d;
               });
   d3.select("#graphG").append("g")
-    .classed({"ssmGroup": true, "ssmHidden": true, "ssmVisible": false});
+    .classed("ssmGroup ssmHidden", true)
+    .classed("ssmVisible", false);
   exports.visible = false;
-  d3.select(".ssmGroup").selectAll(".ssmCircle")
-    .data(rings)
-    .enter().append("circle")
-      .classed("ssmCircle", true)
-      .style("stroke", function(d) {
-        return d.color;
-      })
-      .style("fill", "none")
-      .attr("r", function(d) { return d.radius; });
+  var circles = d3.select(".ssmGroup").selectAll(".ssmCircle")
+        .data(rings);
+  circles.attr("class", "update");
+  circles.enter().append("circle")
+         .attr("class", "ssmCircle")
+	 .attr("r", function(d) {
+	   return d.radius;
+	 })
+	 .style("fill", "none")
+       .merge(circles)
+	 .style("stroke", function(d) {
+	           return d.color;
+	 });
   rings.push({"name": "Wish List", "radius": 750, "color": "#" + modSelectedColor.colorChoices[2]});
   d3.select(".ssmGroup").selectAll(".ssmLabel")
     .data(rings)

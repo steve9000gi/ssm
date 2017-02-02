@@ -27,7 +27,7 @@ var defaultName = function(mapId) {
 };
 
 var renameMap = function(d3, id, newName) {
-  d3.xhr(modBackend.backendBase + '/map/' + id + '/rename')
+  d3.request(modBackend.backendBase + '/map/' + id + '/rename')
     .header('Content-Type', 'application/json')
     .on('beforesend', function(request) { request.withCredentials = true; })
     .on('error', function(req) {
@@ -49,7 +49,7 @@ var renameMap = function(d3, id, newName) {
 
 // Delete a map from the backend given its id
 var deleteMap = function(d3, id) {
-  d3.xhr(modBackend.backendBase + '/map/' + id)
+  d3.request(modBackend.backendBase + '/map/' + id)
     .header('Content-Type', 'application/json')
     .on('beforesend', function(request) { request.withCredentials = true; })
     .on('error',
@@ -86,7 +86,7 @@ var renderAdminRegisterUserForm = function(d3) {
     if (window.confirm(confirmText)) {
       var requestObject = {email: emailInput.property('value'),
                            password: passwordInput.property('value')};
-      d3.xhr(modBackend.backendBase + '/register')
+      d3.request(modBackend.backendBase + '/register')
         .header('Content-Type', 'application/json')
         .on('beforesend', function(request) {request.withCredentials = true;})
         .on('error', function(req) {
@@ -301,7 +301,7 @@ exports.writeMapToDatabase = function(d3, skipSuccessAlert) {
     if (m) {
       // update existing map
       var id = m[1];
-      d3.xhr(modBackend.backendBase + '/map/' + id)
+      d3.request(modBackend.backendBase + '/map/' + id)
         .header('Content-Type', 'application/json')
         .on('beforesend', function(request) {
           request.withCredentials = true;
@@ -325,7 +325,7 @@ exports.writeMapToDatabase = function(d3, skipSuccessAlert) {
 
     } else {
       // create new map
-      d3.xhr(modBackend.backendBase + '/map')
+      d3.request(modBackend.backendBase + '/map')
         .header('Content-Type', 'application/json')
         .on('beforesend', function(request) {
           request.withCredentials = true;

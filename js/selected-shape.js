@@ -284,7 +284,7 @@ exports.equalizeSelectedShapeSize = function(d3, shape) {
 
 exports.storeShapeSize = function(gEl, d) {
   var pad = 12;
-  switch (gEl[0][0].__data__.shape) {
+  switch (gEl.nodes()[0].__data__.shape) {
     case "rectangle":
     case "noBorder":
       d.width = gEl.select("rect").attr("width"); // Store for computeRectangleBoundary(...)

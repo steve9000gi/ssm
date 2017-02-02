@@ -81,6 +81,25 @@ exports.getMapObject = function(d3) {
   return ret;
 };
 
+// http://stackoverflow.com/questions/38224875/replacing-d3-transform-in-d3-v4
+function getTransform(transform) {
+  // Create a dummy g for calculation purposes only. This will never
+  // be appended to the DOM and will be discarded once this function 
+  // returns.
+  var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  
+  // Set the transform attribute to the provided string value.
+  g.setAttributeNS(null, "transform", transform);
+  
+  // consolidate the SVGTransformList containing all transformations
+  // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
+  // its SVGMatrix. 
+  var matrix = g.transform.baseVal.consolidate().matrix;
+  
+  // As per definition values e and f are the ones for the translation.
+  return [matrix.e, matrix.f];
+}
+
 // Import a JSON document into the editing area
 exports.importMap = function(d3, jsonObj, id) {
   // TODO better error handling
@@ -108,7 +127,8 @@ exports.importMap = function(d3, jsonObj, id) {
     // Inform zoomSvg that we're programmatically setting transform (so additional zoom and
     // translate work smoothly from that transform instead of jumping back to default):
     d3.select("#graphG").attr("transform", graphGTransform);
-    var xform = d3.transform(d3.select("#graphG").attr("transform"));
+    // var xform = d3.transform(d3.select("#graphG").attr("transform"));
+    var xform = getTransform(d3.select("#graphG").attr("transform"));
     var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
     modZoom.zoomSvg.translate([tx, ty]).scale(scale);
     modZoom.zoomSvg.event(modSvg.svg.transition().duration(500));

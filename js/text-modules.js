@@ -18,8 +18,7 @@ var linkToHtml = function(d3, link) {
 };
 
 var fillStrings = function(d3, strings) {
-  d3.selectAll('[data-string]')
-    .each(function(){
+  d3.selectAll('[data-string]').select(function() {
       var sel = d3.select(this),
           str = sel.attr('data-string'),
           type = str.split('.')[1] || 'plain';
@@ -42,7 +41,7 @@ exports.setup = function(d3) {
       module = match && decodeURIComponent(match[1]) || 'default',
       url = module && 'strings/' + module + '.yaml';
   if (!url) return;
-  d3.xhr(url)
+  d3.request(url)
     .get(function(error, data) {
       if (error) {
         console.error('GET ' + url + ' failed with status ' + error.status + ' and response text ' + error.response);

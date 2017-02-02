@@ -3,7 +3,7 @@ var modBackend = require('./backend.js');
 // Check whether we're authenticated at the backend, and call the callback
 // with the boolean result (i.e. true = authenticated, false = not).
 var checkAuthentication = function(d3, callback) {
-  d3.xhr(modBackend.backendBase + '/testauth')
+  d3.request(modBackend.backendBase + '/testauth')
     .on('beforesend', function(request) { request.withCredentials = true; })
     .get(function(error, data) {
       if (error) {
@@ -151,7 +151,7 @@ var renderRegistrationForm = function(d3, callback) {
         }
       }
 
-      d3.xhr(modBackend.backendBase + '/register')
+      d3.request(modBackend.backendBase + '/register')
         .header('Content-Type', 'application/json')
         .on('beforesend',
             function(request) { request.withCredentials = true; })
@@ -226,7 +226,7 @@ var renderLoginForm = function(d3, callback) {
       email   : d3.event.target[0].value,
       password: d3.event.target[1].value
     };
-    d3.xhr(modBackend.backendBase + '/login')
+    d3.request(modBackend.backendBase + '/login')
       .header('Content-Type', 'application/json')
       .on('beforesend', function(request) { request.withCredentials = true; })
       .post(JSON.stringify(requestData), function(error, data) {
@@ -265,7 +265,7 @@ exports.afterAuthentication = function(d3, callback) {
 
 // Log the current user out.
 exports.logoutUser = function(d3) {
-  d3.xhr(modBackend.backendBase + '/logout')
+  d3.request(modBackend.backendBase + '/logout')
     .on('beforesend', function(request) { request.withCredentials = true; })
     .get(function(error, data) {
       if (error) {

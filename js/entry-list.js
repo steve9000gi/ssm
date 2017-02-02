@@ -92,9 +92,9 @@ var update = function(d3, selector, data, uponAdd, uponUpdate, uponRemove) {
 
   // Now edit both enter and update selections together.
   root.select('input').property('value', function(d){ return d; });
-  root.select('button.add')   .on('click', onClickAdd   .apply(null, args));
-  root.select('button.update').on('click', onClickUpdate.apply(null, args));
-  root.select('button.remove').on('click', onClickRemove.apply(null, args));
+  root.select('button.add')   .on('click', onClickAdd   .apply("click", args));
+  root.select('button.update').on('click', onClickUpdate.apply("click", args));
+  root.select('button.remove').on('click', onClickRemove.apply("click", args));
   root.selectAll('br').remove();
   root.append('br');
 

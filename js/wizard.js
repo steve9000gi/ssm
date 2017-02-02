@@ -801,6 +801,7 @@ var steps = {
 
   6: {
     enter: function(d3) {
+      console.log("6: enter");
       var uponAdd = function(i, text) {
         addNode(d3, 'responsibility', nodesByType.role, text);
         modDatabase.writeMapToDatabase(d3, true);

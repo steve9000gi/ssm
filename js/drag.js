@@ -26,15 +26,15 @@ exports.setupDrag = function(d3) {
     .attr("d", function() { return "M0,0L0,0"; })
     .style("marker-end", "url(#mark-end-arrow)");
 
-  exports.drag = d3.behavior.drag()
-    .origin(function(d) {
+  exports.drag = d3.drag()
+    .subject(function(d) {
       return {x: d.x, y: d.y};
     })
     .on("drag", function(args) {
       exports.justDragged = true;
       dragmove(d3, args);
     })
-    .on("dragend", function(args) {
+    .on("end", function(args) {
       // Todo check if edge-mode is selected
     });
 };
@@ -42,8 +42,8 @@ exports.setupDrag = function(d3) {
 // Handle goes in the lower right-hand corner of a rectangle: shift-drag to
 // resize rectangle.
 exports.setupDragHandle = function(d3) {
-  exports.dragHandle = d3.behavior.drag()
-    .on("dragstart", function(d) {
+  exports.dragHandle = d3.drag()
+    .on("start", function(d) {
       if (!d3.event.sourceEvent.shiftKey) { return; }
       d.manualResize = true;
       d.name = "";
@@ -65,7 +65,7 @@ exports.setupDragHandle = function(d3) {
         .attr("width", Math.abs(x + d.xOffset))
         .attr("height", Math.abs(y + d.yOffset));
     })
-    .on("dragend", function(d) {
+    .on("end", function(d) {
       var rectangle = d3.select("#shape" + d.id);
       d.width = parseFloat(rectangle.attr("width"));
       d.height = parseFloat(rectangle.attr("height"));

@@ -21,7 +21,7 @@ var appendText = function(gEl, phrases, yShift) {
           return d.url ? "underline" : "none"; })
         .style("font-weight", function(d) {
           return d.url ? exports.boldFontWeight: "none"; })
-        .style("fill", gEl[0][0].__data__.color)
+        .style("fill", gEl.nodes()[0].__data__.color)
         .attr("dy",  function() {
           return yShift - ((nPhrases - 1) * exports.defaultFontSize / 2);
         });

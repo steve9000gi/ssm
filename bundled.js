@@ -50,7 +50,7 @@ var modBackend = require('./backend.js');
 // Check whether we're authenticated at the backend, and call the callback
 // with the boolean result (i.e. true = authenticated, false = not).
 var checkAuthentication = function(d3, callback) {
-  d3.xhr(modBackend.backendBase + '/testauth')
+  d3.request(modBackend.backendBase + '/testauth')
     .on('beforesend', function(request) { request.withCredentials = true; })
     .get(function(error, data) {
       if (error) {
@@ -198,7 +198,7 @@ var renderRegistrationForm = function(d3, callback) {
         }
       }
 
-      d3.xhr(modBackend.backendBase + '/register')
+      d3.request(modBackend.backendBase + '/register')
         .header('Content-Type', 'application/json')
         .on('beforesend',
             function(request) { request.withCredentials = true; })
@@ -273,7 +273,7 @@ var renderLoginForm = function(d3, callback) {
       email   : d3.event.target[0].value,
       password: d3.event.target[1].value
     };
-    d3.xhr(modBackend.backendBase + '/login')
+    d3.request(modBackend.backendBase + '/login')
       .header('Content-Type', 'application/json')
       .on('beforesend', function(request) { request.withCredentials = true; })
       .post(JSON.stringify(requestData), function(error, data) {
@@ -312,7 +312,7 @@ exports.afterAuthentication = function(d3, callback) {
 
 // Log the current user out.
 exports.logoutUser = function(d3) {
-  d3.xhr(modBackend.backendBase + '/logout')
+  d3.request(modBackend.backendBase + '/logout')
     .on('beforesend', function(request) { request.withCredentials = true; })
     .get(function(error, data) {
       if (error) {
@@ -733,7 +733,7 @@ var defaultName = function(mapId) {
 };
 
 var renameMap = function(d3, id, newName) {
-  d3.xhr(modBackend.backendBase + '/map/' + id + '/rename')
+  d3.request(modBackend.backendBase + '/map/' + id + '/rename')
     .header('Content-Type', 'application/json')
     .on('beforesend', function(request) { request.withCredentials = true; })
     .on('error', function(req) {
@@ -755,7 +755,7 @@ var renameMap = function(d3, id, newName) {
 
 // Delete a map from the backend given its id
 var deleteMap = function(d3, id) {
-  d3.xhr(modBackend.backendBase + '/map/' + id)
+  d3.request(modBackend.backendBase + '/map/' + id)
     .header('Content-Type', 'application/json')
     .on('beforesend', function(request) { request.withCredentials = true; })
     .on('error',
@@ -792,7 +792,7 @@ var renderAdminRegisterUserForm = function(d3) {
     if (window.confirm(confirmText)) {
       var requestObject = {email: emailInput.property('value'),
                            password: passwordInput.property('value')};
-      d3.xhr(modBackend.backendBase + '/register')
+      d3.request(modBackend.backendBase + '/register')
         .header('Content-Type', 'application/json')
         .on('beforesend', function(request) {request.withCredentials = true;})
         .on('error', function(req) {
@@ -1007,7 +1007,7 @@ exports.writeMapToDatabase = function(d3, skipSuccessAlert) {
     if (m) {
       // update existing map
       var id = m[1];
-      d3.xhr(modBackend.backendBase + '/map/' + id)
+      d3.request(modBackend.backendBase + '/map/' + id)
         .header('Content-Type', 'application/json')
         .on('beforesend', function(request) {
           request.withCredentials = true;
@@ -1031,7 +1031,7 @@ exports.writeMapToDatabase = function(d3, skipSuccessAlert) {
 
     } else {
       // create new map
-      d3.xhr(modBackend.backendBase + '/map')
+      d3.request(modBackend.backendBase + '/map')
         .header('Content-Type', 'application/json')
         .on('beforesend', function(request) {
           request.withCredentials = true;
@@ -1091,15 +1091,15 @@ exports.setupDrag = function(d3) {
     .attr("d", function() { return "M0,0L0,0"; })
     .style("marker-end", "url(#mark-end-arrow)");
 
-  exports.drag = d3.behavior.drag()
-    .origin(function(d) {
+  exports.drag = d3.drag()
+    .subject(function(d) {
       return {x: d.x, y: d.y};
     })
     .on("drag", function(args) {
       exports.justDragged = true;
       dragmove(d3, args);
     })
-    .on("dragend", function(args) {
+    .on("end", function(args) {
       // Todo check if edge-mode is selected
     });
 };
@@ -1107,8 +1107,8 @@ exports.setupDrag = function(d3) {
 // Handle goes in the lower right-hand corner of a rectangle: shift-drag to
 // resize rectangle.
 exports.setupDragHandle = function(d3) {
-  exports.dragHandle = d3.behavior.drag()
-    .on("dragstart", function(d) {
+  exports.dragHandle = d3.drag()
+    .on("start", function(d) {
       if (!d3.event.sourceEvent.shiftKey) { return; }
       d.manualResize = true;
       d.name = "";
@@ -1130,7 +1130,7 @@ exports.setupDragHandle = function(d3) {
         .attr("width", Math.abs(x + d.xOffset))
         .attr("height", Math.abs(y + d.yOffset));
     })
-    .on("dragend", function(d) {
+    .on("end", function(d) {
       var rectangle = d3.select("#shape" + d.id);
       d.width = parseFloat(rectangle.attr("width"));
       d.height = parseFloat(rectangle.attr("height"));
@@ -1414,9 +1414,9 @@ var update = function(d3, selector, data, uponAdd, uponUpdate, uponRemove) {
 
   // Now edit both enter and update selections together.
   root.select('input').property('value', function(d){ return d; });
-  root.select('button.add')   .on('click', onClickAdd   .apply(null, args));
-  root.select('button.update').on('click', onClickUpdate.apply(null, args));
-  root.select('button.remove').on('click', onClickRemove.apply(null, args));
+  root.select('button.add')   .on('click', onClickAdd   .apply("click", args));
+  root.select('button.update').on('click', onClickUpdate.apply("click", args));
+  root.select('button.remove').on('click', onClickRemove.apply("click", args));
   root.selectAll('br').remove();
   root.append('br');
 
@@ -2667,7 +2667,7 @@ exports.equalizeSelectedShapeSize = function(d3, shape) {
 
 exports.storeShapeSize = function(gEl, d) {
   var pad = 12;
-  switch (gEl[0][0].__data__.shape) {
+  switch (gEl.nodes()[0].__data__.shape) {
     case "rectangle":
     case "noBorder":
       d.width = gEl.select("rect").attr("width"); // Store for computeRectangleBoundary(...)
@@ -2851,6 +2851,25 @@ exports.getMapObject = function(d3) {
   return ret;
 };
 
+// http://stackoverflow.com/questions/38224875/replacing-d3-transform-in-d3-v4
+function getTransform(transform) {
+  // Create a dummy g for calculation purposes only. This will never
+  // be appended to the DOM and will be discarded once this function 
+  // returns.
+  var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  
+  // Set the transform attribute to the provided string value.
+  g.setAttributeNS(null, "transform", transform);
+  
+  // consolidate the SVGTransformList containing all transformations
+  // to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
+  // its SVGMatrix. 
+  var matrix = g.transform.baseVal.consolidate().matrix;
+  
+  // As per definition values e and f are the ones for the translation.
+  return [matrix.e, matrix.f];
+}
+
 // Import a JSON document into the editing area
 exports.importMap = function(d3, jsonObj, id) {
   // TODO better error handling
@@ -2878,7 +2897,8 @@ exports.importMap = function(d3, jsonObj, id) {
     // Inform zoomSvg that we're programmatically setting transform (so additional zoom and
     // translate work smoothly from that transform instead of jumping back to default):
     d3.select("#graphG").attr("transform", graphGTransform);
-    var xform = d3.transform(d3.select("#graphG").attr("transform"));
+    // var xform = d3.transform(d3.select("#graphG").attr("transform"));
+    var xform = getTransform(d3.select("#graphG").attr("transform"));
     var tx = xform.translate[0], ty = xform.translate[1], scale = xform.scale[0];
     modZoom.zoomSvg.translate([tx, ty]).scale(scale);
     modZoom.zoomSvg.event(modSvg.svg.transition().duration(500));
@@ -2960,7 +2980,8 @@ exports.show = function(d3) {
   }
   var ssmCenter = exports.center;
   d3.select(".ssmGroup")
-    .classed({"ssmHidden": false, "ssmVisible": true});
+    .classed("ssmHidden", false)
+    .classed("ssmVisible", true);
   exports.visible = true;
   d3.selectAll(".ssmCircle")
     .attr("cx", ssmCenter.x)
@@ -3003,17 +3024,22 @@ exports.create = function(d3) {
                 return d;
               });
   d3.select("#graphG").append("g")
-    .classed({"ssmGroup": true, "ssmHidden": true, "ssmVisible": false});
+    .classed("ssmGroup ssmHidden", true)
+    .classed("ssmVisible", false);
   exports.visible = false;
-  d3.select(".ssmGroup").selectAll(".ssmCircle")
-    .data(rings)
-    .enter().append("circle")
-      .classed("ssmCircle", true)
-      .style("stroke", function(d) {
-        return d.color;
-      })
-      .style("fill", "none")
-      .attr("r", function(d) { return d.radius; });
+  var circles = d3.select(".ssmGroup").selectAll(".ssmCircle")
+        .data(rings);
+  circles.attr("class", "update");
+  circles.enter().append("circle")
+         .attr("class", "ssmCircle")
+	 .attr("r", function(d) {
+	   return d.radius;
+	 })
+	 .style("fill", "none")
+       .merge(circles)
+	 .style("stroke", function(d) {
+	           return d.color;
+	 });
   rings.push({"name": "Wish List", "radius": 750, "color": "#" + modSelectedColor.colorChoices[2]});
   d3.select(".ssmGroup").selectAll(".ssmLabel")
     .data(rings)
@@ -3044,8 +3070,7 @@ var linkToHtml = function(d3, link) {
 };
 
 var fillStrings = function(d3, strings) {
-  d3.selectAll('[data-string]')
-    .each(function(){
+  d3.selectAll('[data-string]').select(function() {
       var sel = d3.select(this),
           str = sel.attr('data-string'),
           type = str.split('.')[1] || 'plain';
@@ -3068,7 +3093,7 @@ exports.setup = function(d3) {
       module = match && decodeURIComponent(match[1]) || 'default',
       url = module && 'strings/' + module + '.yaml';
   if (!url) return;
-  d3.xhr(url)
+  d3.request(url)
     .get(function(error, data) {
       if (error) {
         console.error('GET ' + url + ' failed with status ' + error.status + ' and response text ' + error.response);
@@ -3104,7 +3129,7 @@ var appendText = function(gEl, phrases, yShift) {
           return d.url ? "underline" : "none"; })
         .style("font-weight", function(d) {
           return d.url ? exports.boldFontWeight: "none"; })
-        .style("fill", gEl[0][0].__data__.color)
+        .style("fill", gEl.nodes()[0].__data__.color)
         .attr("dy",  function() {
           return yShift - ((nPhrases - 1) * exports.defaultFontSize / 2);
         });
@@ -3499,8 +3524,8 @@ var addNewShapes = function(d3, newShapeGroups, shapeElts) {
 };
 
 // Check to make sure that there aren't already text objects appended (they
-// would be pathGroups[0][i].childNodes[1] and [2], where the 0th element is
-// expected to be the path) before appending text.
+// would be pathGroups._groups[0][i].childNodes[1] and [2], where the 0th
+// element is expected to be the path) before appending text.
 //
 // Note that there are two text elements being appended. The first is
 // background shadow to ensure that the text is visible where it overlays its
@@ -3508,9 +3533,9 @@ var addNewShapes = function(d3, newShapeGroups, shapeElts) {
 var appendPathText = function(d3, pathGroups) {
   var data = [{"class": "shadowText", "stroke-width": "4px"},
               {"class": "foregroundText", "stroke-width": "0px"}];
-  for (var i = 0; i < pathGroups[0].length; i++) {         // For each pathGroup...
-    if (pathGroups[0][i].childNodes.length < 3) {          // ...if there's no text yet...
-      d3.select(pathGroups[0][i]).selectAll("text")
+  for (var i = 0; i < pathGroups._groups[0].length; i++) { // For each pathGroup...
+    if (pathGroups._groups[0][i].childNodes.length < 3) {  // ...if there's no text yet...
+      d3.select(pathGroups._groups[0][i]).selectAll("text")
         .data(data)
         .enter().append("text")                        // ...then append it.
           .attr("class", function(d) { return d.class; })
@@ -4545,6 +4570,7 @@ var steps = {
 
   6: {
     enter: function(d3) {
+      console.log("6: enter");
       var uponAdd = function(i, text) {
         addNode(d3, 'responsibility', nodesByType.role, text);
         modDatabase.writeMapToDatabase(d3, true);
@@ -4844,23 +4870,29 @@ exports.setZoom = function(d3, translate, zoom) {
   exports.translate = translate;
   exports.zoom = zoom;
   d3.select(".graph")
-    .attr("transform", "translate(" + translate + ") scale(" + zoom + ")");
+    .attr("transform", "translate(" + translate[0] + "," + translate[1] + ") scale(" + zoom + ")");
 };
 
 exports.setup = function(d3, svg) {
-  exports.zoomSvg = d3.behavior.zoom()
-    .translate(exports.translate)
-    .scale(exports.zoom)
+  exports.zoomSvg = d3.zoom();
+  exports.zoomSvg
+    .translateBy(svg, exports.translate[0], exports.translate[1])
+  exports.zoomSvg
+    .scaleBy(svg, function(d, i) {
+      return 1;
+    })
+  exports.zoomSvg
     .on("zoom", function() {
       if (d3.event.sourceEvent && d3.event.sourceEvent.shiftKey) {
         // TODO  the internal d3 state is still changing
         return false;
       } else {
-        exports.setZoom(d3, d3.event.translate, d3.event.scale);
+        //exports.setZoom(d3, d3.event.translate, d3.event.scale);
+        exports.setZoom(d3, [d3.event.transform.x, d3.event.transform.y], d3.event.transform.k);
       }
       return true;
     })
-    .on("zoomstart", function() {
+    .on("start", function() {
       var ael = d3.select("#" + modText.activeEditId).node();
       if (ael) {
         ael.blur();
@@ -4869,7 +4901,7 @@ exports.setup = function(d3, svg) {
         d3.select("body").style("cursor", "move");
       }
     })
-    .on("zoomend", function() {
+    .on("end", function() {
       d3.select("body").style("cursor", "auto");
     });
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);

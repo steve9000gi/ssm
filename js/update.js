@@ -172,8 +172,8 @@ var addNewShapes = function(d3, newShapeGroups, shapeElts) {
 };
 
 // Check to make sure that there aren't already text objects appended (they
-// would be pathGroups[0][i].childNodes[1] and [2], where the 0th element is
-// expected to be the path) before appending text.
+// would be pathGroups._groups[0][i].childNodes[1] and [2], where the 0th
+// element is expected to be the path) before appending text.
 //
 // Note that there are two text elements being appended. The first is
 // background shadow to ensure that the text is visible where it overlays its
@@ -181,9 +181,9 @@ var addNewShapes = function(d3, newShapeGroups, shapeElts) {
 var appendPathText = function(d3, pathGroups) {
   var data = [{"class": "shadowText", "stroke-width": "4px"},
               {"class": "foregroundText", "stroke-width": "0px"}];
-  for (var i = 0; i < pathGroups[0].length; i++) {         // For each pathGroup...
-    if (pathGroups[0][i].childNodes.length < 3) {          // ...if there's no text yet...
-      d3.select(pathGroups[0][i]).selectAll("text")
+  for (var i = 0; i < pathGroups._groups[0].length; i++) { // For each pathGroup...
+    if (pathGroups._groups[0][i].childNodes.length < 3) {  // ...if there's no text yet...
+      d3.select(pathGroups._groups[0][i]).selectAll("text")
         .data(data)
         .enter().append("text")                        // ...then append it.
           .attr("class", function(d) { return d.class; })
