@@ -2717,13 +2717,13 @@ exports.hide = function(d3) {
 // the outside)
 exports.create = function(d3) {
   var rings = [{"name": "Role/Identity", "radius": 110,
-                "color": "#" + modSelectedColor.colorChoices[6]},
-               {"name": "Most Important Responsibilities", "radius": 275,
-                "color": "#" + modSelectedColor.colorChoices[5]},
-               {"name": "General Needs for Each Responsibility", "radius": 475,
-                "color": "#" + modSelectedColor.colorChoices[4]},
-               {"name": "Available Resources", "radius": 675,
-                "color": "#" + modSelectedColor.colorChoices[7]} ];
+                "color": "#" + modSelectedColor.colorChoices[3]},
+               {"name": "Headache Triggers & Features", "radius": 275,
+                "color": "#" + modSelectedColor.colorChoices[0]},
+               {"name": "Self-Management Activities", "radius": 475,
+                "color": "#" + modSelectedColor.colorChoices[1]},
+               {"name": "Needs for Self-Management Activities", "radius": 675,
+                "color": "#" + modSelectedColor.colorChoices[2]} ];
   d3.select("#graphG").append("g")
     .classed({"ssmGroup": true, "ssmHidden": true, "ssmVisible": false});
   exports.visible = false;
@@ -2736,7 +2736,7 @@ exports.create = function(d3) {
       })
       .style("fill", "none")
       .attr("r", function(d) { return d.radius; });
-  rings.push({"name": "Wish List", "radius": 750, "color": "#" + modSelectedColor.colorChoices[2]});
+  rings.push({"name": "Outcomes (positive and negative)", "radius": 750, "color": "#" + modSelectedColor.colorChoices[4]});
   d3.select(".ssmGroup").selectAll(".ssmLabel")
     .data(rings)
     .enter().append("text")
