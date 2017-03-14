@@ -118,7 +118,7 @@ exports.createOptionsMenu = function(d3) {
   var choices = null;
   if (exports.displayAll) {
     choices = [{"name": "Show system support rings", "id": "sysSptRingsItem"},
-               {"name": "Show small rings", "id": "cOfCItem"},
+               {"name": "Show small rings", "id": "ringsizeItem"},
                {"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
                {"name": "Set text line length...", "id": "setTextLineLenItem"},
                {"name": "Set line thickness...", "id": "setLineThicknessItem"},

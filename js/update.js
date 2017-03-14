@@ -311,7 +311,7 @@ exports.deleteGraph = function(d3, skipPrompt) {
   if(doDelete) {
     modSvg.nodes = [];
     modSvg.links = [];
-    modRingsize.hide(d3);
+    modRingsize.showSmall(d3);
     modSystemSupportMap.show(d3);
     exports.updateGraph(d3);
     window.location.hash = "";

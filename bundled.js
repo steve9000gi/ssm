@@ -1916,7 +1916,7 @@ exports.createOptionsMenu = function(d3) {
   var choices = null;
   if (exports.displayAll) {
     choices = [{"name": "Show system support rings", "id": "sysSptRingsItem"},
-               {"name": "Show small rings", "id": "cOfCItem"},
+               {"name": "Show small rings", "id": "ringsizeItem"},
                {"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
                {"name": "Set text line length...", "id": "setTextLineLenItem"},
                {"name": "Set line thickness...", "id": "setLineThicknessItem"},
@@ -2077,6 +2077,7 @@ exports.create = function(d3) {
 };
 
 exports.showSmall = function(d3) {
+  /*
   if (!exports.center) {
     exports.center = {
       "x": d3.select("#topGraphDiv").node().clientWidth / 2,
@@ -2087,15 +2088,26 @@ exports.showSmall = function(d3) {
   d3.selectAll(".cOfC")
     .attr("cx", exports.center.x)
     .attr("cy", exports.center.y);
-  d3.select("#cOfCItem").text(exports.showLargeText)
+    */
+  d3.select("#ring0").attr("r", 73);
+  d3.select("#ring1").attr("r", 183);
+  d3.select("#ring2").attr("r", 317);
+  d3.select("#ring3").attr("r", 450);
+  d3.select("#ringsizeItem").text(exports.showLargeText)
     .datum({"name": exports.showLargeText});
 };
 
 exports.showLarge = function(d3) {
+  /*
   exports.center = null;
   exports.visible = false;
   d3.select("#circlesOfCareGroup").classed("visible", exports.visible);
-  d3.select("#cOfCItem").text("Show small rings")
+  */
+  d3.select("#ring0").attr("r", 110);
+  d3.select("#ring1").attr("r", 275);
+  d3.select("#ring2").attr("r", 475);
+  d3.select("#ring3").attr("r", 675);
+  d3.select("#ringsizeItem").text("Show small rings")
     .datum({"name": "Show small rings"});
 };
 
@@ -2716,13 +2728,13 @@ exports.hide = function(d3) {
 // Create four concentric rings and five labels (one for each rings and one for
 // the outside)
 exports.create = function(d3) {
-  var rings = [{"name": "Role/Identity", "radius": 110,
+  var rings = [{"id": "ring0", "name": "Role/Identity", "radius": 110,
                 "color": "#" + modSelectedColor.colorChoices[6]},
-               {"name": "Most Important Responsibilities", "radius": 275,
+               {"id": "ring1", "name": "Most Important Responsibilities", "radius": 275,
                 "color": "#" + modSelectedColor.colorChoices[5]},
-               {"name": "General Needs for Each Responsibility", "radius": 475,
+               {"id": "ring2", "name": "General Needs for Each Responsibility", "radius": 475,
                 "color": "#" + modSelectedColor.colorChoices[4]},
-               {"name": "Available Resources", "radius": 675,
+               {"id": "ring3", "name": "Available Resources", "radius": 675,
                 "color": "#" + modSelectedColor.colorChoices[7]} ];
   d3.select("#graphG").append("g")
     .classed({"ssmGroup": true, "ssmHidden": true, "ssmVisible": false});
@@ -2730,6 +2742,9 @@ exports.create = function(d3) {
   d3.select(".ssmGroup").selectAll(".ssmCircle")
     .data(rings)
     .enter().append("circle")
+      .attr("id", function(d) {
+	return d.id;
+      })
       .classed("ssmCircle", true)
       .style("stroke", function(d) {
         return d.color;
@@ -3293,7 +3308,7 @@ exports.deleteGraph = function(d3, skipPrompt) {
   if(doDelete) {
     modSvg.nodes = [];
     modSvg.links = [];
-    modRingsize.hide(d3);
+    modRingsize.showSmall(d3);
     modSystemSupportMap.show(d3);
     exports.updateGraph(d3);
     window.location.hash = "";
