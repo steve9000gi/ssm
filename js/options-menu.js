@@ -1,5 +1,5 @@
 var modAuth = require('./auth.js'),
-    modCirclesOfCare = require('./circles-of-care.js'),
+    modRingsize = require('./ringsize.js'),
     modContextMenu = require('./context-menu.js'),
     modEdgeThickness = require('./edge-thickness.js'),
     modExport = require('./export.js'),
@@ -118,7 +118,7 @@ exports.createOptionsMenu = function(d3) {
   var choices = null;
   if (exports.displayAll) {
     choices = [{"name": "Show system support rings", "id": "sysSptRingsItem"},
-               {"name": "Show Circles of Care", "id": "cOfCItem"},
+               {"name": "Show small rings", "id": "cOfCItem"},
                {"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
                {"name": "Set text line length...", "id": "setTextLineLenItem"},
                {"name": "Set line thickness...", "id": "setLineThicknessItem"},
@@ -199,10 +199,10 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
         modSystemSupportMap.hide(d3);
         break;
       case choices[1].name:
-        modCirclesOfCare.show(d3);
+        modRingsize.showSmall(d3);
         break;
-      case modCirclesOfCare.hideText:
-        modCirclesOfCare.hide(d3);
+      case modRingsize.showLargeText:
+        modRingsize.showLarge(d3);
         break;
       case choices[2].name:
       case choices[3].name:

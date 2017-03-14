@@ -283,49 +283,6 @@ exports.logoutUser = function(d3) {
 exports.backendBase = 'http://syssci.renci.org:8080';
 
 },{}],3:[function(require,module,exports){
-exports.visible = false;
-exports.center = null;
-exports.hideText = 'Hide Circles of Care';
-
-// Create three concentric circles.
-exports.create = function(d3) {
-  d3.select("#graphG").append("g")
-    .attr("id", "circlesOfCareGroup")
-    .classed("visible", exports.visible);
-  d3.select("#circlesOfCareGroup").selectAll(".cOfC")
-    .data([75, 200, 350])
-    .enter().append("circle")
-      .classed("cOfC", true)
-      .style("fill", "none")
-      .attr("r", function(d) {
-        return d;
-      });
-};
-
-exports.show = function(d3) {
-  if (!exports.center) {
-    exports.center = {
-      "x": d3.select("#topGraphDiv").node().clientWidth / 2,
-      "y": d3.select("#topGraphDiv").node().clientHeight / 2};
-  }
-  exports.visible = true;
-  d3.select("#circlesOfCareGroup").classed("visible", exports.visible);
-  d3.selectAll(".cOfC")
-    .attr("cx", exports.center.x)
-    .attr("cy", exports.center.y);
-  d3.select("#cOfCItem").text(exports.hideText)
-    .datum({"name": exports.hideText});
-};
-
-exports.hide = function(d3) {
-  exports.center = null;
-  exports.visible = false;
-  d3.select("#circlesOfCareGroup").classed("visible", exports.visible);
-  d3.select("#cOfCItem").text("Show Circles of Care")
-    .datum({"name": "Show Circles of Care"});
-};
-
-},{}],4:[function(require,module,exports){
 var modEvents = require('./events.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
@@ -517,10 +474,10 @@ exports.setup = function(d3) {
   }
 };
 
-},{"./events.js":9,"./selected-color.js":19,"./selection.js":21,"./text.js":25,"./update.js":28}],5:[function(require,module,exports){
+},{"./events.js":8,"./selected-color.js":19,"./selection.js":21,"./text.js":25,"./update.js":28}],4:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modBackend = require('./backend.js'),
-    modCirclesOfCare = require('./circles-of-care.js'),
+    modRingsize = require('./ringsize.js'),
     modSerialize = require('./serialize.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modUtil = require('./util.js');
@@ -861,7 +818,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./backend.js":2,"./circles-of-care.js":3,"./serialize.js":22,"./system-support-map.js":24,"./util.js":29}],6:[function(require,module,exports){
+},{"./auth.js":1,"./backend.js":2,"./ringsize.js":18,"./serialize.js":22,"./system-support-map.js":24,"./util.js":29}],5:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -948,7 +905,7 @@ exports.setupDragHandle = function(d3) {
     });
 };
 
-},{"./grid.js":15,"./svg.js":23,"./update.js":28}],7:[function(require,module,exports){
+},{"./grid.js":14,"./svg.js":23,"./update.js":28}],6:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -1076,7 +1033,7 @@ exports.addControls = function(d3) {
   createEdgeStyleSelectionSampleEdges(d3);
 };
 
-},{"./edge-thickness.js":8,"./selected-color.js":19,"./selected-shape.js":20}],8:[function(require,module,exports){
+},{"./edge-thickness.js":7,"./selected-color.js":19,"./selected-shape.js":20}],7:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.thickness = 3;
@@ -1122,7 +1079,7 @@ exports.createSubmenu = function(d3) {
       });
 };
 
-},{"./selected-color.js":19}],9:[function(require,module,exports){
+},{"./selected-color.js":19}],8:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modEdgeStyle = require('./edge-style.js'),
     modEdgeThickness = require('./edge-thickness.js'),
@@ -1352,8 +1309,8 @@ exports.pathMouseDown = function(d3, d3path, d) {
   }
 };
 
-},{"./drag.js":6,"./edge-style.js":7,"./edge-thickness.js":8,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./svg.js":23,"./text.js":25,"./update.js":28,"./zoom.js":30}],10:[function(require,module,exports){
-var modCirclesOfCare = require('./circles-of-care.js'),
+},{"./drag.js":5,"./edge-style.js":6,"./edge-thickness.js":7,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./svg.js":23,"./text.js":25,"./update.js":28,"./zoom.js":30}],9:[function(require,module,exports){
+var modRingsize = require('./ringsize.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modText = require('./text.js'),
@@ -1394,7 +1351,7 @@ exports.exportGraphAsImage = function(d3) {
   // Set attributes of objects to render correctly without css:
   shapes.style("fill", "#F6FBFF");
   d3.select("#circlesOfCareGroup")
-    .attr("display", modCirclesOfCare.visible ? "inline-block" : "none");
+    .attr("display", modRingsize.visible ? "inline-block" : "none");
   d3.selectAll(".cOfC")
     .style("fill", "none")
     .style("stroke-width", "1px")
@@ -1469,7 +1426,7 @@ exports.exportGraphAsImage = function(d3) {
   canvas.remove();
 };
 
-},{"./circles-of-care.js":3,"./selected-color.js":19,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],11:[function(require,module,exports){
+},{"./ringsize.js":18,"./selected-color.js":19,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],10:[function(require,module,exports){
 var modSerialize = require('./serialize.js');
 
 // Save as JSON file
@@ -1509,7 +1466,7 @@ exports.setupUpload = function(d3) {
   });
 };
 
-},{"./serialize.js":22}],12:[function(require,module,exports){
+},{"./serialize.js":22}],11:[function(require,module,exports){
 exports.addLogos = function(d3) {
   d3.select("#mainSVG").append("svg:image")
     .attr("xlink:href", "mch-tracs.png")
@@ -1535,8 +1492,8 @@ exports.addCredits = function(d3) {
     .attr("x", 30);
 };
 
-},{}],13:[function(require,module,exports){
-var modCirclesOfCare = require('./circles-of-care.js'),
+},{}],12:[function(require,module,exports){
+var modRingsize = require('./ringsize.js'),
     modContextMenu = require('./context-menu.js'),
     modDatabase = require('./database.js'),
     modDrag = require('./drag.js'),
@@ -1603,7 +1560,7 @@ exports.create = function(d3) {
   modTooltips.setupNotes(d3);
   defineArrowMarkers(d3);
   if (modOptionsMenu.displayAll) {
-    modCirclesOfCare.create(d3);
+    modRingsize.create(d3);
   }
   modSystemSupportMap.create(d3);
   setupMMRGroup();
@@ -1621,7 +1578,7 @@ exports.create = function(d3) {
   modContextMenu.setup(d3);
 };
 
-},{"./circles-of-care.js":3,"./context-menu.js":4,"./database.js":5,"./drag.js":6,"./events.js":9,"./file.js":11,"./front-matter.js":12,"./options-menu.js":18,"./selected-color.js":19,"./svg.js":23,"./system-support-map.js":24,"./toolbox.js":26,"./tooltips.js":27,"./zoom.js":30}],14:[function(require,module,exports){
+},{"./context-menu.js":3,"./database.js":4,"./drag.js":5,"./events.js":8,"./file.js":10,"./front-matter.js":11,"./options-menu.js":17,"./ringsize.js":18,"./selected-color.js":19,"./svg.js":23,"./system-support-map.js":24,"./toolbox.js":26,"./tooltips.js":27,"./zoom.js":30}],13:[function(require,module,exports){
 // This file is necessary to break a circular dependency between the grid and
 // zoom modules. JST 2015-10-21
 exports.translate = [0, 0];
@@ -1635,7 +1592,7 @@ exports.fitGridToZoom = function(d3) {
     .attr("transform", "translate(" + reverseTranslate + ")");
 };
 
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var modGridZoom = require('./grid-zoom.js');
 
 var gridVisible = false,
@@ -1752,7 +1709,7 @@ exports.enableSnap = function(d3) {
   showTurnOffGridText(d3);
 };
 
-},{"./grid-zoom.js":14}],16:[function(require,module,exports){
+},{"./grid-zoom.js":13}],15:[function(require,module,exports){
 // Help/instructions button and info box:
 module.exports = function(d3) {
   d3.select("#toolbox").insert("div", ":first-child")
@@ -1789,7 +1746,7 @@ module.exports = function(d3) {
   });
 };
 
-},{}],17:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Copyright (C) 2014-2017 The University of North Carolina at Chapel Hill
@@ -1838,9 +1795,9 @@ document.onload = (function(d3) {
   });
 })(window.d3);
 
-},{"./auth.js":1,"./database.js":5,"./events.js":9,"./graph.js":13,"./svg.js":23,"./update.js":28}],18:[function(require,module,exports){
+},{"./auth.js":1,"./database.js":4,"./events.js":8,"./graph.js":12,"./svg.js":23,"./update.js":28}],17:[function(require,module,exports){
 var modAuth = require('./auth.js'),
-    modCirclesOfCare = require('./circles-of-care.js'),
+    modRingsize = require('./ringsize.js'),
     modContextMenu = require('./context-menu.js'),
     modEdgeThickness = require('./edge-thickness.js'),
     modExport = require('./export.js'),
@@ -1959,7 +1916,7 @@ exports.createOptionsMenu = function(d3) {
   var choices = null;
   if (exports.displayAll) {
     choices = [{"name": "Show system support rings", "id": "sysSptRingsItem"},
-               {"name": "Show Circles of Care", "id": "cOfCItem"},
+               {"name": "Show small rings", "id": "cOfCItem"},
                {"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
                {"name": "Set text line length...", "id": "setTextLineLenItem"},
                {"name": "Set line thickness...", "id": "setLineThicknessItem"},
@@ -2040,10 +1997,10 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
         modSystemSupportMap.hide(d3);
         break;
       case choices[1].name:
-        modCirclesOfCare.show(d3);
+        modRingsize.showSmall(d3);
         break;
-      case modCirclesOfCare.hideText:
-        modCirclesOfCare.hide(d3);
+      case modRingsize.showLargeText:
+        modRingsize.showLarge(d3);
         break;
       case choices[2].name:
       case choices[3].name:
@@ -2099,7 +2056,50 @@ exports.createOptionsButton = function(d3) {
     });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":3,"./context-menu.js":4,"./edge-thickness.js":8,"./export.js":10,"./grid.js":15,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],19:[function(require,module,exports){
+},{"./auth.js":1,"./context-menu.js":3,"./edge-thickness.js":7,"./export.js":9,"./grid.js":14,"./ringsize.js":18,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],18:[function(require,module,exports){
+exports.visible = false;
+exports.center = null;
+exports.showLargeText = 'Show large rings';
+
+// Create three concentric circles.
+exports.create = function(d3) {
+  d3.select("#graphG").append("g")
+    .attr("id", "circlesOfCareGroup")
+    .classed("visible", exports.visible);
+  d3.select("#circlesOfCareGroup").selectAll(".cOfC")
+    .data([75, 200, 350])
+    .enter().append("circle")
+      .classed("cOfC", true)
+      .style("fill", "none")
+      .attr("r", function(d) {
+        return d;
+      });
+};
+
+exports.showSmall = function(d3) {
+  if (!exports.center) {
+    exports.center = {
+      "x": d3.select("#topGraphDiv").node().clientWidth / 2,
+      "y": d3.select("#topGraphDiv").node().clientHeight / 2};
+  }
+  exports.visible = true;
+  d3.select("#circlesOfCareGroup").classed("visible", exports.visible);
+  d3.selectAll(".cOfC")
+    .attr("cx", exports.center.x)
+    .attr("cy", exports.center.y);
+  d3.select("#cOfCItem").text(exports.showLargeText)
+    .datum({"name": exports.showLargeText});
+};
+
+exports.showLarge = function(d3) {
+  exports.center = null;
+  exports.visible = false;
+  d3.select("#circlesOfCareGroup").classed("visible", exports.visible);
+  d3.select("#cOfCItem").text("Show small rings")
+    .datum({"name": "Show small rings"});
+};
+
+},{}],19:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -2159,7 +2159,7 @@ exports.createColorPalette = function(d3) {
   d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
 };
 
-},{"./edge-style.js":7,"./selected-shape.js":20}],20:[function(require,module,exports){
+},{"./edge-style.js":6,"./selected-shape.js":20}],20:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -2547,7 +2547,7 @@ exports.replaceSelectEdge = function(d3, d3Path, edgeData) {
 };
 
 },{"./selected-color.js":19,"./selection.js":21,"./svg.js":23}],22:[function(require,module,exports){
-var modCirclesOfCare = require('./circles-of-care.js'),
+var modRingsize = require('./ringsize.js'),
     modEvents = require('./events.js'),
     modGridZoom = require('./grid-zoom.js'),
     modSvg = require('./svg.js'),
@@ -2586,7 +2586,7 @@ exports.getMapObject = function(d3) {
     "links": saveEdges,
     "graphGTransform": d3.select("#graphG").attr("transform"),
     "systemSupportMapCenter": modSystemSupportMap.center,
-    "circlesOfCareCenter": modCirclesOfCare.center
+    "circlesOfCareCenter": modRingsize.center
   };
 };
 
@@ -2628,10 +2628,10 @@ exports.importMap = function(d3, jsonObj, id) {
     } else {
       modSystemSupportMap.hide(d3);
     }
-    modCirclesOfCare.hide(d3);
-    modCirclesOfCare.center = jsonObj.circlesOfCareCenter;
-    if (modCirclesOfCare.center) {
-      modCirclesOfCare.show(d3);
+    modRingsize.showLarge(d3);
+    modRingsize.center = jsonObj.circlesOfCareCenter;
+    if (modRingsize.center) {
+      modRingsize.showSmall(d3);
     }
     modUpdate.updateGraph(d3);
     if (typeof id === 'number') {
@@ -2643,7 +2643,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./svg.js":23,"./system-support-map.js":24,"./update.js":28,"./zoom.js":30}],23:[function(require,module,exports){
+},{"./events.js":8,"./grid-zoom.js":13,"./ringsize.js":18,"./svg.js":23,"./system-support-map.js":24,"./update.js":28,"./zoom.js":30}],23:[function(require,module,exports){
 exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
@@ -2934,8 +2934,8 @@ exports.changeElementText = function(d3, d3element, d) {
   return d3txt;
 };
 
-},{"./drag.js":6,"./selected-color.js":19,"./selected-shape.js":20,"./svg.js":23,"./update.js":28}],26:[function(require,module,exports){
-var modCirclesOfCare = require('./circles-of-care.js'),
+},{"./drag.js":5,"./selected-color.js":19,"./selected-shape.js":20,"./svg.js":23,"./update.js":28}],26:[function(require,module,exports){
+var modRingsize = require('./ringsize.js'),
     modEdgeStyle = require('./edge-style.js'),
     modHelp = require('./help.js'),
     modOptionsMenu = require('./options-menu.js'),
@@ -2947,7 +2947,7 @@ var modCirclesOfCare = require('./circles-of-care.js'),
 // Edge, shape, and color selection, plus "?" help and Options buttons, load,
 // save, and delete.
 exports.prepareToolbox = function(d3) {
-  modCirclesOfCare.center = null; // CirclesOfCareCenter
+  modRingsize.center = null; // Ringsize center
   modSystemSupportMap.center = null; // System Support Map Center
 
   // Handle delete graph
@@ -2961,7 +2961,7 @@ exports.prepareToolbox = function(d3) {
   modEdgeStyle.addControls(d3);
 };
 
-},{"./circles-of-care.js":3,"./edge-style.js":7,"./help.js":16,"./options-menu.js":18,"./selected-color.js":19,"./selected-shape.js":20,"./system-support-map.js":24,"./update.js":28}],27:[function(require,module,exports){
+},{"./edge-style.js":6,"./help.js":15,"./options-menu.js":17,"./ringsize.js":18,"./selected-color.js":19,"./selected-shape.js":20,"./system-support-map.js":24,"./update.js":28}],27:[function(require,module,exports){
 exports.tip = null;
 
 // "Notes" == tooltips
@@ -2980,7 +2980,7 @@ exports.setupNotes = function(d3) {
 };
 
 },{}],28:[function(require,module,exports){
-var modCirclesOfCare = require('./circles-of-care.js'),
+var modRingsize = require('./ringsize.js'),
     modDrag = require('./drag.js'),
     modEvents = require('./events.js'),
     modGrid = require('./grid.js'),
@@ -3293,7 +3293,7 @@ exports.deleteGraph = function(d3, skipPrompt) {
   if(doDelete) {
     modSvg.nodes = [];
     modSvg.links = [];
-    modCirclesOfCare.hide(d3);
+    modRingsize.hide(d3);
     modSystemSupportMap.show(d3);
     exports.updateGraph(d3);
     window.location.hash = "";
@@ -3346,7 +3346,7 @@ exports.updateWindow = function(d3) {
   exports.updateGraph(d3);
 };
 
-},{"./circles-of-care.js":3,"./drag.js":6,"./events.js":9,"./grid.js":15,"./selected-color.js":19,"./selection.js":21,"./svg.js":23,"./system-support-map.js":24,"./text.js":25,"./tooltips.js":27,"./util.js":29}],29:[function(require,module,exports){
+},{"./drag.js":5,"./events.js":8,"./grid.js":14,"./ringsize.js":18,"./selected-color.js":19,"./selection.js":21,"./svg.js":23,"./system-support-map.js":24,"./text.js":25,"./tooltips.js":27,"./util.js":29}],29:[function(require,module,exports){
 var cookiesByName = null;
 
 exports.readCookieByName = function(name) {
@@ -3435,4 +3435,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid-zoom.js":14,"./grid.js":15,"./text.js":25}]},{},[17]);
+},{"./grid-zoom.js":13,"./grid.js":14,"./text.js":25}]},{},[16]);

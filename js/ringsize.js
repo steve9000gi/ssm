@@ -1,6 +1,6 @@
 exports.visible = false;
 exports.center = null;
-exports.hideText = 'Hide Circles of Care';
+exports.showLargeText = 'Show large rings';
 
 // Create three concentric circles.
 exports.create = function(d3) {
@@ -17,7 +17,7 @@ exports.create = function(d3) {
       });
 };
 
-exports.show = function(d3) {
+exports.showSmall = function(d3) {
   if (!exports.center) {
     exports.center = {
       "x": d3.select("#topGraphDiv").node().clientWidth / 2,
@@ -28,14 +28,14 @@ exports.show = function(d3) {
   d3.selectAll(".cOfC")
     .attr("cx", exports.center.x)
     .attr("cy", exports.center.y);
-  d3.select("#cOfCItem").text(exports.hideText)
-    .datum({"name": exports.hideText});
+  d3.select("#cOfCItem").text(exports.showLargeText)
+    .datum({"name": exports.showLargeText});
 };
 
-exports.hide = function(d3) {
+exports.showLarge = function(d3) {
   exports.center = null;
   exports.visible = false;
   d3.select("#circlesOfCareGroup").classed("visible", exports.visible);
-  d3.select("#cOfCItem").text("Show Circles of Care")
-    .datum({"name": "Show Circles of Care"});
+  d3.select("#cOfCItem").text("Show small rings")
+    .datum({"name": "Show small rings"});
 };

@@ -1,4 +1,4 @@
-var modCirclesOfCare = require('./circles-of-care.js'),
+var modRingsize = require('./ringsize.js'),
     modEdgeStyle = require('./edge-style.js'),
     modHelp = require('./help.js'),
     modOptionsMenu = require('./options-menu.js'),
@@ -10,7 +10,7 @@ var modCirclesOfCare = require('./circles-of-care.js'),
 // Edge, shape, and color selection, plus "?" help and Options buttons, load,
 // save, and delete.
 exports.prepareToolbox = function(d3) {
-  modCirclesOfCare.center = null; // CirclesOfCareCenter
+  modRingsize.center = null; // Ringsize center
   modSystemSupportMap.center = null; // System Support Map Center
 
   // Handle delete graph

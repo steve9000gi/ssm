@@ -1,4 +1,4 @@
-var modCirclesOfCare = require('./circles-of-care.js'),
+var modRingsize = require('./ringsize.js'),
     modDrag = require('./drag.js'),
     modEvents = require('./events.js'),
     modGrid = require('./grid.js'),
@@ -311,7 +311,7 @@ exports.deleteGraph = function(d3, skipPrompt) {
   if(doDelete) {
     modSvg.nodes = [];
     modSvg.links = [];
-    modCirclesOfCare.hide(d3);
+    modRingsize.hide(d3);
     modSystemSupportMap.show(d3);
     exports.updateGraph(d3);
     window.location.hash = "";

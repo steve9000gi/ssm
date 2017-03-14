@@ -1,4 +1,4 @@
-var modCirclesOfCare = require('./circles-of-care.js'),
+var modRingsize = require('./ringsize.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modText = require('./text.js'),
@@ -39,7 +39,7 @@ exports.exportGraphAsImage = function(d3) {
   // Set attributes of objects to render correctly without css:
   shapes.style("fill", "#F6FBFF");
   d3.select("#circlesOfCareGroup")
-    .attr("display", modCirclesOfCare.visible ? "inline-block" : "none");
+    .attr("display", modRingsize.visible ? "inline-block" : "none");
   d3.selectAll(".cOfC")
     .style("fill", "none")
     .style("stroke-width", "1px")
