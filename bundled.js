@@ -1559,9 +1559,6 @@ exports.create = function(d3) {
   modFrontMatter.addCredits(d3);
   modTooltips.setupNotes(d3);
   defineArrowMarkers(d3);
-  if (modOptionsMenu.displayAll) {
-    modRingsize.create(d3);
-  }
   modSystemSupportMap.create(d3);
   setupMMRGroup();
   modDrag.setupDrag(d3);
@@ -2057,60 +2054,45 @@ exports.createOptionsButton = function(d3) {
 };
 
 },{"./auth.js":1,"./context-menu.js":3,"./edge-thickness.js":7,"./export.js":9,"./grid.js":14,"./ringsize.js":18,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],18:[function(require,module,exports){
-exports.visible = false;
-exports.center = null;
 exports.showLargeText = 'Show large rings';
 
-// Create three concentric circles.
-exports.create = function(d3) {
-  d3.select("#graphG").append("g")
-    .attr("id", "circlesOfCareGroup")
-    .classed("visible", exports.visible);
-  d3.select("#circlesOfCareGroup").selectAll(".cOfC")
-    .data([75, 200, 350])
-    .enter().append("circle")
-      .classed("cOfC", true)
-      .style("fill", "none")
-      .attr("r", function(d) {
-        return d;
-      });
-};
-
 exports.showSmall = function(d3) {
-  var data = [{"r": 73, "textOffset": 40},
-              {"r": 183, "textOffset": 28},
-              {"r": 317, "textOffset": 28},
-              {"r": 450, "textOffset": 28},
-              {"r": 500, "textOffset": 68}];
-  d3.select("#ring0").attr("r", 73);
-  d3.select("#ring1").attr("r", 183);
-  d3.select("#ring2").attr("r", 317);
-  d3.select("#ring3").attr("r", 450);
-  var centerY = d3.select("#ring0").attr("cy");
+  var data = [{"radius": 73, "offset": 20},
+              {"radius": 183, "offset": 32},
+              {"radius": 317, "offset": 30},
+              {"radius": 450, "offset": 18},
+              {"radius": 500, "offset": 40}];
+  d3.selectAll(".ssmCircle")
+    .data(data)
+    .attr("r", function(d) {
+      return d.radius;
+  });
+  var centerY = d3.select(".ssmCircle").attr("cy");
   d3.selectAll(".ssmLabel")
-    .attr("y", function(d, i) {
-      var offset = [20, 32, 30, 18, 40];
-      return centerY - data[i].r + offset[i];
+    .data(data)
+    .attr("y", function(d) {
+      return centerY - d.radius + d.offset;
     });
   d3.select("#ringsizeItem").text(exports.showLargeText)
     .datum({"name": exports.showLargeText});
 };
 
 exports.showLarge = function(d3) {
-  d3.select("#ring0").attr("r", 110);
-  d3.select("#ring1").attr("r", 275);
-  d3.select("#ring2").attr("r", 475);
-  d3.select("#ring3").attr("r", 675);
-  var data = [{"r": 110, "textOffset": 20},
-              {"r": 275, "textOffset": 28},
-              {"r": 475, "textOffset": 26},
-              {"r": 675, "textOffset": 18},
-              {"r": 700, "textOffset": 40}];
-  var centerY = d3.select("#ring0").attr("cy");
+  var data = [{"radius": 110, "offset": 20},
+              {"radius": 275, "offset": 28},
+              {"radius": 475, "offset": 26},
+              {"radius": 675, "offset": 18},
+              {"radius": 700, "offset": 10}];
+  d3.selectAll(".ssmCircle")
+    .data(data)
+    .attr("r", function(d) {
+      return d.radius;
+  });
+  var centerY = d3.select(".ssmCircle").attr("cy");
   d3.selectAll(".ssmLabel")
-    .attr("y", function(d, i) {
-      var offset = [20, 28, 26, 18, 10];
-      return centerY - data[i].r + offset[i];
+    .data(data)
+    .attr("y", function(d) {
+      return centerY - d.radius + d.offset;
     });
   d3.select("#ringsizeItem").text("Show small rings")
     .datum({"name": "Show small rings"});
@@ -2733,14 +2715,13 @@ exports.hide = function(d3) {
 // Create four concentric rings and five labels (one for each rings and one for
 // the outside)
 exports.create = function(d3) {
-  var rings = [{"id": "ring0", "labelId": "lid0", "name": "Role/Identity", "radius": 110,
+  var rings = [{"name": "Role/Identity", "radius": 110,
                 "color": "#" + modSelectedColor.colorChoices[6]},
-               {"id": "ring1", "labelId": "lid1", "name": "Most Important Responsibilities",
-		"radius": 275, "color": "#" + modSelectedColor.colorChoices[5]},
-               {"id": "ring2", "labelId": "lid2", "name": "General Needs for Each Responsibility",
-	        "radius": 475,
+               {"name": "Most Important Responsibilities", "radius": 275,
+	        "color": "#" + modSelectedColor.colorChoices[5]},
+               {"name": "General Needs for Each Responsibility", "radius": 475,
                 "color": "#" + modSelectedColor.colorChoices[4]},
-               {"id": "ring3", "labelId": "lid3", "name": "Available Resources", "radius": 675,
+               {"name": "Available Resources", "radius": 675,
                 "color": "#" + modSelectedColor.colorChoices[7]} ];
   d3.select("#graphG").append("g")
     .classed({"ssmGroup": true, "ssmHidden": true, "ssmVisible": false});
@@ -2748,23 +2729,17 @@ exports.create = function(d3) {
   d3.select(".ssmGroup").selectAll(".ssmCircle")
     .data(rings)
     .enter().append("circle")
-      .attr("id", function(d) {
-	return d.id;
-      })
       .classed("ssmCircle", true)
       .style("stroke", function(d) {
         return d.color;
       })
       .style("fill", "none")
       .attr("r", function(d) { return d.radius; });
-  rings.push({"labelId": "lid4", "name": "Wish List", "radius": 750,
+  rings.push({"name": "Wish List", "radius": 750,
               "color": "#" + modSelectedColor.colorChoices[2]});
   d3.select(".ssmGroup").selectAll(".ssmLabel")
     .data(rings)
     .enter().append("text")
-      .attr("id", function(d) {
-	return d.labelId;
-      })
       .classed("ssmLabel", true)
       .style("fill", function(d) { return d.color; })
       .text(function(d) { return d.name; });
