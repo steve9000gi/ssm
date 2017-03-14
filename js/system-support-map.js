@@ -43,13 +43,14 @@ exports.hide = function(d3) {
 // Create four concentric rings and five labels (one for each rings and one for
 // the outside)
 exports.create = function(d3) {
-  var rings = [{"id": "ring0", "name": "Role/Identity", "radius": 110,
+  var rings = [{"id": "ring0", "labelId": "lid0", "name": "Role/Identity", "radius": 110,
                 "color": "#" + modSelectedColor.colorChoices[6]},
-               {"id": "ring1", "name": "Most Important Responsibilities", "radius": 275,
-                "color": "#" + modSelectedColor.colorChoices[5]},
-               {"id": "ring2", "name": "General Needs for Each Responsibility", "radius": 475,
+               {"id": "ring1", "labelId": "lid1", "name": "Most Important Responsibilities",
+		"radius": 275, "color": "#" + modSelectedColor.colorChoices[5]},
+               {"id": "ring2", "labelId": "lid2", "name": "General Needs for Each Responsibility",
+	        "radius": 475,
                 "color": "#" + modSelectedColor.colorChoices[4]},
-               {"id": "ring3", "name": "Available Resources", "radius": 675,
+               {"id": "ring3", "labelId": "lid3", "name": "Available Resources", "radius": 675,
                 "color": "#" + modSelectedColor.colorChoices[7]} ];
   d3.select("#graphG").append("g")
     .classed({"ssmGroup": true, "ssmHidden": true, "ssmVisible": false});
@@ -66,10 +67,14 @@ exports.create = function(d3) {
       })
       .style("fill", "none")
       .attr("r", function(d) { return d.radius; });
-  rings.push({"name": "Wish List", "radius": 750, "color": "#" + modSelectedColor.colorChoices[2]});
+  rings.push({"labelId": "lid4", "name": "Wish List", "radius": 750,
+              "color": "#" + modSelectedColor.colorChoices[2]});
   d3.select(".ssmGroup").selectAll(".ssmLabel")
     .data(rings)
     .enter().append("text")
+      .attr("id", function(d) {
+	return d.labelId;
+      })
       .classed("ssmLabel", true)
       .style("fill", function(d) { return d.color; })
       .text(function(d) { return d.name; });
