@@ -1,11 +1,17 @@
 exports.showLargeText = 'Show large rings';
 
 exports.showSmall = function(d3) {
-  var data = [{"radius": 73, "offset": 20},
-              {"radius": 183, "offset": 32},
-              {"radius": 317, "offset": 30},
-              {"radius": 450, "offset": 18},
-              {"radius": 500, "offset": 40}];
+  var twoThirds = [{"radius": 73, "offset": 20},
+                   {"radius": 183, "offset": 32},
+                   {"radius": 317, "offset": 30},
+                   {"radius": 450, "offset": 18},
+                   {"radius": 500, "offset": 40}];
+  var fiveEighths = [{"radius": 69, "offset": 20},
+                     {"radius": 172, "offset": 32},
+                     {"radius": 297, "offset": 30},
+                     {"radius": 422, "offset": 14},
+                     {"radius": 477, "offset": 50}];
+  var data = fiveEighths;
   d3.selectAll(".ssmCircle")
     .data(data)
     .attr("r", function(d) {

@@ -2057,11 +2057,17 @@ exports.createOptionsButton = function(d3) {
 exports.showLargeText = 'Show large rings';
 
 exports.showSmall = function(d3) {
-  var data = [{"radius": 73, "offset": 20},
-              {"radius": 183, "offset": 32},
-              {"radius": 317, "offset": 30},
-              {"radius": 450, "offset": 18},
-              {"radius": 500, "offset": 40}];
+  var twoThirds = [{"radius": 73, "offset": 20},
+                   {"radius": 183, "offset": 32},
+                   {"radius": 317, "offset": 30},
+                   {"radius": 450, "offset": 18},
+                   {"radius": 500, "offset": 40}];
+  var fiveEighths = [{"radius": 69, "offset": 20},
+                     {"radius": 172, "offset": 32},
+                     {"radius": 297, "offset": 30},
+                     {"radius": 422, "offset": 14},
+                     {"radius": 477, "offset": 50}];
+  var data = fiveEighths;
   d3.selectAll(".ssmCircle")
     .data(data)
     .attr("r", function(d) {
@@ -2160,6 +2166,7 @@ exports.createColorPalette = function(d3) {
 
 },{"./edge-style.js":6,"./selected-shape.js":20}],20:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
+    modText = require('./text.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
 
@@ -2294,6 +2301,26 @@ exports.addShapeSelection = function(d3) {
   setShapeSelectionShapeSizes(d3);
 };
 
+// Set a multiplier that determines how much space to put around text in 
+// diamond shapes, according to maxCharsPerLine. Hand-tuned, but in 
+// general the smaller the maxChars the greater the spacing required to
+// keep text from overflowing the diamond's border.
+setDiamondPad = function(maxCharsPerLine) {
+  switch (maxCharsPerLine) {
+    case 10: return 1.95;
+    case 15: return 1.8;
+    case 20: return 1.6;
+    case 25: return 1.4;
+    case 30:
+    case 35: 
+    case 40: 
+    case 45:
+    case 50: return 1.3;
+    default: console.error("Unknown value for maxCharsPerLine: " + maxCharsPerLine);
+	     return 2.0;
+  }
+};
+
 // Set shape size and position, to stored value[s] if they exist, or else to
 // fit text.
 exports.setShapeSizeAndPosition = function(d3, gEl, el, d) {
@@ -2337,14 +2364,15 @@ exports.setShapeSizeAndPosition = function(d3, gEl, el, d) {
     handle.attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")");
   }
 
+  var diamondPad = setDiamondPad(modText.maxCharsPerLine);
   gEl.select(".diamond")
      .attr("d", function(d) {
-       var dim = d.dim || Math.max(maxTextDim * 1.6, minDiamondDim);
+       var dim = d.dim || Math.max(maxTextDim * diamondPad, minDiamondDim);
        return "M " + dim / 2 + " 0 L " + dim + " " + dim / 2 + " L " + dim / 2 + " " + dim
          + " L 0 " + dim / 2 + " Z";
      })
      .attr("transform", function (d) {
-       var dim = d.dim || Math.max(maxTextDim * 1.6, minDiamondDim);
+       var dim = d.dim || Math.max(maxTextDim * diamondPad, minDiamondDim);
        return "translate(-" + dim / 2 + ",-" + dim /2 + ")";
      });
   gEl.select("ellipse")
@@ -2475,7 +2503,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":19,"./svg.js":23,"./update.js":28}],21:[function(require,module,exports){
+},{"./selected-color.js":19,"./svg.js":23,"./text.js":25,"./update.js":28}],21:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
     modSvg = require('./svg.js');
