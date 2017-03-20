@@ -2055,8 +2055,10 @@ exports.createOptionsButton = function(d3) {
 
 },{"./auth.js":1,"./context-menu.js":3,"./edge-thickness.js":7,"./export.js":9,"./grid.js":14,"./ringsize.js":18,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],18:[function(require,module,exports){
 exports.showLargeText = 'Show large rings';
+exports.ringsize = "large";
 
 exports.showSmall = function(d3) {
+  exports.ringsize = "small";
   var twoThirds = [{"radius": 73, "offset": 20},
                    {"radius": 183, "offset": 32},
                    {"radius": 317, "offset": 30},
@@ -2084,6 +2086,7 @@ exports.showSmall = function(d3) {
 };
 
 exports.showLarge = function(d3) {
+  exports.ringsize = "large";
   var data = [{"radius": 110, "offset": 20},
               {"radius": 275, "offset": 28},
               {"radius": 475, "offset": 26},
@@ -2613,7 +2616,8 @@ exports.getMapObject = function(d3) {
     "links": saveEdges,
     "graphGTransform": d3.select("#graphG").attr("transform"),
     "systemSupportMapCenter": modSystemSupportMap.center,
-    "circlesOfCareCenter": modRingsize.center
+//    "circlesOfCareCenter": modRingsize.center,
+    "ringsize": modRingsize.ringsize
   };
 };
 
@@ -2655,11 +2659,19 @@ exports.importMap = function(d3, jsonObj, id) {
     } else {
       modSystemSupportMap.hide(d3);
     }
-    modRingsize.showLarge(d3);
+
+    modRingsize.ringsize = jsonObj.ringsize;
+    if (modRingsize.ringsize == "small") {
+      modRingsize.showSmall(d3);
+    } else {
+      modRingsize.showLarge(d3);
+    }
+    /*
     modRingsize.center = jsonObj.circlesOfCareCenter;
     if (modRingsize.center) {
       modRingsize.showSmall(d3);
     }
+    */
     modUpdate.updateGraph(d3);
     if (typeof id === 'number') {
       window.location.hash = '/map/' + id;
@@ -2975,7 +2987,7 @@ var modRingsize = require('./ringsize.js'),
 // Edge, shape, and color selection, plus "?" help and Options buttons, load,
 // save, and delete.
 exports.prepareToolbox = function(d3) {
-  modRingsize.center = null; // Ringsize center
+//  modRingsize.center = null; // Ringsize center
   modSystemSupportMap.center = null; // System Support Map Center
 
   // Handle delete graph
@@ -3319,10 +3331,18 @@ exports.deleteGraph = function(d3, skipPrompt) {
     doDelete = window.confirm("Press OK to delete this graph from the canvas. (It will still be saved on the server.)");
   }
   if(doDelete) {
+    // Allow reload of same file after delete in on change function:
+    d3.select("#hidden-file-upload").node().value = "";
     modSvg.nodes = [];
     modSvg.links = [];
-    modRingsize.showSmall(d3);
+    // Set center to null to force show to recalculate:
+    modSystemSupportMap.center = null;
     modSystemSupportMap.show(d3);
+    if (modRingsize.ringsize == "small") {
+      modRingsize.showSmall(d3);
+    } else {
+      modRingsize.showLarge(d3);
+    }
     exports.updateGraph(d3);
     window.location.hash = "";
   }

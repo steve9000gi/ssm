@@ -10,7 +10,7 @@ var modRingsize = require('./ringsize.js'),
 // Edge, shape, and color selection, plus "?" help and Options buttons, load,
 // save, and delete.
 exports.prepareToolbox = function(d3) {
-  modRingsize.center = null; // Ringsize center
+//  modRingsize.center = null; // Ringsize center
   modSystemSupportMap.center = null; // System Support Map Center
 
   // Handle delete graph

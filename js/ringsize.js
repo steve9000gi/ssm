@@ -1,6 +1,8 @@
 exports.showLargeText = 'Show large rings';
+exports.ringsize = "large";
 
 exports.showSmall = function(d3) {
+  exports.ringsize = "small";
   var twoThirds = [{"radius": 73, "offset": 20},
                    {"radius": 183, "offset": 32},
                    {"radius": 317, "offset": 30},
@@ -28,6 +30,7 @@ exports.showSmall = function(d3) {
 };
 
 exports.showLarge = function(d3) {
+  exports.ringsize = "large";
   var data = [{"radius": 110, "offset": 20},
               {"radius": 275, "offset": 28},
               {"radius": 475, "offset": 26},
