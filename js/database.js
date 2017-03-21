@@ -1,7 +1,5 @@
 var modAuth = require('./auth.js'),
     modBackend = require('./backend.js'),
-    //modRingsize = require('./ringsize.js'),
-    //modCirclesOfCare = require('./circles-of-care.js'),
     modSerialize = require('./serialize.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modUtil = require('./util.js');

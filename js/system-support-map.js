@@ -19,15 +19,13 @@ exports.show = function(d3) {
   d3.selectAll(".ssmCircle")
     .attr("cx", ssmCenter.x)
     .attr("cy", ssmCenter.y);
-  var offset = (modRingsize.ringsize == "large") ? [20, 28, 26, 18, 64]
-					         : [20, 32, 30, 14, 50];
   d3.selectAll(".ssmLabel")
     .style("font-size", "12px")
     .attr("x", function() {
       return ssmCenter.x - this.getComputedTextLength() / 2;
     })
     .attr("y", function(d, i) {
-      return ssmCenter.y - d.radius + offset[i];
+      return ssmCenter.y - d.radius + modRingsize.offset[i];
     });
   d3.select("#sysSptRingsItem").text(exports.hideText)
     .datum({"name": exports.hideText});

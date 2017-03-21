@@ -18,7 +18,7 @@ var getBiggestShapeId = function() {
   return currMax;
 };
 
-// Return the current map as an JS object.
+// Return the current map as a JS object.
 exports.getMapObject = function(d3) {
   var saveEdges = [];
   modSvg.links.forEach(function(val) {
@@ -38,7 +38,7 @@ exports.getMapObject = function(d3) {
     "links": saveEdges,
     "graphGTransform": d3.select("#graphG").attr("transform"),
     "systemSupportMapCenter": modSystemSupportMap.center,
-    "circlesOfCareCenter": modRingsize.center,
+    "circlesOfCareCenter": modCirclesOfCare.center,
     "ringsize": modRingsize.ringsize
   };
 };

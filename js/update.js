@@ -314,7 +314,7 @@ exports.deleteGraph = function(d3, skipPrompt) {
     d3.select("#hidden-file-upload").node().value = "";
     modSvg.nodes = [];
     modSvg.links = [];
-    modCirclesOfCare.hide(d3;
+    modCirclesOfCare.hide(d3);
     // Set center to null to force show(...) to recalculate:
     modSystemSupportMap.center = null;
     modSystemSupportMap.show(d3);
