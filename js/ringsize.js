@@ -1,4 +1,4 @@
-exports.showLargeText = 'Show large rings';
+exports.showLargeText = 'Show large system support rings';
 exports.ringsize = "large";
 
 exports.showSmall = function(d3) {
@@ -47,6 +47,6 @@ exports.showLarge = function(d3) {
     .attr("y", function(d) {
       return centerY - d.radius + d.offset;
     });
-  d3.select("#ringsizeItem").text("Show small rings")
-    .datum({"name": "Show small rings"});
+  d3.select("#ringsizeItem").text("Show small system support rings")
+    .datum({"name": "Show small system support rings"});
 };

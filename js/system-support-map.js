@@ -1,4 +1,5 @@
-var modSelectedColor = require('./selected-color.js');
+var modSelectedColor = require('./selected-color.js'),
+    modRingsize = require('./ringsize.js');
 
 exports.hideText = "Hide system support rings";
 exports.center = null;
@@ -18,13 +19,14 @@ exports.show = function(d3) {
   d3.selectAll(".ssmCircle")
     .attr("cx", ssmCenter.x)
     .attr("cy", ssmCenter.y);
+  var offset = (modRingsize.ringsize == "large") ? [20, 28, 26, 18, 64]
+					         : [20, 32, 30, 14, 50];
   d3.selectAll(".ssmLabel")
     .style("font-size", "12px")
     .attr("x", function() {
       return ssmCenter.x - this.getComputedTextLength() / 2;
     })
     .attr("y", function(d, i) {
-      var offset = [20, 28, 26, 18, 64];
       return ssmCenter.y - d.radius + offset[i];
     });
   d3.select("#sysSptRingsItem").text(exports.hideText)
@@ -46,7 +48,7 @@ exports.create = function(d3) {
   var rings = [{"name": "Role/Identity", "radius": 110,
                 "color": "#" + modSelectedColor.colorChoices[6]},
                {"name": "Most Important Responsibilities", "radius": 275,
-	        "color": "#" + modSelectedColor.colorChoices[5]},
+                "color": "#" + modSelectedColor.colorChoices[5]},
                {"name": "General Needs for Each Responsibility", "radius": 475,
                 "color": "#" + modSelectedColor.colorChoices[4]},
                {"name": "Available Resources", "radius": 675,

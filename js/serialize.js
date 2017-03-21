@@ -1,4 +1,5 @@
 var modRingsize = require('./ringsize.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modEvents = require('./events.js'),
     modGridZoom = require('./grid-zoom.js'),
     modSvg = require('./svg.js'),
@@ -37,7 +38,7 @@ exports.getMapObject = function(d3) {
     "links": saveEdges,
     "graphGTransform": d3.select("#graphG").attr("transform"),
     "systemSupportMapCenter": modSystemSupportMap.center,
-//    "circlesOfCareCenter": modRingsize.center,
+    "circlesOfCareCenter": modRingsize.center,
     "ringsize": modRingsize.ringsize
   };
 };
@@ -80,19 +81,17 @@ exports.importMap = function(d3, jsonObj, id) {
     } else {
       modSystemSupportMap.hide(d3);
     }
-
     modRingsize.ringsize = jsonObj.ringsize;
     if (modRingsize.ringsize == "small") {
       modRingsize.showSmall(d3);
     } else {
       modRingsize.showLarge(d3);
     }
-    /*
-    modRingsize.center = jsonObj.circlesOfCareCenter;
-    if (modRingsize.center) {
-      modRingsize.showSmall(d3);
+    modCirclesOfCare.hide(d3);
+    modCirclesOfCare.center = jsonObj.circlesOfCareCenter;
+    if (modCirclesOfCare.center) {
+      modCirclesOfCare.show(d3);
     }
-    */
     modUpdate.updateGraph(d3);
     if (typeof id === 'number') {
       window.location.hash = '/map/' + id;

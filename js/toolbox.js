@@ -1,4 +1,5 @@
 var modRingsize = require('./ringsize.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modEdgeStyle = require('./edge-style.js'),
     modHelp = require('./help.js'),
     modOptionsMenu = require('./options-menu.js'),
@@ -10,8 +11,8 @@ var modRingsize = require('./ringsize.js'),
 // Edge, shape, and color selection, plus "?" help and Options buttons, load,
 // save, and delete.
 exports.prepareToolbox = function(d3) {
-//  modRingsize.center = null; // Ringsize center
-  modSystemSupportMap.center = null; // System Support Map Center
+  modCirclesOfCare.center = null;
+  modSystemSupportMap.center = null; 
 
   // Handle delete graph
   d3.select("#delete-graph").on("click", function() { modUpdate.deleteGraph(d3, false); });

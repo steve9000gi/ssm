@@ -1,4 +1,5 @@
 var modRingsize = require('./ringsize.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modDrag = require('./drag.js'),
     modEvents = require('./events.js'),
     modGrid = require('./grid.js'),
@@ -309,11 +310,12 @@ exports.deleteGraph = function(d3, skipPrompt) {
     doDelete = window.confirm("Press OK to delete this graph from the canvas. (It will still be saved on the server.)");
   }
   if(doDelete) {
-    // Allow reload of same file after delete in on change function:
+    // Allow reload of same file after delete in on("change"...) function:
     d3.select("#hidden-file-upload").node().value = "";
     modSvg.nodes = [];
     modSvg.links = [];
-    // Set center to null to force show to recalculate:
+    modCirclesOfCare.hide(d3;
+    // Set center to null to force show(...) to recalculate:
     modSystemSupportMap.center = null;
     modSystemSupportMap.show(d3);
     if (modRingsize.ringsize == "small") {

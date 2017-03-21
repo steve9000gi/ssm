@@ -1,4 +1,5 @@
 var modRingsize = require('./ringsize.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modContextMenu = require('./context-menu.js'),
     modDatabase = require('./database.js'),
     modDrag = require('./drag.js'),
@@ -65,6 +66,9 @@ exports.create = function(d3) {
   modTooltips.setupNotes(d3);
   defineArrowMarkers(d3);
   modSystemSupportMap.create(d3);
+  if (modOptionsMenu.displayAll) {
+    modCirclesOfCare.create(d3);
+  }
   setupMMRGroup();
   modDrag.setupDrag(d3);
   modDrag.setupDragHandle(d3);

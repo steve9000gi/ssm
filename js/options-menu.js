@@ -1,4 +1,5 @@
 var modAuth = require('./auth.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modRingsize = require('./ringsize.js'),
     modContextMenu = require('./context-menu.js'),
     modEdgeThickness = require('./edge-thickness.js'),
@@ -118,7 +119,8 @@ exports.createOptionsMenu = function(d3) {
   var choices = null;
   if (exports.displayAll) {
     choices = [{"name": "Show system support rings", "id": "sysSptRingsItem"},
-               {"name": "Show small rings", "id": "ringsizeItem"},
+               {"name": "Show small system support rings", "id": "ringsizeItem"},
+               {"name": "Show Circles of Care", "id": "cOfCItem"},
                {"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
                {"name": "Set text line length...", "id": "setTextLineLenItem"},
                {"name": "Set line thickness...", "id": "setLineThicknessItem"},
@@ -205,13 +207,19 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
         modRingsize.showLarge(d3);
         break;
       case choices[2].name:
+	modCirclesOfCare.show(d3);
+	break;
+      case modCirclesOfCare.hideText:
+	modCirclesOfCare.hide(d3);
+	break;
       case choices[3].name:
       case choices[4].name:
-        break; // These menu items have submenus with their own event handlers
       case choices[5].name:
+        break; // These menu items have submenus with their own event handlers
+      case choices[6].name:
         setSelectedObjectColor(d3);
         break;
-      case choices[6].name:
+      case choices[7].name:
         modGrid.enableSnap(d3);
         break;
       case modGrid.hideText:
@@ -220,13 +228,13 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
       case modSystemSupportMap.hideText:
         modSystemSupportMap.hide(d3);
         break;
-      case choices[7].name:
+      case choices[8].name:
         modExport.exportGraphAsImage(d3);
         break;
-      case choices[8].name:
+      case choices[9].name:
         modContextMenu.loadFromClient(d3);
         break;
-      case choices[9].name:
+      case choices[10].name:
         modAuth.logoutUser(d3);
         break;
       default:
