@@ -2044,9 +2044,11 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
         break;
       case choices[1].name:
         modRingsize.showSmall(d3);
+	modSystemSupportMap.show(d3);
         break;
       case modRingsize.showLargeText:
         modRingsize.showLarge(d3);
+	modSystemSupportMap.show(d3);
         break;
       case choices[2].name:
 	modCirclesOfCare.show(d3);
