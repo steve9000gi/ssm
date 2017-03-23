@@ -2037,20 +2037,24 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
     switch (d3.select(listItem).datum().name) {
     // Beware: d3.select(listItem).text() returns concatenation of all submenu text.
       case choices[0].name:
+	modCirclesOfCare.hide(d3);
         modSystemSupportMap.show(d3);
         break;
       case modSystemSupportMap.hideText:
         modSystemSupportMap.hide(d3);
         break;
       case choices[1].name:
+	modCirclesOfCare.hide(d3);
         modRingsize.showSmall(d3);
 	modSystemSupportMap.show(d3);
         break;
       case modRingsize.showLargeText:
+	modCirclesOfCare.hide(d3);
         modRingsize.showLarge(d3);
 	modSystemSupportMap.show(d3);
         break;
       case choices[2].name:
+	modSystemSupportMap.hide(d3);
 	modCirclesOfCare.show(d3);
 	break;
       case modCirclesOfCare.hideText:
