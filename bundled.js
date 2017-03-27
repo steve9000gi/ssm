@@ -2033,18 +2033,18 @@ exports.createOptionsMenu = function(d3) {
       .on("mouseout", function(d) {
         if (d.id === "eqShapeSizeItem") {
           d3.select("#eqShapeSizeSubmenuDiv")
-           .classed("menu", false)
-           .classed("menuHidden", true);
+            .classed("menu", false)
+            .classed("menuHidden", true);
         } else if (d.id === "setTextLineLenItem") {
           d3.select("#textLineLengthSubmenuDiv")
-           .classed("menu", false).classed("menuHidden", true);
+            .classed("menu", false).classed("menuHidden", true);
         } else if (d.id === "setLineThicknessItem") {
           d3.select("#edgeThicknessSubmenuDiv")
-           .classed("menu", false).classed("menuHidden", true);
+            .classed("menu", false).classed("menuHidden", true);
         }
       })
       .on("mouseup", function(d) {
-        exports.optionsMenuListItemMouseUp(d3, this, d, choices);
+         exports.optionsMenuListItemMouseUp(d3, this, d, choices);
       });
 
   createEqShapeSizeSubmenu(d3);
