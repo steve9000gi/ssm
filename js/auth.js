@@ -156,7 +156,10 @@ var renderRegistrationForm = function(d3, callback) {
         .on('beforesend',
             function(request) { request.withCredentials = true; })
         .post(JSON.stringify(requestData), function(error, data) {
+          //console.log("requestData: " + JSON.stringify(requestData));
           if (error) {
+            console.error("Login error: " + error + ": " + error.responseText
+	                  + ": " + error.statusText);
             d3.select('#authentication p.message').text('Login failed');
           } else {
             d3.select('#authentication').style('visibility', 'hidden');
