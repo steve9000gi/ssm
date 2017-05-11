@@ -18,20 +18,19 @@ example-systems.list:
 
 # Step 2: Get demographic info
 demographic-header:
-  'This information will be used to improve supports and services for families of children with special health care needs. When you ar finished entering this personal information, please cick on the "Next" button to begin building your map. Thank you.'
-
-county-prompt:
-  '2. What county or municipality do you live in?'
+  'Please provide the following information:'
+school-role-prompt:
+  '1. What is the role of your school?'
+grade-working-with-prompt:
+  '2. What grade are you working with?'
+age-range-prompt:
+  '3. Age Range:'
+years-at-current-school-prompt:
+  '4. Number of years at current school:'
 race-prompt:
-  '3. What race do you consider yourself? You may choose more than one.'
-language-prompt:
-  '5. What language do you feel most comfortable speaking? (Please choose one.)'
-age-prompt:
-  '6. What is the age of your child?'
-insurance-prompt:
-  '7. What insurance do you have?'
-health_conditions-prompt:
-  '8. Have you been told by a doctor or healthcare provider that your child with special health care needs has any of these health conditions? (Check all that apply.)'
+  '5. Race/Ethnicity (check all that apply):'
+school-location-prompt:
+  '6. School location (town):'
 next.paras:
   - 'Click the &ldquo;Next&rdquo; button to continue.'
 

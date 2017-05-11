@@ -63,14 +63,12 @@ exports.getMapObject = function(d3) {
     "wizardActive": modWizard.wizardActive,
     "focusDescription": modWizard.focusDescription,
     "focusContext": modWizard.focusContext,
-    "state": modWizard.state, 
-    "county": modWizard.county,
+    "schoolRole": modWizard.schoolRole, 
+    "grade": modWizard.grade,
+    "yearsAtSchool": modWizard.yearsAtSchool,
+    "ageRange": modWizard.ageRange,
     "race": modWizard.race,
-    "hispanic": modWizard.hispanic,
-    "language": modWizard.language,
-    "age": modWizard.age,
-    "insurance": modWizard.insurance,
-    "healthConditions": modWizard.healthConditions
+    "schoolLocation": modWizard.schoolLocation,
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;

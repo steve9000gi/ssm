@@ -2835,14 +2835,12 @@ exports.getMapObject = function(d3) {
     "wizardActive": modWizard.wizardActive,
     "focusDescription": modWizard.focusDescription,
     "focusContext": modWizard.focusContext,
-    "state": modWizard.state, 
-    "county": modWizard.county,
+    "schoolRole": modWizard.schoolRole, 
+    "grade": modWizard.grade,
+    "yearsAtSchool": modWizard.yearsAtSchool,
+    "ageRange": modWizard.ageRange,
     "race": modWizard.race,
-    "hispanic": modWizard.hispanic,
-    "language": modWizard.language,
-    "age": modWizard.age,
-    "insurance": modWizard.insurance,
-    "healthConditions": modWizard.healthConditions
+    "schoolLocation": modWizard.schoolLocation,
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
@@ -4398,6 +4396,7 @@ var steps = {
 
   2: {
     enter: function(d3) {
+     /* We will never read a map into the wizard, so this is not needed:
       if (exports.state) {
 	d3.select("#state-select").node().value = exports.state;
       }
@@ -4418,71 +4417,50 @@ var steps = {
         var checkedInsuranceButton = 'input[name=insurance-button]:checked';
         d3.select(checkedInsuranceButton).node().value = exports.insurance;
       }
+      */
 
       return true;
     },
 
     exit: function(d3) {
-      var stateSel = document.getElementById('state-select');
-      var state = stateSel.options[stateSel.selectedIndex].value
-      var countyText = document.getElementById("county").value;
+      var schoolRole = document.getElementById('school-role').value;
+      var grade = document.getElementById("grade").value;
 
-      var americanIndian = document.getElementById('AmericanIndian').checked;
+      var ageRangeButton = d3.select('input[name=age-range-button]:checked');
+      var ageRange = ageRangeButton.node() ? ageRangeButton.node().value : null;
+
+      var yearsAtSchoolButton =
+	  d3.select('input[name=years-at-current-school-button]:checked');
+      var yearsAtSchool = yearsAtSchoolButton.node()
+	                ? yearsAtSchoolButton.node().value : null;
+
       var white = document.getElementById('White').checked;
-      var asian = document.getElementById('Asian').checked;
       var black = document.getElementById('Black').checked;
-      var hawaiian = document.getElementById('Hawaiian').checked;
+      var hispanic = document.getElementById('Hispanic').checked;
+      var asian = document.getElementById('Asian').checked;
+      var multiRacial = document.getElementById('Multi-racial').checked;
       var otherRace = document.getElementById('OtherRace').checked;
-      var otherRaceText = document.getElementById('OtherRaceText').value;
       var races = Array();
-      if (americanIndian) races.push("American Indian");
       if (white) races.push("White");
+      if (black) races.push("Black/AA");
+      if (hispanic) races.push("Hispanic");
       if (asian) races.push("Asian");
-      if (black) races.push("African American/Black");
-      if (hawaiian) races.push("Hawaiian or Pacific Islander");
-      if (otherRace) races.push(otherRaceText);
+      if (multiRacial) races.push("Multi-racial");
+      if (otherRace) races.push("Other");
 
-      var hispanic = document.getElementById('isHispanic').checked;
-      var languageButton = d3.select('input[name=language-button]:checked');
-      var language = languageButton.node() ? languageButton.node().value : null;
-      if (language == "OtherLanguage") {
-	var otherLanguageText = document.getElementById('OtherLanguageText').value;
-        language = otherLanguageText;	
-      }
-      var ageButton = d3.select('input[name=age-button]:checked');
-      var age = ageButton.node() ? ageButton.node().value : null;
-      var insuranceButton = d3.select('input[name=insurance-button]:checked');
-      var insurance = insuranceButton.node() ? insuranceButton.node().value : null;
-      if (insurance == "OtherInsurance") {
-	var otherInsuranceText = document.getElementById('OtherInsuranceText').value;
-        insurance = otherInsuranceText;	
-      }
+      var schoolLocation = document.getElementById('school-location').value;
 
-      var otherHealthConditionText = document.getElementById('OtherHealthConditionText').value;
-      var healthConditions = Array();
-      d3.selectAll(".healthChkBox")
-        .each(function(d, i) {
-          if (this.checked) {
-            if (this.value == "Other") {
-              healthConditions.push(otherHealthConditionText);
-            } else {
-              healthConditions.push(this.value);
-            }
-          }
-      });
-
-      if (!(state && countyText && races && language && age && insurance)) {
+      if (!(schoolRole && grade && ageRange && yearsAtSchool && races &&
+	    schoolLocation)) {
         alert('You must answer all questions before proceeding.');
         return false;
       }
-      exports.state = state;
-      exports.county = countyText;
+      exports.schoolRole = schoolRole;
+      exports.grade = grade;
+      exports.ageRange = ageRange;
+      exports.yearsAtSchool = yearsAtSchool;
       exports.race = races;
-      exports.hispanic = hispanic;
-      exports.language = language;
-      exports.age = age;
-      exports.insurance = insurance;
-      exports.healthConditions = healthConditions;
+      exports.schoolLocation = schoolLocation;
       return true;
     }
   },
