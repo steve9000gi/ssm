@@ -221,10 +221,12 @@ var renderLoginForm = function(d3, callback) {
   content.selectAll('*').remove();
   content.append('h1')
     .text('Welcome to the System Support Mapper');
+  /*
   content.append('p')
     .text('The System Support Mapper (SSM) is a tool that can help you visualize a network of support. For example, if you have a special needs child, SSM can help you understand what your needs are to support your child, how you address those needs, and where you might need more help.');
+    */
   content.append('p')
-    .text("In order to save your work, you'll need to complete a free registration. If you've already registered, please log in below. Otherwise, click the link below to register.");
+    .text("In order to use this tool, you'll need to complete a free registration. If you've already registered, please log in below. Otherwise, click the link below to register.");
 
   var header = content
     .append('h1')

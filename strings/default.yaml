@@ -1,22 +1,20 @@
 # Step 1 
 welcome-header:
-  'Welcome to the System Support Map Wizard for Determining Roles in Mental Health Care within Schools in Connecticut.'
+  'Roles in Mental Health Care within Schools in Connecticut Research Study'
+salutation.paras:
+  - 'Dear teachers, administrators, social workers, school nurses, therapists, para-professionals, and school-based health center staff:'
 welcome-text.paras:
-  - 'A System Support Map (SSM) is a tool that can help you break down and visualize how you approach a complicated challenge. Completing SSMs will support your own thinking about your objectives, needs, resources, and desired changes. Asking others working with you to create maps can help you strategize, together, about how to work smarter and improve outcomes.' 
-  - 'As a parent or caregiver of a child with special health needs, this tool will enable you to visually express your ongoing personal journey caring for your child. The process of creating this map can help you to clarify, document, and troubleshoot the complex web of responsibilities, needs, resources, services – and ultimately, the wish list – involved in supporting your child. Check the sidebar for some examples of challenges for which other parents and caregivers have found SSMs useful. While you can also complete a System Support Map with paper and markers or using our online tool, this wizard will ask you questions and then build the System Support Map for you based on your answers.'
-  - 'We are excited that you are about to create a System Support Map. We hope this process and resulting map are useful to you. After completing a map, you will have an opportunity to save and print your map. We will also ask you to complete a short evaluation to help us improve the tool. We will save your maps in a secure database so that you can access them in the future. You may use our online System Support Mapping tool (http://syssci.renci.org/ssm) to edit your map in the future, or come back to this wizard (http://syssci.renci.org/ssm-wizard/?module=CaregiversCYSHCN) and create a new map.'
-map-uses-1-span: 'Your maps will also be added to a group of maps that may be aggregated and analyzed together in a quality improvement or research project to learn more about the systems that support Maternal and Child Health in the US and territories. Your map will be de-identified and will not be linked to you personally in any reports or publications resulting from this work. Please contact '
-map-uses-2-span: ' if you have any questions about System Support Mapping or about the research project.'
+  - 'Steven C. Rogers, MD, MS-CTR, a Pediatric Emergency Medicine physician at Connecticut Children’s Medical Center and the Injury Prevention Center, was contracted by the Department of Family and Children services to look at “Roles in Mental Health Care within Schools in Connecticut” as part of a larger project looking at the system of mental health care for children in Connecticut.  We are contacting school personnel via email to ask for your participation in a study of school-based mental health care via an electronic survey.'
+  - 'We invite you to take this survey that will ask you to explain how you see your role in relation to the provision of behavioral and mental health services to children in the school setting.  Your responses will help us to understand barriers and strengths in addressing children’s mental health concerns and to learn from you what steps can be taken to improve this system of care.  The survey will take an estimated 10 to 25 minutes to complete.'
+  - 'The survey is based on a methodology called system support mapping (SSM) and is a guided process in which participants develop their own individual “map” of how they see the system of care under question, in this case children’s mental and behavioral health in the school setting.'
+map-uses-1-span: 'Participation is voluntary and your survey responses will be kept confidential.  Only aggregate information will be disclosed as part of our report.  Should you have any questions about the study, please email' 
+map-uses-2-span: ', Principal Investigator.'
 next-page-instruction.paras: 
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
 example-systems-header:
-  'Examples of how you can use System Support Maps as a caregiver supporting a child with special health needs and/or developmental disabilities:'
+  'Examples:' 
 example-systems.list:
-  - 'Documenting your effort to support your child&rsquo;s day-to-day needs: health care, school coordination, at-home care, socialization, financial support, etc.'
-  - 'Working with your immediate care team to figure out who does what to support your child&rsquo;s day-to-day needs better.'
-  - 'Anticipating what is needed to support your child in a specific life course, for example helping them transition to adulthood and associated increased independence.'
-  - 'To help communicate your reality to care coordinators or others supporting you – so they can help you problem solve in a way that&rsquo;s more helpful to you.'
-  - 'As a structured way to talk with peers about special needs. (For example, what did you do and how to support communication needs for your child? What role do you have in advocacy?)'
+  - 'tbd'
 
 # Step 2: Get demographic info
 demographic-header:

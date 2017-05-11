@@ -485,3 +485,6 @@ aside h3 {
 .finish {
   display: none;
 }
+
+.emphasized {
+  font-style: italic
