@@ -52,9 +52,9 @@ overview-text-2.paras:
 # Step 4
 prerequisites-header: 'Prerequisites'
 prerequisites-text.paras:
-  - 'Before starting to build your SSM, focus on a specific challenge you want to map. The broader your challenge, the bigger your map will be. Sometimes this is useful, but if you start and find your map to be overwhelming, come back and narrow your scope. For example, do you want to focus on how you support one aspect of your child&rsquo;s life or the big picture? What time frame are you considering? A common time frame is the past month, or year – to get a sense of what your support system has looked like so you can think about how to improve things moving forward. Or, if you are trying to anticipate something new, your time frame could be in the future.'
+  - 'Before starting to build your SSM, focus on a specific challenge. This is important! If you don’t have a solid understanding of your role in this challenge, this map-building exercise could be unclear and unhelpful.'
 prerequisites-focus-description-prompt: 'Please take a few minutes to develop a clear idea of the challenge you are attempting to map. Then, in the text box below, please briefly describe it.'
-prerequisites-context-prompt: 'As a last step before we begin your map, provide a little more context around your map. In the text box below, please briefly describe your child, including age and any particular healthcare needs, diagnoses, strengths or challenges you would like to share. You may also want to note anything about you or your family, where you live, or anything else that makes your support system unique.'
+prerequisites-context-prompt: 'As a last step before we begin your map, provide a little more context around the initiative. In the text box below, please briefly describe key partners collaborating with you and the time frame for the work.'
 prerequisites-next.paras:
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
 
@@ -65,7 +65,7 @@ ring1-aside.list:
   - 'If you have multiple roles that you want to explore, pick one. Including multiple roles in a single map will not work well. You can come back and fill out other maps for other roles later.'
   - 'You may choose an option from the drop-down list or type in something different if you don&rsquo;t see what you want.'
 ring1-intro.paras:
-  - 'How would you name your role in the work you are mapping? What role do you play in the system producing this challenge? Some possible roles are: parent, sibling, grandparent, caregiver, or care coordinator.'
+  - 'How would you name your role in the work you are mapping?  Some possible roles are: educator, health services, Director, Principal, operations, counselor, clinician, or health educator.'
 ring1-label: 'My role is:'
 ring1-afterword.paras:
   - 'When you hit &ldquo;Next,&rdquo; your role will be inserted into the map below for you.'
@@ -75,14 +75,12 @@ ring1-afterword.paras:
 ring2-header: 'Ring #2: Responsibilities'
 ring2-aside-header: 'Tips:'
 ring2-aside.list:
-  - 'For some people it makes more sense to describe activities, objectives, or goals instead of responsibilities in this ring. As long as you are describing ways you spend your time related to the challenge you are mapping, the specific label does not matter.'
-  - 'Remember to focus your response on the challenge you have identified. (We know you have a million responsibilities in life!)'
+  - 'For some people it makes more sense to describe relevant project activities, objectives or goals instead of responsibilities in this ring. As long as you are describing ways you invest your time related to the challenge you are mapping, the specific label doesn’t matter.'
   - 'Don&lsquo;t forget to click &ldquo;Add&rdquo; after you select or write in a responsibility.'
 # Note: this must include a <span> with id "wizard_role_text" somewhere.
 ring2-text.paras:
-  - 'The second ring contains the responsibilities that you have in your role as <code><span id="wizard_role_text">_</span></code>.'
-  - 'Identify the four to eight most important responsibilities related to this role. Add them here. Some examples are included in the drop-down list in the text entry box. You may choose one of those as your response, or type something else in.'
-  - 'When you click the &ldquo;Add&rdquo; button, the responsibilities you&rsquo;ve entered will be added to the map below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to go to the next step.'
+  - 'The second ring contains the responsibilities that you have in your role within the school district as <code><span id="wizard_role_text">_</span></code>. Identify the THREE most important responsibilities related to this role and add them here.'
+  - 'When you click the &ldquo;Add&rdquo; button, the responsibility you&rsquo;ve just entered will be added to the map below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to go to the next step.'
   - 'One of my responsibilities is:'
 
 # Step 7
