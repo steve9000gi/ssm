@@ -104,13 +104,17 @@ pre-ring4-text.paras:
 ring4-header: 'Ring #4: Resources'
 ring4-aside-header: 'Tip:'
 ring4-aside.list:
-  - 'Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, or a friend who makes baking so much more fun!'
+  - '-'
+#  - 'Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, or a friend who makes baking so much more fun!'
 ring4-intro.paras:
   - 'The next ring identifies the resources that you use to help you meet your needs described in Ring #3.' 
-  - 'Reflect for a moment about the needs you listed. What specific things, organizations, places, personal strengths, or people have you tried (whether or not they have helped you) to get your needs met? Resources for your map might include public transportation, health care providers, a case manager, organizations and services in your community, local or national organizations, knowledge or strengths that you or someone around you has, skills, websites, books, brochures or training programs.'
+  - 'Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you tried (whether or not they have helped you) to get that need met? Resources might include knowledge or strengths you or someone around you has, websites, brochures, training programs, services in your community, providers, a para professional, or books you read to build a skill in yourself.'
   - 'Hopefully you jotted down a list of resources that support you when you looked at your map on the last screen. If you haven&rsquo;t done that yet, go ahead and do it now. You can click &ldquo;back&rdquo; to see your map better.'
-  - 'When you are ready, enter information about each resource, one at a time. First, you will be asked to describe the resource – what type of resource is it? Examples might include your pediatrician, a website, a personal strength, or your child&rsquo;s school. Then, you will be asked to describe the resource more specifically. In the examples above, you might type &ldquo;Dr. Smith,&rdquo; &ldquo;`www.nameofwebsite.com,&rdquo; &ldquo;my patience,&rdquo; or &ldquo;my child&rsquo;s school.&rdquo;  You can select whether you want the general type of resource or specific resource name to show up in your map.'
-  - 'Next, you will be asked to click on each need that the resource helps with from a list that is generated from your own SSM. A resource can help with one need, or with many needs – check all that apply. For example, time management skills, or the ability to manage one&rsquo;s time, is a resource that might help with many of your needs, while a specific piece of equipment might only help with a single need that you listed. In the last step, you will be asked to rate how helpful each resource is, and to briefly comment on why the resource supports you or not – what about it is particularly helpful or not. Here we are interested in your personal experience with the resource – so answer for yourself (and not based on what others think about the resource).'
+  - 'When you are ready, enter information about each resource, one at a time.'
+  - 'First, you will type the specific name or a short description of the resource. For example, you might type “Mrs. Smith,”  “www.name_of_website.com,” “my patience,” or “Tech Solutionz.”' 
+  - 'Next you will be asked to describe what kind of resource it is. In the examples just above, you might describe Mrs. Smith as an Educator, www.name_of_website.com as a website, your patience as a personal strength, and Tech Solutionz as an IT support.'
+  - 'Next, you will be asked to click on each need that the resource helps with from a list that is generated from your own SSM. A resource can help with one need, or with many needs – check all that apply. For example, time management skills are a resource that might help with many of your needs while dealing with a behavioral health issue with a child might only help with a single need that you listed.'
+  - 'In the last step, you will be asked rate how helpful each resource is, and to briefly comment on why the resource supports you or not – what about it is particularly helpful or not. Here we are interested in your personal experience with the resource – so answer for yourself (and not based on what others think about the resource).'
   - 'The arrow lines connecting resources to your needs in Ring #4 will be color-coded to indicate that resource&rsquo;s level of helpfulness.'
 ring4-resource-type-prompt:
   'What type of resource would you like to describe?'
@@ -119,11 +123,11 @@ ring4-resource-name-prompt:
 ring4-resource-label-field-before-prompt: 'Use the'
 ring4-resource-label-field-after-prompt: 'for the label in the map below.'
 ring4-resource-needs-prompt:
-  'Please select all the needs that this resource supports.'
+  'Please select all the needs that this resource supports. Please select at least one related need.'
 ring4-resource-helpfulness-prompt:
   'How helpful has this resource been?'
 ring4-resource-helpfulness-description-prompt:
-  'Can you describe why you feel the resource is or is not helpful? In what ways?'
+  'Can you describe why you feel the resource has or has not been helpful? In what ways?'
 
 # Resource interstitial
 ring4-interstitial-text.paras:
