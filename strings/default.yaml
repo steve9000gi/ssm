@@ -104,8 +104,7 @@ pre-ring4-text.paras:
 ring4-header: 'Ring #4: Resources'
 ring4-aside-header: 'Tip:'
 ring4-aside.list:
-  - '-'
-#  - 'Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, or a friend who makes baking so much more fun!'
+  - 'Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, or a friend who makes baking so much more fun!'
 ring4-intro.paras:
   - 'The next ring identifies the resources that you use to help you meet your needs described in Ring #3.' 
   - 'Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you tried (whether or not they have helped you) to get that need met? Resources might include knowledge or strengths you or someone around you has, websites, brochures, training programs, services in your community, providers, a para professional, or books you read to build a skill in yourself.'
