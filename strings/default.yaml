@@ -4,10 +4,10 @@ welcome-header:
 salutation.paras:
   - 'Dear teachers, administrators, social workers, school nurses, therapists, para-professionals, and school-based health center staff:'
 welcome-text.paras:
-  - 'Steven C. Rogers, MD, MS-CTR, a Pediatric Emergency Medicine physician at Connecticut Children’s Medical Center and the Injury Prevention Center, was contracted by the Department of Family and Children services to look at “Roles in Mental Health Care within Schools in Connecticut” as part of a larger project looking at the system of mental health care for children in Connecticut.  We are contacting school personnel via email to ask for your participation in a study of school-based mental health care via an electronic survey.'
-  - 'We invite you to take this survey that will ask you to explain how you see your role in relation to the provision of behavioral and mental health services to children in the school setting.  Your responses will help us to understand barriers and strengths in addressing children’s mental health concerns and to learn from you what steps can be taken to improve this system of care.  The survey will take an estimated 10 to 25 minutes to complete.'
+  - 'Steven C. Rogers, MD, MS-CTR, a Pediatric Emergency Medicine physician at Connecticut Children’s Medical Center and the Injury Prevention Center, was contracted by the Department of Family and Children services to look at “Roles in Mental Health Care within Schools in Connecticut” as part of a larger project looking at the system of mental health care for children in Connecticut. We are contacting school personnel via email to ask for your participation in a study of school-based mental health care via an electronic survey.'
+  - 'We invite you to take this survey that will ask you to explain how you see your role in relation to the provision of behavioral and mental health services to children in the school setting. Your responses will help us to understand barriers and strengths in addressing children’s mental health concerns and to learn from you what steps can be taken to improve this system of care. The survey will take an estimated 10 to 25 minutes to complete.'
   - 'The survey is based on a methodology called system support mapping (SSM) and is a guided process in which participants develop their own individual “map” of how they see the system of care under question, in this case children’s mental and behavioral health in the school setting.'
-map-uses-1-span: 'Participation is voluntary and your survey responses will be kept confidential.  Only aggregate information will be disclosed as part of our report.  Should you have any questions about the study, please email' 
+map-uses-1-span: 'Participation is voluntary and your survey responses will be kept confidential. Only aggregate information will be disclosed as part of our report. Should you have any questions about the study, please email' 
 map-uses-2-span: ', Principal Investigator.'
 next-page-instruction.paras: 
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
@@ -65,7 +65,7 @@ ring1-aside.list:
   - 'If you have multiple roles that you want to explore, pick one. Including multiple roles in a single map will not work well. You can come back and fill out other maps for other roles later.'
   - 'You may choose an option from the drop-down list or type in something different if you don&rsquo;t see what you want.'
 ring1-intro.paras:
-  - 'How would you name your role in the work you are mapping?  Some possible roles are: educator, health services, Director, Principal, operations, counselor, clinician, or health educator.'
+  - 'How would you name your role in the work you are mapping? Some possible roles are: educator, health services, Director, Principal, operations, counselor, clinician, or health educator.'
 ring1-label: 'My role is:'
 ring1-afterword.paras:
   - 'When you hit &ldquo;Next,&rdquo; your role will be inserted into the map below for you.'
@@ -89,8 +89,7 @@ ring3-aside-header: 'Tip:'
 ring3-aside.list:
   - 'Needs are the most important ingredients in a recipe for how you complete each responsibility.'
 ring3-text.paras:
-  - 'The third ring identifies exactly what is needed to meet each responsibility.
-Common needs include time, support, buy-in from your organization, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, and creativity. You can be very specific, such as “I need access to mental health care providers,” or more general, such as “I need guidance.”'
+  - 'The third ring identifies exactly what is needed to meet each responsibility. Common needs include time, support, buy-in from your organization, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, and creativity. You can be very specific, such as “I need access to mental health care providers,” or more general, such as “I need guidance.”'
   - 'You&rsquo;ll be asked about each responsibility in turn, starting with the first one you entered. As you add needs, they will be entered into your map below. At first, the positioning may look odd. Please keep going – it will improve as you add needs. And, if you want, you can move things around when your map is completely filled in. If you move things now, they will get moved back every time a new item is added.'
 ring3-prompt.paras:
   - 'To fulfill this responsibility, I need:'
@@ -110,7 +109,7 @@ ring4-intro.paras:
   - 'Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you tried (whether or not they have helped you) to get that need met? Resources might include knowledge or strengths you or someone around you has, websites, brochures, training programs, services in your community, providers, a para professional, or books you read to build a skill in yourself.'
   - 'Hopefully you jotted down a list of resources that support you when you looked at your map on the last screen. If you haven&rsquo;t done that yet, go ahead and do it now. You can click &ldquo;back&rdquo; to see your map better.'
   - 'When you are ready, enter information about each resource, one at a time.'
-  - 'First, you will type the specific name or a short description of the resource. For example, you might type “Mrs. Smith,”  “www.name_of_website.com,” “my patience,” or “Tech Solutionz.”' 
+  - 'First, you will type the specific name or a short description of the resource. For example, you might type “Mrs. Smith,” “www.name_of_website.com,” “my patience,” or “Tech Solutionz.”' 
   - 'Next you will be asked to describe what kind of resource it is. In the examples just above, you might describe Mrs. Smith as an Educator, www.name_of_website.com as a website, your patience as a personal strength, and Tech Solutionz as an IT support.'
   - 'Next, you will be asked to click on each need that the resource helps with from a list that is generated from your own SSM. A resource can help with one need, or with many needs – check all that apply. For example, time management skills are a resource that might help with many of your needs while dealing with a behavioral health issue with a child might only help with a single need that you listed.'
   - 'In the last step, you will be asked rate how helpful each resource is, and to briefly comment on why the resource supports you or not – what about it is particularly helpful or not. Here we are interested in your personal experience with the resource – so answer for yourself (and not based on what others think about the resource).'
@@ -144,7 +143,7 @@ ring5-aside-header: 'Tip:'
 ring5-aside.list:
   - 'You need to enter exactly three wishes for desired change. Use them wisely!'
 ring5-intro.paras:
-  - 'Thinking about your map, what are the most meaningful changes that would better support you in meeting your responsibilities? Is there a resource that you wish were different in some way? A need you would like help with? A responsibility you don&rsquo;t even know how to begin to tackle? We would like you to describe your three most important wishes for how you could be better supported in your work described in this SSM. These wishes will go outside of the outermost ring. Please enter 3 below.  You&rsquo;re currently on wish <span class="wish-number"></span> of 3.'
+  - 'Thinking about your map, what are the most meaningful changes that would better support you in meeting your responsibilities? Is there a resource that you wish were different in some way? A need you would like help with? A responsibility you don&rsquo;t even know how to begin to tackle? We would like you to describe your three most important wishes for how you could be better supported in your work described in this SSM. These wishes will go outside of the outermost ring. Please enter 3 below. You&rsquo;re currently on wish <span class="wish-number"></span> of 3.'
 ring5-wish-name-prompt:
   'Please describe your wish.'
 ring5-wish-connection-prompt:
@@ -167,8 +166,8 @@ review-aside-header: 'Wondering what to do next?'
 review-aside-text.paras:
   - 'Now that you have a clear picture of the challenge and your role in it, many people find it helpful to use the map to think about how they could work on the challenge. What could you do to change your role, responsibilities, resources, and needs for the better? You can add these wishes on the outside of the rings, connecting them with the responsibilities, needs, or resources they would change.'
 review-text.paras:
-  - 'You are almost there! Let&rsquo;s clean up your map.  Try moving the shapes around so that they are evenly spaced and the lines don&rsquo;t cross as much. Be sure to keep the blue rectangles in the blue &ldquo;Responsibilities&rdquo; ring, the aqua diamonds in the aqua &ldquo;Needs&rdquo; ring, the black ovals in the black &ldquo;Resources&rdquo; ring, and the gold &ldquo;Wish List&rdquo; stars outside the outermost ring.'
-  - 'Once your map looks good to you, you&rsquo;re finished! If you want to save your map, which we recommend, there are a few options…'  
+  - 'You are almost there! Let&rsquo;s clean up your map. Try moving the shapes around so that they are evenly spaced and the lines don&rsquo;t cross as much. Be sure to keep the blue rectangles in the blue &ldquo;Responsibilities&rdquo; ring, the aqua diamonds in the aqua &ldquo;Needs&rdquo; ring, the black ovals in the black &ldquo;Resources&rdquo; ring, and the gold &ldquo;Wish List&rdquo; stars outside the outermost ring.'
+  - 'Once your map looks good to you, you&rsquo;re finished! If you want to save your map, which we recommend, there are a few options…'
 survey-request: 'But first! Please tell us about your experience using the SSM Wizard by filling out '
 survey.link: 'https://unc.az1.qualtrics.com/jfe/form/SV_6rpMx5m7yFAKma1'
 review-map-id: '(use numerical ID '
