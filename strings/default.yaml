@@ -4,9 +4,9 @@ welcome-header:
 salutation.paras:
   - 'Dear teachers, administrators, social workers, school nurses, therapists, para-professionals, and school-based health center staff:'
 welcome-text.paras:
-  - 'Steven C. Rogers, MD, MS-CTR, a Pediatric Emergency Medicine physician at Connecticut Children’s Medical Center and the Injury Prevention Center, was contracted by the Department of Family and Children services to look at “Roles in Mental Health Care within Schools in Connecticut” as part of a larger project looking at the system of mental health care for children in Connecticut. We are contacting school personnel via email to ask for your participation in a study of school-based mental health care via an electronic survey.'
-  - 'We invite you to take this survey that will ask you to explain how you see your role in relation to the provision of behavioral and mental health services to children in the school setting. Your responses will help us to understand barriers and strengths in addressing children’s mental health concerns and to learn from you what steps can be taken to improve this system of care. The survey will take an estimated 10 to 25 minutes to complete.'
-  - 'The survey is based on a methodology called system support mapping (SSM) and is a guided process in which participants develop their own individual “map” of how they see the system of care under question, in this case children’s mental and behavioral health in the school setting.'
+  - 'Steven C. Rogers, MD, MS-CTR, a Pediatric Emergency Medicine physician at Connecticut Children&rsquo;s Medical Center and the Injury Prevention Center, was contracted by the Department of Family and Children services to look at &ldquo;Roles in Mental Health Care within Schools in Connecticuti&rdquo; as part of a larger project looking at the system of mental health care for children in Connecticut. We are contacting school personnel via email to ask for your participation in a study of school-based mental health care via an electronic survey.'
+  - 'We invite you to take this survey that will ask you to explain how you see your role in relation to the provision of behavioral and mental health services to children in the school setting. Your responses will help us to understand barriers and strengths in addressing children&rsquo;s mental health concerns and to learn from you what steps can be taken to improve this system of care. The survey will take an estimated 10 to 25 minutes to complete.'
+  - 'The survey is based on a methodology called system support mapping (SSM) and is a guided process in which participants develop their own individual &ldquo;map&rdquo; of how they see the system of care under question, in this case children&rsquo;s mental and behavioral health in the school setting.'
 map-uses-1-span: 'Participation is voluntary and your survey responses will be kept confidential. Only aggregate information will be disclosed as part of our report. Should you have any questions about the study, please email' 
 map-uses-2-span: ', Principal Investigator.'
 next-page-instruction.paras: 
@@ -52,7 +52,7 @@ overview-text-2.paras:
 # Step 4
 prerequisites-header: 'Prerequisites'
 prerequisites-text.paras:
-  - 'Before starting to build your SSM, focus on a specific challenge. This is important! If you don’t have a solid understanding of your role in this challenge, this map-building exercise could be unclear and unhelpful.'
+  - 'Before starting to build your SSM, focus on a specific challenge. This is important! If you don&rsquo;t have a solid understanding of your role in this challenge, this map-building exercise could be unclear and unhelpful.'
 prerequisites-focus-description-prompt: 'Please take a few minutes to develop a clear idea of the challenge you are attempting to map. Then, in the text box below, please briefly describe it.'
 prerequisites-context-prompt: 'As a last step before we begin your map, provide a little more context around the initiative. In the text box below, please briefly describe key partners collaborating with you and the time frame for the work.'
 prerequisites-next.paras:
@@ -75,7 +75,7 @@ ring1-afterword.paras:
 ring2-header: 'Ring #2: Responsibilities'
 ring2-aside-header: 'Tips:'
 ring2-aside.list:
-  - 'For some people it makes more sense to describe relevant project activities, objectives or goals instead of responsibilities in this ring. As long as you are describing ways you invest your time related to the challenge you are mapping, the specific label doesn’t matter.'
+  - 'For some people it makes more sense to describe relevant project activities, objectives or goals instead of responsibilities in this ring. As long as you are describing ways you invest your time related to the challenge you are mapping, the specific label doesn&rsquo;t matter.'
   - 'Don&lsquo;t forget to click &ldquo;Add&rdquo; after you select or write in a responsibility.'
 # Note: this must include a <span> with id "wizard_role_text" somewhere.
 ring2-text.paras:
@@ -89,7 +89,7 @@ ring3-aside-header: 'Tip:'
 ring3-aside.list:
   - 'Needs are the most important ingredients in a recipe for how you complete each responsibility.'
 ring3-text.paras:
-  - 'The third ring identifies exactly what is needed to meet each responsibility. Common needs include time, support, buy-in from your organization, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, and creativity. You can be very specific, such as “I need access to mental health care providers,” or more general, such as “I need guidance.”'
+  - 'The third ring identifies exactly what is needed to meet each responsibility. Common needs include time, support, buy-in from your organization, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, and creativity. You can be very specific, such as &ldquo;I need access to mental health care providers,&rdquo; or more general, such as &ldquo;I need guidance.&rdquo;'
   - 'You&rsquo;ll be asked about each responsibility in turn, starting with the first one you entered. As you add needs, they will be entered into your map below. At first, the positioning may look odd. Please keep going – it will improve as you add needs. And, if you want, you can move things around when your map is completely filled in. If you move things now, they will get moved back every time a new item is added.'
 ring3-prompt.paras:
   - 'To fulfill this responsibility, I need:'
@@ -109,7 +109,7 @@ ring4-intro.paras:
   - 'Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you tried (whether or not they have helped you) to get that need met? Resources might include knowledge or strengths you or someone around you has, websites, brochures, training programs, services in your community, providers, a para professional, or books you read to build a skill in yourself.'
   - 'Hopefully you jotted down a list of resources that support you when you looked at your map on the last screen. If you haven&rsquo;t done that yet, go ahead and do it now. You can click &ldquo;back&rdquo; to see your map better.'
   - 'When you are ready, enter information about each resource, one at a time.'
-  - 'First, you will type the specific name or a short description of the resource. For example, you might type “Mrs. Smith,” “www.name_of_website.com,” “my patience,” or “Tech Solutionz.”' 
+  - 'First, you will type the specific name or a short description of the resource. For example, you might type &ldquo;Mrs. Smith,&rdquo; &ldquo;www.name_of_website.com,&rdquo; &ldquo;my patience,&rdquo; or &ldquo;Tech Solutionz.&rdquo;.' 
   - 'Next you will be asked to describe what kind of resource it is. In the examples just above, you might describe Mrs. Smith as an Educator, www.name_of_website.com as a website, your patience as a personal strength, and Tech Solutionz as an IT support.'
   - 'Next, you will be asked to click on each need that the resource helps with from a list that is generated from your own SSM. A resource can help with one need, or with many needs – check all that apply. For example, time management skills are a resource that might help with many of your needs while dealing with a behavioral health issue with a child might only help with a single need that you listed.'
   - 'In the last step, you will be asked rate how helpful each resource is, and to briefly comment on why the resource supports you or not – what about it is particularly helpful or not. Here we are interested in your personal experience with the resource – so answer for yourself (and not based on what others think about the resource).'
@@ -166,16 +166,13 @@ review-aside-header: 'Wondering what to do next?'
 review-aside-text.paras:
   - 'Now that you have a clear picture of the challenge and your role in it, many people find it helpful to use the map to think about how they could work on the challenge. What could you do to change your role, responsibilities, resources, and needs for the better? You can add these wishes on the outside of the rings, connecting them with the responsibilities, needs, or resources they would change.'
 review-text.paras:
-  - 'You are almost there! Let&rsquo;s clean up your map. Try moving the shapes around so that they are evenly spaced and the lines don&rsquo;t cross as much. Be sure to keep the blue rectangles in the blue &ldquo;Responsibilities&rdquo; ring, the aqua diamonds in the aqua &ldquo;Needs&rdquo; ring, the black ovals in the black &ldquo;Resources&rdquo; ring, and the gold &ldquo;Wish List&rdquo; stars outside the outermost ring.'
-  - 'Once your map looks good to you, you&rsquo;re finished! If you want to save your map, which we recommend, there are a few options…'
-survey-request: 'But first! Please tell us about your experience using the SSM Wizard by filling out '
-survey.link: 'https://unc.az1.qualtrics.com/jfe/form/SV_6rpMx5m7yFAKma1'
-review-map-id: '(use numerical ID '
-end-sentence: ' at the end of the URL above).'
-review-download-data-text: 'download your map data'
-review-download-data-tips-header: 'What can you do with downloaded data?'
-review-download-data-tips-span1: 'Add to or otherwise modify your map by opening the downloaded file in '
-review-download-data-tips-span2: '(when you get there, click on the button with the "?" on it to get started).'
-review-download-image-text: 'download your map as an image'
-review-download-image-tips: 'Before you download an image, there are a few things you can do to improve the image quality: zoom in or out for best fit; reposition the shapes to take advantage of the available space; move the whole map to get everything in. You can keep adjusting the map and downloading images until you have one you like.'
+  - 'You are almost finished! Your map has now been saved in the database. If you would like your own copy of your map, which we recommend, there are two options:'
+#  - 'You are almost finished! Let&rsquo;s clean up your map. Please move the shapes around so that they are evenly spaced and the lines don&rsquo;t cross as much – it&rsquo;ll make your map easier to read. Also, keep the blue rectangles in the blue &ldquo;Responsibilities&rdquo; ring, the aqua diamonds in the aqua &ldquo;Needs&rdquo; ring, the black ovals in the black &ldquo;Resources&rdquo; ring, and the gold &ldquo;Wish List&rdquo; stars outside the outermost ring. Once your map looks good to you, press the &ldquo;Save&rdquo; button and you&rsquo;re done. Your map has now been saved in the database.'
+save-option1-header: '1. Create your own copy of the SSM'
+save-option1-span1: 'Download your map using the button below. Note that the file you will get is a .json file – it will not open in Word or Excel. To view, add to, or otherwise modify your map, open the downloaded file in '
+save-option1-span2: '. When you get there, click on the button with the "?" on it to get started.'
+save-option1-button-text: 'download your map data'
 
+save-option2-header: '2. Save your map as a picture'
+review-download-image-tips: 'Before you download an image, there are a few things you can do to improve the image quality: zoom in or out for best fit; reposition the shapes to take advantage of the available space; move the whole map to get everything in. You can keep adjusting the map and downloading images until you have one you like.'
+review-download-image-text: 'download your map as an image'
