@@ -4129,19 +4129,19 @@ var highlightResponsibility = function(d3, responsibilityNumber) {
 };
 
 var clearResourceForm = function(d3) {
-  d3.select('#wizard-step9 input[name=resource_type]').property('value', '');
-  d3.select('#wizard-step9 input[name=resource_name]').property('value', '');
+  d3.select('#wizard-step8 input[name=resource_type]').property('value', '');
+  d3.select('#wizard-step8 input[name=resource_name]').property('value', '');
   d3.select('#resource-type-completions').selectAll('option').remove();
   d3.select('#wizard-resource-needs').selectAll('div').remove();
-  d3.selectAll('#wizard-step9 input[name=helpfulness]:checked')
+  d3.selectAll('#wizard-step8 input[name=helpfulness]:checked')
     .property('checked', false);
-  d3.select('#wizard-step9 textarea').property('value', '');
+  d3.select('#wizard-step8 textarea').property('value', '');
 };
 
 var populateResourceForm = function(d3, resource) {
-  d3.select('#wizard-step9 input[name=resource_type]')
+  d3.select('#wizard-step8 input[name=resource_type]')
     .property('value', resource.generalName);
-  d3.select('#wizard-step9 input[name=resource_name]')
+  d3.select('#wizard-step8 input[name=resource_name]')
     .property('value', resource.specificName);
   var selectNode = d3.select('select[name="resource_label_field"]').node();
   selectNode.selectedIndex = resource.labelField === 'type' ? 0 : 1;
@@ -4152,10 +4152,10 @@ var populateResourceForm = function(d3, resource) {
     .property('checked', function(d,i,j){
       return resource.__parents__.indexOf(d) !== -1;
     });
-  d3.select('#wizard-step9 input[name=helpfulness][value="' +
+  d3.select('#wizard-step8 input[name=helpfulness][value="' +
             resource.helpfulness + '"]')
     .property('checked', true);
-  d3.select('#wizard-step9 textarea')
+  d3.select('#wizard-step8 textarea')
     .property('value', resource.helpfulnessDescription);
 };
 
