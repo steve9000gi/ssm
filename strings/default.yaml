@@ -4,9 +4,9 @@ welcome-header:
 salutation.paras:
   - 'Dear teachers, administrators, social workers, school nurses, therapists, para-professionals, and school-based health center staff:'
 welcome-text.paras:
-  - 'Steven C. Rogers, MD, MS-CTR, a Pediatric Emergency Medicine physician at Connecticut Children&rsquo;s Medical Center and the Injury Prevention Center, was contracted by the Department of Family and Children services to look at &ldquo;Roles in Mental Health Care within Schools in Connecticuti&rdquo; as part of a larger project looking at the system of mental health care for children in Connecticut. We are contacting school personnel via email to ask for your participation in a study of school-based mental health care via an electronic survey.'
-  - 'We invite you to take this survey that will ask you to explain how you see your role in relation to the provision of behavioral and mental health services to children in the school setting. Your responses will help us to understand barriers and strengths in addressing children&rsquo;s mental health concerns and to learn from you what steps can be taken to improve this system of care. The survey will take an estimated 20 to 30 minutes to complete.'
-  - 'The survey is based on a methodology called system support mapping (SSM) and is a guided process in which participants develop their own individual &ldquo;map&rdquo; of how they see the system of care under question, in this case children&rsquo;s mental and behavioral health in the school setting.'
+  - 'Steven C. Rogers, MD, MS-CTR, a Pediatric Emergency Medicine physician at Connecticut Children&rsquo;s Medical Center and the Injury Prevention Center, was contracted by the Department of Family and Children services to look at &ldquo;Roles in Mental Health Care within Schools in Connecticutt&rdquo; as part of a larger project looking at the system of mental health care for children in Connecticut. We are contacting school personnel via email to ask for your participation in a study of school-based mental health care via an electronic survey.'
+  - 'We invite you to take this survey; it will ask you to explain how you see your role in relation to the provision of behavioral and mental health services to children in the school setting. Your responses will help us to understand barriers and strengths in addressing children&rsquo;s mental health concerns and to learn from you what steps can be taken to improve this system of care. The survey will take an estimated 20 to 30 minutes to complete.'
+  - 'The survey is based on a methodology called system support mapping (SSM) and is a guided process in which participants develop their own individual &ldquo;maps&rdquo; showing how each participant sees a system of care under examination, in this case children&rsquo;s mental and behavioral health in the school setting.'
 map-uses-1-span: 'Participation is voluntary and your survey responses will be kept confidential. Only aggregate information will be disclosed as part of our report. Should you have any questions about the study, please email' 
 map-uses-2-span: ', Principal Investigator.'
 next-page-instruction.paras: 
@@ -60,10 +60,10 @@ prerequisites-next.paras:
 
 # Step 5
 ring1-header: 'Ring #1: Identifying Your Role'
-ring1-aside-header: 'Tips:'
+ring1-aside-header: 'Tip:'
 ring1-aside.list:
   - 'If you have multiple roles that you want to explore, pick one. Including multiple roles in a single map will not work well. You can come back and fill out other maps for other roles later.'
-  - 'You may choose an option from the drop-down list or type in something different if you don&rsquo;t see what you want.'
+#  - 'You may choose an option from the drop-down list or type in something different if you don&rsquo;t see what you want.'
 ring1-intro.paras:
   - 'How would you name your role in the work you are mapping? Some possible roles are: educator, health services, Director, Principal, operations, counselor, clinician, or health educator.'
 ring1-label: 'My role is:'
@@ -105,15 +105,15 @@ ring4-aside-header: 'Tip:'
 ring4-aside.list:
   - 'Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, or a friend who makes baking so much more fun!'
 ring4-intro.paras:
-  - 'The next ring identifies the resources and supports that help you meet your needs described in Ring #3.'
-  - 'Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you used (whether or not they have helped you) to get that need met? Resources might include knowledge or strengths you or someone around you has, websites, brochures, training programs, services in your community, a paraprofessional, or books you read to build a skill in yourself.'
+  - 'The next ring identifies the resources and supports that help you meet your needs as described in Ring #3.'
+  - 'Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you used (whether or not they have helped you) to get each need met? Resources might include knowledge or strengths you or someone around you has, websites, brochures, training programs, services in your community, a paraprofessional, or books you read to build a skill in yourself.'
   - 'Hopefully you jotted down a list of resources that support you when you looked at your map on the last screen. If you haven&rsquo;t done that yet, go ahead and do it now. You can click &ldquo;back&rdquo; to see your map better.'
   - 'When you are ready, enter information about each resource, one at a time.'
-  - 'First, you will type the specific name or a short description of the resource. For example, you might type &ldquo;Mrs. Smith,&rdquo; &ldquo;www.name_of_website.com,&rdquo; &ldquo;my patience,&rdquo; or &ldquo;Tech Solutionz.&rdquo;.' 
-  - 'Next you will be asked to describe what kind of resource it is. In the examples just above, you might describe Mrs. Smith as an Educator, www.name_of_website.com as a website, your patience as a personal strength, and Tech Solutionz as IT support.'
-  - 'Next, you will be asked to click on each need that the resource helps with from a list that is generated from your own SSM. A resource can help with one need, or with many needs – check all that apply. For example, time management skills are a resource that might help with many of your needs while a local expert may help you deal with a single, specific behavioral health issue you address regularly.'
-  - 'In the last step, you will be asked to rate how helpful each resource is, and to briefly explain your answer. Here we are interested in your personal experience with the resource – so answer for yourself (and not based on what others think about the resource).'
-  - 'The arrow lines connecting each resource to your needs in Ring #4 will be color-coded to indicate that resource&rsquo;s level of helpfulness.'
+  - 'First, you will type the specific name or a short description of the resource. For example, you might type &ldquo;Mrs. Smith,&rdquo; &ldquo;www.name_of_website.com,&rdquo; &ldquo;my patience,&rdquo; or &ldquo;Tech Solutionz.&rdquo;' 
+  - 'Next, you will be asked to describe what kind of resource it is. In the examples just above, you might describe Mrs. Smith as an Educator, www.name_of_website.com as a website, your patience as a personal strength, and Tech Solutionz as IT support.'
+  - 'After that, you will be asked to click on each need that the resource helps with from a list that is generated from your own SSM. A resource can help with one need, or with many needs – check all that apply. For example, time management skills are a resource that might help with many of your needs while a local expert may help you deal with a single, specific behavioral health issue you address regularly.'
+  - 'In the last step, you will be asked to rate how helpful your resource is, and to briefly explain your answer. Here we are interested in your personal experience with the resource – so answer for yourself (and not based on what others think about the resource).'
+  - 'The arrow lines connecting each resource to your needs in Ring #4 will be color-coded to indicate that resource&rsquo;s level of helpfulness: green means helpful, black means somewhat helpful, red means unhelpful.'
 ring4-resource-type-prompt:
   'What type of resource would you like to describe?'
 ring4-resource-name-prompt:
@@ -134,7 +134,7 @@ ring4-interstitial-text.paras:
 # Step 10
 pre-ring5-text.paras:
   - 'Here is your map so far. Please look at it, and gather your thoughts about the three things that, if they changed, would most support you in meeting your responsibilities'
-  - 'The next steps will guide you through entering your top 3 wishes, one at a time.'
+  - 'The next steps will guide you through entering your top three wishes, one at a time.'
 
 # Step 11
 ring5-header: 'Outer area: Wishes'
