@@ -510,7 +510,7 @@ var completionsByTextModule = {
 
 exports.completionsByType = function() {
   var module = modTextModules.module;
-  return completionsByTextModule[module] || CYSHCNCompletions;
+  return completionsByTextModule[module] || titleVCompletions;
 };
 
 },{"./text-modules.js":26}],6:[function(require,module,exports){
@@ -3764,7 +3764,7 @@ exports.currentStep = 1;
 exports.currentResponsibility = undefined;
 exports.currentNeed = undefined;
 
-var numSteps = 12;
+var numSteps = 11;
 var nodesByType = {
       'role': null,
       'responsibility': [],
@@ -4016,7 +4016,7 @@ var upsertResource = function(d3, resourceNumber) {
 };
 
 var upsertWish = function(d3, wishNumber) {
-  var root = d3.select('#wizard-step11'),
+  var root = d3.select('#wizard-step10'),
       name = root.select('input[name=wish_name]').property('value'),
       parentTypeSel = root.select('input[name=wish_parent_type]:checked'),
       parentType = parentTypeSel.empty() ? null
@@ -4161,8 +4161,8 @@ var populateResourceForm = function(d3, resource) {
 
 var setupResourceForm = function(d3, resourceNum) {
   document.getElementById('wizard').className = 'open';
-  d3.select('#wizard-step9 .resource-form').style('display', 'block');
-  d3.select('#wizard-step9 .resource-interstitial').style('display', 'none');
+  d3.select('#wizard-step8 .resource-form').style('display', 'block');
+  d3.select('#wizard-step8 .resource-interstitial').style('display', 'none');
   clearResourceForm(d3);
   var groups = d3
         .select('#wizard-resource-needs')
@@ -4203,8 +4203,8 @@ var setupResourceForm = function(d3, resourceNum) {
 
 var setupResourceInterstitial = function(d3) {
   document.getElementById('wizard').className = 'small';
-  d3.select('#wizard-step9 .resource-form').style('display', 'none');
-  d3.select('#wizard-step9 .resource-interstitial').style('display', 'block');
+  d3.select('#wizard-step8 .resource-form').style('display', 'none');
+  d3.select('#wizard-step8 .resource-interstitial').style('display', 'block');
   d3.selectAll('#wizard button.add-resource')
     .on('click', function(){ exports.nextStep(d3); });
   d3.selectAll('#wizard button.next-step')
@@ -4212,11 +4212,11 @@ var setupResourceInterstitial = function(d3) {
 };
 
 var setupWishFormParentList = function(d3, parentType) {
-  d3.select('#wizard-step11 span.wish-parent-type').text(parentType);
-  d3.select('#wizard-step11 div.wish-parent-selection')
+  d3.select('#wizard-step10 span.wish-parent-type').text(parentType);
+  d3.select('#wizard-step10 div.wish-parent-selection')
     .style('display', 'block');
   d3.select('div.wish-parent-list').selectAll('*').remove();
-  var select = d3.select('#wizard-step11 div.wish-parent-list')
+  var select = d3.select('#wizard-step10 div.wish-parent-list')
         .append('select')
         .attr('name', 'wish_parent_node_index');
   var options = select.selectAll('option')
@@ -4224,12 +4224,12 @@ var setupWishFormParentList = function(d3, parentType) {
         .enter().append('option')
         .attr('value', function(d,i){ return d ? i : null; })
         .text(function(d){ return d ? d.name : ''; });
-  d3.select('#wizard-step11 div.wish-resource-description')
+  d3.select('#wizard-step10 div.wish-resource-description')
     .style('display', parentType === 'resource' ? 'block' : 'none');
 };
 
 var setupWishForm = function(d3, wishNum) {
-  var root = d3.select('#wizard-step11'),
+  var root = d3.select('#wizard-step10'),
       wish = wishNum < nodesByType.wish.length && nodesByType.wish[wishNum],
       name = wish && wish.name,
       parent = wish && wish.__parents__[0],
@@ -4465,6 +4465,7 @@ var steps = {
     }
   },
 
+  /*
   4: {
     enter: function(d3) {
       var sel;
@@ -4494,8 +4495,9 @@ var steps = {
       return true;
     }
   },
+  */
 
-  5: {
+  4: {
     enter: function(d3) {
       // If we didn't transit step 1 in this page load, initialTranslate and
       // initialZoom will be unset, so use default values.
@@ -4523,7 +4525,7 @@ var steps = {
     }
   },
 
-  6: {
+  5: {
     enter: function(d3) {
       var uponAdd = function(i, text) {
         addNode(d3, 'responsibility', nodesByType.role, text);
@@ -4566,7 +4568,7 @@ var steps = {
     }
   },
 
-  7: {
+  6: {
     enter: function(d3, direction, subStepState) {
       if (direction === 0) {
         exports.currentResponsibility =
@@ -4614,7 +4616,7 @@ var steps = {
     }
   },
 
-  8: { isSmall: true },
+  7: { isSmall: true },
 
   // Step 8, adding resources, is a bit complicated.
   //
@@ -4641,7 +4643,7 @@ var steps = {
   // If the page is loaded when the user was last seen at Step 8, do the
   // interstitial.
 
-  9: {
+  8: {
     // false if on an in-between "add more or continue?" interstitial:
     doingDataEntry: true,
     currentResource: null,
@@ -4712,9 +4714,9 @@ var steps = {
     }
   },
 
-  10: { isSmall: true },
+  9: { isSmall: true },
 
-  11: {
+  10: {
     currentWish: null,
 
     enter: function(d3, direction, subStepState) {
@@ -4748,7 +4750,7 @@ var steps = {
     }
   },
 
-  12: {
+  11: {
     enter: function(d3) {
       d3.select('#wizard-download-map-data')
         .on('click', function(){

@@ -133,5 +133,5 @@ var completionsByTextModule = {
 
 exports.completionsByType = function() {
   var module = modTextModules.module;
-  return completionsByTextModule[module] || CYSHCNCompletions;
+  return completionsByTextModule[module] || titleVCompletions;
 };
