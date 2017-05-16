@@ -5,28 +5,28 @@ salutation.paras:
   - 'Dear teachers, administrators, social workers, school nurses, therapists, para-professionals, and school-based health center staff:'
 welcome-text.paras:
   - 'Steven C. Rogers, MD, MS-CTR, a Pediatric Emergency Medicine physician at Connecticut Children&rsquo;s Medical Center and the Injury Prevention Center, was contracted by the Department of Family and Children services to look at &ldquo;Roles in Mental Health Care within Schools in Connecticuti&rdquo; as part of a larger project looking at the system of mental health care for children in Connecticut. We are contacting school personnel via email to ask for your participation in a study of school-based mental health care via an electronic survey.'
-  - 'We invite you to take this survey that will ask you to explain how you see your role in relation to the provision of behavioral and mental health services to children in the school setting. Your responses will help us to understand barriers and strengths in addressing children&rsquo;s mental health concerns and to learn from you what steps can be taken to improve this system of care. The survey will take an estimated 10 to 25 minutes to complete.'
+  - 'We invite you to take this survey that will ask you to explain how you see your role in relation to the provision of behavioral and mental health services to children in the school setting. Your responses will help us to understand barriers and strengths in addressing children&rsquo;s mental health concerns and to learn from you what steps can be taken to improve this system of care. The survey will take an estimated 20 to 30 minutes to complete.'
   - 'The survey is based on a methodology called system support mapping (SSM) and is a guided process in which participants develop their own individual &ldquo;map&rdquo; of how they see the system of care under question, in this case children&rsquo;s mental and behavioral health in the school setting.'
 map-uses-1-span: 'Participation is voluntary and your survey responses will be kept confidential. Only aggregate information will be disclosed as part of our report. Should you have any questions about the study, please email' 
 map-uses-2-span: ', Principal Investigator.'
 next-page-instruction.paras: 
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
 example-systems-header:
-  'Examples:' 
+  'System Support Mapping:' 
 example-systems.list:
-  - '-'
+  - 'A tool to help us understand your role in supporting mental health in schools.'
 
 # Step 2: Get demographic info
 demographic-header:
   'Please provide the following information:'
 school-role-prompt:
-  '1. What is the role of your school?'
+  '1. What is your position at your school?'
 grade-working-with-prompt:
-  '2. What grade are you working with?'
+  '2. What grade[s] are you working with?'
 age-range-prompt:
-  '3. Age Range:'
+  '3. Into which of the following ranges does your age fall?'
 years-at-current-school-prompt:
-  '4. Number of years at current school:'
+  '4. How many years have you been working at this school?'
 race-prompt:
   '5. Race/Ethnicity (check all that apply):'
 school-location-prompt:
@@ -52,8 +52,8 @@ overview-text-2.paras:
 # Step 4
 prerequisites-header: 'Prerequisites'
 prerequisites-text.paras:
-  - 'Before starting to build your SSM, focus on a specific challenge. This is important! If you don&rsquo;t have a solid understanding of your role in this challenge, this map-building exercise could be unclear and unhelpful.'
-prerequisites-focus-description-prompt: 'Please take a few minutes to develop a clear idea of the challenge you are attempting to map. Then, in the text box below, please briefly describe it.'
+  - 'Before starting to build your SSM, focus on a specific task. This is important! If you don&rsquo;t have a solid understanding of your role in this task, this map-building exercise could be unclear and unhelpful.'
+prerequisites-focus-description-prompt: 'Please take a few minutes to develop a clear idea of the task you are attempting to map. Then, in the text box below, please briefly describe it.'
 prerequisites-context-prompt: 'As a last step before we begin your map, provide a little more context around the initiative. In the text box below, please briefly describe key partners collaborating with you and the time frame for the work.'
 prerequisites-next.paras:
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
@@ -75,7 +75,7 @@ ring1-afterword.paras:
 ring2-header: 'Ring #2: Responsibilities'
 ring2-aside-header: 'Tips:'
 ring2-aside.list:
-  - 'For some people it makes more sense to describe relevant project activities, objectives or goals instead of responsibilities in this ring. As long as you are describing ways you invest your time related to the challenge you are mapping, the specific label doesn&rsquo;t matter.'
+  - 'For some people it makes more sense to describe relevant project activities, objectives or goals instead of responsibilities in this ring. As long as you are describing ways you invest your time related to the task you are mapping, the specific label doesn&rsquo;t matter.'
   - 'Don&lsquo;t forget to click &ldquo;Add&rdquo; after you select or write in a responsibility.'
 # Note: this must include a <span> with id "wizard_role_text" somewhere.
 ring2-text.paras:
@@ -164,7 +164,7 @@ ring5-wish-resource-description-prompt:
 review-header: 'Review and Next Steps'
 review-aside-header: 'Wondering what to do next?'
 review-aside-text.paras:
-  - 'Now that you have a clear picture of the challenge and your role in it, many people find it helpful to use the map to think about how they could work on the challenge. What could you do to change your role, responsibilities, resources, and needs for the better? You can add these wishes on the outside of the rings, connecting them with the responsibilities, needs, or resources they would change.'
+  - 'Now that you have a clear picture of the task and your role in it, many people find it helpful to use the map to think about how they could work on the task. What could you do to change your role, responsibilities, resources, and needs for the better? You can add these wishes on the outside of the rings, connecting them with the responsibilities, needs, or resources they would change.'
 review-text.paras:
   - 'You are almost finished! Your map has now been saved in the database. If you would like your own copy of your map, which we recommend, there are two options:'
 #  - 'You are almost finished! Let&rsquo;s clean up your map. Please move the shapes around so that they are evenly spaced and the lines don&rsquo;t cross as much – it&rsquo;ll make your map easier to read. Also, keep the blue rectangles in the blue &ldquo;Responsibilities&rdquo; ring, the aqua diamonds in the aqua &ldquo;Needs&rdquo; ring, the black ovals in the black &ldquo;Resources&rdquo; ring, and the gold &ldquo;Wish List&rdquo; stars outside the outermost ring. Once your map looks good to you, press the &ldquo;Save&rdquo; button and you&rsquo;re done. Your map has now been saved in the database.'
