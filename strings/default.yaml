@@ -37,7 +37,6 @@ next.paras:
 # Step 3
 overview-header: 'Overview'
 overview-text-1.paras:
-  - 'Here&rsquo;s a quick overview of the process.'
   - 'Notice the rings in the chart below and the labels for each ring. The labels are &ldquo;Role/Identity,&rdquo; &ldquo;Most Important Responsibilities,&rdquo; &ldquo;General Needs for Each Responsibility,&rdquo; &ldquo;Available Resources,&rdquo; and &ldquo;Wish List.&rdquo;'
   - 'You will build your SSM step by step, starting inside the innermost ring and working your way outwards.'
   - 'The wizard is intended to build the SSM for you, but there are some things you can control along the way. You can:'
@@ -69,7 +68,7 @@ ring2-aside.list:
   - 'Don&lsquo;t forget to click &ldquo;Add&rdquo; after you select or write in a responsibility.'
 # Note: this must include a <span> with id "wizard_role_text" somewhere.
 ring2-text.paras:
-  - 'The second ring contains the responsibilities that you have in your role within the school district (or school-based health center) as <code><span id="wizard_role_text">_</span></code>. Identify the THREE most important responsibilities related to this role and add them here.'
+  - 'The second ring contains the responsibilities that you have in your role within the school district (or school-based health center) as &ldquo;<code><span id="wizard_role_text">_</span></code>.&rdquo; Identify the THREE most important responsibilities related to this role and add them here.'
   - 'When you click the &ldquo;Add&rdquo; button, the responsibility you&rsquo;ve just entered will be added to the map below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to go to the next step.'
   - 'One of my responsibilities is:'
 
@@ -159,7 +158,7 @@ review-text.paras:
   - 'You are almost finished! Your map has now been saved in the database. If you would like your own copy of your map, which we recommend, there are two options:'
 save-option1-header: '1. Create your own copy of the SSM'
 save-option1-span1: 'Download your map using the button below. Note that the file you will get is a .json file – it will not open in Word or Excel. To view, add to, or otherwise modify your map, open the downloaded file in '
-save-option1-span2: '. When you get there, click on the button with the &ldquo;?&rdquo; on it to get started.'
+save-option1-span2: '. When you get there, click on the button with the "?" on it to get started.'
 save-option1-button-text: 'download your map data'
 
 save-option2-header: '2. Save your map as a picture'
