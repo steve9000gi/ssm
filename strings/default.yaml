@@ -4,7 +4,7 @@ welcome-header:
 salutation.paras:
   - 'Dear teachers, administrators, social workers, school nurses, therapists, para-professionals, and school-based health center staff:'
 welcome-text.paras:
-  - 'Steven C. Rogers, MD, MS-CTR, a Pediatric Emergency Medicine physician at Connecticut Children&rsquo;s Medical Center and the Injury Prevention Center, was contracted by the Department of Family and Children services to look at &ldquo;Roles in Mental Health Care within Schools in Connecticutt&rdquo; as part of a larger project looking at the system of mental health care for children in Connecticut. We are contacting school personnel via email to ask for your participation in a study of school-based mental health care via an electronic survey.'
+  - 'Steven C. Rogers, MD, MS-CTR, a Pediatric Emergency Medicine physician at Connecticut Children&rsquo;s Medical Center and the Injury Prevention Center, was contracted by the Department of Children and Families to look at &ldquo;Roles in Mental Health Care within Schools in Connecticut&rdquo; as part of a larger project looking at the system of mental health care for children in Connecticut. We are contacting school personnel via email to ask for your participation in a study of school-based mental health care via an electronic survey.'
   - 'We invite you to take this survey; it will ask you to explain how you see your role in relation to the provision of behavioral and mental health services to children in the school setting. Your responses will help us to understand barriers and strengths in addressing children&rsquo;s mental health concerns and to learn from you what steps can be taken to improve this system of care. The survey will take an estimated 20 to 30 minutes to complete.'
   - 'The survey is based on a methodology called system support mapping (SSM) and is a guided process in which participants develop their own individual &ldquo;maps&rdquo; showing how each participant sees a system of care under examination, in this case children&rsquo;s mental and behavioral health in the school setting.'
 map-uses-1-span: 'Participation is voluntary and your survey responses will be kept confidential. Only aggregate information will be disclosed as part of our report. Should you have any questions about the study, please email' 
@@ -69,7 +69,7 @@ ring2-aside.list:
   - 'Don&lsquo;t forget to click &ldquo;Add&rdquo; after you select or write in a responsibility.'
 # Note: this must include a <span> with id "wizard_role_text" somewhere.
 ring2-text.paras:
-  - 'The second ring contains the responsibilities that you have in your role within the school district as <code><span id="wizard_role_text">_</span></code>. Identify the THREE most important responsibilities related to this role and add them here.'
+  - 'The second ring contains the responsibilities that you have in your role within the school district (or school-based health center) as <code><span id="wizard_role_text">_</span></code>. Identify the THREE most important responsibilities related to this role and add them here.'
   - 'When you click the &ldquo;Add&rdquo; button, the responsibility you&rsquo;ve just entered will be added to the map below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to go to the next step.'
   - 'One of my responsibilities is:'
 
