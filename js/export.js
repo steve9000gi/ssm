@@ -1,4 +1,5 @@
-var modCirclesOfCare = require('./circles-of-care.js'),
+var modRingsize = require('./ringsize.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modText = require('./text.js'),
@@ -70,7 +71,7 @@ exports.exportGraphAsImage = function(d3) {
   d3.select("#credits")
     .attr("display", "block")
     .attr("y", extent.h - 30)
-   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2015 UNC-CH)");
+   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2017 UNC-CH)");
 
   // Create canvas:
   d3.select("body").append("canvas")

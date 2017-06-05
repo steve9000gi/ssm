@@ -1,4 +1,5 @@
-var modSelectedColor = require('./selected-color.js');
+var modSelectedColor = require('./selected-color.js'),
+    modRingsize = require('./ringsize.js');
 
 exports.hideText = "Hide system support rings";
 exports.center = null;
@@ -24,8 +25,7 @@ exports.show = function(d3) {
       return ssmCenter.x - this.getComputedTextLength() / 2;
     })
     .attr("y", function(d, i) {
-      var offset = [20, 28, 26, 18, 64];
-      return ssmCenter.y - d.radius + offset[i];
+      return ssmCenter.y - d.radius + modRingsize.offset[i];
     });
   d3.select("#sysSptRingsItem").text(exports.hideText)
     .datum({"name": exports.hideText});
@@ -63,7 +63,8 @@ exports.create = function(d3) {
       })
       .style("fill", "none")
       .attr("r", function(d) { return d.radius; });
-  rings.push({"name": "Wish List", "radius": 750, "color": "#" + modSelectedColor.colorChoices[2]});
+  rings.push({"name": "Wish List", "radius": 750,
+              "color": "#" + modSelectedColor.colorChoices[2]});
   d3.select(".ssmGroup").selectAll(".ssmLabel")
     .data(rings)
     .enter().append("text")

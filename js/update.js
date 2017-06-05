@@ -1,4 +1,5 @@
-var modCirclesOfCare = require('./circles-of-care.js'),
+var modRingsize = require('./ringsize.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modDrag = require('./drag.js'),
     modEvents = require('./events.js'),
     modGrid = require('./grid.js'),
@@ -11,8 +12,10 @@ var modCirclesOfCare = require('./circles-of-care.js'),
     modUtil = require('./util.js');
 
 var addHandle = function(d3, parentG, rectData) {
-  var tx = rectData.manualResize ? rectData.width - rectData.xOffset : rectData.width / 2;
-  var ty = rectData.manualResize ? rectData.height - rectData.yOffset : rectData.height / 2;
+  var tx = rectData.manualResize ? rectData.width - rectData.xOffset
+                                 : rectData.width / 2;
+  var ty = rectData.manualResize ? rectData.height - rectData.yOffset
+                                 : rectData.height / 2;
   d3.select(parentG).append("circle")
     .attr("id", "handle" + rectData.id)
     .attr("r", "10")
@@ -82,8 +85,9 @@ var addNewNodes = function(d3) {
             .style("font-weight", modText.boldFontWeight)
             .style("text-decoration", "underline");
           if (!d.manualResize) {
-            // Force shape resize in case bold characters overflow shape boundaries:
-            d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
+            // Force shape resize in case bold chars overflow shape boundaries:
+            d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius
+	        = undefined;
           }
           exports.updateGraph(d3);
         }
@@ -117,7 +121,8 @@ var addNewPaths = function(d3, edgeGroups) {
       }
       modEvents.mouseDownLink = null;
     })
-    .on("mouseover", function() { // Hover color iff not (selected, new edge or inside shape):
+    .on("mouseover", function() {
+      // Hover color iff not (selected, new edge or inside shape):
       if ((d3.select(this).selectAll("path").style("stroke") !== modSelectedColor.color)
           && (!modDrag.shiftNodeDrag) && (!modDrag.justDragged)) {
         d3.select(this).selectAll("path").style("stroke", modSelectedColor.hoverColor)
@@ -133,7 +138,9 @@ var addNewPaths = function(d3, edgeGroups) {
         d3.select(this).selectAll("text").style("fill", modSelectedColor.color);
       } else { // Not selected: reapply edge color, including edge text:
         setEdgeColor(d3, this);
-        d3.select(this).selectAll("text").style("fill", function(d) { return d.color; });
+        d3.select(this).selectAll("text").style("fill", function(d) {
+	  return d.color;
+	});
       }
     })
     .append("path")
@@ -163,7 +170,9 @@ var addNewShapes = function(d3, newShapeGroups, shapeElts) {
     .attr("class", function(d) { return "shape " + d.shape; })
     .attr("id", function(d) { return "shape" + d.id; })
     .style("stroke", function(d) { return d.color; })
-    .style("stroke-width", function(d) { return (d.shape === "noBorder") ? 0 : 2; });
+    .style("stroke-width", function(d) {
+      return (d.shape === "noBorder") ? 0 : 2;
+    });
   newShapeGroups.each(function(d) {
     modText.formatText(d3, d3.select(this), d);
     if (d.shape === "rectangle") {
@@ -182,8 +191,8 @@ var addNewShapes = function(d3, newShapeGroups, shapeElts) {
 var appendPathText = function(d3, pathGroups) {
   var data = [{"class": "shadowText", "stroke-width": "4px"},
               {"class": "foregroundText", "stroke-width": "0px"}];
-  for (var i = 0; i < pathGroups[0].length; i++) {         // For each pathGroup...
-    if (pathGroups[0][i].childNodes.length < 3) {          // ...if there's no text yet...
+  for (var i = 0; i < pathGroups[0].length; i++) {     // For each pathGroup...
+    if (pathGroups[0][i].childNodes.length < 3) {      // ...if no text yet...
       d3.select(pathGroups[0][i]).selectAll("text")
         .data(data)
         .enter().append("text")                        // ...then append it.
@@ -244,7 +253,8 @@ var createNewShapes = function()  {
       shape = modSvg.nodes[i].shape;
       break;
     }
-    var shapeElement = document.createElementNS("http://www.w3.org/2000/svg", shape);
+    var shapeElement = document.createElementNS("http://www.w3.org/2000/svg",
+	                                        shape);
     shapeElts.push(shapeElement);
   }
   return shapeElts;
@@ -259,7 +269,7 @@ var setEdgeColor = function(d3, edgeGroup) {
 };
 
 var setPath = function(edge) {
-  var boundary = 16; // Initialize to default number of pixels padding for circle, diamond.
+  var boundary = 16; // Default number of pixels padding for circle, diamond
   switch (edge.target.shape) {
     case "circle":
       if (edge.target.r) {
@@ -289,9 +299,10 @@ var setPath = function(edge) {
       alert("setPath(...): unknown shape: \"" + edge.target.shape + "\"");
       break;
   }
-  var newP2 = changeLineLength(edge.source.x, edge.source.y, edge.target.x, edge.target.y,
-                                   -boundary, (edge.thickness || 3));
-  return "M" + edge.source.x + "," + edge.source.y + "L" + newP2.x + "," + newP2.y;
+  var newP2 = changeLineLength(edge.source.x, edge.source.y, edge.target.x,
+                               edge.target.y, -boundary, (edge.thickness || 3));
+  return "M" + edge.source.x + "," + edge.source.y + "L" + newP2.x + ","
+             + newP2.y;
 };
 
 var updateExistingNodes = function() {
@@ -306,13 +317,25 @@ var updateExistingNodes = function() {
 exports.deleteGraph = function(d3, skipPrompt) {
   var doDelete = true;
   if (!skipPrompt) {
-    doDelete = window.confirm("Press OK to delete this graph from the canvas. (It will still be saved on the server.)");
+    doDelete = window.confirm("Press OK to delete this graph from the canvas. "
+                            + "(It will still be saved on the server.)");
   }
   if(doDelete) {
+    // Allow reload of same file after delete in on("change"...) function:
+    d3.select("#hidden-file-upload").node().value = "";
     modSvg.nodes = [];
     modSvg.links = [];
     modCirclesOfCare.hide(d3);
+    // Set center to null to force show(...) to recalculate:
+    modSystemSupportMap.center = null;
+    d3.select("#graphG")
+      .attr("transform", "translate(0, 0) scale(1)");
     modSystemSupportMap.show(d3);
+    if (modRingsize.ringsize == "small") {
+      modRingsize.showSmall(d3);
+    } else {
+      modRingsize.showLarge(d3);
+    }
     exports.updateGraph(d3);
     window.location.hash = "";
   }

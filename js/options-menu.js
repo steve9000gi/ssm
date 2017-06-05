@@ -1,5 +1,6 @@
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
+    modRingsize = require('./ringsize.js'),
     modContextMenu = require('./context-menu.js'),
     modEdgeThickness = require('./edge-thickness.js'),
     modExport = require('./export.js'),
@@ -20,32 +21,44 @@ var createEqShapeSizeSubmenu = function(d3) {
     .attr("position", "absolute")
     .style("width", "200px")
     .on("mouseleave", function() {
-      d3.select("#eqShapeSizeSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+      d3.select("#eqShapeSizeSubmenuDiv")
+        .classed("menu", false)
+        .classed("menuHidden", true);
     })
     .on("mouseup", function() {
-      d3.select("#eqShapeSizeSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+      d3.select("#eqShapeSizeSubmenuDiv")
+        .classed("menu", false)
+        .classed("menuHidden", true);
     });
   var choices = [{"name": "Equalize selected shape size"},
                  {"name": "Equalize sizes for all shapes"}];
 
-  d3.select("#eqShapeSizeSubmenuDiv").append("ul").attr("id", "eqShapeSizeSubmenuList");
-  d3.select("#eqShapeSizeSubmenuList").selectAll("li.eqShapeSizeSubmenuListItem")
+  d3.select("#eqShapeSizeSubmenuDiv")
+    .append("ul")
+    .attr("id", "eqShapeSizeSubmenuList");
+  d3.select("#eqShapeSizeSubmenuList")
+    .selectAll("li.eqShapeSizeSubmenuListItem")
     .data(choices).enter()
     .append("li")
       .classed("eqShapeSizeSubmenuListItem", true)
       .attr("id", function(d, i) { return "eqShapeSizeOption" + i; })
       .text(function(d) { return d.name; })
       .on("mouseup", function() {
-        d3.select("#eqShapeSizeSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+        d3.select("#eqShapeSizeSubmenuDiv")
+          .classed("menu", false)
+          .classed("menuHidden", true);
         d3.select("#optionsMenuDiv")
-          .classed("menu", false).classed("menuHidden", true);
+          .classed("menu", false)
+          .classed("menuHidden", true);
 
         switch (d3.select(this).datum().name) {
           case choices[0].name:
-            modSelectedShape.equalizeSelectedShapeSize(d3, modSelectedShape.shape);
+            modSelectedShape.equalizeSelectedShapeSize(d3,
+                                                       modSelectedShape.shape);
             break;
           case choices[1].name:
-            var shapes = ["circle", "rectangle", "diamond", "ellipse", "star", "noBorder"];
+            var shapes = ["circle", "rectangle", "diamond", "ellipse", "star",
+                          "noBorder"];
             for (var i = 0; i < shapes.length; i++) {
               modSelectedShape.equalizeSelectedShapeSize(d3, shapes[i]);
             }
@@ -65,14 +78,21 @@ var createTextLineLengthSubmenu = function(d3) {
     .attr("position", "absolute")
     .style("width", "120px")
     .on("mouseleave", function() {
-      d3.select("#textLineLengthSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+      d3.select("#textLineLengthSubmenuDiv")
+        .classed("menu", false)
+        .classed("menuHidden", true);
     })
     .on("mouseup", function() {
-      d3.select("#textLineLengthSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+      d3.select("#textLineLengthSubmenuDiv")
+        .classed("menu", false)
+        .classed("menuHidden", true);
     });
   var choices = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
-  d3.select("#textLineLengthSubmenuDiv").append("ul").attr("id", "textLineLengthSubmenuList");
-  d3.select("#textLineLengthSubmenuList").selectAll("li.textLineLengthSubmenuListItem")
+  d3.select("#textLineLengthSubmenuDiv")
+    .append("ul")
+    .attr("id", "textLineLengthSubmenuList");
+  d3.select("#textLineLengthSubmenuList")
+    .selectAll("li.textLineLengthSubmenuListItem")
     .data(choices).enter()
     .append("li")
       .classed("textLineLengthSubmenuListItem", true)
@@ -87,7 +107,9 @@ var createTextLineLengthSubmenu = function(d3) {
       })
       .on("mouseup", function() {
         modText.maxCharsPerLine = parseInt(d3.select(this).datum(), 10);
-        d3.select("#textLineLengthSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+        d3.select("#textLineLengthSubmenuDiv")
+          .classed("menu", false)
+          .classed("menuHidden", true);
         d3.select("#menuDiv")
           .classed("menu", false).classed("menuHidden", true);
         d3.selectAll(".textLineLengthSubmenuListItem")
@@ -118,14 +140,18 @@ exports.createOptionsMenu = function(d3) {
   var choices = null;
   if (exports.displayAll) {
     choices = [{"name": "Show system support rings", "id": "sysSptRingsItem"},
+               {"name": "Show small system support rings",
+                "id": "ringsizeItem"},
                {"name": "Show Circles of Care", "id": "cOfCItem"},
                {"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
                {"name": "Set text line length...", "id": "setTextLineLenItem"},
                {"name": "Set line thickness...", "id": "setLineThicknessItem"},
-               {"name": "Set selected object color", "id": "setSelectedObjectColorItem"},
+               {"name": "Set selected object color",
+                "id": "setSelectedObjectColorItem"},
                {"name": "Snap to grid", "id": "snapToGridItem"},
                {"name": "Export map as image", "id": "exportMapAsImageItem"},
-               {"name": "Load text for context menu", "id": "loadContextTextItem"},
+               {"name": "Load text for context menu",
+                "id": "loadContextTextItem"},
                {"name": "Log out", "id": "logoutUser"}];
   } else {
     choices = [{"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
@@ -164,17 +190,19 @@ exports.createOptionsMenu = function(d3) {
       })
       .on("mouseout", function(d) {
         if (d.id === "eqShapeSizeItem") {
-          d3.select("#eqShapeSizeSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+          d3.select("#eqShapeSizeSubmenuDiv")
+            .classed("menu", false)
+            .classed("menuHidden", true);
         } else if (d.id === "setTextLineLenItem") {
           d3.select("#textLineLengthSubmenuDiv")
-           .classed("menu", false).classed("menuHidden", true);
+            .classed("menu", false).classed("menuHidden", true);
         } else if (d.id === "setLineThicknessItem") {
           d3.select("#edgeThicknessSubmenuDiv")
-           .classed("menu", false).classed("menuHidden", true);
+            .classed("menu", false).classed("menuHidden", true);
         }
       })
       .on("mouseup", function(d) {
-        exports.optionsMenuListItemMouseUp(d3, this, d, choices);
+         exports.optionsMenuListItemMouseUp(d3, this, d, choices);
       });
 
   createEqShapeSizeSubmenu(d3);
@@ -186,32 +214,47 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
   // Hide the menu unless there's a submenu open:
   if ((d.id !== "eqShapeSizeItem") && (d.id !== "setTextLineLenItem")
                                    && (d.id !== "setLineThicknessItem")) {
-    d3.select("#optionsMenuDiv").classed("menu", false).classed("menuHidden", true);
+    d3.select("#optionsMenuDiv")
+      .classed("menu", false)
+      .classed("menuHidden", true);
   }
 
   if (exports.displayAll) {
     switch (d3.select(listItem).datum().name) {
-    // Beware: d3.select(listItem).text() returns concatenation of all submenu text.
+    // Beware: d3.select(listItem).text() returns concatenation of all submenu
+    // text.
       case choices[0].name:
+        modCirclesOfCare.hide(d3);
         modSystemSupportMap.show(d3);
         break;
       case modSystemSupportMap.hideText:
         modSystemSupportMap.hide(d3);
         break;
       case choices[1].name:
+        modCirclesOfCare.hide(d3);
+        modRingsize.showSmall(d3);
+        modSystemSupportMap.show(d3);
+        break;
+      case modRingsize.showLargeText:
+        modCirclesOfCare.hide(d3);
+        modRingsize.showLarge(d3);
+        modSystemSupportMap.show(d3);
+        break;
+      case choices[2].name:
+        modSystemSupportMap.hide(d3);
         modCirclesOfCare.show(d3);
         break;
       case modCirclesOfCare.hideText:
         modCirclesOfCare.hide(d3);
         break;
-      case choices[2].name:
       case choices[3].name:
       case choices[4].name:
-        break; // These menu items have submenus with their own event handlers
       case choices[5].name:
+        break; // These menu items have submenus with their own event handlers
+      case choices[6].name:
         setSelectedObjectColor(d3);
         break;
-      case choices[6].name:
+      case choices[7].name:
         modGrid.enableSnap(d3);
         break;
       case modGrid.hideText:
@@ -220,13 +263,13 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
       case modSystemSupportMap.hideText:
         modSystemSupportMap.hide(d3);
         break;
-      case choices[7].name:
+      case choices[8].name:
         modExport.exportGraphAsImage(d3);
         break;
-      case choices[8].name:
+      case choices[9].name:
         modContextMenu.loadFromClient(d3);
         break;
-      case choices[9].name:
+      case choices[10].name:
         modAuth.logoutUser(d3);
         break;
       default:

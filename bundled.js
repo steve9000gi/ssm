@@ -517,10 +517,9 @@ exports.setup = function(d3) {
   }
 };
 
-},{"./events.js":9,"./selected-color.js":19,"./selection.js":21,"./text.js":25,"./update.js":28}],5:[function(require,module,exports){
+},{"./events.js":9,"./selected-color.js":20,"./selection.js":22,"./text.js":26,"./update.js":29}],5:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modBackend = require('./backend.js'),
-    modCirclesOfCare = require('./circles-of-care.js'),
     modSerialize = require('./serialize.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modUtil = require('./util.js');
@@ -861,7 +860,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./backend.js":2,"./circles-of-care.js":3,"./serialize.js":22,"./system-support-map.js":24,"./util.js":29}],6:[function(require,module,exports){
+},{"./auth.js":1,"./backend.js":2,"./serialize.js":23,"./system-support-map.js":25,"./util.js":30}],6:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -948,7 +947,7 @@ exports.setupDragHandle = function(d3) {
     });
 };
 
-},{"./grid.js":15,"./svg.js":23,"./update.js":28}],7:[function(require,module,exports){
+},{"./grid.js":15,"./svg.js":24,"./update.js":29}],7:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -1076,7 +1075,7 @@ exports.addControls = function(d3) {
   createEdgeStyleSelectionSampleEdges(d3);
 };
 
-},{"./edge-thickness.js":8,"./selected-color.js":19,"./selected-shape.js":20}],8:[function(require,module,exports){
+},{"./edge-thickness.js":8,"./selected-color.js":20,"./selected-shape.js":21}],8:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js');
 
 exports.thickness = 3;
@@ -1122,7 +1121,7 @@ exports.createSubmenu = function(d3) {
       });
 };
 
-},{"./selected-color.js":19}],9:[function(require,module,exports){
+},{"./selected-color.js":20}],9:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modEdgeStyle = require('./edge-style.js'),
     modEdgeThickness = require('./edge-thickness.js'),
@@ -1352,8 +1351,9 @@ exports.pathMouseDown = function(d3, d3path, d) {
   }
 };
 
-},{"./drag.js":6,"./edge-style.js":7,"./edge-thickness.js":8,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./svg.js":23,"./text.js":25,"./update.js":28,"./zoom.js":30}],10:[function(require,module,exports){
-var modCirclesOfCare = require('./circles-of-care.js'),
+},{"./drag.js":6,"./edge-style.js":7,"./edge-thickness.js":8,"./selected-color.js":20,"./selected-shape.js":21,"./selection.js":22,"./svg.js":24,"./text.js":26,"./update.js":29,"./zoom.js":31}],10:[function(require,module,exports){
+var modRingsize = require('./ringsize.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modText = require('./text.js'),
@@ -1425,7 +1425,7 @@ exports.exportGraphAsImage = function(d3) {
   d3.select("#credits")
     .attr("display", "block")
     .attr("y", extent.h - 30)
-   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2015 UNC-CH)");
+   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2017 UNC-CH)");
 
   // Create canvas:
   d3.select("body").append("canvas")
@@ -1469,7 +1469,7 @@ exports.exportGraphAsImage = function(d3) {
   canvas.remove();
 };
 
-},{"./circles-of-care.js":3,"./selected-color.js":19,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],11:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./ringsize.js":19,"./selected-color.js":20,"./system-support-map.js":25,"./text.js":26,"./update.js":29}],11:[function(require,module,exports){
 var modSerialize = require('./serialize.js');
 
 // Save as JSON file
@@ -1509,7 +1509,7 @@ exports.setupUpload = function(d3) {
   });
 };
 
-},{"./serialize.js":22}],12:[function(require,module,exports){
+},{"./serialize.js":23}],12:[function(require,module,exports){
 exports.addLogos = function(d3) {
   d3.select("#mainSVG").append("svg:image")
     .attr("xlink:href", "mch-tracs.png")
@@ -1525,7 +1525,7 @@ exports.addCopyright = function(d3) {
     .attr("id", "copyrightDiv")
     .append("text")
     .attr("id", "copyright")
-    .text("\u00a9 2014-2015 The University of North Carolina at Chapel Hill");
+    .text("\u00a9 2014-2017 The University of North Carolina at Chapel Hill");
 };
 
 exports.addCredits = function(d3) {
@@ -1536,7 +1536,8 @@ exports.addCredits = function(d3) {
 };
 
 },{}],13:[function(require,module,exports){
-var modCirclesOfCare = require('./circles-of-care.js'),
+var modRingsize = require('./ringsize.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modContextMenu = require('./context-menu.js'),
     modDatabase = require('./database.js'),
     modDrag = require('./drag.js'),
@@ -1602,10 +1603,10 @@ exports.create = function(d3) {
   modFrontMatter.addCredits(d3);
   modTooltips.setupNotes(d3);
   defineArrowMarkers(d3);
+  modSystemSupportMap.create(d3);
   if (modOptionsMenu.displayAll) {
     modCirclesOfCare.create(d3);
   }
-  modSystemSupportMap.create(d3);
   setupMMRGroup();
   modDrag.setupDrag(d3);
   modDrag.setupDragHandle(d3);
@@ -1621,7 +1622,7 @@ exports.create = function(d3) {
   modContextMenu.setup(d3);
 };
 
-},{"./circles-of-care.js":3,"./context-menu.js":4,"./database.js":5,"./drag.js":6,"./events.js":9,"./file.js":11,"./front-matter.js":12,"./options-menu.js":18,"./selected-color.js":19,"./svg.js":23,"./system-support-map.js":24,"./toolbox.js":26,"./tooltips.js":27,"./zoom.js":30}],14:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./context-menu.js":4,"./database.js":5,"./drag.js":6,"./events.js":9,"./file.js":11,"./front-matter.js":12,"./options-menu.js":18,"./ringsize.js":19,"./selected-color.js":20,"./svg.js":24,"./system-support-map.js":25,"./toolbox.js":27,"./tooltips.js":28,"./zoom.js":31}],14:[function(require,module,exports){
 // This file is necessary to break a circular dependency between the grid and
 // zoom modules. JST 2015-10-21
 exports.translate = [0, 0];
@@ -1792,7 +1793,7 @@ module.exports = function(d3) {
 },{}],17:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
- * Copyright (C) 2014-2015 The University of North Carolina at Chapel Hill
+ * Copyright (C) 2014-2017 The University of North Carolina at Chapel Hill
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, CONTRIBUTORS, AND THE
@@ -1838,9 +1839,10 @@ document.onload = (function(d3) {
   });
 })(window.d3);
 
-},{"./auth.js":1,"./database.js":5,"./events.js":9,"./graph.js":13,"./svg.js":23,"./update.js":28}],18:[function(require,module,exports){
+},{"./auth.js":1,"./database.js":5,"./events.js":9,"./graph.js":13,"./svg.js":24,"./update.js":29}],18:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
+    modRingsize = require('./ringsize.js'),
     modContextMenu = require('./context-menu.js'),
     modEdgeThickness = require('./edge-thickness.js'),
     modExport = require('./export.js'),
@@ -1861,32 +1863,44 @@ var createEqShapeSizeSubmenu = function(d3) {
     .attr("position", "absolute")
     .style("width", "200px")
     .on("mouseleave", function() {
-      d3.select("#eqShapeSizeSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+      d3.select("#eqShapeSizeSubmenuDiv")
+        .classed("menu", false)
+        .classed("menuHidden", true);
     })
     .on("mouseup", function() {
-      d3.select("#eqShapeSizeSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+      d3.select("#eqShapeSizeSubmenuDiv")
+        .classed("menu", false)
+        .classed("menuHidden", true);
     });
   var choices = [{"name": "Equalize selected shape size"},
                  {"name": "Equalize sizes for all shapes"}];
 
-  d3.select("#eqShapeSizeSubmenuDiv").append("ul").attr("id", "eqShapeSizeSubmenuList");
-  d3.select("#eqShapeSizeSubmenuList").selectAll("li.eqShapeSizeSubmenuListItem")
+  d3.select("#eqShapeSizeSubmenuDiv")
+    .append("ul")
+    .attr("id", "eqShapeSizeSubmenuList");
+  d3.select("#eqShapeSizeSubmenuList")
+    .selectAll("li.eqShapeSizeSubmenuListItem")
     .data(choices).enter()
     .append("li")
       .classed("eqShapeSizeSubmenuListItem", true)
       .attr("id", function(d, i) { return "eqShapeSizeOption" + i; })
       .text(function(d) { return d.name; })
       .on("mouseup", function() {
-        d3.select("#eqShapeSizeSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+        d3.select("#eqShapeSizeSubmenuDiv")
+          .classed("menu", false)
+          .classed("menuHidden", true);
         d3.select("#optionsMenuDiv")
-          .classed("menu", false).classed("menuHidden", true);
+          .classed("menu", false)
+          .classed("menuHidden", true);
 
         switch (d3.select(this).datum().name) {
           case choices[0].name:
-            modSelectedShape.equalizeSelectedShapeSize(d3, modSelectedShape.shape);
+            modSelectedShape.equalizeSelectedShapeSize(d3,
+                                                       modSelectedShape.shape);
             break;
           case choices[1].name:
-            var shapes = ["circle", "rectangle", "diamond", "ellipse", "star", "noBorder"];
+            var shapes = ["circle", "rectangle", "diamond", "ellipse", "star",
+                          "noBorder"];
             for (var i = 0; i < shapes.length; i++) {
               modSelectedShape.equalizeSelectedShapeSize(d3, shapes[i]);
             }
@@ -1906,14 +1920,21 @@ var createTextLineLengthSubmenu = function(d3) {
     .attr("position", "absolute")
     .style("width", "120px")
     .on("mouseleave", function() {
-      d3.select("#textLineLengthSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+      d3.select("#textLineLengthSubmenuDiv")
+        .classed("menu", false)
+        .classed("menuHidden", true);
     })
     .on("mouseup", function() {
-      d3.select("#textLineLengthSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+      d3.select("#textLineLengthSubmenuDiv")
+        .classed("menu", false)
+        .classed("menuHidden", true);
     });
   var choices = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
-  d3.select("#textLineLengthSubmenuDiv").append("ul").attr("id", "textLineLengthSubmenuList");
-  d3.select("#textLineLengthSubmenuList").selectAll("li.textLineLengthSubmenuListItem")
+  d3.select("#textLineLengthSubmenuDiv")
+    .append("ul")
+    .attr("id", "textLineLengthSubmenuList");
+  d3.select("#textLineLengthSubmenuList")
+    .selectAll("li.textLineLengthSubmenuListItem")
     .data(choices).enter()
     .append("li")
       .classed("textLineLengthSubmenuListItem", true)
@@ -1928,7 +1949,9 @@ var createTextLineLengthSubmenu = function(d3) {
       })
       .on("mouseup", function() {
         modText.maxCharsPerLine = parseInt(d3.select(this).datum(), 10);
-        d3.select("#textLineLengthSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+        d3.select("#textLineLengthSubmenuDiv")
+          .classed("menu", false)
+          .classed("menuHidden", true);
         d3.select("#menuDiv")
           .classed("menu", false).classed("menuHidden", true);
         d3.selectAll(".textLineLengthSubmenuListItem")
@@ -1959,14 +1982,18 @@ exports.createOptionsMenu = function(d3) {
   var choices = null;
   if (exports.displayAll) {
     choices = [{"name": "Show system support rings", "id": "sysSptRingsItem"},
+               {"name": "Show small system support rings",
+                "id": "ringsizeItem"},
                {"name": "Show Circles of Care", "id": "cOfCItem"},
                {"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
                {"name": "Set text line length...", "id": "setTextLineLenItem"},
                {"name": "Set line thickness...", "id": "setLineThicknessItem"},
-               {"name": "Set selected object color", "id": "setSelectedObjectColorItem"},
+               {"name": "Set selected object color",
+                "id": "setSelectedObjectColorItem"},
                {"name": "Snap to grid", "id": "snapToGridItem"},
                {"name": "Export map as image", "id": "exportMapAsImageItem"},
-               {"name": "Load text for context menu", "id": "loadContextTextItem"},
+               {"name": "Load text for context menu",
+                "id": "loadContextTextItem"},
                {"name": "Log out", "id": "logoutUser"}];
   } else {
     choices = [{"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
@@ -2005,17 +2032,19 @@ exports.createOptionsMenu = function(d3) {
       })
       .on("mouseout", function(d) {
         if (d.id === "eqShapeSizeItem") {
-          d3.select("#eqShapeSizeSubmenuDiv").classed("menu", false).classed("menuHidden", true);
+          d3.select("#eqShapeSizeSubmenuDiv")
+            .classed("menu", false)
+            .classed("menuHidden", true);
         } else if (d.id === "setTextLineLenItem") {
           d3.select("#textLineLengthSubmenuDiv")
-           .classed("menu", false).classed("menuHidden", true);
+            .classed("menu", false).classed("menuHidden", true);
         } else if (d.id === "setLineThicknessItem") {
           d3.select("#edgeThicknessSubmenuDiv")
-           .classed("menu", false).classed("menuHidden", true);
+            .classed("menu", false).classed("menuHidden", true);
         }
       })
       .on("mouseup", function(d) {
-        exports.optionsMenuListItemMouseUp(d3, this, d, choices);
+         exports.optionsMenuListItemMouseUp(d3, this, d, choices);
       });
 
   createEqShapeSizeSubmenu(d3);
@@ -2027,32 +2056,47 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
   // Hide the menu unless there's a submenu open:
   if ((d.id !== "eqShapeSizeItem") && (d.id !== "setTextLineLenItem")
                                    && (d.id !== "setLineThicknessItem")) {
-    d3.select("#optionsMenuDiv").classed("menu", false).classed("menuHidden", true);
+    d3.select("#optionsMenuDiv")
+      .classed("menu", false)
+      .classed("menuHidden", true);
   }
 
   if (exports.displayAll) {
     switch (d3.select(listItem).datum().name) {
-    // Beware: d3.select(listItem).text() returns concatenation of all submenu text.
+    // Beware: d3.select(listItem).text() returns concatenation of all submenu
+    // text.
       case choices[0].name:
+        modCirclesOfCare.hide(d3);
         modSystemSupportMap.show(d3);
         break;
       case modSystemSupportMap.hideText:
         modSystemSupportMap.hide(d3);
         break;
       case choices[1].name:
+        modCirclesOfCare.hide(d3);
+        modRingsize.showSmall(d3);
+        modSystemSupportMap.show(d3);
+        break;
+      case modRingsize.showLargeText:
+        modCirclesOfCare.hide(d3);
+        modRingsize.showLarge(d3);
+        modSystemSupportMap.show(d3);
+        break;
+      case choices[2].name:
+        modSystemSupportMap.hide(d3);
         modCirclesOfCare.show(d3);
         break;
       case modCirclesOfCare.hideText:
         modCirclesOfCare.hide(d3);
         break;
-      case choices[2].name:
       case choices[3].name:
       case choices[4].name:
-        break; // These menu items have submenus with their own event handlers
       case choices[5].name:
+        break; // These menu items have submenus with their own event handlers
+      case choices[6].name:
         setSelectedObjectColor(d3);
         break;
-      case choices[6].name:
+      case choices[7].name:
         modGrid.enableSnap(d3);
         break;
       case modGrid.hideText:
@@ -2061,13 +2105,13 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
       case modSystemSupportMap.hideText:
         modSystemSupportMap.hide(d3);
         break;
-      case choices[7].name:
+      case choices[8].name:
         modExport.exportGraphAsImage(d3);
         break;
-      case choices[8].name:
+      case choices[9].name:
         modContextMenu.loadFromClient(d3);
         break;
-      case choices[9].name:
+      case choices[10].name:
         modAuth.logoutUser(d3);
         break;
       default:
@@ -2099,7 +2143,71 @@ exports.createOptionsButton = function(d3) {
     });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":3,"./context-menu.js":4,"./edge-thickness.js":8,"./export.js":10,"./grid.js":15,"./selected-color.js":19,"./selected-shape.js":20,"./selection.js":21,"./system-support-map.js":24,"./text.js":25,"./update.js":28}],19:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":3,"./context-menu.js":4,"./edge-thickness.js":8,"./export.js":10,"./grid.js":15,"./ringsize.js":19,"./selected-color.js":20,"./selected-shape.js":21,"./selection.js":22,"./system-support-map.js":25,"./text.js":26,"./update.js":29}],19:[function(require,module,exports){
+exports.showLargeText = 'Show large system support rings';
+exports.ringsize = "large";
+
+// Text offsets for ring labels differ depending on ring sizes. This seemingly
+// tortuous approach permits that these offsets are set in one place -- here --
+// and have these same values anywhere in the source code.
+var offsetFull = [20, 28, 26, 18, 10];
+var offset2_3rds = [20, 32, 30, 18, 40];
+var offset5_8ths = [20, 32, 30, 14, 50]
+exports.offset = offsetFull;
+
+
+exports.showSmall = function(d3) {
+  exports.ringsize = "small";
+  exports.offset = offset5_8ths;
+  var twoThirds = [{"radius": 73, "offset": offset2_3rds[0]},
+                   {"radius": 183, "offset": offset2_3rds[1]},
+                   {"radius": 317, "offset": offset2_3rds[2]},
+                   {"radius": 450, "offset": offset2_3rds[3]},
+                   {"radius": 500, "offset": offset2_3rds[4]}];
+  var fiveEighths = [{"radius": 69, "offset": offset5_8ths[0]},
+                     {"radius": 172, "offset": offset5_8ths[1]},
+                     {"radius": 297, "offset": offset5_8ths[2]},
+                     {"radius": 422, "offset": offset5_8ths[3]},
+                     {"radius": 477, "offset": offset5_8ths[4]}];
+  var data = fiveEighths; // Change exports.offset if you change this.
+  d3.selectAll(".ssmCircle")
+    .data(data)
+    .attr("r", function(d) {
+      return d.radius;
+  });
+  var centerY = d3.select(".ssmCircle").attr("cy");
+  d3.selectAll(".ssmLabel")
+    .data(data)
+    .attr("y", function(d) {
+      return centerY - d.radius + d.offset;
+    });
+  d3.select("#ringsizeItem").text(exports.showLargeText)
+    .datum({"name": exports.showLargeText});
+};
+
+exports.showLarge = function(d3) {
+  exports.ringsize = "large";
+  var data = [{"radius": 110, "offset": offsetFull[0]},
+              {"radius": 275, "offset": offsetFull[1]},
+              {"radius": 475, "offset": offsetFull[2]},
+              {"radius": 675, "offset": offsetFull[3]},
+              {"radius": 700, "offset": offsetFull[4]}];
+  d3.selectAll(".ssmCircle")
+    .data(data)
+    .attr("r", function(d) {
+      return d.radius;
+  });
+  var centerY = d3.select(".ssmCircle").attr("cy");
+  d3.selectAll(".ssmLabel")
+    .data(data)
+    .attr("y", function(d) {
+      return centerY - d.radius + d.offset;
+    });
+  d3.select("#ringsizeItem").text("Show small system support rings")
+    .datum({"name": "Show small system support rings"});
+};
+
+},{}],20:[function(require,module,exports){
 var modEdgeStyle = require('./edge-style.js'),
     modSelectedShape = require('./selected-shape.js');
 
@@ -2159,8 +2267,9 @@ exports.createColorPalette = function(d3) {
   d3.select("#clr000000").style("border-color", "#ffffff"); // Initial color selection is black
 };
 
-},{"./edge-style.js":7,"./selected-shape.js":20}],20:[function(require,module,exports){
+},{"./edge-style.js":7,"./selected-shape.js":21}],21:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
+    modText = require('./text.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
 
@@ -2295,6 +2404,26 @@ exports.addShapeSelection = function(d3) {
   setShapeSelectionShapeSizes(d3);
 };
 
+// Set a multiplier that determines how much space to put around text in 
+// diamond shapes, according to maxCharsPerLine. Hand-tuned, but in 
+// general the smaller the maxChars the greater the spacing required to
+// keep text from overflowing the diamond's border.
+setDiamondPad = function(maxCharsPerLine) {
+  switch (maxCharsPerLine) {
+    case 10: return 1.95;
+    case 15: return 1.8;
+    case 20: return 1.6;
+    case 25: return 1.4;
+    case 30:
+    case 35: 
+    case 40: 
+    case 45:
+    case 50: return 1.3;
+    default: console.error("Unknown value for maxCharsPerLine: " + maxCharsPerLine);
+	     return 2.0;
+  }
+};
+
 // Set shape size and position, to stored value[s] if they exist, or else to
 // fit text.
 exports.setShapeSizeAndPosition = function(d3, gEl, el, d) {
@@ -2338,14 +2467,15 @@ exports.setShapeSizeAndPosition = function(d3, gEl, el, d) {
     handle.attr("transform", "translate(" + (w / 2) + "," + (h / 2) + ")");
   }
 
+  var diamondPad = setDiamondPad(modText.maxCharsPerLine);
   gEl.select(".diamond")
      .attr("d", function(d) {
-       var dim = d.dim || Math.max(maxTextDim * 1.6, minDiamondDim);
+       var dim = d.dim || Math.max(maxTextDim * diamondPad, minDiamondDim);
        return "M " + dim / 2 + " 0 L " + dim + " " + dim / 2 + " L " + dim / 2 + " " + dim
          + " L 0 " + dim / 2 + " Z";
      })
      .attr("transform", function (d) {
-       var dim = d.dim || Math.max(maxTextDim * 1.6, minDiamondDim);
+       var dim = d.dim || Math.max(maxTextDim * diamondPad, minDiamondDim);
        return "translate(-" + dim / 2 + ",-" + dim /2 + ")";
      });
   gEl.select("ellipse")
@@ -2476,7 +2606,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":19,"./svg.js":23,"./update.js":28}],21:[function(require,module,exports){
+},{"./selected-color.js":20,"./svg.js":24,"./text.js":26,"./update.js":29}],22:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
     modSvg = require('./svg.js');
@@ -2546,8 +2676,9 @@ exports.replaceSelectEdge = function(d3, d3Path, edgeData) {
   modSelection.selectedEdge = edgeData;
 };
 
-},{"./selected-color.js":19,"./selection.js":21,"./svg.js":23}],22:[function(require,module,exports){
-var modCirclesOfCare = require('./circles-of-care.js'),
+},{"./selected-color.js":20,"./selection.js":22,"./svg.js":24}],23:[function(require,module,exports){
+var modRingsize = require('./ringsize.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modEvents = require('./events.js'),
     modGridZoom = require('./grid-zoom.js'),
     modSvg = require('./svg.js'),
@@ -2566,7 +2697,7 @@ var getBiggestShapeId = function() {
   return currMax;
 };
 
-// Return the current map as an JS object.
+// Return the current map as a JS object.
 exports.getMapObject = function(d3) {
   var saveEdges = [];
   modSvg.links.forEach(function(val) {
@@ -2586,7 +2717,8 @@ exports.getMapObject = function(d3) {
     "links": saveEdges,
     "graphGTransform": d3.select("#graphG").attr("transform"),
     "systemSupportMapCenter": modSystemSupportMap.center,
-    "circlesOfCareCenter": modCirclesOfCare.center
+    "circlesOfCareCenter": modCirclesOfCare.center,
+    "ringsize": modRingsize.ringsize
   };
 };
 
@@ -2628,6 +2760,12 @@ exports.importMap = function(d3, jsonObj, id) {
     } else {
       modSystemSupportMap.hide(d3);
     }
+    modRingsize.ringsize = jsonObj.ringsize;
+    if (modRingsize.ringsize == "small") {
+      modRingsize.showSmall(d3);
+    } else {
+      modRingsize.showLarge(d3);
+    }
     modCirclesOfCare.hide(d3);
     modCirclesOfCare.center = jsonObj.circlesOfCareCenter;
     if (modCirclesOfCare.center) {
@@ -2643,7 +2781,7 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./svg.js":23,"./system-support-map.js":24,"./update.js":28,"./zoom.js":30}],23:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./ringsize.js":19,"./svg.js":24,"./system-support-map.js":25,"./update.js":29,"./zoom.js":31}],24:[function(require,module,exports){
 exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
@@ -2670,8 +2808,9 @@ exports.setup = function(d3) {
     .attr("id", "graphG");
 }
 
-},{}],24:[function(require,module,exports){
-var modSelectedColor = require('./selected-color.js');
+},{}],25:[function(require,module,exports){
+var modSelectedColor = require('./selected-color.js'),
+    modRingsize = require('./ringsize.js');
 
 exports.hideText = "Hide system support rings";
 exports.center = null;
@@ -2697,8 +2836,7 @@ exports.show = function(d3) {
       return ssmCenter.x - this.getComputedTextLength() / 2;
     })
     .attr("y", function(d, i) {
-      var offset = [20, 28, 26, 18, 64];
-      return ssmCenter.y - d.radius + offset[i];
+      return ssmCenter.y - d.radius + modRingsize.offset[i];
     });
   d3.select("#sysSptRingsItem").text(exports.hideText)
     .datum({"name": exports.hideText});
@@ -2736,7 +2874,8 @@ exports.create = function(d3) {
       })
       .style("fill", "none")
       .attr("r", function(d) { return d.radius; });
-  rings.push({"name": "Wish List", "radius": 750, "color": "#" + modSelectedColor.colorChoices[2]});
+  rings.push({"name": "Wish List", "radius": 750,
+              "color": "#" + modSelectedColor.colorChoices[2]});
   d3.select(".ssmGroup").selectAll(".ssmLabel")
     .data(rings)
     .enter().append("text")
@@ -2745,7 +2884,7 @@ exports.create = function(d3) {
       .text(function(d) { return d.name; });
 };
 
-},{"./selected-color.js":19}],25:[function(require,module,exports){
+},{"./ringsize.js":19,"./selected-color.js":20}],26:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
@@ -2934,8 +3073,9 @@ exports.changeElementText = function(d3, d3element, d) {
   return d3txt;
 };
 
-},{"./drag.js":6,"./selected-color.js":19,"./selected-shape.js":20,"./svg.js":23,"./update.js":28}],26:[function(require,module,exports){
-var modCirclesOfCare = require('./circles-of-care.js'),
+},{"./drag.js":6,"./selected-color.js":20,"./selected-shape.js":21,"./svg.js":24,"./update.js":29}],27:[function(require,module,exports){
+var modRingsize = require('./ringsize.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modEdgeStyle = require('./edge-style.js'),
     modHelp = require('./help.js'),
     modOptionsMenu = require('./options-menu.js'),
@@ -2947,8 +3087,8 @@ var modCirclesOfCare = require('./circles-of-care.js'),
 // Edge, shape, and color selection, plus "?" help and Options buttons, load,
 // save, and delete.
 exports.prepareToolbox = function(d3) {
-  modCirclesOfCare.center = null; // CirclesOfCareCenter
-  modSystemSupportMap.center = null; // System Support Map Center
+  modCirclesOfCare.center = null;
+  modSystemSupportMap.center = null; 
 
   // Handle delete graph
   d3.select("#delete-graph").on("click", function() { modUpdate.deleteGraph(d3, false); });
@@ -2961,7 +3101,7 @@ exports.prepareToolbox = function(d3) {
   modEdgeStyle.addControls(d3);
 };
 
-},{"./circles-of-care.js":3,"./edge-style.js":7,"./help.js":16,"./options-menu.js":18,"./selected-color.js":19,"./selected-shape.js":20,"./system-support-map.js":24,"./update.js":28}],27:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./edge-style.js":7,"./help.js":16,"./options-menu.js":18,"./ringsize.js":19,"./selected-color.js":20,"./selected-shape.js":21,"./system-support-map.js":25,"./update.js":29}],28:[function(require,module,exports){
 exports.tip = null;
 
 // "Notes" == tooltips
@@ -2979,8 +3119,9 @@ exports.setupNotes = function(d3) {
   d3.select("#mainSVG").call(exports.tip);
 };
 
-},{}],28:[function(require,module,exports){
-var modCirclesOfCare = require('./circles-of-care.js'),
+},{}],29:[function(require,module,exports){
+var modRingsize = require('./ringsize.js'),
+    modCirclesOfCare = require('./circles-of-care.js'),
     modDrag = require('./drag.js'),
     modEvents = require('./events.js'),
     modGrid = require('./grid.js'),
@@ -2993,8 +3134,10 @@ var modCirclesOfCare = require('./circles-of-care.js'),
     modUtil = require('./util.js');
 
 var addHandle = function(d3, parentG, rectData) {
-  var tx = rectData.manualResize ? rectData.width - rectData.xOffset : rectData.width / 2;
-  var ty = rectData.manualResize ? rectData.height - rectData.yOffset : rectData.height / 2;
+  var tx = rectData.manualResize ? rectData.width - rectData.xOffset
+                                 : rectData.width / 2;
+  var ty = rectData.manualResize ? rectData.height - rectData.yOffset
+                                 : rectData.height / 2;
   d3.select(parentG).append("circle")
     .attr("id", "handle" + rectData.id)
     .attr("r", "10")
@@ -3064,8 +3207,9 @@ var addNewNodes = function(d3) {
             .style("font-weight", modText.boldFontWeight)
             .style("text-decoration", "underline");
           if (!d.manualResize) {
-            // Force shape resize in case bold characters overflow shape boundaries:
-            d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius = undefined;
+            // Force shape resize in case bold chars overflow shape boundaries:
+            d.r = d.width = d.height = d.dim = d.rx = d.ry = d.innerRadius
+	        = undefined;
           }
           exports.updateGraph(d3);
         }
@@ -3099,7 +3243,8 @@ var addNewPaths = function(d3, edgeGroups) {
       }
       modEvents.mouseDownLink = null;
     })
-    .on("mouseover", function() { // Hover color iff not (selected, new edge or inside shape):
+    .on("mouseover", function() {
+      // Hover color iff not (selected, new edge or inside shape):
       if ((d3.select(this).selectAll("path").style("stroke") !== modSelectedColor.color)
           && (!modDrag.shiftNodeDrag) && (!modDrag.justDragged)) {
         d3.select(this).selectAll("path").style("stroke", modSelectedColor.hoverColor)
@@ -3115,7 +3260,9 @@ var addNewPaths = function(d3, edgeGroups) {
         d3.select(this).selectAll("text").style("fill", modSelectedColor.color);
       } else { // Not selected: reapply edge color, including edge text:
         setEdgeColor(d3, this);
-        d3.select(this).selectAll("text").style("fill", function(d) { return d.color; });
+        d3.select(this).selectAll("text").style("fill", function(d) {
+	  return d.color;
+	});
       }
     })
     .append("path")
@@ -3145,7 +3292,9 @@ var addNewShapes = function(d3, newShapeGroups, shapeElts) {
     .attr("class", function(d) { return "shape " + d.shape; })
     .attr("id", function(d) { return "shape" + d.id; })
     .style("stroke", function(d) { return d.color; })
-    .style("stroke-width", function(d) { return (d.shape === "noBorder") ? 0 : 2; });
+    .style("stroke-width", function(d) {
+      return (d.shape === "noBorder") ? 0 : 2;
+    });
   newShapeGroups.each(function(d) {
     modText.formatText(d3, d3.select(this), d);
     if (d.shape === "rectangle") {
@@ -3164,8 +3313,8 @@ var addNewShapes = function(d3, newShapeGroups, shapeElts) {
 var appendPathText = function(d3, pathGroups) {
   var data = [{"class": "shadowText", "stroke-width": "4px"},
               {"class": "foregroundText", "stroke-width": "0px"}];
-  for (var i = 0; i < pathGroups[0].length; i++) {         // For each pathGroup...
-    if (pathGroups[0][i].childNodes.length < 3) {          // ...if there's no text yet...
+  for (var i = 0; i < pathGroups[0].length; i++) {     // For each pathGroup...
+    if (pathGroups[0][i].childNodes.length < 3) {      // ...if no text yet...
       d3.select(pathGroups[0][i]).selectAll("text")
         .data(data)
         .enter().append("text")                        // ...then append it.
@@ -3226,7 +3375,8 @@ var createNewShapes = function()  {
       shape = modSvg.nodes[i].shape;
       break;
     }
-    var shapeElement = document.createElementNS("http://www.w3.org/2000/svg", shape);
+    var shapeElement = document.createElementNS("http://www.w3.org/2000/svg",
+	                                        shape);
     shapeElts.push(shapeElement);
   }
   return shapeElts;
@@ -3241,7 +3391,7 @@ var setEdgeColor = function(d3, edgeGroup) {
 };
 
 var setPath = function(edge) {
-  var boundary = 16; // Initialize to default number of pixels padding for circle, diamond.
+  var boundary = 16; // Default number of pixels padding for circle, diamond
   switch (edge.target.shape) {
     case "circle":
       if (edge.target.r) {
@@ -3271,9 +3421,10 @@ var setPath = function(edge) {
       alert("setPath(...): unknown shape: \"" + edge.target.shape + "\"");
       break;
   }
-  var newP2 = changeLineLength(edge.source.x, edge.source.y, edge.target.x, edge.target.y,
-                                   -boundary, (edge.thickness || 3));
-  return "M" + edge.source.x + "," + edge.source.y + "L" + newP2.x + "," + newP2.y;
+  var newP2 = changeLineLength(edge.source.x, edge.source.y, edge.target.x,
+                               edge.target.y, -boundary, (edge.thickness || 3));
+  return "M" + edge.source.x + "," + edge.source.y + "L" + newP2.x + ","
+             + newP2.y;
 };
 
 var updateExistingNodes = function() {
@@ -3288,13 +3439,25 @@ var updateExistingNodes = function() {
 exports.deleteGraph = function(d3, skipPrompt) {
   var doDelete = true;
   if (!skipPrompt) {
-    doDelete = window.confirm("Press OK to delete this graph from the canvas. (It will still be saved on the server.)");
+    doDelete = window.confirm("Press OK to delete this graph from the canvas. "
+                            + "(It will still be saved on the server.)");
   }
   if(doDelete) {
+    // Allow reload of same file after delete in on("change"...) function:
+    d3.select("#hidden-file-upload").node().value = "";
     modSvg.nodes = [];
     modSvg.links = [];
     modCirclesOfCare.hide(d3);
+    // Set center to null to force show(...) to recalculate:
+    modSystemSupportMap.center = null;
+    d3.select("#graphG")
+      .attr("transform", "translate(0, 0) scale(1)");
     modSystemSupportMap.show(d3);
+    if (modRingsize.ringsize == "small") {
+      modRingsize.showSmall(d3);
+    } else {
+      modRingsize.showLarge(d3);
+    }
     exports.updateGraph(d3);
     window.location.hash = "";
   }
@@ -3346,7 +3509,7 @@ exports.updateWindow = function(d3) {
   exports.updateGraph(d3);
 };
 
-},{"./circles-of-care.js":3,"./drag.js":6,"./events.js":9,"./grid.js":15,"./selected-color.js":19,"./selection.js":21,"./svg.js":23,"./system-support-map.js":24,"./text.js":25,"./tooltips.js":27,"./util.js":29}],29:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./drag.js":6,"./events.js":9,"./grid.js":15,"./ringsize.js":19,"./selected-color.js":20,"./selection.js":22,"./svg.js":24,"./system-support-map.js":25,"./text.js":26,"./tooltips.js":28,"./util.js":30}],30:[function(require,module,exports){
 var cookiesByName = null;
 
 exports.readCookieByName = function(name) {
@@ -3392,7 +3555,7 @@ exports.computeRectangleBoundary = function(edge) {
   return ((absCosTheta > thresholdCos) ? h * hyp / dy : w * hyp / dx) + offset;
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modGridZoom = require('./grid-zoom.js'),
     modText = require('./text.js');
@@ -3435,4 +3598,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid-zoom.js":14,"./grid.js":15,"./text.js":25}]},{},[17]);
+},{"./grid-zoom.js":14,"./grid.js":15,"./text.js":26}]},{},[17]);
