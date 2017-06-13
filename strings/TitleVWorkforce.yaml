@@ -6,7 +6,7 @@ welcome-text.paras:
   - 'Specifically, SSMs walk individuals or organizations through the process of documenting their own role in a collaboration: how they are operationalizing that role in terms of specific responsibilities or project activities; what they need to succeed in meeting their responsibilities; specific resources they rely on (and an assessment of how supportive they are); and their top three wishes to maximize success in their work. Additionally, SSMs from partners can become the foundation for aligning efforts and setting priorities to collaborate efficiently.'
   - 'Check the sidebar for some examples of initiatives for which completing system support maps might guide Title V Maternal and Child Health work.'
   - 'This wizard will ask you questions and then build the System Support Map for you based on your answers.'
-map-uses-1-span: 'Thank you for creating a System Support Map.  We hope the process and resulting map is useful.  After completing a map, you will have an opportunity to save and print your map.  We will save your maps in a secure database so that you can access them in the future.  Your maps will also be added to a group of maps that may be aggregated and analyzed together in a research project to learn more about the systems that support Maternal and Child Health in the US and territories.  Your map will be de-identified and will not be linked to you personally in any reports or publications resulting from this study.  Please contact '
+map-uses-1-span: 'Thank you for creating a System Support Map. We hope the process and resulting map is useful. After completing a map, you will have an opportunity to save and print your map. We will save your maps in a secure database so that you can access them in the future. Your maps will also be added to a group of maps that may be aggregated and analyzed together in a research project to learn more about the systems that support Maternal and Child Health in the US and territories. Your map will be de-identified and will not be linked to you personally in any reports or publications resulting from this study. Please contact '
 map-uses-2-span: ' if you have any questions about System Support Mapping or about the research project.'
 next-page-instruction.paras: 
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
@@ -36,7 +36,7 @@ overview-text-2.paras:
 # Step 3
 prerequisites-header: 'Prerequisites'
 prerequisites-text.paras:
-  - 'Before starting to build your SSM, focus on a specific challenge.  This could be a National Performance Measure you are targeting or a challenge you are facing within your organization.'
+  - 'Before starting to build your SSM, focus on a specific challenge. This could be a National Performance Measure you are targeting or a challenge you are facing within your organization.'
   - 'Please take a few minutes to develop a clear idea of the challenge you are attempting to map and your role in it.'
   - 'This is important! If you don&rsquo;t have a solid understanding of your role in this challenge, this map-building exercise could be unclear and unhelpful.'
   - 'In the text box below, please briefly describe the challenge you will focus on in this map. Example responses might be: to facilitate integration of care coordination activities supporting children and youth with special health needs across the state, to support the social and emotional wellness of children aged 0-8, or to facilitate the implementation of Bright Futures (or another evidence-based intervention). If it helps, you can simply describe the challenge in terms of the outcome(s) you would like to improve.'
@@ -67,8 +67,8 @@ ring2-aside.list:
 # Note: this must include a <span> with id "wizard_role_text" somewhere.
 ring2-text.paras:
   - 'The second ring contains the responsibilities that you have in your role as <code><span id="wizard_role_text">_</span></code>.'
-  - 'Identify the four to eight most important responsibilities related to this role and add them here.  Some examples are included in the drop-down list in the response box. You may choose one of those as your response, or type something else in.'
-  - 'When you click the &ldquo;Add&rdquo; button below, the responsibilities you&rsquo;ve entered will be added to the map below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to go to the next step.'
+  - 'Identify the four to eight most important responsibilities related to this role and add them here.'
+  - 'When you click the &ldquo;Add&rdquo; button below, the responsibility you&rsquo;ve entered will be added to the map below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to go to the next step.'
   - 'One of my responsibilities is:'
 
 # Step 6
@@ -78,8 +78,8 @@ ring3-aside.list:
   - 'Needs are the ingredients in a recipe for how you get each responsibility done.'
 ring3-text.paras:
   - 'The third ring identifies exactly what is needed to meet each responsibility.' 
-  - 'Common needs include time, reimbursement, buy-in from your organization, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, and creativity.  You can be very specific, such as &ldquo;I need access to a state car to conduct site visits,&rdquo; or more general, such as &ldquo;I need guidance.&rdquo;'
-  - 'You&rsquo;ll be asked about each responsibility in turn, starting with the first one you entered. Again, feel free to choose from the drop-down list, or write in something else. As you add needs, they will be entered into your map below. At first, the positioning will look odd. Please keep going – it will improve as you add needs. And, if you want, you can move things around when your map is completely filled in. If you move things now, they will get moved back every time a new item is added.'
+  - 'Common needs include time, reimbursement, buy-in from your organization, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, and creativity. You can be very specific, such as &ldquo;I need access to a state car to conduct site visits,&rdquo; or more general, such as &ldquo;I need guidance.&rdquo;'
+  - 'You&rsquo;ll be asked about each responsibility in turn, starting with the first one you entered. As you add needs, they will be entered into your map belowt first, the positioning will look odd. Please keep going – it will improve as you add needs. And, if you want, you can move things around when your map is completely filled in. If you move things now, they will get moved back every time a new item is added.'
 ring3-prompt.paras:
   - 'To fulfill this responsibility, I need:'
 
@@ -151,7 +151,7 @@ review-aside-header: 'Wondering what to do next?'
 review-aside-text.paras:
   - 'Now that you have a clear picture of the challenge and your role in it, many people find it helpful to use the map to think about how they could work on the challenge. What could you do to change your role, responsibilities, resources, and needs for the better? You can add these wishes on the outside of the rings, connecting them with the responsibilities, needs, or resources they would change.'
 review-text.paras:
-  - 'You are almost there! Let&rsquo;s clean up your map.  Try moving the shapes around so that they are evenly spaced and the lines don&rsquo;t cross as much. Be sure to keep the blue rectangles in the blue &ldquo;Responsibilities&rdquo; ring, the aqua diamonds in the aqua &ldquo;Needs&rdquo; ring, the black ovals in the black &ldquo;Resources&rdquo; ring, and the gold &ldquo;Wish List&rdquo; stars outside the outermost ring.'
+  - 'You are almost there! Let&rsquo;s clean up your map. Try moving the shapes around so that they are evenly spaced and the lines don&rsquo;t cross as much. Be sure to keep the blue rectangles in the blue &ldquo;Responsibilities&rdquo; ring, the aqua diamonds in the aqua &ldquo;Needs&rdquo; ring, the black ovals in the black &ldquo;Resources&rdquo; ring, and the gold &ldquo;Wish List&rdquo; stars outside the outermost ring.'
   - 'Once your map looks good to you, you&rsquo;re finished!'
 review-download-data-text: 'download your map data'
 review-download-data-tips-header: 'What can you do with downloaded data?'
