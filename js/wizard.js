@@ -546,7 +546,7 @@ var attachButtonHandlers = function(d3) {
     .on('click', function(){ exports.prevStep(d3); });
   d3.selectAll('#wizard button.finish')
     .on('click', function(){
-      exports.hideWizard(d3);
+      //exports.hideWizard(d3);
       modDatabase.writeMapToDatabase(d3, true);
     });
   // Stop propagation of keydown events, so that the handlers elsewhere in this
@@ -780,7 +780,7 @@ var steps = {
       if (nodesByType.role) {
         d3.select('input[name=role]').node().value = nodesByType.role.name;
       }
-      d3.select('#wizard-step4_datalist').selectAll('option')
+      d3.select('#wizard-step5_datalist').selectAll('option')
         .data(modCompletions.completionsByType().role)
         .enter().append('option')
         .attr('value', String);
