@@ -27,7 +27,7 @@ There are two different .json file formats used throughout this processing seque
 into blm.R;
 2. The Sort format, generated as (some of) the output from blm.R, optionally as input to the sort
 website, required for reopening a partially sorted file in sort, output from the sort website, and
-required as input into AddCodesToBLM.R. This format will be described in a separate document.
+required as input into AddCodesToBLM.R. This format is described in https://github.com/steve9000gi/sort/blob/master/File_Formats_for_the_Sort_Segment_of_the_System_Support_Mapping_Processing_Sequence.docx.
 
 The various steps in the sequence are primarily effected by calling scripts from a Unix/Linux
 command line. This example was executed and verified in a terminal in OSX version 10.11.6.
