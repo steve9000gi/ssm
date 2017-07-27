@@ -62,7 +62,15 @@ exports.getMapObject = function(d3) {
     "circlesOfCareCenter": modCirclesOfCare.center,
     "wizardActive": modWizard.wizardActive,
     "focusDescription": modWizard.focusDescription,
-    "focusContext": modWizard.focusContext
+    "focusContext": modWizard.focusContext,
+    "firstName": modWizard.firstName,
+    "lastName": modWizard.lastName,
+    "title": modWizard.title,
+    "agencyName": modWizard.agencyName,
+    "agencyType": modWizard.agencyType,
+    "city": modWizard.city,
+    "reason": modWizard.reason,
+    "version": "SSM Wizard Title V 2017/07/27"
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;

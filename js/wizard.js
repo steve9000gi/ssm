@@ -648,7 +648,83 @@ var steps = {
       return true;
     }
   },
+  2: {
+    enter: function(d3) {
+      return true;
+    },
 
+    exit: function(d3) {
+      var firstName = document.getElementById('first-name').value;
+      var lastName = document.getElementById('last-name').value;
+      var title = document.getElementById("title").value;
+      var agencyName = document.getElementById("agency-name").value;
+
+      var healthDepartment =
+              document.getElementById('health-department').checked;
+      var hospitalBased = document.getElementById('hospital-based').checked;
+      var universityBased = document.getElementById('university-based').checked;
+      var schoolBased = document.getElementById('school-based').checked;
+      var faithBased = document.getElementById('faith-based').checked;
+      var plannedParenthood =
+              document.getElementById('planned-parenthood').checked;
+      var healthDepartment =
+              document.getElementById('health-department').checked;
+      var freeStanding = document.getElementById('free-standing').checked;
+      var communityHealthCenter =
+              document.getElementById('community-health-center').checked;
+      var federallyQualified =
+              document.getElementById('federally-qualified').checked;
+      var tribal = document.getElementById('tribal').checked;
+      var correctional = document.getElementById('correctional').checked;
+      var nonProfit = document.getElementById('non-profit').checked;
+      var otherAgencyType =
+              document.getElementById('other-agency-type').checked;
+      var otherAgencyTypeText =
+              document.getElementById('other-agency-type-text').value;
+      var agencyType = Array();
+      if (healthDepartment) agencyType.push("Health department");
+      if (hospitalBased) agencyType.push("Hospital-based");
+      if (universityBased) agencyType.push("University-based");
+      if (schoolBased) agencyType.push("School-based");
+      if (faithBased) agencyType.push("Faith-based");
+      if (plannedParenthood) agencyType.push("Planned Parenthood");
+      if (healthDepartment) agencyType.push("Health department");
+      if (freeStanding) {
+        agencyType.push("Free-standing family planning organization");
+      }
+      if (communityHealthCenter) agencyType.push("Community health center");
+      if (federallyQualified) {
+        agencyType.push("Federally qualified health center");
+      }
+      if (tribal) agencyType.push("Tribal health center");
+      if (correctional) agencyType.push("Correctional facility-based");
+      if (nonProfit) agencyType.push("Non-profit");
+      if (otherAgencyType) agencyType.push(otherAgencyTypeText);
+
+      var city = document.getElementById("city").value;
+      var state = document.getElementById("state").value;
+      
+      var sel = 'textarea[name=reason]';
+      var reason = d3.select(sel).node().value;
+
+      if (!(firstName && lastName && title && agencyName && agencyType &&
+            city && reason)) {
+        alert('You must answer all questions before proceeding.');
+        return false;
+      }
+      exports.firstName = firstName;
+      exports.lastName = lastName;
+      exports.title = title;
+      exports.agencyName = agencyName;
+      exports.agencyType = agencyType;
+      exports.city = city;
+      exports.state = state;
+      exports.reason = reason;
+      return true;
+    }
+  },
+
+ 
   4: {
     enter: function(d3) {
       var sel;
