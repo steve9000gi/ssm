@@ -667,8 +667,6 @@ var steps = {
       var faithBased = document.getElementById('faith-based').checked;
       var plannedParenthood =
               document.getElementById('planned-parenthood').checked;
-      var healthDepartment =
-              document.getElementById('health-department').checked;
       var freeStanding = document.getElementById('free-standing').checked;
       var communityHealthCenter =
               document.getElementById('community-health-center').checked;
@@ -688,7 +686,6 @@ var steps = {
       if (schoolBased) agencyType.push("School-based");
       if (faithBased) agencyType.push("Faith-based");
       if (plannedParenthood) agencyType.push("Planned Parenthood");
-      if (healthDepartment) agencyType.push("Health department");
       if (freeStanding) {
         agencyType.push("Free-standing family planning organization");
       }
@@ -702,7 +699,8 @@ var steps = {
       if (otherAgencyType) agencyType.push(otherAgencyTypeText);
 
       var city = document.getElementById("city").value;
-      var state = document.getElementById("state").value;
+      var stateSel = document.getElementById('state-select');
+      var state = stateSel.options[stateSel.selectedIndex].value
       
       var sel = 'textarea[name=reason]';
       var reason = d3.select(sel).node().value;
