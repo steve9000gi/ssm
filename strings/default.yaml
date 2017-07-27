@@ -17,8 +17,27 @@ example-systems.list:
   - 'Bringing together a team to focus on a new collaborative project'
   - 'Efforts to align care for children, mothers, and families that crosses organizational boundaries'
  
-# Step 2
-# Demographics
+# Step 2: get demographic info
+demographic-header:
+  'Please provide the following information:'
+first-name-prompt:
+  '1. First Name:'
+last-name-prompt:
+  '2. Last Name:'
+title-prompt:
+  '3. Title/Position:'
+agency-name-prompt:
+  '4. Agency Name:'
+agency-type-prompt:
+  '5. Agency Type (select all that apply):'
+city-prompt:
+  '6. City:'
+state-prompt:
+  '7. State:'
+reason-prompt:
+  '8. Please tell us your reason for using the System Support Mapper:'
+next.paras:
+  - 'Click the &ldquo;Next&rdquo; button to continue.'
 
 # Step 3
 overview-header: 'Overview'
