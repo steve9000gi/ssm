@@ -21,21 +21,23 @@ example-systems.list:
 demographic-header:
   'Please provide the following information:'
 first-name-prompt:
-  '1. First Name:'
+  'First Name:'
 last-name-prompt:
-  '2. Last Name:'
+  'Last Name:'
 title-prompt:
-  '3. Title/Position:'
+  'Title/Position:'
 agency-name-prompt:
-  '4. Agency Name:'
+  'Agency Name:'
 agency-type-prompt:
-  '5. Agency Type (select all that apply):'
-city-prompt:
-  '6. City:'
+  'Agency Type (select all that apply):'
 state-prompt:
-  '7. State:'
+  'State:'
+county-prompt:
+  'County or equivalent:'
+city-prompt:
+  'City:'
 reason-prompt:
-  '8. Please tell us your reason for using the System Support Mapper:'
+  'Please tell us your reason for using the System Support Mapper:'
 next.paras:
   - 'Click the &ldquo;Next&rdquo; button to continue.'
 

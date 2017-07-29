@@ -68,8 +68,9 @@ exports.getMapObject = function(d3) {
     "title": modWizard.title,
     "agencyName": modWizard.agencyName,
     "agencyType": modWizard.agencyType,
-    "city": modWizard.city,
     "state": modWizard.state,
+    "county": modWizard.county,
+    "city": modWizard.city,
     "reason": modWizard.reason,
     "version": "SSM Wizard Title V 2017/07/27"
   };

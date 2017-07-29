@@ -297,7 +297,7 @@ path.link.selected, g.pathG.selected path {
 #login label {
  display: inline-block;
  text-align: right;
- width: 80px;
+ width: 30%;
 }
 
 .register-top {
@@ -484,4 +484,14 @@ aside h3 {
 
 .finish {
   display: none;
+}
+
+.demog {
+  width: 214px;
+  text-align: right;
+}
+
+.demog2 {
+  width: 362px;
+  text-align: right;
 }

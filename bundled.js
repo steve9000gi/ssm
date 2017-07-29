@@ -2841,8 +2841,9 @@ exports.getMapObject = function(d3) {
     "title": modWizard.title,
     "agencyName": modWizard.agencyName,
     "agencyType": modWizard.agencyType,
-    "city": modWizard.city,
     "state": modWizard.state,
+    "county": modWizard.county,
+    "city": modWizard.city,
     "reason": modWizard.reason,
     "version": "SSM Wizard Title V 2017/07/27"
   };
@@ -4398,6 +4399,34 @@ var steps = {
   },
   2: {
     enter: function(d3) {
+      // After the user selects a state from the static list, read the counties
+      // for that state from a file and populate the county selection dropdown
+      // list after clearing any prior options..
+      var dta = null;
+      d3.csv("USCounties.csv", function(d) {
+        dta = d;
+      });
+      d3.select("#state-select")
+        .on("change", function(d) {
+          var stateSel = document.getElementById('state-select');
+          var state = stateSel.options[stateSel.selectedIndex].label;
+          var counties = ["Select your county or equivalent"];
+          dta.forEach(function(row) {
+            if (row["State or district"] == state) {
+              counties.push(row["County or equivalent"]);
+            }
+          });
+          counties.push("Not available");
+          var countySelect = d3.select("#county-select");
+          d3.select("#county-select").selectAll("option").remove();
+          d3.select("#county-select").selectAll("option")
+            .data(counties)
+            .enter()
+            .append("option")
+            .attr("label", function(d) {
+              return d;
+            })
+        });
       return true;
     },
 
@@ -4446,15 +4475,23 @@ var steps = {
       if (nonProfit) agencyType.push("Non-profit");
       if (otherAgencyType) agencyType.push(otherAgencyTypeText);
 
-      var city = document.getElementById("city").value;
       var stateSel = document.getElementById('state-select');
-      var state = stateSel.options[stateSel.selectedIndex].value
+      var state = (stateSel.selectedIndex > 0) // Don't accept ptompt
+                ? stateSel.options[stateSel.selectedIndex].value
+                : null;
+      
+      var countySel = document.getElementById('county-select');
+      var county = (countySel.selectedIndex > 0) // Don't accept prompt
+                 ? countySel.options[countySel.selectedIndex].label
+                 : null;
+
+      var city = document.getElementById("city").value;
       
       var sel = 'textarea[name=reason]';
       var reason = d3.select(sel).node().value;
 
       if (!(firstName && lastName && title && agencyName && agencyType &&
-            city && reason)) {
+            city && state && county && reason)) {
         alert('You must answer all questions before proceeding.');
         return false;
       }
@@ -4463,8 +4500,9 @@ var steps = {
       exports.title = title;
       exports.agencyName = agencyName;
       exports.agencyType = agencyType;
-      exports.city = city;
       exports.state = state;
+      exports.county = county;
+      exports.city = city;
       exports.reason = reason;
       return true;
     }
