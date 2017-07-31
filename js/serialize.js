@@ -72,7 +72,7 @@ exports.getMapObject = function(d3) {
     "county": modWizard.county,
     "city": modWizard.city,
     "reason": modWizard.reason,
-    "version": "ssm-wizard-Title-V"
+    "version": "ssm-wizard-TitleV"
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
