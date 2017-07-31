@@ -297,13 +297,13 @@ path.link.selected, g.pathG.selected path {
 #login label {
  display: inline-block;
  text-align: right;
- width: 30%;
+ width: 80px;
 }
 
 .register-top {
  display: inline-block;
  text-align: right;
- width: 258px;
+ width: 158px;
 }
 
 .register-bottom {
@@ -474,16 +474,12 @@ aside h3 {
 #wizard_role_text {
   font-family: arial;
 }
-.next, .finish {
+.next, .save {
   margin-right: 2px;
 }
 
 .back {
   margin-right: 1px;
-}
-
-.finish {
-  display: none;
 }
 
 .demog {
@@ -495,3 +491,4 @@ aside h3 {
   width: 362px;
   text-align: right;
 }
+

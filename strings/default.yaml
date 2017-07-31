@@ -39,7 +39,7 @@ city-prompt:
 reason-prompt:
   'Please tell us your reason for using the System Support Mapper:'
 next.paras:
-  - 'Click the &ldquo;Next&rdquo; button to continue.'
+  - 'Click the &ldquo;Next&rdquo; button to save what you&lsquo;ve done so far and continue.'
 
 # Step 3
 overview-header: 'Overview'
@@ -54,7 +54,7 @@ overview-list-item-3: 'move shapes around by holding the left mouse button down 
 overview-list-item-4: 'move the shapes (if arrows overlap) and the arrows will move too, although it would be best to do this step at the very end because the shapes are automatically repositioned each time a new one is added.'
 overview-text-2.paras:
   - 'Once you start the wizard, you can step away from a partially completed map and finish it later &mdash; just keep the wizard open in the browser. When your SSM is complete, you will be able to save the map as a special file, which you can open and view or edit further using our web-based System Support Mapping tool. We&rsquo;ll give you instructions on how to do this at the end. You will also be able to download a picture of your map, which you could easily share with others electronically.'
-  - 'Hit the &ldquo;Next&rdquo; button to continue.'
+  - 'Click the &ldquo;Next&rdquo; button to continue.'
 
 # Step 4
 prerequisites-header: 'Prerequisites'
@@ -63,11 +63,11 @@ prerequisites-text.paras:
   - 'Please take a few minutes to develop a clear idea of the challenge you are attempting to map and your role in it.'
   - 'This is important! If you don&rsquo;t have a solid understanding of your role in this challenge, this map-building exercise could be unclear and unhelpful.'
   - 'In the text box below, please briefly describe the challenge you will focus on in this map. Example responses might be: to facilitate integration of care coordination activities supporting children and youth with special health needs across the state, to support the social and emotional wellness of children aged 0-8, or to facilitate the implementation of Bright Futures (or another evidence-based intervention). If it helps, you can simply describe the challenge in terms of the outcome(s) you would like to improve.'
-  - 'Hit the &ldquo;Next&rdquo; button to continue.'
+  - 'Click the &ldquo;Next&rdquo; button to save what you&lsquo;ve done so far and continue.'
 prerequisites-focus-description-prompt: 'In the text below, please briefly describe the challenge you will focus on in this map.'
 prerequisites-context-prompt: 'As a last step before we begin your map, provide a little more context around the initiative. In the text box below, please briefly describe key partners collaborating with you and the time frame for the work.'
 prerequisites-next.paras:
-  - 'Hit the &ldquo;Next&rdquo; button to continue.'
+  - 'Click the &ldquo;Next&rdquo; button to save what you&lsquo;ve done so far and continue.'
 
 # Step 5
 ring1-header: 'Ring #1: Identifying Your Role'
@@ -79,7 +79,7 @@ ring1-intro.paras:
 ring1-label: 'My role is:'
 ring1-afterword.paras:
   - 'When you hit &ldquo;Next,&rdquo; your role will be inserted into the map below for you.'
-  - 'Hit the &ldquo;Next&rdquo; button to continue.'
+  - 'Click the &ldquo;Next&rdquo; button to save what you&lsquo;ve done so far and continue.'
 
 # Step 6
 ring2-header: 'Ring #2: Responsibilities'
@@ -91,7 +91,7 @@ ring2-aside.list:
 ring2-text.paras:
   - 'The second ring contains the responsibilities that you have in your role as <code><span id="wizard_role_text">_</span></code>.'
   - 'Identify the four to eight most important responsibilities related to this role and add them here.'
-  - 'When you click the &ldquo;Add&rdquo; button below, the responsibility you&rsquo;ve entered will be added to the map below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to go to the next step.'
+  - 'When you click the &ldquo;Add&rdquo; button below, the responsibility you&rsquo;ve entered will be added to the map below. After that you can add other responsibilities, or click the &ldquo;Next&rdquo; button to save what you&lsquo;ve done so far and go to the next step.'
   - 'One of my responsibilities is:'
 
 # Step 7
@@ -137,7 +137,7 @@ ring4-resource-helpfulness-description-prompt:
 
 # Resource interstitial
 ring4-interstitial-text.paras:
-  - 'If you&rsquo;d like to add another resource, click the &ldquo;Add Resource&rdquo; button. Otherwise, click &ldquo;Next.&rdquo;'
+  - 'If you&rsquo;d like to add another resource, click the &ldquo;Add Resource&rdquo; button. Otherwise, click &ldquo;Next.&rdquo; (Everything you&lsquo;ve done so far has been saved in the database.)'
 
 # Step 10
 pre-ring5-text.paras:
@@ -175,7 +175,7 @@ review-aside-text.paras:
   - 'Now that you have a clear picture of the challenge and your role in it, many people find it helpful to use the map to think about how they could work on the challenge. What could you do to change your role, responsibilities, resources, and needs for the better? You can add these wishes on the outside of the rings, connecting them with the responsibilities, needs, or resources they would change.'
 review-text.paras:
   - 'You are almost there! Let&rsquo;s clean up your map. Try moving the shapes around so that they are evenly spaced and the lines don&rsquo;t cross as much. Be sure to keep the blue rectangles in the blue &ldquo;Responsibilities&rdquo; ring, the aqua diamonds in the aqua &ldquo;Needs&rdquo; ring, the black ovals in the black &ldquo;Resources&rdquo; ring, and the gold &ldquo;Wish List&rdquo; stars outside the outermost ring.'
-  - 'Once your map looks good to you, you&rsquo;re finished!'
+  - 'Once your map looks good to you, click on the &ldquo;Save&rdquo; button to save your final changes, and you&rsquo;re finished!'
 review-download-data-text: 'download your map data'
 review-download-data-tips-header: 'What can you do with downloaded data?'
 review-download-data-tips-span1: 'Add to or otherwise modify your map by opening the downloaded file in '

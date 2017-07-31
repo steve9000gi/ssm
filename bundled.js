@@ -476,11 +476,11 @@ var wishesCYSHCN = [
   "Housing solutions"
 ];
 
-var rolesTitleV ={}; 
-var responsibilitiesTitleV = {};
-var needsTitleV = {};
-var resourcesTitleV = {};
-var wishesTitleV = {};
+var rolesDefault ={}; 
+var responsibilitiesDefault = {};
+var needsDefault = {};
+var resourcesDefault = {};
+var wishesDefault = {};
 
 var CYSHCNCompletions = {
   role: rolesCYSHCN,
@@ -490,12 +490,12 @@ var CYSHCNCompletions = {
   wish: wishesCYSHCN
 };
 
-var titleVCompletions = {
-  role: rolesTitleV,
-  responsibility: responsibilitiesTitleV,
-  need: needsTitleV,
-  resource: resourcesTitleV,
-  wish: wishesTitleV
+var defaultCompletions = {
+  role: rolesDefault,
+  responsibility: responsibilitiesDefault,
+  need: needsDefault,
+  resource: resourcesDefault,
+  wish: wishesDefault
 };
 
 var completionsByTextModule = {
@@ -503,15 +503,16 @@ var completionsByTextModule = {
   CaregiversCYSHCN2: CYSHCNCompletions,
   CaregiversCYSHCN3: CYSHCNCompletions,
   CaregiversCYSHCN: CYSHCNCompletions,
-  TitleVWorkforce3: titleVCompletions,
-  TitleVWorkforce4: titleVCompletions,
-  TitleVWorkforce5: titleVCompletions,
-  TitleVWorkforce: titleVCompletions
+  TitleVWorkforce3: defaultCompletions,
+  TitleVWorkforce4: defaultCompletions,
+  TitleVWorkforce5: defaultCompletions,
+  TitleVWorkforce: defaultCompletions,
+  default: defaultCompletions
 };
 
 exports.completionsByType = function() {
   var module = modTextModules.module;
-  return completionsByTextModule[module] || CYSHCNCompletions;
+  return completionsByTextModule[module] || defaultCompletions;
 };
 
 },{"./text-modules.js":26}],6:[function(require,module,exports){
@@ -2845,7 +2846,7 @@ exports.getMapObject = function(d3) {
     "county": modWizard.county,
     "city": modWizard.city,
     "reason": modWizard.reason,
-    "version": "SSM Wizard Title V 2017/07/27"
+    "version": "ssm-wizard-Title-V"
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
@@ -4292,9 +4293,9 @@ var attachButtonHandlers = function(d3) {
     .on('click', function(){ exports.nextStep(d3); });
   d3.selectAll('#wizard button.back')
     .on('click', function(){ exports.prevStep(d3); });
-  d3.selectAll('#wizard button.finish')
+  d3.selectAll('#wizard button.save')
     .on('click', function(){
-      exports.hideWizard(d3);
+      //exports.hideWizard(d3);
       modDatabase.writeMapToDatabase(d3, true);
     });
   // Stop propagation of keydown events, so that the handlers elsewhere in this
@@ -4426,6 +4427,15 @@ var steps = {
             .attr("label", function(d) {
               return d;
             })
+        });
+      d3.select("#other-agency-type")
+        .on("change", function(d) {
+          var disable = !this.checked;
+          var txt = d3.select("#other-agency-type-text");
+          txt.node().disabled = disable;
+          if (disable) {
+            txt.node().value = "";
+          }
         });
       return true;
     },

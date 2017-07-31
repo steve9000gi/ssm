@@ -543,9 +543,9 @@ var attachButtonHandlers = function(d3) {
     .on('click', function(){ exports.nextStep(d3); });
   d3.selectAll('#wizard button.back')
     .on('click', function(){ exports.prevStep(d3); });
-  d3.selectAll('#wizard button.finish')
+  d3.selectAll('#wizard button.save')
     .on('click', function(){
-      exports.hideWizard(d3);
+      //exports.hideWizard(d3);
       modDatabase.writeMapToDatabase(d3, true);
     });
   // Stop propagation of keydown events, so that the handlers elsewhere in this
@@ -677,6 +677,15 @@ var steps = {
             .attr("label", function(d) {
               return d;
             })
+        });
+      d3.select("#other-agency-type")
+        .on("change", function(d) {
+          var disable = !this.checked;
+          var txt = d3.select("#other-agency-type-text");
+          txt.node().disabled = disable;
+          if (disable) {
+            txt.node().value = "";
+          }
         });
       return true;
     },

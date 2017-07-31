@@ -98,11 +98,11 @@ var wishesCYSHCN = [
   "Housing solutions"
 ];
 
-var rolesTitleV ={}; 
-var responsibilitiesTitleV = {};
-var needsTitleV = {};
-var resourcesTitleV = {};
-var wishesTitleV = {};
+var rolesDefault ={}; 
+var responsibilitiesDefault = {};
+var needsDefault = {};
+var resourcesDefault = {};
+var wishesDefault = {};
 
 var CYSHCNCompletions = {
   role: rolesCYSHCN,
@@ -112,12 +112,12 @@ var CYSHCNCompletions = {
   wish: wishesCYSHCN
 };
 
-var titleVCompletions = {
-  role: rolesTitleV,
-  responsibility: responsibilitiesTitleV,
-  need: needsTitleV,
-  resource: resourcesTitleV,
-  wish: wishesTitleV
+var defaultCompletions = {
+  role: rolesDefault,
+  responsibility: responsibilitiesDefault,
+  need: needsDefault,
+  resource: resourcesDefault,
+  wish: wishesDefault
 };
 
 var completionsByTextModule = {
@@ -125,13 +125,14 @@ var completionsByTextModule = {
   CaregiversCYSHCN2: CYSHCNCompletions,
   CaregiversCYSHCN3: CYSHCNCompletions,
   CaregiversCYSHCN: CYSHCNCompletions,
-  TitleVWorkforce3: titleVCompletions,
-  TitleVWorkforce4: titleVCompletions,
-  TitleVWorkforce5: titleVCompletions,
-  TitleVWorkforce: titleVCompletions
+  TitleVWorkforce3: defaultCompletions,
+  TitleVWorkforce4: defaultCompletions,
+  TitleVWorkforce5: defaultCompletions,
+  TitleVWorkforce: defaultCompletions,
+  default: defaultCompletions
 };
 
 exports.completionsByType = function() {
   var module = modTextModules.module;
-  return completionsByTextModule[module] || CYSHCNCompletions;
+  return completionsByTextModule[module] || defaultCompletions;
 };
