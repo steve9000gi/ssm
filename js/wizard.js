@@ -729,7 +729,7 @@ var steps = {
       if (otherAgencyType) agencyType.push(otherAgencyTypeText);
 
       var stateSel = document.getElementById('state-select');
-      var state = (stateSel.selectedIndex > 0) // Don't accept ptompt
+      var state = (stateSel.selectedIndex > 0) // Don't accept prompt
                 ? stateSel.options[stateSel.selectedIndex].value
                 : null;
       
