@@ -2,12 +2,13 @@
 welcome-header:
   'Welcome to the System Support Mapping Wizard'
 welcome-text.paras:
-  - 'A System Support Map (SSM) is a way of documenting the different kinds of support you need to work on a complicated challenge. Completing an SSM will guide your own thinking about your objectives, needs, relevant resources, and priorities for how you could be better equipped to succeed.'
-  - 'Specifically, SSMs walk individuals or groups through the process of describing their own role in a collaboration and how they are fulfilling that role in terms of specific responsibilities or project activities; what they need to succeed in meeting their responsibilities; specific resources they rely on (and an assessment of how supportive they are); and their top three wishes for maximizing success in their work. Additionally, SSMs from partners can become the foundation for aligning efforts and setting priorities to collaborate efficiently.'
-  - 'Check the sidebar for some examples of initiatives for which completing system support maps might guide Title X family planning and preventive health services work.'
+  - 'A System Support Map (SSM) is a way of documenting the different kinds of support you need to work on a complicated challenge. You are one member of a team that is being asked to complete an SSM. At the individual level, completing an SSM will guide your own thinking about your objectives, needs, relevant resources, and priorities for how you could be better equipped to succeed. At the team level, these maps will help your leadership to: 1) identify ways for team members to work more effectively and efficiently; and 2) understand how to better support team members in completing their work successfully.'
+  - 'WHAT TO EXPECT: SSMs walk individuals through the process of describing their own role in a collaboration and how they are fulfilling that role in terms of specific responsibilities or project activities; what they need to succeed in meeting their responsibilities; specific resources they rely on (and an assessment of how supportive they are); and their top three wishes for maximizing success in their work. It will take you 30-60 minutes to complete your map.'
+  - 'IMPORTANT: This website has been designed to run in Google Chrome. Please use the Google Chrome internet browser to complete this survey.'
+  - 'Check the sidebar for some examples of initiatives for which completing system support maps can guide Title X family planning and preventive health services work.'
   - 'This wizard will ask you questions and then build the System Support Map for you based on your answers.'
-map-uses-1-span: 'Thank you for creating a System Support Map. We hope the process and resulting map is useful. After completing a map, you will have an opportunity to save and print your map. We will save your maps in a secure database so that you can access them in the future. Your maps will also be added to a group of maps that may be aggregated and analyzed together in a research project to learn more about the systems that support family planning and preventive health services in the US. . Your map will be de-identified and will not be linked to you personally in any reports or publications resulting from this study. Please contact '
-map-uses-2-span: ' if you have any questions about System Support Mapping or about the research project.'
+map-uses-1-span: 'Thank you for creating a System Support Map. We hope the process and resulting map are useful. After completing a map, you will have an opportunity to save and print your map. We will save your maps in a secure database so that you can access them in the future. Your maps will be analyzed with a group of maps to develop follow-up coaching sessions for your team/Title X leadership. Your maps will also be added to a group of maps that may be aggregated and analyzed together in an improvement project to learn more about the systems that support family planning and preventive health services in the US. Additionally, results will be used to enhance FPNTC training and technical assistance. Please contact '
+map-uses-2-span: ' if you have any questions about System Support Mapping or about this project.'
 next-page-instruction.paras: 
   - 'Hit the &ldquo;Next&rdquo; button to continue.'
 example-systems-header:
@@ -28,15 +29,15 @@ last-name-prompt:
 title-prompt:
   'Title/Position:'
 agency-name-prompt:
-  'Agency Name:'
+  'Agency/Organization Name (your primary affiliation):'
 agency-type-prompt:
-  'Agency Type (select all that apply):'
+  'Agency/Organization Type (select all that apply):'
 state-prompt:
   'State:'
 county-prompt:
-  'County or equivalent:'
+  'County or equivalent in which your agency/organization is located:'
 city-prompt:
-  'City:'
+  'City in which your agency/organization is located (write "NA" if not applicable):'
 reason-prompt:
   'Please tell us your reason for using the System Support Mapper:'
 next.paras:
@@ -58,25 +59,22 @@ overview-text-2.paras:
   - 'Click the &ldquo;Next&rdquo; button to continue.'
 
 # Step 4
-prerequisites-header: 'Prerequisites'
+prerequisites-header: 'Scope of work you will map'
 prerequisites-text.paras:
-  - 'Before starting to build your SSM, focus on a specific challenge.  This could be a Performance Measure you are targeting or a challenge you are facing within your organization. If this focus has been given to you by whomever asked you to create a map, please enter that focus here. '
-  - ' If not, please take a few minutes to develop a clear idea of the challenge you are attempting to map and your role in it.'
-  - 'This is important! If you don&rsquo;t have a solid understanding of your role in this challenge, this map-building exercise could be unclear and unhelpful.'
-  - 'In the text box below, please briefly describe the challenge you will focus on in this map. If it helps, you can simply describe the challenge in terms of the outcome(s) you would like to improve. Challenges can range from specific to broad – the detail in your map will vary accordingly. Example responses introduced already might be: improving a particular Performance Measure, work related to an identified organizational domain such as data collection and use, your work broadly in implementing effective family planning care, outreach for an underserved subpopulation, efforts to encourage adequate birth spacing or reduce substance use among pregnant women.'
-  - 'Click the &ldquo;Next&rdquo; button to save what you&lsquo;ve done so far and continue.'
-prerequisites-focus-description-prompt: 'In the text box below, please briefly describe the challenge you will focus on in this map.'
-prerequisites-context-prompt: 'As a last step before we begin your map, provide a little more context around the initiative. In the text box below, please briefly describe key partners collaborating with you and the time frame for the work.'
+  - 'You have been asked to complete an SSM as part of a team or collaboration working on a specific topic or initiative. It is important that you complete this map with a clear focus in mind. If not, it can be overwhelming, given the breadth of work you likely support. If you are not sure what the specific focus of your map should be, please type that below, stop, and contact the individual who asked you to complete this map for clarification.'
+prerequisites-focus-description-prompt: 'In the text box below, please briefly describe the scope of work or initiative you will focus on in this map, as you understand it. Example responses introduced already might be: improving a particular Performance Measure, work related to an identified organizational domain such as data collection and use, your work broadly in implementing effective family planning care, outreach for an underserved subpopulation, efforts to encourage adequate birth spacing or reduce substance use among pregnant women.'
+prerequisites-context-prompt: 'As a last step before we begin your map, provide a little more context around the initiative or your work environment that you believe shape what you do, and how you do it. What do you think most affects your work? For example, you might mention that you work from home. Or, that you work in five rural clinics. Or, that you work for a nonprofit organization. Say as much or as little as you like her. '
 prerequisites-next.paras:
   - 'Click the &ldquo;Next&rdquo; button to save what you&lsquo;ve done so far and continue.'
 
-# Step 5
+# Step 5[1]
 ring1-header: 'Ring #1: Identifying Your Role'
 ring1-aside-header: 'Tip:'
 ring1-aside.list:
-  - 'If you have multiple roles that you want to explore, pick one. Including multiple roles in a single map may not work well, unless the challenge you are focusing on is quite specific or your roles are well integrated. For example, consider a clinician who provides family planning counseling and is also her family planning clinic’s representative in a community partnership seeking to better connect adolescent substance users to community supports. If the focus for her SSM was on her responsibilities toward the provision of quality family planning care, it might be overwhelming to map her work in both roles. If, instead, the focus for her SSM was on her responsibilities toward reducing adolescent substance use, she might (more reasonably) describe her role spanning both parts of her work and describe specific responsibilities within each part. If you end up focusing on part of what you do (one of multiple roles), you can come back and fill out other maps for other roles later.'
+  - 'When you think of the scope of work you just described, how would you describe your role on the team or collaboration supporting it? Your response here should only be a couple words: we want a description, or label that you will describe more fully later in the map. '
+  - 'Your role description may or may not match the job title/position you entered earlier. Your job title/position is how your role is described in your agency/organization. Here, we want to know how you describe your role in terms of the work for which you were asked to create this SSM.  That work might involve a team or group of people within your agency/organization, or crossing agencies/organizations.'
 ring1-intro.paras:
-  - 'How would you name your role in the work you are mapping? Please describe your role in 1-4 words. Some possible roles are: program manager, chief financial officer, service provider, training provider, health educator, family planning director, or health scientist.'
+  - 'Please name your role in the work you are mapping? Please describe your role in 1-4 words. Examples of roles might include: program manager, chief financial officer, service provider, team leader, or data specialist. '
 ring1-label: 'My role is:'
 ring1-afterword.paras:
   - 'When you click &ldquo;Next,&rdquo; your role will be inserted into the map below.'
@@ -101,9 +99,9 @@ ring3-aside-header: 'Tip:'
 ring3-aside.list:
   - 'Needs are the critical ingredients in a recipe for how you get each responsibility done.'
 ring3-text.paras:
-  - 'The third ring identifies what is most needed to meet each responsibility.' 
+  - 'The third ring identifies what is most needed to meet each responsibility.'
   - 'Common needs include time, reimbursement, buy-in from your organization, and information. Please be creative here! The more comprehensive this list is the better. Be sure to consider personal needs, like patience, empathy, and creativity. You can be very specific, such as &ldquo;I need access to a state car to conduct site visits,&rdquo; or more general, such as &ldquo;I need guidance.&rdquo;'
-  - 'You&rsquo;ll be asked to describe needs for each responsibility in turn, starting with the first one you entered. As you add needs, they will be entered into your map below. At first, the positioning will look odd. Please keep going – it will improve as you add more information to your map. And, if you want, you can move things around when your map is completely filled in. If you move things now, they will get moved back every time a new item is added.'
+  - 'You&rsquo;ll be asked to describe needs for each responsibility in turn, starting with the first one you entered. As you add needs, they will be entered into your map below. At first, the positioning will look odd. Please keep going - it will improve as you add more information to your map. And, if you want, you can move things around when your map is completely filled in. If you move things now, they will get moved back every time a new item is added.'
 ring3-prompt.paras:
   - 'To fulfill this responsibility, I need:'
 
@@ -116,12 +114,12 @@ pre-ring4-text.paras:
 ring4-header: 'Ring #4: Resources'
 ring4-aside-header: 'Tip:'
 ring4-aside.list:
-  - 'Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a certain stove meeting your technical requirements, a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, or a friend who makes cooking so much more fun!'
+  - 'Think creatively about resources! If needs are ingredients in a recipe, resources might include things like a favorite cookbook/recipe, particular brands of an ingredient, a store that sells everything you need on your grocery list in one stop, your patience, or a friend who makes cooking so much more fun!'
 ring4-intro.paras:
   - 'The next ring identifies the resources you use to meet your needs from Ring #3.' 
-  - 'Reflect for a moment about the needs you listed. What specific things, organizations, places, or people have you tried (whether or not they have helped you) to get each need met? Resources might include information on best practices, toolkits, guidelines, data, training programs, technical assistance, services in your community, providers, or partner organizations.'
-  - 'Hopefully you jotted down a list of resources that support you when you looked at your map on the last screen. If you haven’t done that yet, go ahead and do it now.'
-  - 'When you are ready, enter information about each resource, one at a time. First, you will type the specific name or a short description of the resource. For example, you might type &ldquo;Dr. Smith,&rdquo; &ldquo;www.name_of_website.com,&rdquo; &ldquo;my patience,&rdquo; or &ldquo;Tech Solutionz.&rdquo; Next you will be asked to describe what kind of resource it is. In the examples just above, you might describe Dr. Smith as a clinician, www.name_of_website.com as a website, your patience as a personal strength, and Tech Solutionz as a data support provider. Next, you will be asked to click on each need that the resource helps with from a list that is generated from your own SSM. A resource can help with one need, or with many needs – check all that apply. For example, technical assistance might help with many of your needs while a specific piece of equipment might only help with a single need that you listed. In the last step, you will be asked to rate how helpful each resource is for each need, and to briefly comment on why the resource supports you or not – what about it is particularly helpful or not. Here we are interested in your personal experience with the resource – so answer for yourself (and not based on what others think about the resource).'
+  - 'Reflect for a moment about the needs you listed. What specific things, information, organizations, places, or people have you used (whether or not they have helped you) to get each need met? Resources might include information on best practices, toolkits, guidelines, data, training programs, technical assistance, services in your community, or partner organizations.'
+  - 'Hopefully you jotted down a list of resources that support you when you looked at your map on the last screen. If you haven&rsquo;t done that yet, go ahead and do it now.'
+  - 'When you are ready, enter information about each resource, one at a time. First, you will type the specific name or a short description of the resource. For example, you might type &ldquo;Dr. Smith,&rdquo; &ldquo;www.name_of_website.com,&rdquo; &ldquo;my patience,&rdquo; or &ldquo;Tech Solutionz.&rdquo; Next you will be asked to describe what kind of resource it is. In the examples just above, you might describe Dr. Smith as a clinician partner, www.name_of_website.com as a website, your patience as a personal strength, and Tech Solutionz as a data support provider. Next, you will be asked to click on each need that the resource helps with from a list that is generated from your own SSM. A resource can help with one need, or with many needs - check all that apply. For example, technical assistance might help with many of your needs while a specific piece of equipment might only help with a single need that you listed. In the last step, you will be asked to rate how helpful each resource is for each need, and to briefly comment on why the resource supports you or not - what about it is particularly helpful or not. Here we are interested in your personal experience with the resource - so answer for yourself (and not based on what others think about the resource).'
   - 'The lines to resources on Ring #4 will be color-coded to indicate their level of helpfulness to you.'
 ring4-resource-type-prompt:
   'What type of resource would you like to describe?'

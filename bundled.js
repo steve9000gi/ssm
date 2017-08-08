@@ -2846,7 +2846,7 @@ exports.getMapObject = function(d3) {
     "county": modWizard.county,
     "city": modWizard.city,
     "reason": modWizard.reason,
-    "version": "ssm-wizard-TitleV"
+    "version": "ssm-wizard-TitleX"
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
@@ -4449,18 +4449,14 @@ var steps = {
       var healthDepartment =
               document.getElementById('health-department').checked;
       var hospitalBased = document.getElementById('hospital-based').checked;
-      var universityBased = document.getElementById('university-based').checked;
-      var schoolBased = document.getElementById('school-based').checked;
-      var faithBased = document.getElementById('faith-based').checked;
       var plannedParenthood =
               document.getElementById('planned-parenthood').checked;
       var freeStanding = document.getElementById('free-standing').checked;
       var communityHealthCenter =
               document.getElementById('community-health-center').checked;
-      var federallyQualified =
-              document.getElementById('federally-qualified').checked;
       var tribal = document.getElementById('tribal').checked;
-      var correctional = document.getElementById('correctional').checked;
+      var universityBased = document.getElementById('university-based').checked;
+      var schoolBased = document.getElementById('school-based').checked;
       var nonProfit = document.getElementById('non-profit').checked;
       var otherAgencyType =
               document.getElementById('other-agency-type').checked;
@@ -4469,20 +4465,17 @@ var steps = {
       var agencyType = Array();
       if (healthDepartment) agencyType.push("Health department");
       if (hospitalBased) agencyType.push("Hospital-based");
-      if (universityBased) agencyType.push("University-based");
-      if (schoolBased) agencyType.push("School-based");
-      if (faithBased) agencyType.push("Faith-based");
       if (plannedParenthood) agencyType.push("Planned Parenthood");
       if (freeStanding) {
-        agencyType.push("Free-standing family planning organization");
+        agencyType.push("Free-standing Family Planning Organization");
       }
-      if (communityHealthCenter) agencyType.push("Community health center");
-      if (federallyQualified) {
-        agencyType.push("Federally qualified health center");
+      if (communityHealthCenter) {
+	agencyType.push("Community health center/Federally Qualified Health Center");
       }
       if (tribal) agencyType.push("Tribal health center");
-      if (correctional) agencyType.push("Correctional facility-based");
-      if (nonProfit) agencyType.push("Non-profit");
+      if (universityBased) agencyType.push("University-based");
+      if (schoolBased) agencyType.push("School-based");
+      if (nonProfit) agencyType.push("Other private, non-profit");
       if (otherAgencyType) agencyType.push(otherAgencyTypeText);
 
       var stateSel = document.getElementById('state-select');
