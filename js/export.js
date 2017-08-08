@@ -75,7 +75,7 @@ exports.exportGraphAsImage = function(d3) {
   d3.select("#credits")
     .attr("display", "block")
     .attr("y", extent.h - 30)
-   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2016 UNC-CH)");
+   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2017 UNC-CH)");
 
   // Create canvas:
   d3.select("body").append("canvas")

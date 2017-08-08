@@ -349,6 +349,7 @@ path.link.selected, g.pathG.selected path {
   cursor: pointer;
 }
 
+/* Hide until it's fixed
 .wizard-step div.minimize {
   float: right;
   font-size: 20px;
@@ -362,6 +363,7 @@ path.link.selected, g.pathG.selected path {
   border-radius: 4px;
   cursor: pointer;
 }
+*/
 
 .wizard-step div.maximize {
   display: none;
@@ -492,3 +494,6 @@ aside h3 {
   text-align: right;
 }
 
+.wizard-step div.minimize { /* Hide until it can be fixed */
+  display: none;
+}

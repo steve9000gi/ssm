@@ -1782,7 +1782,7 @@ exports.exportGraphAsImage = function(d3) {
   d3.select("#credits")
     .attr("display", "block")
     .attr("y", extent.h - 30)
-   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2016 UNC-CH)");
+   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2017 UNC-CH)");
 
   // Create canvas:
   d3.select("body").append("canvas")
@@ -1882,7 +1882,7 @@ exports.addCopyright = function(d3) {
     .attr("id", "copyrightDiv")
     .append("text")
     .attr("id", "copyright")
-    .text("\u00a9 2014-2016 The University of North Carolina at Chapel Hill");
+    .text("\u00a9 2014-2017 The University of North Carolina at Chapel Hill");
 };
 
 exports.addCredits = function(d3) {
