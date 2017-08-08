@@ -485,13 +485,11 @@ aside h3 {
 }
 
 .demog {
-  width: 413px;
-  text-align: right;
+  text-align: left;
 }
 
 .demog2 {
-  width: 600px;
-  text-align: right;
+  text-align: left;
 }
 
 .wizard-step div.minimize { /* Hide until it can be fixed */
