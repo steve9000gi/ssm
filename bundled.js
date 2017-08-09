@@ -4891,25 +4891,8 @@ exports.zoomSvg = null;
 exports.justScaleTransGraph = false;
 
 exports.setZoom = function(d3, translate, zoom) {
-  var maxTranslate = 1000.0;
-  var maxZoom = 100.0;
-  var minZoom = 1 / maxZoom;
   exports.justScaleTransGraph = true;
-  if (translate >= maxTranslate) {
-    exports.translate = maxTranslate;
-  } else if (translate <= -maxTranslate) {
-    exports.translate = -maxTranslate;
-  } else {
-    exports.translate = translate;
-  }
-  if (zoom >= maxZoom) {
-    exports.zoom = maxZoom;
-  } else if (zoom <= minZoom) {
-    exports.zoom = minZoom;
-  } else {
-    exports.zoom = zoom;
-  }
-  console.log("zoom: " + zoom + "; xlate: " + translate);
+  exports.translate = translate;
   exports.zoom = zoom;
   d3.select(".graph")
     .attr("transform", "translate(" + translate + ") scale(" + zoom + ")");
