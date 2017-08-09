@@ -495,3 +495,7 @@ aside h3 {
 .wizard-step div.minimize { /* Hide until it can be fixed */
   display: none;
 }
+
+#roleText {
+  width: 170px;
+}

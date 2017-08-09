@@ -98,11 +98,35 @@ var wishesCYSHCN = [
   "Housing solutions"
 ];
 
-var rolesDefault ={}; 
-var responsibilitiesDefault = {};
-var needsDefault = {};
-var resourcesDefault = {};
-var wishesDefault = {};
+var rolesTitleX = [
+  "Health educator",
+  "Counselor",
+  "Health care associate",
+  "Medical assistant",
+  "Community outreach staff",
+  "Physician",
+  "Physician assistant",
+  "Nurse practitioner",
+  "Certified nurse midwife",
+  "Registered nurse",
+  "Licensed practical nurse",
+  "Front desk/reception",
+  "Billing/finance staff"
+];
+
+var rolesDefault =[];
+var responsibilitiesDefault = [];
+var needsDefault = [];
+var resourcesDefault = [];
+var wishesDefault = [];
+
+var titleXCompletions = {
+  role: rolesTitleX,
+  responsibility: responsibilitiesDefault,
+  need: needsDefault,
+  resource: resourcesDefault,
+  wish: wishesDefault
+};
 
 var CYSHCNCompletions = {
   role: rolesCYSHCN,
@@ -134,5 +158,6 @@ var completionsByTextModule = {
 
 exports.completionsByType = function() {
   var module = modTextModules.module;
-  return completionsByTextModule[module] || defaultCompletions;
+  //return completionsByTextModule[module] || defaultCompletions;
+  return titleXCompletions;
 };

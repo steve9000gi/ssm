@@ -476,11 +476,35 @@ var wishesCYSHCN = [
   "Housing solutions"
 ];
 
-var rolesDefault ={}; 
-var responsibilitiesDefault = {};
-var needsDefault = {};
-var resourcesDefault = {};
-var wishesDefault = {};
+var rolesTitleX = [
+  "Health educator",
+  "Counselor",
+  "Health care associate",
+  "Medical assistant",
+  "Community outreach staff",
+  "Physician",
+  "Physician assistant",
+  "Nurse practitioner",
+  "Certified nurse midwife",
+  "Registered nurse",
+  "Licensed practical nurse",
+  "Front desk/reception",
+  "Billing/finance staff"
+];
+
+var rolesDefault =[];
+var responsibilitiesDefault = [];
+var needsDefault = [];
+var resourcesDefault = [];
+var wishesDefault = [];
+
+var titleXCompletions = {
+  role: rolesTitleX,
+  responsibility: responsibilitiesDefault,
+  need: needsDefault,
+  resource: resourcesDefault,
+  wish: wishesDefault
+};
 
 var CYSHCNCompletions = {
   role: rolesCYSHCN,
@@ -512,7 +536,8 @@ var completionsByTextModule = {
 
 exports.completionsByType = function() {
   var module = modTextModules.module;
-  return completionsByTextModule[module] || defaultCompletions;
+  //return completionsByTextModule[module] || defaultCompletions;
+  return titleXCompletions;
 };
 
 },{"./text-modules.js":26}],6:[function(require,module,exports){
@@ -4866,8 +4891,25 @@ exports.zoomSvg = null;
 exports.justScaleTransGraph = false;
 
 exports.setZoom = function(d3, translate, zoom) {
+  var maxTranslate = 1000.0;
+  var maxZoom = 100.0;
+  var minZoom = 1 / maxZoom;
   exports.justScaleTransGraph = true;
-  exports.translate = translate;
+  if (translate >= maxTranslate) {
+    exports.translate = maxTranslate;
+  } else if (translate <= -maxTranslate) {
+    exports.translate = -maxTranslate;
+  } else {
+    exports.translate = translate;
+  }
+  if (zoom >= maxZoom) {
+    exports.zoom = maxZoom;
+  } else if (zoom <= minZoom) {
+    exports.zoom = minZoom;
+  } else {
+    exports.zoom = zoom;
+  }
+  console.log("zoom: " + zoom + "; xlate: " + translate);
   exports.zoom = zoom;
   d3.select(".graph")
     .attr("transform", "translate(" + translate + ") scale(" + zoom + ")");
