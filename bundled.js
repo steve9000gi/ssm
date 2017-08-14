@@ -2835,7 +2835,9 @@ exports.getMapObject = function(d3) {
     "circlesOfCareCenter": modCirclesOfCare.center,
     "wizardActive": modWizard.wizardActive,
     "focusDescription": modWizard.focusDescription,
-    "focusContext": modWizard.focusContext
+    "focusContext": modWizard.focusContext,
+    "version": "ssm-wizard",
+    "timestamp": "2017/08/14 13:27"
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
