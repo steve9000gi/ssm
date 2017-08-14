@@ -2871,7 +2871,8 @@ exports.getMapObject = function(d3) {
     "county": modWizard.county,
     "city": modWizard.city,
     "reason": modWizard.reason,
-    "version": "ssm-wizard-TitleX"
+    "version": "ssm-wizard-TitleX",
+    "timestamp": "2017/08/14 12:45"
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
