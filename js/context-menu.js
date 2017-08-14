@@ -134,7 +134,7 @@ exports.loadFromClient = function(d3) {
         try {
           txtRes = filereader.result;
         } catch(err) {
-          window.alert("Error reading file: " + err.message);
+          window.alert("loadFromClient: error reading file: " + err.message);
         }
         // TODO better error handling
         try {

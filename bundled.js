@@ -462,7 +462,7 @@ exports.loadFromClient = function(d3) {
         try {
           txtRes = filereader.result;
         } catch(err) {
-          window.alert("Error reading file: " + err.message);
+          window.alert("loadFromClient: error reading file: " + err.message);
         }
         // TODO better error handling
         try {
@@ -1497,7 +1497,7 @@ exports.setupUpload = function(d3) {
         try {
           txtRes = filereader.result;
         } catch(err) {
-          window.alert("Error reading file: " + err.message);
+          window.alert("setupUpload: error reading file: " + err.message);
         }
         return modSerialize.importMap(d3, JSON.parse(txtRes));
       };
@@ -2686,6 +2686,11 @@ var modRingsize = require('./ringsize.js'),
     modUpdate = require('./update.js'),
     modZoom = require('./zoom.js');
 
+exports.focusContext = null;
+exports.focusDescription = null;
+exports.version = null; // version of originating web tool (ssm or wizard)
+var version = "ssm"; // version of this tool
+
 var getBiggestShapeId = function() {
   var currMax = 0;
   var i;
@@ -2712,7 +2717,7 @@ exports.getMapObject = function(d3) {
                     manualResize: val.manualResize || false
                    });
   });
-  return {
+  var jsonOut = {
     "nodes": modSvg.nodes,
     "links": saveEdges,
     "graphGTransform": d3.select("#graphG").attr("transform"),
@@ -2720,6 +2725,20 @@ exports.getMapObject = function(d3) {
     "circlesOfCareCenter": modCirclesOfCare.center,
     "ringsize": modRingsize.ringsize
   };
+  if (exports.focusContext) {
+    jsonOut.focusContext = exports.focusContext;
+  }
+  if (exports.focusDescription) {
+    jsonOut.focusDescription = exports.focusDescription;
+  }
+  if (exports.version) {
+    jsonOut.version = exports.version + " -> " + version;
+  }
+  else {
+    jsonOut.version = version;
+  }
+
+  return jsonOut;
 };
 
 // Import a JSON document into the editing area
@@ -2727,6 +2746,15 @@ exports.importMap = function(d3, jsonObj, id) {
   // TODO better error handling
   try {
     modUpdate.deleteGraph(d3, true);
+    if (jsonObj.focusContext) {
+      exports.focusContext = jsonObj.focusContext;
+    }
+    if (jsonObj.focusDescription) {
+      exports.focusDescription = jsonObj.focusDescription;
+    }
+    if (jsonObj.version) {
+      exports.version = jsonObj.version;
+    }
     modSvg.nodes = jsonObj.nodes;
     modEvents.shapeId = getBiggestShapeId() + 1;
     var newEdges = jsonObj.links;
