@@ -2840,7 +2840,9 @@ exports.getMapObject = function(d3) {
     "language": modWizard.language,
     "age": modWizard.age,
     "insurance": modWizard.insurance,
-    "healthConditions": modWizard.healthConditions
+    "healthConditions": modWizard.healthConditions,
+    "version": "ssm-wizard-d (/?module=CaregiversOfCYSHCN)",
+    "timestamp": "2017/08/15 10:37"
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
