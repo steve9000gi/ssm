@@ -11,6 +11,8 @@ exports.focusContext = null;
 exports.focusDescription = null;
 exports.version = null; // version of originating web tool (ssm or wizard)
 var version = "ssm"; // version of this tool
+exports.timestamp = null; // timestamnp of originating tool (ssm or wizard)
+var timestamp = "2017/08/15 09:43"; //timestamp for this tool
 
 var getBiggestShapeId = function() {
   var currMax = 0;
@@ -52,13 +54,8 @@ exports.getMapObject = function(d3) {
   if (exports.focusDescription) {
     jsonOut.focusDescription = exports.focusDescription;
   }
-  if (exports.version) {
-    jsonOut.version = exports.version + " -> " + version;
-  }
-  else {
-    jsonOut.version = version;
-  }
-
+  jsonOut.version = exports.version ? exports.version : version;
+  jsonOut.timestamp = exports.timestamp  ? exports.timestamp : timestamp;
   return jsonOut;
 };
 
@@ -75,6 +72,9 @@ exports.importMap = function(d3, jsonObj, id) {
     }
     if (jsonObj.version) {
       exports.version = jsonObj.version;
+    }
+    if (jsonObj.timestamp) {
+      exports.timestamp = jsonObj.timestamp;
     }
     modSvg.nodes = jsonObj.nodes;
     modEvents.shapeId = getBiggestShapeId() + 1;
