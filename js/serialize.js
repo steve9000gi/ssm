@@ -48,6 +48,32 @@ exports.getMapObject = function(d3) {
     "circlesOfCareCenter": modCirclesOfCare.center,
     "ringsize": modRingsize.ringsize
   };
+  // Begin demographic items for ssm-wizard-d (/?module=CaregiversOfCYSHCN):
+  if (exports.age) {
+    jsonOut.age = exports.age;
+  }
+  if (exports.county) {
+    jsonOut.county = exports.county;
+  }
+  if (exports.healthConditions) {
+    jsonOut.healthConditions = exports.healthConditions;
+  }
+  if (exports.hispanic) {
+    jsonOut.hispanic = exports.hispanic;
+  }
+  if (exports.insurance) {
+    jsonOut.insurance = exports.insurance;
+  }
+  if (exports.language) {
+    jsonOut.language = exports.language;
+  }
+  if (exports.race) {
+    jsonOut.race = exports.race;
+  }
+  if (exports.state) {
+    jsonOut.state = exports.state;
+  }
+  // End demographic items for ssm-wizard-d (/?module=CaregiversOfCYSHCN)
   if (exports.focusContext) {
     jsonOut.focusContext = exports.focusContext;
   }
@@ -64,6 +90,32 @@ exports.importMap = function(d3, jsonObj, id) {
   // TODO better error handling
   try {
     modUpdate.deleteGraph(d3, true);
+    // Begin demographic items for ssm-wizard-d (/?module=CaregiversOfCYSHCN):
+    if (jsonObj.age) {
+      exports.age = jsonObj.age;
+    }
+    if (jsonObj.county) {
+      exports.county = jsonObj.county;
+    }
+    if (jsonObj.healthConditions) {
+      exports.healthConditions = jsonObj.healthConditions;
+    }
+    if (jsonObj.hispanic) {
+      exports.hispanic = jsonObj.hispanic;
+    }
+    if (jsonObj.insurance) {
+      exports.insurance = jsonObj.insurance;
+    }
+    if (jsonObj.language) {
+      exports.language = jsonObj.language;
+    }
+    if (jsonObj.race) {
+      exports.race = jsonObj.race;
+    }
+    if (jsonObj.state) {
+      exports.state = jsonObj.state;
+    }
+    // End demographic items for ssm-wizard-d (/?module=CaregiversOfCYSHCN)
     if (jsonObj.focusContext) {
       exports.focusContext = jsonObj.focusContext;
     }
