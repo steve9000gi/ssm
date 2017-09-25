@@ -652,12 +652,34 @@ var steps = {
 
   2: {
     enter: function(d3) {
-      if (exports.state) {
-	d3.select("#state-select").node().value = exports.state;
-      }
-      if (exports.county) {
-        document.getElementById("county").value = exports.county;
-      }
+      // After the user selects a state from the static list, read the counties
+      // for that state from a file and populate the county selection dropdown
+      // list after clearing any prior options.
+      var dta = null;
+      d3.csv("USCounties.csv", function(d) {
+        dta = d;
+      });
+      d3.select("#state-select")
+        .on("change", function(d) {
+          var stateSel = document.getElementById('state-select');
+          var state = stateSel.options[stateSel.selectedIndex].label;
+          var counties = ["Select your county or equivalent"];
+          dta.forEach(function(row) {
+            if (row["State or district"] == state) {
+              counties.push(row["County or equivalent"]);
+            }
+          });
+          counties.push("Not available");
+          var countySelect = d3.select("#county-select");
+          d3.select("#county-select").selectAll("option").remove();
+          d3.select("#county-select").selectAll("option")
+            .data(counties)
+            .enter()
+            .append("option")
+            .attr("label", function(d) {
+              return d;
+            })
+        });
       // 2do: handle race import
       //
       if (exports.language) {
@@ -672,14 +694,22 @@ var steps = {
         var checkedInsuranceButton = 'input[name=insurance-button]:checked';
         d3.select(checkedInsuranceButton).node().value = exports.insurance;
       }
-
       return true;
     },
 
     exit: function(d3) {
+  //    var stateSel = document.getElementById('state-select');
+   //   var countyText = document.getElementById("county").value;
+
       var stateSel = document.getElementById('state-select');
-      var state = stateSel.options[stateSel.selectedIndex].value
-      var countyText = document.getElementById("county").value;
+      var state = (stateSel.selectedIndex > 0) // Don't accept prompt
+                ? stateSel.options[stateSel.selectedIndex].value
+                : null;
+
+      var countySel = document.getElementById('county-select');
+      var county = (countySel.selectedIndex > 0) // Don't accept prompt
+                 ? countySel.options[countySel.selectedIndex].label
+                 : null;
 
       var americanIndian = document.getElementById('AmericanIndian').checked;
       var white = document.getElementById('White').checked;
@@ -725,12 +755,12 @@ var steps = {
           }
       });
 
-      if (!(state && countyText && races && language && age && insurance)) {
+      if (!(state && county && races && language && age && insurance)) {
         alert('You must answer all questions before proceeding.');
         return false;
       }
       exports.state = state;
-      exports.county = countyText;
+      exports.county = county;
       exports.race = races;
       exports.hispanic = hispanic;
       exports.language = language;

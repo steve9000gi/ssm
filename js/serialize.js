@@ -71,8 +71,8 @@ exports.getMapObject = function(d3) {
     "age": modWizard.age,
     "insurance": modWizard.insurance,
     "healthConditions": modWizard.healthConditions,
-    "version": "ssm-wizard-d (/?module=CaregiversOfCYSHCN)",
-    "timestamp": "2017/08/15 10:37"
+    "version": "ssm-wizard-caregiversofcyshcn",
+    "timestamp": "2017/09/25 15:59"
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;

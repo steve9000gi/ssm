@@ -34,7 +34,7 @@
           <button class="back">&laquo; Back</button>
           <button class="next">Next &raquo;</button>
 	  <div class="close">X</div>
-	  <div class="minimize">__</div>
+	  <!-- <div class="minimize">__</div> -->
 	  <div class="maximize">&square;</div>
         </div>
 
@@ -102,13 +102,22 @@
 	</select>
 	<br/>
 
+        <p class="demog2">
+        <label class="meta-label" data-string="county-prompt"></label><br/>
+          <select id="county-select" class="leftAlign" name="county">
+            <option value="">Select your county or equivalent</option>
+            <option value="NA">Not available or applicable</option>
+          </select>
+        </p>
+
+<!--
         <p>
           <label>
             <span data-string="county-prompt"></span>
             <input type="text" class="txt" id="county"/>
           </label>
         </p>
-
+-->
         <div>
            <span data-string="race-prompt"></span><br/> 
 
