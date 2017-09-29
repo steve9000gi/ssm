@@ -412,12 +412,38 @@ aside h3 {
 }
 
 #wizard.minimized .wizard-step {
-  max-height: 80px;
+  max-height: 36px;
   overflow: hidden;
 }
 
-#wizard.minimized .wizard-buttons {
-  display: none;
+#wizard.minimized h1, #wizard.minimized h4 {
+  margin-top: 50px;
+}
+
+#wizard.minimized .resource-form .wizard-buttons {
+  position: absolute;
+  top: 26px;
+  right: 25px;
+}
+
+#wizard.minimized .wizard-buttons .back {
+  display: none; 
+}
+
+#wizard.minimized .wizard-buttons .next {
+  display: none; 
+}
+
+#wizard.minimized #wizard-step10 span {
+  display: none; 
+}
+
+.open #wizard-step10 {
+  height: auto;
+}
+
+#wizard.minimized .wizard-buttons .maximize {
+  display: block; 
 }
 
 #wizard.small .wizard-step {

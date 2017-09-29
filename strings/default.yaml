@@ -151,7 +151,7 @@ ring5-aside-header: 'Tip:'
 ring5-aside.list:
   - 'You need to enter exactly three wishes for desired change. Use them wisely!'
 ring5-intro.paras:
-  - 'If you could have anything to support you in your responsibilities, what would it be? Is there a resource that you wish was different in some way? A need you would like help with? A responsibility you don&rsquo;t even know how to begin to tackle? We would like you to describe your three most important wishes for how you could be better supported in your work described in this SSM. These wishes will go outside of the outermost ring. Please enter 3 below.'
+  - 'If you could have anything to support you in your responsibilities, what would it be? Is there a resource that you wish was different in some way? A need you would like help with? A responsibility you don&rsquo;t even know how to begin to tackle? We would like you to describe your three most important wishes for how you could be better supported in your work described in this SSM. These wishes will go outside of the outermost ring. Please enter 3 below. You&rsquo;re currently on wish <span class="wish-number"></span> of 3.'
 ring5-wish-name-prompt:
   'Please describe your wish.'
 ring5-wish-connection-prompt:
