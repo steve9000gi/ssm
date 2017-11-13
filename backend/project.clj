@@ -1,6 +1,6 @@
 (defproject backend "0.5.1"
   :description "Backend persistence layer for SSM tool"
-  :url "http://syssci.renci.org/ssm/"
+  :url "https://syssci-1.renci.org/ssm/"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [com.stuartsierra/component "0.3.1"]
                  [reloaded.repl "0.2.1"]
