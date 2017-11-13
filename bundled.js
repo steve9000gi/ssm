@@ -280,7 +280,7 @@ exports.logoutUser = function(d3) {
 }
 
 },{"./backend.js":2}],2:[function(require,module,exports){
-exports.backendBase = 'http://syssci.renci.org:8080';
+exports.backendBase = 'https://syssci-1.renci.org:8080';
 
 },{}],3:[function(require,module,exports){
 exports.visible = false;

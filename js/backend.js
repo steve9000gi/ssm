@@ -1,1 +1,1 @@
-exports.backendBase = 'http://syssci.renci.org:8080';
+exports.backendBase = 'https://syssci-1.renci.org:8080';
