@@ -73,20 +73,20 @@ var renderRegistrationForm = function(d3, callback) {
   content.selectAll('*').remove();
   var header = content
     .append('h1')
-    .text('Create a new account');
+    .text('Create a new account:');
   var form = content
     .append('form')
     .attr("id", "register")
     .html('<p>Note: all fields are required.</p>' +
           '<label class="register-top">' +
-          '  Email address:' +
-          '  <input type="text" name="email" />' +
+          '  Name:' +
+          '  <input type="text" name="name" />' +
           '</label>' +
           '<br />' +
 
           '<label class="register-top">' +
-          '  Name:' +
-          '  <input type="text" name="name" />' +
+          '  Email address:' +
+          '  <input type="text" name="email" />' +
           '</label>' +
           '<br />' +
 
@@ -97,6 +97,7 @@ var renderRegistrationForm = function(d3, callback) {
           '<br />' +
           '<br />' +
 
+/*`
           'Affiliations (select all that apply):' +
           '<br /><input type="checkbox" name="affil_self_advocate" value="on" /> Self-advocate' +
           '<br /><input type="checkbox" name="affil_family_member" value="on" /> Family member/representative' +
@@ -106,7 +107,7 @@ var renderRegistrationForm = function(d3, callback) {
           '<br /><input type="checkbox" name="affil_local_org_staff" value="on" /> Community-based or local organization staff' +
           '<br />' +
           '<br />' +
-
+*/
           '<label>' +
           '  Reason for using the System Support Mapper:' +
           '  <br />' +
@@ -116,12 +117,14 @@ var renderRegistrationForm = function(d3, callback) {
 
           '<label class="register-bottom">' +
           '  Password:' +
+          '  <br />' +
           '  <input type="password" name="password" />' +
           '</label>' +
           '<br />' +
 
           '<label class="register-bottom">' +
           '  Confirm password:' +
+          '  <br />' +
           '  <input type="password" name="password" />' +
           '</label>' +
           '<br />' +
@@ -182,7 +185,7 @@ var renderRegistrationForm = function(d3, callback) {
         state: elements.state.value,
         reason: elements.reason.value
       };
-
+/*
       var affiliations = [
         'affil_self_advocate',
         'affil_family_member',
@@ -197,7 +200,7 @@ var renderRegistrationForm = function(d3, callback) {
           requestData[affiliations[i]] = 'on';
         }
       }
-
+*/
       d3.xhr(modBackend.backendBase + '/register')
         .header('Content-Type', 'application/json')
         .on('beforesend',
@@ -225,9 +228,9 @@ var renderLoginForm = function(d3, callback) {
   content.append('h1')
     .text('Welcome to the System Support Mapper');
   content.append('p')
-    .text('The System Support Mapper (SSM) is a tool that can help you visualize a network of support. For example, if you have a special needs child, SSM can help you understand what your needs are to support your child, how you address those needs, and where you might need more help.');
+    .text('The System Support Mapper (SSM) is a tool that can help you visualize a network of support. You will be guided in describing your roles and responsibilities related to a particular scope of work, and for each responsibility your most important needs, resources you have used, and your wishes to support you better in this work.');
   content.append('p')
-    .text("In order to save your work, you'll need to complete a free registration. If you've already registered, please log in below. Otherwise, click the link below to register.");
+    .text("In order to use this Wizard, you'll need to complete a free registration. If you've already registered, please log in below. Otherwise, click the link below to register.");
 
   var header = content
     .append('h1')

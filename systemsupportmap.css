@@ -296,19 +296,19 @@ path.link.selected, g.pathG.selected path {
 
 #login label {
  display: inline-block;
- text-align: right;
+ text-align: left;
  width: 80px;
 }
 
 .register-top {
  display: inline-block;
- text-align: right;
+ text-align: left;
  width: 158px;
 }
 
 .register-bottom {
  display: inline-block;
- text-align: right;
+ text-align: left;
  width: 235px;
 }
 
