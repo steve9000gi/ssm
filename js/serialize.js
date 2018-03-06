@@ -73,7 +73,7 @@ exports.getMapObject = function(d3) {
     "city": modWizard.city,
     "reason": modWizard.reason,
     "version": "ssm-wizard-TitleX",
-    "timestamp": "2017/08/14 12:45"
+    "timestamp": "2018/03/06 14:54"
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
