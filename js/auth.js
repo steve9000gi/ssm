@@ -50,7 +50,7 @@ var renderRegistrationForm = function(d3, callback) {
           '<br />' +
           '<br />' +
 
-/* Hiding these for Title X:
+/* Hiding Affiliations for Title X:
           'Affiliations (select all that apply):' +
           '<br /><input type="checkbox" name="affil_self_advocate" value="on" /> Self-advocate' +
           '<br /><input type="checkbox" name="affil_family_member" value="on" /> Family member/representative' +
