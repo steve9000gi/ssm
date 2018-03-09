@@ -731,6 +731,12 @@ var steps = {
       if (FPNTCStaff) roleType.push("FPNTC Staff");
       if (otherRoleType) roleType.push(otherRoleTypeText);
 
+      var affilSel = document.getElementById('affiliation-select');
+      var affiliation = (affilSel.selectedIndex > 0) // Don't accept prompt
+                ? affilSel.options[affilSel.selectedIndex].value
+                : null;
+
+
       var agencyName = document.getElementById("agency-name").value;
 
       var healthDepartment =
@@ -780,14 +786,15 @@ var steps = {
       var sel = 'textarea[name=reason]';
       var reason = d3.select(sel).node().value;
 
-      if (!(firstName && lastName && roleType && agencyName && agencyType &&
-            city && state && county && reason)) {
+      if (!(firstName && lastName && roleType && affiliation && agencyName &&
+            agencyType && city && state && county && reason)) {
         alert('You must answer all questions before proceeding.');
         return false;
       }
       exports.firstName = firstName;
       exports.lastName = lastName;
       exports.roleType = roleType;
+      exports.affiliation = affiliation;
       exports.agencyName = agencyName;
       exports.agencyType = agencyType;
       exports.state = state;

@@ -28,6 +28,8 @@ last-name-prompt:
   'Last Name:'
 role-prompt:
   'What best describes your primary role at your workplace? (Select all that apply):'
+affiliation-prompt:
+  'Which of the following best describes your organization''s Title X affiliation?'
 agency-name-prompt:
   'Agency/Organization Name (your primary affiliation):'
 agency-type-prompt:
