@@ -183,11 +183,11 @@ var renderLoginForm = function(d3, callback) {
   content.append('p')
     .text('The System Support Mapper (SSM) is a tool that can help you visualize a network of support. You will be guided in describing your roles and responsibilities related to a particular scope of work, and for each responsibility your most important needs, resources you have used, and your wishes to support you better in this work.');
   content.append('p')
-    .text("In order to use this Wizard, you'll need to complete a free registration. If you've already registered, please log in below. Otherwise, click the link below to register.");
+    .text("In order to use this Wizard, you'll need to create a free account. If you've already done that, please sign in.");
 
   var header = content
     .append('h1')
-    .text('You must log in first:');
+    .text('Sign in:');
   var form = content
     .append('form')
     .attr("id", "login")

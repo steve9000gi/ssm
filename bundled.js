@@ -230,11 +230,11 @@ var renderLoginForm = function(d3, callback) {
   content.append('p')
     .text('The System Support Mapper (SSM) is a tool that can help you visualize a network of support. You will be guided in describing your roles and responsibilities related to a particular scope of work, and for each responsibility your most important needs, resources you have used, and your wishes to support you better in this work.');
   content.append('p')
-    .text("In order to use this Wizard, you'll need to complete a free registration. If you've already registered, please log in below. Otherwise, click the link below to register.");
+    .text("In order to use this Wizard, you'll need to create a free account. If you've already done that, please sign in.");
 
   var header = content
     .append('h1')
-    .text('You must log in first:');
+    .text('Sign in:');
   var form = content
     .append('form')
     .attr("id", "login")
@@ -2867,7 +2867,7 @@ exports.getMapObject = function(d3) {
     "focusContext": modWizard.focusContext,
     "firstName": modWizard.firstName,
     "lastName": modWizard.lastName,
-    "title": modWizard.title,
+    "roleType": modWizard.roleType,
     "agencyName": modWizard.agencyName,
     "agencyType": modWizard.agencyType,
     "state": modWizard.state,
@@ -4466,13 +4466,50 @@ var steps = {
             txt.node().value = "";
           }
         });
+      d3.select("#other-role-type")
+        .on("change", function(d) {
+          var disable = !this.checked;
+          var txt = d3.select("#other-role-type-text");
+          txt.node().disabled = disable;
+          if (disable) {
+            txt.node().value = "";
+          }
+        });
       return true;
     },
 
     exit: function(d3) {
       var firstName = document.getElementById('first-name').value;
       var lastName = document.getElementById('last-name').value;
-      var title = document.getElementById("title").value;
+//      var title = document.getElementById("title").value;
+
+      var manager = document.getElementById('manager').checked;
+      var healthEducator = document.getElementById('healthEducator').checked;
+      var communityOutreachStaff =
+	      document.getElementById('communityOutreachStaff').checked;
+      var clinicalProvider =
+	      document.getElementById('clinicalProvider').checked;
+      var nurse = document.getElementById('nurse').checked;
+      var frontDesk = document.getElementById('frontDesk').checked;
+      var billing = document.getElementById('billing').checked;
+      var OPA = document.getElementById('OPA').checked;
+      var FPNTCStaff = document.getElementById('FPNTCStaff').checked;
+      var otherRoleType = document.getElementById('other-role-type').checked;
+      var otherRoleTypeText = 
+	      document.getElementById('other-role-type-text').value;
+
+      var roleType = Array();
+      if (manager) roleType.push("Manager/Administrator/Center Coordinator");
+      if (healthEducator) roleType.push("Health Educator/Counselor/Healthcare Associate/Medical Assistant");
+      if (communityOutreachStaff) roleType.push("Community Outreach Staff");
+      if (clinicalProvider) roleType.push("Clinical Provider (MD, NP, CNM, PA)");
+      if (nurse) roleType.push("Nurse (LPN, RN)");
+      if (frontDesk) roleType.push("Front Desk/Reception");
+      if (billing) roleType.push("Billing/Finance Staff");
+      if (OPA) roleType.push("OPA/Federal Staff");
+      if (FPNTCStaff) roleType.push("FPNTC Staff");
+      if (otherRoleType) roleType.push(otherRoleTypeText);
+
       var agencyName = document.getElementById("agency-name").value;
 
       var healthDepartment =
@@ -4522,14 +4559,14 @@ var steps = {
       var sel = 'textarea[name=reason]';
       var reason = d3.select(sel).node().value;
 
-      if (!(firstName && lastName && title && agencyName && agencyType &&
+      if (!(firstName && lastName && roleType && agencyName && agencyType &&
             city && state && county && reason)) {
         alert('You must answer all questions before proceeding.');
         return false;
       }
       exports.firstName = firstName;
       exports.lastName = lastName;
-      exports.title = title;
+      exports.roleType = roleType;
       exports.agencyName = agencyName;
       exports.agencyType = agencyType;
       exports.state = state;

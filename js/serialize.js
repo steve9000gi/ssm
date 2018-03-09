@@ -65,7 +65,7 @@ exports.getMapObject = function(d3) {
     "focusContext": modWizard.focusContext,
     "firstName": modWizard.firstName,
     "lastName": modWizard.lastName,
-    "title": modWizard.title,
+    "roleType": modWizard.roleType,
     "agencyName": modWizard.agencyName,
     "agencyType": modWizard.agencyType,
     "state": modWizard.state,

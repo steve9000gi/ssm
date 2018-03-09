@@ -26,8 +26,8 @@ first-name-prompt:
   'First Name:'
 last-name-prompt:
   'Last Name:'
-title-prompt:
-  'Title/Position:'
+role-prompt:
+  'What best describes your primary role at your workplace? (Select all that apply):'
 agency-name-prompt:
   'Agency/Organization Name (your primary affiliation):'
 agency-type-prompt:
