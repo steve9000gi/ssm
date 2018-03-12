@@ -2869,14 +2869,14 @@ exports.getMapObject = function(d3) {
     "lastName": modWizard.lastName,
     "roleType": modWizard.roleType,
     "affiliation": modWizard.affiliation,
-    "agencyName": modWizard.agencyName,
-    "agencyType": modWizard.agencyType,
+    "workplaceSetting": modWizard.workplaceSetting,
     "state": modWizard.state,
     "county": modWizard.county,
     "city": modWizard.city,
+    "zipcode": modWizard.zipcode,
     "reason": modWizard.reason,
     "version": "ssm-wizard-TitleX",
-    "timestamp": "2018/03/06 14:54"
+    "timestamp": "2018/03/12 10:47"
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
@@ -4458,10 +4458,10 @@ var steps = {
               return d;
             })
         });
-      d3.select("#other-agency-type")
+      d3.select("#other-workplace-setting")
         .on("change", function(d) {
           var disable = !this.checked;
-          var txt = d3.select("#other-agency-type-text");
+          var txt = d3.select("#other-workplace-setting-text");
           txt.node().disabled = disable;
           if (disable) {
             txt.node().value = "";
@@ -4516,8 +4516,13 @@ var steps = {
                 ? affilSel.options[affilSel.selectedIndex].value
                 : null;
 
+      var zipcode = document.getElementById("zipcode").value;
+      var fiveDigits = /^\d{5}$/;
+      if (!zipcode.match(fiveDigits)) {
+        alert('You must enter a five-digit numeric zipcode.');
+        return false;
+      }
 
-      var agencyName = document.getElementById("agency-name").value;
 
       var healthDepartment =
               document.getElementById('health-department').checked;
@@ -4531,25 +4536,25 @@ var steps = {
       var universityBased = document.getElementById('university-based').checked;
       var schoolBased = document.getElementById('school-based').checked;
       var nonProfit = document.getElementById('non-profit').checked;
-      var otherAgencyType =
-              document.getElementById('other-agency-type').checked;
-      var otherAgencyTypeText =
-              document.getElementById('other-agency-type-text').value;
-      var agencyType = Array();
-      if (healthDepartment) agencyType.push("Health department");
-      if (hospitalBased) agencyType.push("Hospital-based");
-      if (plannedParenthood) agencyType.push("Planned Parenthood");
+      var otherWorkplaceSetting =
+              document.getElementById('other-workplace-setting').checked;
+      var otherWorkplaceSettingText =
+              document.getElementById('other-workplace-setting-text').value;
+      var workplaceSetting = Array();
+      if (healthDepartment) workplaceSetting.push("Health department");
+      if (hospitalBased) workplaceSetting.push("Hospital-based");
+      if (plannedParenthood) workplaceSetting.push("Planned Parenthood");
       if (freeStanding) {
-        agencyType.push("Free-standing Family Planning Organization");
+        workplaceSetting.push("Free-standing Family Planning Organization");
       }
       if (communityHealthCenter) {
-	agencyType.push("Community health center/Federally Qualified Health Center");
+	workplaceSetting.push("Community health center/Federally Qualified Health Center");
       }
-      if (tribal) agencyType.push("Tribal health center");
-      if (universityBased) agencyType.push("University-based");
-      if (schoolBased) agencyType.push("School-based");
-      if (nonProfit) agencyType.push("Other private, non-profit");
-      if (otherAgencyType) agencyType.push(otherAgencyTypeText);
+      if (tribal) workplaceSetting.push("Tribal health center");
+      if (universityBased) workplaceSetting.push("University-based");
+      if (schoolBased) workplaceSetting.push("School-based");
+      if (nonProfit) workplaceSetting.push("Other private, non-profit");
+      if (otherWorkplaceSetting) workplaceSetting.push(otherWorkplaceSettingText);
 
       var stateSel = document.getElementById('state-select');
       var state = (stateSel.selectedIndex > 0) // Don't accept prompt
@@ -4566,8 +4571,8 @@ var steps = {
       var sel = 'textarea[name=reason]';
       var reason = d3.select(sel).node().value;
 
-      if (!(firstName && lastName && roleType && affiliation && agencyName &&
-            agencyType && city && state && county && reason)) {
+      if (!(firstName && lastName && roleType && affiliation && zipcode &&
+            workplaceSetting && city && state && county && reason)) {
         alert('You must answer all questions before proceeding.');
         return false;
       }
@@ -4575,8 +4580,8 @@ var steps = {
       exports.lastName = lastName;
       exports.roleType = roleType;
       exports.affiliation = affiliation;
-      exports.agencyName = agencyName;
-      exports.agencyType = agencyType;
+      exports.zipcode = zipcode;
+      exports.workplaceSetting = workplaceSetting;
       exports.state = state;
       exports.county = county;
       exports.city = city;

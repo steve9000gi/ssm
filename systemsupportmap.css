@@ -499,3 +499,7 @@ aside h3 {
 #roleText {
   width: 170px;
 }
+
+.boldText, .wish-parent-type {
+  font-weight: bold;
+}

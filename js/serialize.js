@@ -67,14 +67,14 @@ exports.getMapObject = function(d3) {
     "lastName": modWizard.lastName,
     "roleType": modWizard.roleType,
     "affiliation": modWizard.affiliation,
-    "agencyName": modWizard.agencyName,
-    "agencyType": modWizard.agencyType,
+    "workplaceSetting": modWizard.workplaceSetting,
     "state": modWizard.state,
     "county": modWizard.county,
     "city": modWizard.city,
+    "zipcode": modWizard.zipcode,
     "reason": modWizard.reason,
     "version": "ssm-wizard-TitleX",
-    "timestamp": "2018/03/06 14:54"
+    "timestamp": "2018/03/12 10:47"
   };
   if (modWizard.wizardActive) {
     ret.wizardCurrentStep = modWizard.currentStep;
