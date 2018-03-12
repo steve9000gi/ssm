@@ -74,6 +74,43 @@ exports.getMapObject = function(d3) {
     jsonOut.state = exports.state;
   }
   // End demographic items for ssm-wizard-d (/?module=CaregiversOfCYSHCN)
+  // Begin demographic items for ssm-wizard-TitleX:
+  if (exports.affiliation) {
+    jsonOut.affiliation = exports.affiliation;
+  }
+  if (exports.city) {
+    jsonOut.city = exports.city;
+  }
+/* Covered above
+  if (exports.county) {
+    jsonOut.county = exports.county;
+  }
+*/
+  if (exports.firstName) {
+    jsonOut.firstName = exports.firstName;
+  }
+  if (exports.lastName) {
+    jsonOut.lastName = exports.lastName;
+  }
+  if (exports.reason) {
+    jsonOut.reason = exports.reason;
+  }
+  if (exports.roleType) {
+    jsonOut.roleType = exports.roleType;
+  }
+/* Covered above
+  if (exports.state) {
+    jsonOut.state = exports.state;
+  }
+*/
+  if (exports.workplaceSetting) {
+    jsonOut.workplaceSetting = exports.workplaceSetting;
+  }
+  if (exports.zipcode) {
+    jsonOut.zipcode = exports.zipcode;
+  }
+  // End demographic items for ssm-wizard-TitleX
+
   if (exports.focusContext) {
     jsonOut.focusContext = exports.focusContext;
   }
@@ -116,6 +153,44 @@ exports.importMap = function(d3, jsonObj, id) {
       exports.state = jsonObj.state;
     }
     // End demographic items for ssm-wizard-d (/?module=CaregiversOfCYSHCN)
+    // Begin demographic items for ssm-wizard-TitleX:
+    if (jsonObj.affiliation) {
+      exports.affiliation = jsonObj.affiliation;
+    }
+    if (jsonObj.city) {
+      exports.city = jsonObj.city;
+    }
+  /* Covered above
+    if (jsonObj.county) {
+      exports.county = jsonObj.county;
+    }
+  */
+    if (jsonObj.firstName) {
+      exports.firstName = jsonObj.firstName;
+    }
+    if (jsonObj.lastName) {
+      exports.lastName = jsonObj.lastName;
+    }
+    if (jsonObj.reason) {
+      exports.reason = jsonObj.reason;
+    }
+    if (jsonObj.roleType) {
+      exports.roleType = jsonObj.roleType;
+    }
+  /* Covered above
+    if (jsonObj.state) {
+      exports.state = jsonObj.state;
+    }
+  */
+    if (jsonObj.workplaceSetting) {
+      exports.workplaceSetting = jsonObj.workplaceSetting;
+    }
+    if (jsonObj.zipcode) {
+      exports.zipcode = jsonObj.zipcode;
+    }
+    // End demographic items for ssm-wizard-TitleX
+
+
     if (jsonObj.focusContext) {
       exports.focusContext = jsonObj.focusContext;
     }
