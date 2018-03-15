@@ -178,21 +178,38 @@ var renderRegistrationForm = function(d3, callback) {
 var renderLoginForm = function(d3, callback) {
   var content = d3.select('#authentication .content');
   content.selectAll('*').remove();
+  content.attr("id", "welcomeContent");
   content.append('h1')
+    .attr('id', 'welcomeTitle')
     .text('Welcome to the System Support Mapper');
-  content.append('p')
-    .text('The System Support Mapper (SSM) is a tool that can help you visualize a network of support. You will be guided in describing your roles and responsibilities related to a particular scope of work, and for each responsibility your most important needs, resources you have used, and your wishes to support you better in this work.');
-  content.append('p')
-    .text("In order to use this Wizard, you'll need to create a free account. If you've already done that, please sign in.");
+  content.append('g')
+    .attr('id', 'welcomeG')
+  var welcomeG = d3.select("#welcomeG");
+  welcomeG.append('p')
+    .attr('class', 'welcomeText')
+    .text('The System Support Mapper (SSM) is a tool that can help you visualize a network of support.');
+  welcomeG.append('p')
+    .attr('class', 'welcomeText')
+    .text('You will be guided in describing your roles and responsibilities related to a particular scope of work, and for each responsibility your most important needs, resources you have used, and your wishes to support you better in this work.');
+  welcomeG.append('p')
+    .attr('class', 'welcomeText')
+    .text("In order to use this Wizard, you'll need to complete a free registration.");
 
-  var header = content
+  var signInG = content.append('g')
+    .attr('id', 'signInG');
+  var header = signInG
     .append('h1')
-    .text('Sign in:');
-  var form = content
+    .attr('id', 'signInGTitle')
+    .text('SSM');
+  var signIn = signInG
+    .append('p')
+    .attr('id', 'signIn')
+    .text('Sign in');
+  var form = signInG
     .append('form')
-    .attr("id", "login")
+    .attr('id', 'login')
     .html('<label for="email_input">' +
-          '  Email address:' +
+          '  Email Address:' +
           '</label>' +
           '  <input type="text" name="email" id="email_input" />' +
           '<br />' +
@@ -201,7 +218,7 @@ var renderLoginForm = function(d3, callback) {
           '</label>' +
           '  <input type="password" name="password" id="password_input" />' +
           '<br />' +
-          '<input type="submit" name="Log in" />' +
+          '<input type="submit" name="Log in" id="submitBtn" />' +
           '<br />' +
           '<br />');
 
@@ -213,7 +230,7 @@ var renderLoginForm = function(d3, callback) {
   form.selectAll('input[type=password]')
     .on('keydown', function(elt) { d3.event.stopPropagation(); });
 
-  var link = content
+  var link = signInG
     .append('a')
     .attr('href', '#')
     .text("Don't have an account? Create one.")

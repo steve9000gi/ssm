@@ -276,7 +276,7 @@ path.link.selected, g.pathG.selected path {
   left: 0;
   bottom: 0;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.2);
   z-index: 100;
   visibility: hidden; /* to be toggled dynamically */
 }
@@ -297,7 +297,7 @@ path.link.selected, g.pathG.selected path {
 #login label {
  display: inline-block;
  text-align: left;
- width: 80px;
+ width: 120px;
 }
 
 .register-top {
@@ -502,4 +502,58 @@ aside h3 {
 
 .boldText, .wish-parent-type {
   font-weight: bold;
+}
+
+#welcomeTitle, #signIn, #signInGTitle {
+  text-align: center;
+}
+
+#welcomeG {
+  width: 50%;
+  display: inline-block;
+  text-align: justify;
+  vertical-align: top;
+  font-size: 14px;
+}
+
+#signInG {
+  display: inline-block;
+  width: 49%;
+  text-align: center;
+  background-color: #ffffff;
+  padding-bottom: 30px;
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.welcomeText {
+  margin-right: 10px;
+}
+
+#submitBtn {
+  color: #ffffff;
+  background: #0000ff;
+  padding: 5px;
+  border-radius: 7px;
+  width: 100%;
+  font-size: 14px;
+}
+
+#email_input, #password_input {
+  background: rgb(248, 248, 248);
+  margin-bottom: 5px;
+}
+
+#welcomeContent {
+  max-width: 560px;
+  max-height: 350px;
+  margin: 0 auto;
+  text-align: center;
+  overflow-y: hidden; // hide vertical
+  overflow-x: hidden; // hide horizontal
+}
+
+#signIn {
+  font-size: 21px;
+  padding-bottom: 8px;
 }
