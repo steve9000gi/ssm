@@ -536,6 +536,7 @@ aside h3 {
   padding: 5px;
   border-radius: 7px;
   width: 100%;
+  max-width: 300px;
   font-size: 14px;
 }
 
@@ -545,15 +546,21 @@ aside h3 {
 }
 
 #welcomeContent {
-  max-width: 560px;
-  max-height: 350px;
   margin: 0 auto;
   text-align: center;
-  overflow-y: hidden; // hide vertical
-  overflow-x: hidden; // hide horizontal
 }
 
 #signIn {
   font-size: 21px;
   padding-bottom: 8px;
+}
+
+#regHeader, #register {
+  text-align: left;
+}
+
+#logInLink {
+  margin:0 auto;    
+  display:block;
+  text-align: left;
 }

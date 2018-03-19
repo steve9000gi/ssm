@@ -73,6 +73,7 @@ var renderRegistrationForm = function(d3, callback) {
   content.selectAll('*').remove();
   var header = content
     .append('h1')
+    .attr("id", "regHeader")
     .text('Create a new account:');
   var form = content
     .append('form')
@@ -145,6 +146,7 @@ var renderRegistrationForm = function(d3, callback) {
   var link = content
     .append('a')
     .attr('href', '#')
+    .attr('id', 'logInLink')
     .text('Already have an account? Log in.')
     .on('click', function() {
       content.selectAll('*').remove();
