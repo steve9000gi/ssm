@@ -50,10 +50,10 @@ var defineArrowMarkers = function(d3) {
     .attr("d", "M0,-5L10,0L0,5");
 };
 
-// Manually Resized Rectangles (MMRs) are moved to manResizeGroups so that other
+// Manually Resized Rectangles (MRR) are moved to manResizeGroups so that other
 // shapes and edges appear on top of them because manResizeGroups is earlier in
 // the DOM.
-var setupMMRGroup = function() {
+var setupMRRGroup = function() {
   modSvg.svgG.append("g").attr("id", "manResizeGG").selectAll("g");
 };
 
@@ -69,7 +69,7 @@ exports.create = function(d3) {
   if (modOptionsMenu.displayAll) {
     modCirclesOfCare.create(d3);
   }
-  setupMMRGroup();
+  setupMRRGroup();
   modDrag.setupDrag(d3);
   modDrag.setupDragHandle(d3);
   modZoom.setup(d3, modSvg.svg);

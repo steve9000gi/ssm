@@ -11,6 +11,7 @@ var modAuth = require('./auth.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modText = require('./text.js'),
     modUpdate = require('./update.js');
+    modShowCodes = require('./showCodes.js');
 
 exports.displayAll = true; // If false turns off some features
 
@@ -136,6 +137,13 @@ var setSelectedObjectColor = function(d3) {
   modUpdate.updateGraph(d3);
 };
 
+/*
+var showCodes = function(d3) {
+    d3.select("#showCodesItem").text("Show original node text")
+          .datum({"name": "Show original node text"});
+};
+*/
+
 exports.createOptionsMenu = function(d3) {
   var choices = null;
   if (exports.displayAll) {
@@ -152,6 +160,7 @@ exports.createOptionsMenu = function(d3) {
                {"name": "Export map as image", "id": "exportMapAsImageItem"},
                {"name": "Load text for context menu",
                 "id": "loadContextTextItem"},
+               {"name": "Show codes", "id": "showCodesItem"},
                {"name": "Log out", "id": "logoutUser"}];
   } else {
     choices = [{"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
@@ -159,6 +168,7 @@ exports.createOptionsMenu = function(d3) {
                {"name": "Set line thickness...", "id": "setLineThicknessItem"},
                {"name": "Export map as image", "id": "exportMapAsImageItem"},
                {"name": "Load context text", "id": "loadContextTextItem"},
+               {"name": "Show codes", "id": "showCodesItem"},
                {"name": "Log out", "id": "logoutUser"}];
   }
   d3.select("#topGraphDiv").insert("div", ":first-child")
@@ -270,6 +280,12 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
         modContextMenu.loadFromClient(d3);
         break;
       case choices[10].name:
+        modShowCodes.showCodes(d3);
+        break;
+      case modShowCodes.showNodeTextText:
+        modShowCodes.showNodeText(d3);
+        break;
+      case choices[11].name:
         modAuth.logoutUser(d3);
         break;
       default:

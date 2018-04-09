@@ -10,6 +10,7 @@ var modRingsize = require('./ringsize.js'),
     modText = require('./text.js'),
     modTooltips = require('./tooltips.js'),
     modUtil = require('./util.js');
+    modShowCodes = require('./showCodes.js');
 
 var addHandle = function(d3, parentG, rectData) {
   var tx = rectData.manualResize ? rectData.width - rectData.xOffset

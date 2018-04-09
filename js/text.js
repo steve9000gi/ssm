@@ -3,6 +3,7 @@ var modDrag = require('./drag.js'),
     modSelectedShape = require('./selected-shape.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
+    modShowCodes = require('./showCodes.js');
 
 exports.maxCharsPerLine = 20;
 exports.boldFontWeight = 900;
@@ -39,7 +40,9 @@ var appendText = function(gEl, phrases, yShift) {
 // Split text into single words, then group them into lines. Arg "element" is a
 // shape or an edge.
 var splitTextIntoLines = function(element) {
-  var words = (element.name) ? element.name.split(/\s+/g) : [""];
+  var txt = modShowCodes.showingCodes ? element.code : element.name;
+  var words = (txt) ? txt.split(/\s+/g) : [""];
+  //var words = (element.name) ? element.name.split(/\s+/g) : [""];
   var nwords = words.length;
   var phrases = [];
   var wordIx = 0;

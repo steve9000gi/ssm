@@ -517,7 +517,7 @@ exports.setup = function(d3) {
   }
 };
 
-},{"./events.js":9,"./selected-color.js":20,"./selection.js":22,"./text.js":26,"./update.js":29}],5:[function(require,module,exports){
+},{"./events.js":9,"./selected-color.js":20,"./selection.js":22,"./text.js":27,"./update.js":30}],5:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modBackend = require('./backend.js'),
     modSerialize = require('./serialize.js'),
@@ -860,7 +860,7 @@ exports.setupWriteMapToDatabase = function(d3) {
   });
 };
 
-},{"./auth.js":1,"./backend.js":2,"./serialize.js":23,"./system-support-map.js":25,"./util.js":30}],6:[function(require,module,exports){
+},{"./auth.js":1,"./backend.js":2,"./serialize.js":23,"./system-support-map.js":26,"./util.js":31}],6:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
@@ -947,7 +947,7 @@ exports.setupDragHandle = function(d3) {
     });
 };
 
-},{"./grid.js":15,"./svg.js":24,"./update.js":29}],7:[function(require,module,exports){
+},{"./grid.js":15,"./svg.js":25,"./update.js":30}],7:[function(require,module,exports){
 var modEdgeThickness = require('./edge-thickness.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js');
@@ -1351,7 +1351,7 @@ exports.pathMouseDown = function(d3, d3path, d) {
   }
 };
 
-},{"./drag.js":6,"./edge-style.js":7,"./edge-thickness.js":8,"./selected-color.js":20,"./selected-shape.js":21,"./selection.js":22,"./svg.js":24,"./text.js":26,"./update.js":29,"./zoom.js":31}],10:[function(require,module,exports){
+},{"./drag.js":6,"./edge-style.js":7,"./edge-thickness.js":8,"./selected-color.js":20,"./selected-shape.js":21,"./selection.js":22,"./svg.js":25,"./text.js":27,"./update.js":30,"./zoom.js":32}],10:[function(require,module,exports){
 var modRingsize = require('./ringsize.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modSelectedColor = require('./selected-color.js'),
@@ -1469,7 +1469,7 @@ exports.exportGraphAsImage = function(d3) {
   canvas.remove();
 };
 
-},{"./circles-of-care.js":3,"./ringsize.js":19,"./selected-color.js":20,"./system-support-map.js":25,"./text.js":26,"./update.js":29}],11:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./ringsize.js":19,"./selected-color.js":20,"./system-support-map.js":26,"./text.js":27,"./update.js":30}],11:[function(require,module,exports){
 var modSerialize = require('./serialize.js');
 
 // Save as JSON file
@@ -1588,10 +1588,10 @@ var defineArrowMarkers = function(d3) {
     .attr("d", "M0,-5L10,0L0,5");
 };
 
-// Manually Resized Rectangles (MMRs) are moved to manResizeGroups so that other
+// Manually Resized Rectangles (MRR) are moved to manResizeGroups so that other
 // shapes and edges appear on top of them because manResizeGroups is earlier in
 // the DOM.
-var setupMMRGroup = function() {
+var setupMRRGroup = function() {
   modSvg.svgG.append("g").attr("id", "manResizeGG").selectAll("g");
 };
 
@@ -1607,7 +1607,7 @@ exports.create = function(d3) {
   if (modOptionsMenu.displayAll) {
     modCirclesOfCare.create(d3);
   }
-  setupMMRGroup();
+  setupMRRGroup();
   modDrag.setupDrag(d3);
   modDrag.setupDragHandle(d3);
   modZoom.setup(d3, modSvg.svg);
@@ -1622,7 +1622,7 @@ exports.create = function(d3) {
   modContextMenu.setup(d3);
 };
 
-},{"./circles-of-care.js":3,"./context-menu.js":4,"./database.js":5,"./drag.js":6,"./events.js":9,"./file.js":11,"./front-matter.js":12,"./options-menu.js":18,"./ringsize.js":19,"./selected-color.js":20,"./svg.js":24,"./system-support-map.js":25,"./toolbox.js":27,"./tooltips.js":28,"./zoom.js":31}],14:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./context-menu.js":4,"./database.js":5,"./drag.js":6,"./events.js":9,"./file.js":11,"./front-matter.js":12,"./options-menu.js":18,"./ringsize.js":19,"./selected-color.js":20,"./svg.js":25,"./system-support-map.js":26,"./toolbox.js":28,"./tooltips.js":29,"./zoom.js":32}],14:[function(require,module,exports){
 // This file is necessary to break a circular dependency between the grid and
 // zoom modules. JST 2015-10-21
 exports.translate = [0, 0];
@@ -1839,7 +1839,7 @@ document.onload = (function(d3) {
   });
 })(window.d3);
 
-},{"./auth.js":1,"./database.js":5,"./events.js":9,"./graph.js":13,"./svg.js":24,"./update.js":29}],18:[function(require,module,exports){
+},{"./auth.js":1,"./database.js":5,"./events.js":9,"./graph.js":13,"./svg.js":25,"./update.js":30}],18:[function(require,module,exports){
 var modAuth = require('./auth.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modRingsize = require('./ringsize.js'),
@@ -1853,6 +1853,7 @@ var modAuth = require('./auth.js'),
     modSystemSupportMap = require('./system-support-map.js'),
     modText = require('./text.js'),
     modUpdate = require('./update.js');
+    modShowCodes = require('./showCodes.js');
 
 exports.displayAll = true; // If false turns off some features
 
@@ -1978,6 +1979,13 @@ var setSelectedObjectColor = function(d3) {
   modUpdate.updateGraph(d3);
 };
 
+/*
+var showCodes = function(d3) {
+    d3.select("#showCodesItem").text("Show original node text")
+          .datum({"name": "Show original node text"});
+};
+*/
+
 exports.createOptionsMenu = function(d3) {
   var choices = null;
   if (exports.displayAll) {
@@ -1994,6 +2002,7 @@ exports.createOptionsMenu = function(d3) {
                {"name": "Export map as image", "id": "exportMapAsImageItem"},
                {"name": "Load text for context menu",
                 "id": "loadContextTextItem"},
+               {"name": "Show codes", "id": "showCodesItem"},
                {"name": "Log out", "id": "logoutUser"}];
   } else {
     choices = [{"name": "Equalize shape size...", "id": "eqShapeSizeItem"},
@@ -2001,6 +2010,7 @@ exports.createOptionsMenu = function(d3) {
                {"name": "Set line thickness...", "id": "setLineThicknessItem"},
                {"name": "Export map as image", "id": "exportMapAsImageItem"},
                {"name": "Load context text", "id": "loadContextTextItem"},
+               {"name": "Show codes", "id": "showCodesItem"},
                {"name": "Log out", "id": "logoutUser"}];
   }
   d3.select("#topGraphDiv").insert("div", ":first-child")
@@ -2112,6 +2122,12 @@ exports.optionsMenuListItemMouseUp = function(d3, listItem, d, choices) {
         modContextMenu.loadFromClient(d3);
         break;
       case choices[10].name:
+        modShowCodes.showCodes(d3);
+        break;
+      case modShowCodes.showNodeTextText:
+        modShowCodes.showNodeText(d3);
+        break;
+      case choices[11].name:
         modAuth.logoutUser(d3);
         break;
       default:
@@ -2143,7 +2159,7 @@ exports.createOptionsButton = function(d3) {
     });
 };
 
-},{"./auth.js":1,"./circles-of-care.js":3,"./context-menu.js":4,"./edge-thickness.js":8,"./export.js":10,"./grid.js":15,"./ringsize.js":19,"./selected-color.js":20,"./selected-shape.js":21,"./selection.js":22,"./system-support-map.js":25,"./text.js":26,"./update.js":29}],19:[function(require,module,exports){
+},{"./auth.js":1,"./circles-of-care.js":3,"./context-menu.js":4,"./edge-thickness.js":8,"./export.js":10,"./grid.js":15,"./ringsize.js":19,"./selected-color.js":20,"./selected-shape.js":21,"./selection.js":22,"./showCodes.js":24,"./system-support-map.js":26,"./text.js":27,"./update.js":30}],19:[function(require,module,exports){
 exports.showLargeText = 'Show large system support rings';
 exports.ringsize = "large";
 
@@ -2606,7 +2622,7 @@ exports.storeShapeSize = function(gEl, d) {
   }
 };
 
-},{"./selected-color.js":20,"./svg.js":24,"./text.js":26,"./update.js":29}],22:[function(require,module,exports){
+},{"./selected-color.js":20,"./svg.js":25,"./text.js":27,"./update.js":30}],22:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modSelection = require('./selection.js'),
     modSvg = require('./svg.js');
@@ -2676,7 +2692,7 @@ exports.replaceSelectEdge = function(d3, d3Path, edgeData) {
   modSelection.selectedEdge = edgeData;
 };
 
-},{"./selected-color.js":20,"./selection.js":22,"./svg.js":24}],23:[function(require,module,exports){
+},{"./selected-color.js":20,"./selection.js":22,"./svg.js":25}],23:[function(require,module,exports){
 var modRingsize = require('./ringsize.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modEvents = require('./events.js'),
@@ -2936,7 +2952,27 @@ exports.importMap = function(d3, jsonObj, id) {
   }
 };
 
-},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./ringsize.js":19,"./svg.js":24,"./system-support-map.js":25,"./update.js":29,"./zoom.js":31}],24:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./ringsize.js":19,"./svg.js":25,"./system-support-map.js":26,"./update.js":30,"./zoom.js":32}],24:[function(require,module,exports){
+var modUpdate = require('./update.js');
+
+exports.showNodeTextText = "Show node text";
+exports.showingCodes = false;
+
+exports.showCodes = function(d3) {
+  d3.select("#showCodesItem").text(exports.showNodeTextText)
+    .datum({"name": exports.showNodeTextText});
+  modUpdate.updateGraph(d3);
+  exports.showingCodes = true;
+};
+
+exports.showNodeText = function(d3) {
+  d3.select("#showCodesItem").text("Show codes")
+    .datum({"name": "Show codes"});
+  modUpdate.updateGraph(d3);
+  exports.showingCodes = false;
+};
+
+},{"./update.js":30}],25:[function(require,module,exports){
 exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];
@@ -2963,7 +2999,7 @@ exports.setup = function(d3) {
     .attr("id", "graphG");
 }
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var modSelectedColor = require('./selected-color.js'),
     modRingsize = require('./ringsize.js');
 
@@ -3039,12 +3075,13 @@ exports.create = function(d3) {
       .text(function(d) { return d.name; });
 };
 
-},{"./ringsize.js":19,"./selected-color.js":20}],26:[function(require,module,exports){
+},{"./ringsize.js":19,"./selected-color.js":20}],27:[function(require,module,exports){
 var modDrag = require('./drag.js'),
     modSelectedColor = require('./selected-color.js'),
     modSelectedShape = require('./selected-shape.js'),
     modSvg = require('./svg.js'),
     modUpdate = require('./update.js');
+    modShowCodes = require('./showCodes.js');
 
 exports.maxCharsPerLine = 20;
 exports.boldFontWeight = 900;
@@ -3081,7 +3118,9 @@ var appendText = function(gEl, phrases, yShift) {
 // Split text into single words, then group them into lines. Arg "element" is a
 // shape or an edge.
 var splitTextIntoLines = function(element) {
-  var words = (element.name) ? element.name.split(/\s+/g) : [""];
+  var txt = modShowCodes.showingCodes ? element.code : element.name;
+  var words = (txt) ? txt.split(/\s+/g) : [""];
+  //var words = (element.name) ? element.name.split(/\s+/g) : [""];
   var nwords = words.length;
   var phrases = [];
   var wordIx = 0;
@@ -3228,7 +3267,7 @@ exports.changeElementText = function(d3, d3element, d) {
   return d3txt;
 };
 
-},{"./drag.js":6,"./selected-color.js":20,"./selected-shape.js":21,"./svg.js":24,"./update.js":29}],27:[function(require,module,exports){
+},{"./drag.js":6,"./selected-color.js":20,"./selected-shape.js":21,"./showCodes.js":24,"./svg.js":25,"./update.js":30}],28:[function(require,module,exports){
 var modRingsize = require('./ringsize.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modEdgeStyle = require('./edge-style.js'),
@@ -3256,7 +3295,7 @@ exports.prepareToolbox = function(d3) {
   modEdgeStyle.addControls(d3);
 };
 
-},{"./circles-of-care.js":3,"./edge-style.js":7,"./help.js":16,"./options-menu.js":18,"./ringsize.js":19,"./selected-color.js":20,"./selected-shape.js":21,"./system-support-map.js":25,"./update.js":29}],28:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./edge-style.js":7,"./help.js":16,"./options-menu.js":18,"./ringsize.js":19,"./selected-color.js":20,"./selected-shape.js":21,"./system-support-map.js":26,"./update.js":30}],29:[function(require,module,exports){
 exports.tip = null;
 
 // "Notes" == tooltips
@@ -3274,7 +3313,7 @@ exports.setupNotes = function(d3) {
   d3.select("#mainSVG").call(exports.tip);
 };
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 var modRingsize = require('./ringsize.js'),
     modCirclesOfCare = require('./circles-of-care.js'),
     modDrag = require('./drag.js'),
@@ -3287,6 +3326,7 @@ var modRingsize = require('./ringsize.js'),
     modText = require('./text.js'),
     modTooltips = require('./tooltips.js'),
     modUtil = require('./util.js');
+    modShowCodes = require('./showCodes.js');
 
 var addHandle = function(d3, parentG, rectData) {
   var tx = rectData.manualResize ? rectData.width - rectData.xOffset
@@ -3664,7 +3704,7 @@ exports.updateWindow = function(d3) {
   exports.updateGraph(d3);
 };
 
-},{"./circles-of-care.js":3,"./drag.js":6,"./events.js":9,"./grid.js":15,"./ringsize.js":19,"./selected-color.js":20,"./selection.js":22,"./svg.js":24,"./system-support-map.js":25,"./text.js":26,"./tooltips.js":28,"./util.js":30}],30:[function(require,module,exports){
+},{"./circles-of-care.js":3,"./drag.js":6,"./events.js":9,"./grid.js":15,"./ringsize.js":19,"./selected-color.js":20,"./selection.js":22,"./showCodes.js":24,"./svg.js":25,"./system-support-map.js":26,"./text.js":27,"./tooltips.js":29,"./util.js":31}],31:[function(require,module,exports){
 var cookiesByName = null;
 
 exports.readCookieByName = function(name) {
@@ -3710,7 +3750,7 @@ exports.computeRectangleBoundary = function(edge) {
   return ((absCosTheta > thresholdCos) ? h * hyp / dy : w * hyp / dx) + offset;
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 var modGrid = require('./grid.js'),
     modGridZoom = require('./grid-zoom.js'),
     modText = require('./text.js');
@@ -3753,4 +3793,4 @@ exports.setup = function(d3, svg) {
   svg.call(exports.zoomSvg).on("dblclick.zoom", null);
 };
 
-},{"./grid-zoom.js":14,"./grid.js":15,"./text.js":26}]},{},[17]);
+},{"./grid-zoom.js":14,"./grid.js":15,"./text.js":27}]},{},[17]);
