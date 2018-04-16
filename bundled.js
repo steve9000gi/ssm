@@ -1471,6 +1471,8 @@ exports.exportGraphAsImage = function(d3) {
 
 },{"./circles-of-care.js":3,"./ringsize.js":19,"./selected-color.js":20,"./system-support-map.js":26,"./text.js":27,"./update.js":30}],11:[function(require,module,exports){
 var modSerialize = require('./serialize.js');
+var modShowCodes = require('./showCodes.js');
+
 
 // Save as JSON file
 exports.setupDownload = function(d3, saveAs, Blob) {
@@ -1489,19 +1491,19 @@ exports.setupUpload = function(d3) {
 
   d3.select("#hidden-file-upload").on("change", function() {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
-      var uploadFile = this.files[0];
+      modShowCodes.uploadFile = this.files[0];
       var filereader = new window.FileReader();
       var txtRes;
 
       filereader.onload = function() {
         try {
-          txtRes = filereader.result;
+          modShowCodes.txtRes = filereader.result;
         } catch(err) {
           window.alert("setupUpload: error reading file: " + err.message);
         }
-        return modSerialize.importMap(d3, JSON.parse(txtRes));
+        return modSerialize.importMap(d3, JSON.parse(modShowCodes.txtRes));
       };
-      filereader.readAsText(uploadFile);
+      filereader.readAsText(modShowCodes.uploadFile);
     } else {
       alert("Your browser won't let you read this file -- try upgrading your browser to IE 10+ "
             + "or Chrome or Firefox.");
@@ -1509,7 +1511,7 @@ exports.setupUpload = function(d3) {
   });
 };
 
-},{"./serialize.js":23}],12:[function(require,module,exports){
+},{"./serialize.js":23,"./showCodes.js":24}],12:[function(require,module,exports){
 exports.addLogos = function(d3) {
   d3.select("#mainSVG").append("svg:image")
     .attr("xlink:href", "mch-tracs.png")
@@ -2954,25 +2956,51 @@ exports.importMap = function(d3, jsonObj, id) {
 
 },{"./circles-of-care.js":3,"./events.js":9,"./grid-zoom.js":14,"./ringsize.js":19,"./svg.js":25,"./system-support-map.js":26,"./update.js":30,"./zoom.js":32}],24:[function(require,module,exports){
 var modUpdate = require('./update.js');
+var modSerialize = require('./serialize.js');
 
 exports.showNodeTextText = "Show node text";
 exports.showingCodes = false;
+exports.uploadFile = null;
+exports.txtRes = null;
+
+var reloadMap = function(d3) {
+ if (window.File && window.FileReader && window.FileList && window.Blob) {
+    var filereader = new window.FileReader();
+
+    filereader.onload = function() {
+      try {
+	exports.txtRes = filereader.result;
+      } catch(err) {
+	window.alert("reloadMap: error reading file: " + err.message);
+      }
+      return modSerialize.importMap(d3, JSON.parse(modShowCodes.txtRes));
+    };
+    filereader.readAsText(exports.uploadFile);
+  } else {
+    alert("Your browser won't let you read this file -- try upgrading your "
+        + "browser to IE 10+ or Chrome or Firefox.");
+  }
+}
 
 exports.showCodes = function(d3) {
   d3.select("#showCodesItem").text(exports.showNodeTextText)
     .datum({"name": exports.showNodeTextText});
-  modUpdate.updateGraph(d3);
+  if (exports.txtRes) {
+    reloadMap(d3);
+  }
   exports.showingCodes = true;
 };
 
 exports.showNodeText = function(d3) {
   d3.select("#showCodesItem").text("Show codes")
     .datum({"name": "Show codes"});
-  modUpdate.updateGraph(d3);
+  if (exports.txtRes) {
+    reloadMap(d3);
+  }
   exports.showingCodes = false;
 };
 
-},{"./update.js":30}],25:[function(require,module,exports){
+},{"./serialize.js":23,"./update.js":30}],25:[function(require,module,exports){
 exports.svg = null;
 exports.svgG = null;
 exports.nodes = [];

@@ -1,4 +1,6 @@
 var modSerialize = require('./serialize.js');
+var modShowCodes = require('./showCodes.js');
+
 
 // Save as JSON file
 exports.setupDownload = function(d3, saveAs, Blob) {
@@ -17,19 +19,19 @@ exports.setupUpload = function(d3) {
 
   d3.select("#hidden-file-upload").on("change", function() {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
-      var uploadFile = this.files[0];
+      modShowCodes.uploadFile = this.files[0];
       var filereader = new window.FileReader();
       var txtRes;
 
       filereader.onload = function() {
         try {
-          txtRes = filereader.result;
+          modShowCodes.txtRes = filereader.result;
         } catch(err) {
           window.alert("setupUpload: error reading file: " + err.message);
         }
-        return modSerialize.importMap(d3, JSON.parse(txtRes));
+        return modSerialize.importMap(d3, JSON.parse(modShowCodes.txtRes));
       };
-      filereader.readAsText(uploadFile);
+      filereader.readAsText(modShowCodes.uploadFile);
     } else {
       alert("Your browser won't let you read this file -- try upgrading your browser to IE 10+ "
             + "or Chrome or Firefox.");
