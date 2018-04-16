@@ -1425,7 +1425,7 @@ exports.exportGraphAsImage = function(d3) {
   d3.select("#credits")
     .attr("display", "block")
     .attr("y", extent.h - 30)
-   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2017 UNC-CH)");
+   .text("Generated " + Date() + " by System Support Mapper (Copyright (C) 2014-2018 UNC-CH)");
 
   // Create canvas:
   d3.select("body").append("canvas")
@@ -1527,7 +1527,7 @@ exports.addCopyright = function(d3) {
     .attr("id", "copyrightDiv")
     .append("text")
     .attr("id", "copyright")
-    .text("\u00a9 2014-2017 The University of North Carolina at Chapel Hill");
+    .text("\u00a9 2014-2018 The University of North Carolina at Chapel Hill");
 };
 
 exports.addCredits = function(d3) {
@@ -1795,7 +1795,7 @@ module.exports = function(d3) {
 },{}],17:[function(require,module,exports){
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
- * Copyright (C) 2014-2017 The University of North Carolina at Chapel Hill
+ * Copyright (C) 2014-2018 The University of North Carolina at Chapel Hill
  * All rights reserved.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS, CONTRIBUTORS, AND THE
@@ -2708,8 +2708,8 @@ exports.focusContext = null;
 exports.focusDescription = null;
 exports.version = null; // version of originating web tool (ssm or wizard)
 var version = "ssm"; // version of this tool
-exports.timestamp = null; // timestamnp of originating tool (ssm or wizard)
-var timestamp = "2017/08/15 09:43"; //timestamp for this tool
+exports.timestamp = null; // timestamp of originating tool (ssm or wizard)
+var timestamp = "2018/04/16 13:42"; //timestamp for this tool
 
 var getBiggestShapeId = function() {
   var currMax = 0;

@@ -11,8 +11,8 @@ exports.focusContext = null;
 exports.focusDescription = null;
 exports.version = null; // version of originating web tool (ssm or wizard)
 var version = "ssm"; // version of this tool
-exports.timestamp = null; // timestamnp of originating tool (ssm or wizard)
-var timestamp = "2017/08/15 09:43"; //timestamp for this tool
+exports.timestamp = null; // timestamp of originating tool (ssm or wizard)
+var timestamp = "2018/04/16 13:42"; //timestamp for this tool
 
 var getBiggestShapeId = function() {
   var currMax = 0;
