@@ -564,3 +564,7 @@ aside h3 {
   display:block;
   text-align: left;
 }
+
+#fundingSource, #disclaimer {
+  font-style: italic;
+}

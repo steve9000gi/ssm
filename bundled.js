@@ -243,6 +243,15 @@ var renderLoginForm = function(d3, callback) {
   welcomeG.append('p')
     .attr('class', 'welcomeText')
     .text("In order to use this Wizard, you'll need to complete a free registration.");
+  welcomeG.append('br')
+  welcomeG.append('p')
+    .attr('id', 'fundingSource')
+    .attr('class', 'welcomeText')
+    .text('\nThis tool has been adapted for use in Title X context. Funding for this resource was made possible by the Office of Population Affairs (Grant FPT PA006028-02-00).');
+  welcomeG.append('p')
+    .attr("id", "disclaimer")
+    .attr('class', 'welcomeText')
+    .text('The views expressed do not necessarily reflect the official policies of the Department of Health and Human Services; nor does mention of trade names, commercial practices, or organizations imply endorsement by the U.S. Government.');
 
   var signInG = content.append('g')
     .attr('id', 'signInG');
