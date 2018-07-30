@@ -1435,16 +1435,16 @@ exports.exportGraphAsImage = function(d3) {
   var context = canvas.getContext("2d");
 
   // Create event handler to draw svg onto canvas, convert to image, and export .png:
-  var image = new Image();
+  var image = new Image; 
   image.onload = function() {
     context.drawImage(image, 0, 0);
     var canvasData = canvas.toDataURL("image/png");
     var pngImage = '<img src="' + canvasData + '">';
     d3.select("#pngdataurl").html(pngImage);
-    var a = document.createElement("a");
-    a.download = "SystemSupportMap.png";
-    a.href = canvasData;
-    a.click();
+    var anchor = document.createElement("a");
+    anchor.download = "SystemSupportMap.png";
+    anchor.href = canvasData;
+    anchor.click();
   };
   image.onerror = function imageErrorHandler(event) {
     alert("Export to image failed");
@@ -1453,9 +1453,14 @@ exports.exportGraphAsImage = function(d3) {
   var html = mainSVG.attr("version", 1.1)
                     .attr("xmlns", "http://www.w3.org/2000/svg")
                     .node().parentNode.innerHTML;
+
+  // Translation to image fails if this substring not removed (SAC 2018/07/30):
+  html = html.replace('<image xlink:href="mch-tracs.png" id="logos" width="546" height="60" x="-52" y="0"></image>');
+
   var imgsrc = "data:image/svg+xml;base64," + btoa(html);
   var img = '<img src="' + imgsrc + '">';
-  d3.select("#svgdataurl").html(img);
+  d3.select("#pngdataurl").html(img);
+ 
   image.src = imgsrc;
 
   // Reset dimensions and attributes for normal appearance and interactive behavior:
